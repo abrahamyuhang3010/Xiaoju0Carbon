@@ -9,7 +9,7 @@
       "</div>" +
       '<div class="empty-state-title">暂无数据</div>' +
       '<div class="empty-state-text">' +
-      escapeHtml(options.message || "当前日期暂无交易中心披露数据，请切换日期或手动更新数据") +
+      escapeHtml(options.message || "当前交易中心暂未接入该披露类型数据，请切换其他披露类型或手动更新数据。") +
       "</div>" +
       '<div class="empty-state-actions">' +
       '<button class="ghost-btn" data-ui-action="open-manual-update"><span>手动更新</span></button>' +

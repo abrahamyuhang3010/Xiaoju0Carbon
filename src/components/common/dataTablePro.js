@@ -37,6 +37,23 @@
         sortable: column.sortable !== false,
       };
     });
+    var columnOrder = Array.isArray(options.columnOrder) ? options.columnOrder : [];
+    if (columnOrder.length) {
+      columns.sort(function compareColumns(a, b) {
+        var aIndex = columnOrder.indexOf(a.key);
+        var bIndex = columnOrder.indexOf(b.key);
+        if (aIndex < 0 && bIndex < 0) {
+          return 0;
+        }
+        if (aIndex < 0) {
+          return 1;
+        }
+        if (bIndex < 0) {
+          return -1;
+        }
+        return aIndex - bIndex;
+      });
+    }
     var rows = (options.rows || []).slice();
     var sortState = options.sortState || {};
 
@@ -67,11 +84,22 @@
     var head = columns
       .map(function mapColumn(column) {
         var direction = sortState.key === column.key ? sortState.direction : "";
+        var thAttrs = "";
+        if (options.enableColumnDrag && column.sortable !== false) {
+          thAttrs =
+            ' draggable="true" data-table-id="' +
+            escapeHtml(options.tableId) +
+            '" data-column-drag-key="' +
+            escapeHtml(column.key) +
+            '"';
+        }
         if (column.sortable === false) {
-          return "<th><span>" + escapeHtml(column.label) + "</span></th>";
+          return "<th" + thAttrs + "><span>" + escapeHtml(column.label) + "</span></th>";
         }
         return (
-          "<th>" +
+          "<th" +
+          thAttrs +
+          ">" +
           '<button class="table-header-sort" data-table-id="' +
           escapeHtml(options.tableId) +
           '" data-sort-key="' +
@@ -117,7 +145,7 @@
             var displayValue = value && typeof value === "object" && value.text !== undefined ? value.text : value;
             var extraClassName = value && typeof value === "object" && value.className ? value.className : "";
             var negative =
-              String(column.label).indexOf("差值") >= 0 &&
+              (String(column.label).indexOf("差值") >= 0 || String(column.label).indexOf("价差") >= 0) &&
               displayValue !== "--" &&
               !Number.isNaN(Number(displayValue)) &&
               Number(displayValue) < 0;
@@ -143,7 +171,9 @@
       .join("");
 
     return (
-      '<div class="table-wrap table-pro-wrap"><table class="data-table"' +
+      '<div class="table-wrap table-pro-wrap"><table class="data-table" data-table-id="' +
+      escapeHtml(options.tableId) +
+      '"' +
       (options.minWidth ? ' style="min-width:' + escapeHtml(String(options.minWidth)) + 'px;"' : "") +
       "><thead><tr>" +
       head +

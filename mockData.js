@@ -5,6 +5,7 @@
     guangdong: global.BOSS_GUANGDONG_DATA_MOCK,
     hunan: global.BOSS_HUNAN_DATA_MOCK,
     shaanxi: global.BOSS_SHAANXI_DATA_MOCK,
+    marketPageData: global.BOSS_MARKET_PAGE_DATA,
     downloadTasks: global.BOSS_DOWNLOAD_TASKS_MOCK,
     fetchMonitor: global.BOSS_FETCH_MONITOR_MOCK,
     simulation: global.BOSS_SIMULATION_DATA_MOCK,

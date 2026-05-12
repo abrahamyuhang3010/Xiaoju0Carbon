@@ -114,6 +114,8 @@
       var rollingDataMock = (appMocks.guangdong && appMocks.guangdong.rollingData) || {};
       var hunanMock = appMocks.hunan || {};
       var shaanxiMock = appMocks.shaanxi || {};
+      var hunanRollingMock = (hunanMock && hunanMock.rollingData) || {};
+      var shaanxiRollingMock = (shaanxiMock && shaanxiMock.rollingData) || {};
       var fetchMonitorMock = appMocks.fetchMonitor || {};
       var simulationMock = appMocks.simulation || {};
       var algorithmMock = appMocks.algorithm || {};
@@ -175,6 +177,7 @@
           primaryTab: tabs[0],
           secondaryTab: loadSecondaryTabs[0],
           selectedMetric: "dispatch-load",
+          profileViewMode: "",
           checkedMetrics: new Set(DEFAULT_CHECKED_METRICS),
           expandedMetrics: new Set(["local-power", "west-east"]),
           companyQueryAt: 0,
@@ -205,6 +208,8 @@
               start: "2026-05-08",
               end: "2026-05-08",
             },
+            saleCompanyName: "全部",
+            declarationType: "全部",
           },
         },
         tradeResult: {
@@ -231,9 +236,17 @@
             },
             dailyUserName: "",
             dailyAccountNo: "",
+            dailySellerCompanyName: "",
+            dailySettlementUnitName: "",
+            dailyStatementKey: "",
+            dailyStatementType: "全部",
+            dailyDataType: "全部",
             monthlyMonth: "2026-05",
             monthlyUserName: "",
             monthlyAccountNo: "",
+            monthlySellerCompanyName: "",
+            monthlyEnterpriseName: "",
+            monthlyEnterpriseAccountNo: "",
           },
         },
         retailRelation: {
@@ -255,6 +268,61 @@
               end: "2026-05-09",
             }),
             product: (rollingDataMock.productOptions && rollingDataMock.productOptions[0]) || "全部",
+            hunanTradeDateRange: cloneRange((hunanRollingMock.longTermTradeResult && hunanRollingMock.longTermTradeResult.defaultRange) || {
+              start: "2026-05-03",
+              end: "2026-05-09",
+            }),
+            hunanTradeProduct:
+              (hunanRollingMock.longTermTradeResult &&
+                hunanRollingMock.longTermTradeResult.productOptions &&
+                hunanRollingMock.longTermTradeResult.productOptions[0]) ||
+              "全部",
+            hunanContractPeriod:
+              (hunanRollingMock.longTermTradeResult &&
+                hunanRollingMock.longTermTradeResult.contractPeriodOptions &&
+                hunanRollingMock.longTermTradeResult.contractPeriodOptions[0]) ||
+              "全部",
+            shaanxiCurveDate: {
+              start:
+                (shaanxiRollingMock.contractCurve && shaanxiRollingMock.contractCurve.defaultDate) ||
+                "2026-05-09",
+              end:
+                (shaanxiRollingMock.contractCurve && shaanxiRollingMock.contractCurve.defaultDate) ||
+                "2026-05-09",
+            },
+            shaanxiSequenceName:
+              (shaanxiRollingMock.contractCurve &&
+                shaanxiRollingMock.contractCurve.sequenceNameOptions &&
+                shaanxiRollingMock.contractCurve.sequenceNameOptions[0]) ||
+              "全部",
+            shaanxiContractType:
+              (shaanxiRollingMock.contractCurve &&
+                shaanxiRollingMock.contractCurve.contractTypeOptions &&
+                shaanxiRollingMock.contractCurve.contractTypeOptions[0]) ||
+              "全部",
+            shaanxiSellerUnit:
+              (shaanxiRollingMock.contractCurve &&
+                shaanxiRollingMock.contractCurve.sellerUnitOptions &&
+                shaanxiRollingMock.contractCurve.sellerUnitOptions[0]) ||
+              "全部",
+            shaanxiBuyerUnit:
+              (shaanxiRollingMock.contractCurve &&
+                shaanxiRollingMock.contractCurve.buyerUnitOptions &&
+                shaanxiRollingMock.contractCurve.buyerUnitOptions[0]) ||
+              "全部",
+            shaanxiContractName:
+              (shaanxiRollingMock.contractCurve &&
+                shaanxiRollingMock.contractCurve.contractNameOptions &&
+                shaanxiRollingMock.contractCurve.contractNameOptions[0]) ||
+              "全部",
+            shaanxiTradeDate: {
+              start:
+                (shaanxiRollingMock.tradeOverview && shaanxiRollingMock.tradeOverview.defaultDate) ||
+                "2026-05-09",
+              end:
+                (shaanxiRollingMock.tradeOverview && shaanxiRollingMock.tradeOverview.defaultDate) ||
+                "2026-05-09",
+            },
           },
         },
         declaration: {

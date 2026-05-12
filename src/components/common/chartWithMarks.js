@@ -99,6 +99,17 @@
       });
     });
 
+    if (!values.length) {
+      return (
+        legendHtml +
+        renderEmptyState({
+          escapeHtml: escapeHtml,
+          renderIcon: options.renderIcon,
+          message: options.emptyMessage || "当前图表暂无可展示数据，请重新选择指标或筛选日期。",
+        })
+      );
+    }
+
     var maxValue = Math.max.apply(null, values);
     var axisBase = getAxisBase(maxValue);
     var roundedMax = Math.max(axisBase, Math.ceil((maxValue * 1.12) / axisBase) * axisBase);
@@ -213,6 +224,8 @@
           buildPolyline(series) +
           '" style="stroke:' +
           series.color +
+          ";stroke-dasharray:" +
+          escapeHtml(series.dasharray || "") +
           ';"></polyline>'
         );
       })
