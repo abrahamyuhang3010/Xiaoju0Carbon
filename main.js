@@ -2259,7 +2259,21 @@
       rows: (rows || []).map(function mapRow(row) {
         var result = {};
         resolvedColumns.forEach(function mapColumn(column) {
-          result[column.key] = formatInfoDisclosureTableValue(column, row[column.key]);
+          var rawValue = row[column.key];
+          var formattedValue = formatInfoDisclosureTableValue(column, rawValue);
+          var title = column && column.title ? column.title : "";
+          var isDiffColumn = title.indexOf("差值") >= 0 || title.indexOf("价差") >= 0;
+
+          if (isDiffColumn && typeof rawValue === "number") {
+            result[column.key] = createStyledCell(
+              formattedValue,
+              rawValue < 0 ? "table-negative" : rawValue > 0 ? "table-positive" : "",
+              rawValue,
+            );
+            return;
+          }
+
+          result[column.key] = formattedValue;
         });
         return result;
       }),

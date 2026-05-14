@@ -157,8 +157,39 @@
     }, []);
   }
 
+  function buildTrendRowsByStep(dates, options) {
+    var stepMinutes = options.stepMinutes || 60;
+    var labels = buildTimeLabels(stepMinutes, stepMinutes === 15 ? 96 : 24);
+
+    return dates.reduce(function accumulateRows(result, date, dayIndex) {
+      return result.concat(
+        labels.map(function createRow(time, index) {
+          var hour = stepMinutes === 15 ? index / 4 : index;
+          var dayWave = Math.sin(((hour - options.dayShift) / 24) * Math.PI * 2) * options.dayAmplitude;
+          var peakWave = Math.max(0, Math.sin(((hour - options.peakShift) / 24) * Math.PI * 2)) * options.peakAmplitude;
+          var trendValue =
+            options.base +
+            dayIndex * options.dayIncrement +
+            dayWave +
+            peakWave +
+            ((index % options.modBase) - options.modOffset) * options.noise;
+          return {
+            date: date,
+            time: time,
+            value: round(trendValue),
+            unit: options.unit,
+            source: options.source,
+            updatedAt: options.updatedAt,
+          };
+        }),
+      );
+    }, []);
+  }
+
   function buildTrendModule(dates, options) {
-    var rows = buildTrendRows(dates, options);
+    var rows = options && options.stepMinutes && options.stepMinutes !== 60
+      ? buildTrendRowsByStep(dates, options)
+      : buildTrendRows(dates, options);
     return {
       type: "trend",
       unit: options.unit,
@@ -1743,17 +1774,10 @@
     },
     viewType: "maintenanceComposite",
     maintenanceChart: {
-      title: "机组在线容量趋势图",
-      labels: quarterHours.slice(),
+      title: "",
+      labels: [],
       unit: "MW",
-      series: [
-        {
-          id: "sx-info-unit-online-capacity",
-          label: "在线容量",
-          color: "#1677FF",
-          values: shaanxiUnifiedOnlineCapacityValues,
-        },
-      ],
+      series: [],
     },
     unitStatusTable: {
       title: "机组状态明细表",
@@ -1833,8 +1857,6 @@
       infoDayAheadDeclaration: shaanxiUnifiedDeclarationPage,
       infoUnitStatus: shaanxiUnifiedUnitStatusPage,
       infoReserve: shaanxiUnifiedReservePage,
-      infoEmptyLoad: createShaanxiInfoEmptyPage("负荷信息", "负荷信息", "负荷信息"),
-      infoEmptyLoadDetail: createShaanxiInfoEmptyPage("负荷详情", "负荷信息", "负荷详情"),
       infoEmptyVolume: createShaanxiInfoEmptyPage(
         "出清电量",
         "出清电量",
@@ -1856,13 +1878,13 @@
     },
     pageMap: {
       infoDisclosure: {
-        defaultDatasetKey: "infoDayAheadDeclaration",
+        defaultDatasetKey: "infoUnifiedPrice",
         primaryTabs: {
           "负荷信息": {
-            defaultDatasetKey: "infoEmptyLoad",
+            defaultDatasetKey: "infoUnitStatus",
             secondaryTabs: {
-              "负荷信息": "infoEmptyLoad",
-              "负荷详情": "infoEmptyLoadDetail",
+              "负荷信息": "infoUnitStatus",
+              "负荷详情": "infoUnitStatus",
               "机组检修容量": "infoUnitStatus",
               "备用信息": "infoReserve",
             },
@@ -2001,14 +2023,15 @@
       "系统负荷预测（日）": buildTrendModule(availableDates, {
         unit: "MW",
         purpose: ["负荷预测", "仿真回测"],
+        stepMinutes: 15,
         base: 21420,
         dayAmplitude: 860,
         peakAmplitude: 1380,
         dayShift: 6,
         peakShift: 14,
         dayIncrement: 68,
-        modBase: 4,
-        modOffset: 1.5,
+        modBase: 8,
+        modOffset: 3.5,
         noise: 38,
         source: "陕西系统负荷预测",
         updatedAt: buildUpdatedAt(dataUpdatedAt, -21),
@@ -2016,14 +2039,15 @@
       "实际负荷": buildTrendModule(availableDates, {
         unit: "MW",
         purpose: ["负荷预测", "仿真回测"],
+        stepMinutes: 15,
         base: 21080,
         dayAmplitude: 920,
         peakAmplitude: 1450,
         dayShift: 6,
         peakShift: 15,
         dayIncrement: 62,
-        modBase: 5,
-        modOffset: 2,
+        modBase: 8,
+        modOffset: 3.5,
         noise: 44,
         source: "陕西系统实际负荷",
         updatedAt: buildUpdatedAt(dataUpdatedAt, -6),
@@ -2031,14 +2055,15 @@
       "发电总出力": buildTrendModule(availableDates, {
         unit: "MW",
         purpose: ["负荷预测", "仿真回测"],
+        stepMinutes: 15,
         base: 22860,
         dayAmplitude: 780,
         peakAmplitude: 1210,
         dayShift: 5,
         peakShift: 14,
         dayIncrement: 56,
-        modBase: 4,
-        modOffset: 1.5,
+        modBase: 8,
+        modOffset: 3.5,
         noise: 32,
         source: "陕西发电总出力实绩",
         updatedAt: buildUpdatedAt(dataUpdatedAt, -5),
@@ -2046,14 +2071,15 @@
       "非市场机组总出力": buildTrendModule(availableDates, {
         unit: "MW",
         purpose: ["负荷预测", "仿真回测"],
+        stepMinutes: 15,
         base: 7060,
         dayAmplitude: 280,
         peakAmplitude: 410,
         dayShift: 4,
         peakShift: 12,
         dayIncrement: 22,
-        modBase: 4,
-        modOffset: 1.5,
+        modBase: 8,
+        modOffset: 3.5,
         noise: 18,
         source: "陕西非市场机组实绩",
         updatedAt: buildUpdatedAt(dataUpdatedAt, -4),
@@ -2061,14 +2087,15 @@
       "新能源总出力": buildTrendModule(availableDates, {
         unit: "MW",
         purpose: ["负荷预测", "仿真回测"],
+        stepMinutes: 15,
         base: 4380,
         dayAmplitude: 690,
         peakAmplitude: 910,
         dayShift: 8,
         peakShift: 11,
         dayIncrement: 28,
-        modBase: 4,
-        modOffset: 1.5,
+        modBase: 8,
+        modOffset: 3.5,
         noise: 24,
         source: "陕西新能源实绩",
         updatedAt: buildUpdatedAt(dataUpdatedAt, -3),
@@ -2076,14 +2103,15 @@
       "水电（含抽蓄）出力": buildTrendModule(availableDates, {
         unit: "MW",
         purpose: ["负荷预测", "仿真回测"],
+        stepMinutes: 15,
         base: 3180,
         dayAmplitude: 240,
         peakAmplitude: 360,
         dayShift: 3,
         peakShift: 10,
         dayIncrement: 16,
-        modBase: 5,
-        modOffset: 2,
+        modBase: 8,
+        modOffset: 3.5,
         noise: 14,
         source: "陕西水电及抽蓄实绩",
         updatedAt: buildUpdatedAt(dataUpdatedAt, -2),
@@ -2091,14 +2119,15 @@
       "省间联络线输电情况": buildTrendModule(availableDates, {
         unit: "MW",
         purpose: ["负荷预测", "仿真回测"],
+        stepMinutes: 15,
         base: 4360,
         dayAmplitude: 240,
         peakAmplitude: 386,
         dayShift: 4,
         peakShift: 13,
         dayIncrement: 14,
-        modBase: 4,
-        modOffset: 1.5,
+        modBase: 8,
+        modOffset: 3.5,
         noise: 15,
         source: "陕西省间联络线实绩",
         updatedAt: buildUpdatedAt(dataUpdatedAt, -8),
@@ -2106,14 +2135,15 @@
       "省间联络线输电曲线预测": buildTrendModule(availableDates, {
         unit: "MW",
         purpose: ["负荷预测", "仿真回测"],
+        stepMinutes: 15,
         base: 4480,
         dayAmplitude: 220,
         peakAmplitude: 358,
         dayShift: 4,
         peakShift: 13,
         dayIncrement: 16,
-        modBase: 4,
-        modOffset: 1.5,
+        modBase: 8,
+        modOffset: 3.5,
         noise: 14,
         source: "陕西省间联络线预测",
         updatedAt: buildUpdatedAt(dataUpdatedAt, -19),
@@ -2121,14 +2151,15 @@
       "发电总出力预测": buildTrendModule(availableDates, {
         unit: "MW",
         purpose: ["负荷预测", "仿真回测"],
+        stepMinutes: 15,
         base: 23140,
         dayAmplitude: 760,
         peakAmplitude: 1180,
         dayShift: 5,
         peakShift: 14,
         dayIncrement: 58,
-        modBase: 4,
-        modOffset: 1.5,
+        modBase: 8,
+        modOffset: 3.5,
         noise: 30,
         source: "陕西发电总出力预测",
         updatedAt: buildUpdatedAt(dataUpdatedAt, -22),
@@ -2136,14 +2167,15 @@
       "非市场机组总出力预测": buildTrendModule(availableDates, {
         unit: "MW",
         purpose: ["负荷预测", "仿真回测"],
+        stepMinutes: 15,
         base: 7220,
         dayAmplitude: 260,
         peakAmplitude: 390,
         dayShift: 4,
         peakShift: 12,
         dayIncrement: 24,
-        modBase: 4,
-        modOffset: 1.5,
+        modBase: 8,
+        modOffset: 3.5,
         noise: 17,
         source: "陕西非市场机组预测",
         updatedAt: buildUpdatedAt(dataUpdatedAt, -18),
@@ -2151,14 +2183,15 @@
       "新能源总出力预测（日）": buildTrendModule(availableDates, {
         unit: "MW",
         purpose: ["负荷预测", "仿真回测"],
+        stepMinutes: 15,
         base: 4520,
         dayAmplitude: 660,
         peakAmplitude: 930,
         dayShift: 8,
         peakShift: 11,
         dayIncrement: 30,
-        modBase: 4,
-        modOffset: 1.5,
+        modBase: 8,
+        modOffset: 3.5,
         noise: 22,
         source: "陕西新能源预测",
         updatedAt: buildUpdatedAt(dataUpdatedAt, -17),
@@ -2166,14 +2199,15 @@
       "水电（含抽蓄）总出力预测（日）": buildTrendModule(availableDates, {
         unit: "MW",
         purpose: ["负荷预测", "仿真回测"],
+        stepMinutes: 15,
         base: 3300,
         dayAmplitude: 220,
         peakAmplitude: 340,
         dayShift: 3,
         peakShift: 10,
         dayIncrement: 18,
-        modBase: 5,
-        modOffset: 2,
+        modBase: 8,
+        modOffset: 3.5,
         noise: 13,
         source: "陕西水电及抽蓄预测",
         updatedAt: buildUpdatedAt(dataUpdatedAt, -15),
