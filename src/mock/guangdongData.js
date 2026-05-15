@@ -91,6 +91,73 @@
     });
   }
 
+  function averageNumbers(values, digits) {
+    var numericValues = (values || []).filter(function filterValue(value) {
+      return typeof value === "number" && !Number.isNaN(value);
+    });
+
+    if (!numericValues.length) {
+      return null;
+    }
+
+    return Number(
+      (
+        numericValues.reduce(function accumulate(total, value) {
+          return total + value;
+        }, 0) / numericValues.length
+      ).toFixed(typeof digits === "number" ? digits : 2)
+    );
+  }
+
+  function buildPriceSpread(dayAheadValue, realTimeValue) {
+    if (typeof dayAheadValue !== "number" || typeof realTimeValue !== "number") {
+      return null;
+    }
+
+    return Number((realTimeValue - dayAheadValue).toFixed(2));
+  }
+
+  function buildNodePricePoints(timeLabels, dayAheadValues, realTimeValues) {
+    return (timeLabels || []).map(function mapPoint(time, index) {
+      var dayAheadNodePrice = typeof dayAheadValues[index] === "number" ? Number(dayAheadValues[index]) : null;
+      var realTimeNodePrice = typeof realTimeValues[index] === "number" ? Number(realTimeValues[index]) : null;
+
+      return {
+        time: time,
+        dayAheadNodePrice: dayAheadNodePrice,
+        realTimeNodePrice: realTimeNodePrice,
+        spread: buildPriceSpread(dayAheadNodePrice, realTimeNodePrice),
+      };
+    });
+  }
+
+  function aggregateNodePrice96To24(points96) {
+    if (typeof global.aggregateNodePrice96To24 === "function") {
+      return global.aggregateNodePrice96To24(points96);
+    }
+
+    return Array.from({ length: 24 }, function createHourPoint(_, hourIndex) {
+      var segment = (points96 || []).slice(hourIndex * 4, hourIndex * 4 + 4);
+      var dayAheadNodePrice = averageNumbers(
+        segment.map(function mapPoint(point) {
+          return point.dayAheadNodePrice;
+        }),
+      );
+      var realTimeNodePrice = averageNumbers(
+        segment.map(function mapPoint(point) {
+          return point.realTimeNodePrice;
+        }),
+      );
+
+      return {
+        time: String(hourIndex).padStart(2, "0") + ":00",
+        dayAheadNodePrice: dayAheadNodePrice,
+        realTimeNodePrice: realTimeNodePrice,
+        spread: buildPriceSpread(dayAheadNodePrice, realTimeNodePrice),
+      };
+    });
+  }
+
   var hours = Array.from({ length: 24 }, function createHour(_, index) {
     return String(index).padStart(2, "0") + ":00";
   });
@@ -510,15 +577,7 @@
   });
 
   var tradeResultTabs = ["全省统一出清价", "交易结果", "节点电价"];
-  var tradePriceDayAhead = [
-    412.6, 406.8, 398.2, 390.4, 382.1, 376.9,
-    384.2, 402.6, 431.8, 468.5, 506.7, 524.2,
-    538.4, 522.8, 498.6, 486.1, 492.4, 518.7,
-    542.9, 556.8, 568.2, 554.6, 520.3, 478.4,
-  ];
-  var tradePriceRealTime = buildActual(tradePriceDayAhead, [-14.6, -9.8, -4.2, 6.8, 12.5, 8.6]).map(function roundPrice(value) {
-    return Number(value.toFixed(1));
-  });
+  // 成交电量样例暂未提供真实文件，交易结果页仅用这组稳定 placeholder 电量；价格仍来自 6.10 / 6.11。
   var tradeVolumeDayAhead = [
     6120, 5980, 5820, 5660, 5580, 5460,
     5620, 6040, 6680, 7520, 8240, 8620,
@@ -528,40 +587,172 @@
   var tradeVolumeRealTime = buildActual(tradeVolumeDayAhead, [-320, -180, -80, 110, 160, 220]).map(function roundVolume(value) {
     return Math.round(value);
   });
-  var tradeSettlementDayAhead = [
-    428.5, 422.6, 416.4, 408.3, 401.8, 396.1,
-    404.8, 421.6, 448.2, 481.4, 512.8, 529.6,
-    541.8, 528.4, 506.2, 494.8, 501.2, 522.4,
-    546.1, 558.6, 569.5, 552.8, 526.4, 489.2,
-  ];
-  var tradeSettlementRealTime = buildActual(tradeSettlementDayAhead, [-16.8, -8.2, -2.6, 8.6, 14.2, 10.4]).map(function roundSettlement(value) {
-    return Number(value.toFixed(1));
-  });
-  var nodeLabels = ["全省", "节点 1", "节点 2", "节点 3", "节点 4", "节点 5"];
-  var nodeOffsets = {
-    "全省": 0,
-    "节点 1": 6.5,
-    "节点 2": -8.2,
-    "节点 3": 12.8,
-    "节点 4": -15.6,
-    "节点 5": 18.4,
-  };
-  var nodePriceBaseQuarter = buildQuarterSeries(tradePriceDayAhead, [0, 2.4, -1.3, 1.2], -2.2).map(function roundQuarterPrice(value) {
-    return Number(value.toFixed(1));
-  });
-  var nodePriceSeries = {};
-  nodeLabels.forEach(function eachNode(label) {
-    var offset = nodeOffsets[label] || 0;
-    var dayAhead = nodePriceBaseQuarter.map(function mapValue(value, index) {
-      return Number((value + offset + ((index % 6) - 2.5) * 0.4).toFixed(1));
+  var tradeDisclosureSource = global.BOSS_GD_TRADE_DISCLOSURE_SOURCE || {};
+  var tradeDisclosureMockDate = "2026-05-07";
+  var tradeDisclosureUpdateTime = "2026-05-07 14:00:00";
+  var tradeDisclosurePublishTime = "2026-05-07 13:45:00";
+  var nodePriceByDate = {};
+  var tradingResultByDate = {};
+  var unifiedNodePriceMock = global.nodePriceMockByCenter && global.nodePriceMockByCenter.guangdong;
+  var unifiedTradingResultMock = global.tradingResultMockByCenter && global.tradingResultMockByCenter.guangdong;
+  var disclosureTimes96 = (tradeDisclosureSource.nodeDayAhead && tradeDisclosureSource.nodeDayAhead.times) || [];
+  var disclosureSelectedNodes = [];
+
+  if (unifiedNodePriceMock && Array.isArray(unifiedNodePriceMock.nodes)) {
+    var unifiedProvinceNode = unifiedNodePriceMock.nodes.find(function findProvinceNode(node) {
+      return node.nodeName === "全省";
     });
-    nodePriceSeries[label] = {
-      dayAhead: dayAhead,
-      realTime: buildActual(dayAhead, [-6.8, -4.4, -1.6, 2.8, 4.2, 5.6]).map(function roundNodePrice(value) {
-        return Number(value.toFixed(1));
-      }),
+    disclosureTimes96 = unifiedProvinceNode && unifiedProvinceNode.points
+      ? unifiedProvinceNode.points.map(function mapPoint(point) {
+          return point.time;
+        })
+      : disclosureTimes96;
+
+    nodePriceByDate[tradeDisclosureMockDate] = {
+      date: unifiedNodePriceMock.date || tradeDisclosureMockDate,
+      centerName: unifiedNodePriceMock.centerName,
+      updateTime: unifiedNodePriceMock.updateTime || tradeDisclosureUpdateTime,
+      publishTime: unifiedNodePriceMock.publishTime || tradeDisclosurePublishTime,
+      source: unifiedNodePriceMock.source || "取数工具",
+      sourceFiles: [
+        "6.3._【事后】日前节点边际电价.xlsx",
+        "6.4._【事后】实时节点边际电价 (1).xlsx",
+      ],
+      rawSourceDates: {
+        dayAhead: tradeDisclosureSource.nodeDayAhead ? tradeDisclosureSource.nodeDayAhead.sourceDate || "" : "",
+        realTime: tradeDisclosureSource.nodeRealTime ? tradeDisclosureSource.nodeRealTime.sourceDate || "" : "",
+      },
+      timeGranularity: "15m",
+      pointCount: disclosureTimes96.length,
+      nodes: unifiedNodePriceMock.nodes,
+      provinceAggregation: {
+        sourceNodeName: "全省",
+        sourcePointCount: 96,
+        targetPointCount: 24,
+        method: "每小时4个15分钟点取算术平均值",
+      },
+      provinceHourlyPoints: aggregateNodePrice96To24((unifiedProvinceNode && unifiedProvinceNode.points) || []),
     };
-  });
+  } else if (
+    tradeDisclosureSource.nodeDayAhead &&
+    tradeDisclosureSource.nodeRealTime &&
+    Array.isArray(tradeDisclosureSource.nodeDayAhead.times)
+  ) {
+    var dayAheadNodeRows = {};
+    var realTimeNodeRows = {};
+
+    (tradeDisclosureSource.nodeDayAhead.selectedNodes || []).forEach(function eachNode(row) {
+      dayAheadNodeRows[row.nodeName] = row.values || [];
+    });
+    (tradeDisclosureSource.nodeRealTime.selectedNodes || []).forEach(function eachNode(row) {
+      realTimeNodeRows[row.nodeName] = row.values || [];
+    });
+
+    disclosureSelectedNodes = (tradeDisclosureSource.nodeDayAhead.selectedNodes || []).map(function mapNode(row) {
+      return row.nodeName;
+    });
+
+    var provinceNode = {
+      nodeName: "全省",
+      nodeType: "全省",
+      points: buildNodePricePoints(
+        disclosureTimes96,
+        tradeDisclosureSource.nodeDayAhead.province || [],
+        tradeDisclosureSource.nodeRealTime.province || [],
+      ),
+    };
+
+    var actualNodes = disclosureSelectedNodes.map(function mapNode(nodeName) {
+      return {
+        nodeName: nodeName,
+        nodeType: "其他",
+        points: buildNodePricePoints(disclosureTimes96, dayAheadNodeRows[nodeName] || [], realTimeNodeRows[nodeName] || []),
+      };
+    });
+
+    nodePriceByDate[tradeDisclosureMockDate] = {
+      date: tradeDisclosureMockDate,
+      updateTime: tradeDisclosureUpdateTime,
+      publishTime: tradeDisclosurePublishTime,
+      source: "取数工具",
+      sourceFiles: [
+        "6.3._【事后】日前节点边际电价.xlsx",
+        "6.4._【事后】实时节点边际电价 (1).xlsx",
+      ],
+      rawSourceDates: {
+        dayAhead: tradeDisclosureSource.nodeDayAhead.sourceDate || "",
+        realTime: tradeDisclosureSource.nodeRealTime.sourceDate || "",
+      },
+      timeGranularity: "15m",
+      pointCount: disclosureTimes96.length,
+      nodes: [provinceNode].concat(actualNodes),
+      provinceAggregation: {
+        sourceNodeName: "全省",
+        sourcePointCount: 96,
+        targetPointCount: 24,
+        method: "每小时4个15分钟点取算术平均值",
+      },
+      provinceHourlyPoints: aggregateNodePrice96To24(provinceNode.points),
+    };
+  }
+
+  if (unifiedTradingResultMock && Array.isArray(unifiedTradingResultMock.points)) {
+    tradingResultByDate[tradeDisclosureMockDate] = {
+      date: unifiedTradingResultMock.date || tradeDisclosureMockDate,
+      centerName: unifiedTradingResultMock.centerName,
+      updateTime: unifiedTradingResultMock.updateTime || tradeDisclosureUpdateTime,
+      publishTime: unifiedTradingResultMock.publishTime || tradeDisclosurePublishTime,
+      source: unifiedTradingResultMock.source || "取数工具",
+      sourceFiles: [
+        "6.10._【事后】日前用户侧统一结算价格 (2).xlsx",
+        "6.11._【事后】实时用户侧统一结算价格 (4).xlsx",
+      ],
+      rawSourceDates: {
+        dayAheadSettlement: tradeDisclosureSource.settlementDayAhead ? tradeDisclosureSource.settlementDayAhead.sourceDate || "" : "",
+        realTimeSettlement: tradeDisclosureSource.settlementRealTime ? tradeDisclosureSource.settlementRealTime.sourceDate || "" : "",
+      },
+      volumeSource: unifiedTradingResultMock.volumeSource || "stable-placeholder",
+      priceGranularity: "1h",
+      volumeFieldNote: "当前未提供真实成交电量文件，dayAheadVolume/realTimeVolume 为稳定 placeholder mock。",
+      points: unifiedTradingResultMock.points,
+    };
+  } else if (tradeDisclosureSource.settlementDayAhead && tradeDisclosureSource.settlementRealTime) {
+    var settlementDayAheadPoints = tradeDisclosureSource.settlementDayAhead.points || [];
+    var settlementRealTimePoints = tradeDisclosureSource.settlementRealTime.points || [];
+    var tradingResultPoints = hours.map(function mapHour(time, index) {
+      var dayAheadSettlementPoint = settlementDayAheadPoints[index] || {};
+      var realTimeSettlementPoint = settlementRealTimePoints[index] || {};
+
+      return {
+        time: time,
+        dayAheadVolume: tradeVolumeDayAhead[index],
+        realTimeVolume: tradeVolumeRealTime[index],
+        dayAheadSettlementPrice:
+          typeof dayAheadSettlementPoint.price === "number" ? Number(dayAheadSettlementPoint.price) : null,
+        realTimeSettlementPrice:
+          typeof realTimeSettlementPoint.price === "number" ? Number(realTimeSettlementPoint.price) : null,
+      };
+    });
+
+    tradingResultByDate[tradeDisclosureMockDate] = {
+      date: tradeDisclosureMockDate,
+      updateTime: tradeDisclosureUpdateTime,
+      publishTime: tradeDisclosurePublishTime,
+      source: "取数工具",
+      sourceFiles: [
+        "6.10._【事后】日前用户侧统一结算价格 (2).xlsx",
+        "6.11._【事后】实时用户侧统一结算价格 (4).xlsx",
+      ],
+      rawSourceDates: {
+        dayAheadSettlement: tradeDisclosureSource.settlementDayAhead.sourceDate || "",
+        realTimeSettlement: tradeDisclosureSource.settlementRealTime.sourceDate || "",
+      },
+      volumeSource: "stable-placeholder",
+      priceGranularity: "1h",
+      volumeFieldNote: "当前未提供真实成交电量文件，dayAheadVolume/realTimeVolume 为稳定 placeholder mock。",
+      points: tradingResultPoints,
+    };
+  }
 
   var settlementDates = buildDateRange("2026-05-03", 7);
   var settlementDailyTemplates = [
@@ -651,10 +842,12 @@
   });
 
   global.BOSS_GUANGDONG_DATA_MOCK = {
+    dataPublishTime: "2026-05-09 10:55:00",
     infoDisclosure: {
       title: "信息披露",
       centerName: "广东电力交易中心",
       statusText: "数据更新时间：2026-05-09 11:35:33（取数工具）",
+      publishTime: "2026-05-09 10:55:00",
       defaultRunDate: "2026-05-08",
       availableRangeStart: "2026-05-02",
       availableRangeEnd: "2026-05-08",
@@ -674,27 +867,21 @@
     tradeResult: {
       title: "用电侧交易结果",
       centerName: "广东电力交易中心",
-      statusText: "数据更新时间：2026-05-09 11:35:33（取数工具）",
-      defaultRunDate: "2026-05-09",
+      statusText: "数据更新时间：" + tradeDisclosureUpdateTime + "（取数工具）",
+      publishTime: tradeDisclosurePublishTime,
+      defaultRunDate: tradeDisclosureMockDate,
+      availableRunDates: [tradeDisclosureMockDate],
       tabs: tradeResultTabs,
-      nodeLabels: nodeLabels,
-      hourlyRows: hours.map(function mapTradePrice(time, index) {
-        return {
-          time: time,
-          dayaheadPrice: tradePriceDayAhead[index],
-          realtimePrice: tradePriceRealTime[index],
-          dayaheadVolume: tradeVolumeDayAhead[index],
-          realtimeVolume: tradeVolumeRealTime[index],
-          dayaheadSettlementPrice: tradeSettlementDayAhead[index],
-          realtimeSettlementPrice: tradeSettlementRealTime[index],
-        };
-      }),
-      nodePriceSeries: nodePriceSeries,
+      nodePriceTimePoints: disclosureTimes96,
+      nodePriceByDate: nodePriceByDate,
+      tradingResultByDate: tradingResultByDate,
+      placeholderVolume: true,
     },
     settlement: {
       title: "日清月结",
       centerName: "广东电力交易中心",
       statusText: "数据更新时间：2026-05-09 10:58:26（结算任务）",
+      publishTime: "2026-05-09 10:30:00",
       tabs: ["日清算", "月结算"],
       dailyRows: settlementDailyRows,
       monthRows: settlementMonthRows,
@@ -703,6 +890,7 @@
       title: "零售关系",
       centerName: "广东电力交易中心",
       statusText: "数据更新时间：2026-05-09 11:16:09（零售关系台账）",
+      publishTime: "2026-05-09 10:50:00",
       defaultRange: {
         start: "2026-01-01",
         end: "2026-12-31",
@@ -714,6 +902,7 @@
       title: "日前申报",
       centerName: "广东电力交易中心",
       statusText: "数据更新时间：2026-05-09 11:22:48（申报回写）",
+      publishTime: "2026-05-09 11:00:00",
       defaultDate: {
         start: "2026-05-09",
         end: "2026-05-09",
@@ -726,6 +915,7 @@
       title: "滚搓数据",
       centerName: "广东电力交易中心",
       statusText: "数据更新时间：2026-05-09 11:08:16（广东交易中心滚搓任务）",
+      publishTime: "2026-05-09 10:40:00",
       defaultRange: {
         start: "2026-05-03",
         end: "2026-05-09",

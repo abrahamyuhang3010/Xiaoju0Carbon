@@ -187,6 +187,23 @@
       var hash = String(hashValue || "").replace(/^#/, "");
       return aliasMap[hash] || this.defaultPageKey;
     },
+    getPageKeyFromPathname: function getPageKeyFromPathname(pathnameValue) {
+      var pathname = String(pathnameValue || "")
+        .replace(/^\/+/, "")
+        .replace(/\/+$/, "");
+      var segments = pathname ? pathname.split("/") : [];
+      var routeKey = segments.length ? segments[segments.length - 1] : "";
+      if (!routeKey || routeKey === "index.html") {
+        return this.defaultPageKey;
+      }
+      return aliasMap[routeKey] || aliasMap[pathname] || this.defaultPageKey;
+    },
+    getPageKeyFromLocation: function getPageKeyFromLocation(locationLike) {
+      if (locationLike && locationLike.hash) {
+        return this.getPageKeyFromHash(locationLike.hash);
+      }
+      return this.getPageKeyFromPathname(locationLike && locationLike.pathname);
+    },
     getHashFromPageKey: function getHashFromPageKey(pageKey) {
       return this.getPage(pageKey).hash;
     },

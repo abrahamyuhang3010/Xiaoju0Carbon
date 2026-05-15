@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirecting...</title>
+    <script>
+      (function redirectToHashRoute() {
+        var segments = location.pathname.split("/").filter(Boolean);
+        var route = segments.pop() || "";
+        var basePath = "/" + segments.join("/");
+        if (basePath === "/") {
+          basePath = "";
+        }
+        var target = location.origin + basePath + "/" + (route ? "#" + route : "");
+        if (location.search) {
+          target += location.search;
+        }
+        location.replace(target);
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

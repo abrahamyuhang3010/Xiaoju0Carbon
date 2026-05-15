@@ -218,11 +218,20 @@
     ].concat(extraCards || []);
   }
 
+  function getFirstFilePublishTime(fileList) {
+    var files = Array.isArray(fileList) ? fileList : [];
+    var firstFile = files.find(function findFile(file) {
+      return file && file.publishTime;
+    });
+    return firstFile ? firstFile.publishTime : "";
+  }
+
   function createPageData(options) {
     var pageData = {
       title: options.title,
       description: options.description,
       updateTime: options.updateTime,
+      publishTime: options.publishTime || options.dataPublishTime || getFirstFilePublishTime(options.fileList),
       dataSource: options.dataSource,
       filters: options.filters || {},
       summaryCards: options.summaryCards || [],
@@ -1673,364 +1682,439 @@
     tableMinWidth: 1360,
     emptyText: "当前日期暂无湖南节点边际电价 mock 数据。",
   });
-  var hunanUnifiedDeclarationVolumeValues = buildWaveValues(15, 96, {
-    base: 304,
-    dayAmplitude: 22,
-    peakAmplitude: 44,
-    dayShift: 6,
-    peakShift: 15,
-    valleyEndHour: 6,
-    valleyOffset: -18,
-    pattern: [-8, 6, 12, -4],
-    integer: true,
+  var hunanInfoMockSource = "取数工具";
+  var hunanInfoMockPublishTime = "2026-05-09 09:58:00";
+  var hunanInfoMockUpdateTime = buildUpdatedAt(dataUpdatedAt, -2);
+  var hunanInfoUnitStatusSourceDate = "2026-05-06";
+  var hunanInfoDisclosureTimeLabels = [
+    "00:15", "00:30", "00:45", "01:00", "01:15", "01:30", "01:45", "02:00", "02:15", "02:30", "02:45", "03:00",
+    "03:15", "03:30", "03:45", "04:00", "04:15", "04:30", "04:45", "05:00", "05:15", "05:30", "05:45", "06:00",
+    "06:15", "06:30", "06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", "08:45", "09:00",
+    "09:15", "09:30", "09:45", "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45", "12:00",
+    "12:15", "12:30", "12:45", "13:00", "13:15", "13:30", "13:45", "14:00", "14:15", "14:30", "14:45", "15:00",
+    "15:15", "15:30", "15:45", "16:00", "16:15", "16:30", "16:45", "17:00", "17:15", "17:30", "17:45", "18:00",
+    "18:15", "18:30", "18:45", "19:00", "19:15", "19:30", "19:45", "20:00", "20:15", "20:30", "20:45", "21:00",
+    "21:15", "21:30", "21:45", "22:00", "22:15", "22:30", "22:45", "23:00", "23:15", "23:30", "23:45", "24:00"
+  ];
+  var hunanInfoUnitStatusRawRows = [
+    [1,"长安石门电厂#3机",660,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [2,"石门电厂#1机",300,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [3,"湘潭电厂#1机",600,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"],
+    [4,"常德电厂#1机",660,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [5,"永州电厂#2机组",1000,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"],
+    [6,"涟源电厂#2机",300,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [7,"华岳电厂#1机",600,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [8,"华岳电厂#3机",600,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"],
+    [9,"株洲第二电厂#2机",310,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"],
+    [10,"攸县电厂#2机",660,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [11,"长沙电厂#1机",660,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"],
+    [12,"益阳电厂#4机",650,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [13,"宝庆电厂#1机",660,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [14,"华容电厂#1机组",1000,"111111111100000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [15,"益阳电厂#2机",650,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [16,"长沙电厂#2机",660,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [17,"湘潭电厂#3机",600,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [18,"华岳电厂#6机",600,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [19,"石门电厂#2机",300,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [20,"耒阳电厂#4机",300,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"],
+    [21,"金竹山电厂#1机",600,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [22,"黔东电厂#1机",600,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [23,"常德电厂#2机",660,"000000000000000000000000000000000000000000000000000000000000000000111111111111111111111111111111"],
+    [24,"益阳电厂#5机",650,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"],
+    [25,"湘潭电厂#2机",600,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"],
+    [26,"益阳电厂#3机",650,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [27,"华岳电厂#4机",600,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [28,"长安石门电厂#4机",660,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [29,"益阳电厂#1机",650,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [30,"金竹山电厂#2机",600,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [31,"益阳电厂#6机",650,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"],
+    [32,"黔东电厂#2机",600,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [33,"宝庆电厂#2机",660,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"],
+    [34,"金竹山电厂#3机",600,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"],
+    [35,"华容电厂#2机组",1000,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [36,"耒阳电厂#3机",300,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"],
+    [37,"华岳电厂#5机",600,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"],
+    [38,"攸县电厂#1机",660,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"],
+    [39,"株洲第二电厂#1机",310,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [40,"湘潭电厂#4机",600,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [41,"永州电厂#1机组",1000,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [42,"平江电厂#2机组",1000,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"],
+    [43,"平江电厂#1机组",1000,"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"],
+    [44,"涟源电厂#1机",300,"111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"]
+  ];
+  function getHunanInfoOperatingStatus(statusText) {
+    if (statusText.indexOf("1") < 0) {
+      return "检修";
+    }
+    if (statusText.indexOf("0") < 0) {
+      return "运行";
+    }
+    return "受限运行";
+  }
+
+  function buildHunanInfoUnitStatusRows(rawRows) {
+    return rawRows.map(function mapRawUnit(row) {
+      var statusText = row[3];
+      var formattedRow = {
+        date: standardDefaultDate,
+        runDate: standardDefaultDate,
+        sourceDate: hunanInfoUnitStatusSourceDate,
+        unitCode: "HN-GEN-" + String(row[0]).padStart(3, "0"),
+        unitName: row[1],
+        installedCapacityMw: row[2],
+        operatingStatus: getHunanInfoOperatingStatus(statusText),
+        updatedAt: hunanInfoMockUpdateTime,
+      };
+
+      hunanInfoDisclosureTimeLabels.forEach(function eachTime(time, index) {
+        formattedRow[time] = Number(statusText.charAt(index));
+      });
+
+      return formattedRow;
+    });
+  }
+
+  var hunanUnifiedUnitStatusRows = buildHunanInfoUnitStatusRows(hunanInfoUnitStatusRawRows);
+  var hunanInfoMaintenanceCapacityValues = hunanInfoDisclosureTimeLabels.map(function mapMaintenanceCapacity(_, index) {
+    return hunanInfoUnitStatusRawRows.reduce(function sumCapacity(total, row) {
+      return total + (row[3].charAt(index) === "0" ? row[2] : 0);
+    }, 0);
   });
-  var hunanUnifiedDeclarationPriceValues = buildWaveValues(15, 96, {
-    base: 348.5,
-    dayAmplitude: 10,
-    peakAmplitude: 22,
-    dayShift: 6,
-    peakShift: 15,
-    pattern: [-1.4, 0.8, 1.6, -0.6],
+  var hunanInfoMaintenanceUnitCountValues = hunanInfoDisclosureTimeLabels.map(function mapMaintenanceCount(_, index) {
+    return hunanInfoUnitStatusRawRows.reduce(function countUnit(total, row) {
+      return total + (row[3].charAt(index) === "0" ? 1 : 0);
+    }, 0);
   });
-  var hunanUnifiedDeclarationRows = quarterHours.map(function mapDeclarationRow(time, index) {
+  var hunanInfoMaintenanceCapacitySeries = createSeries(
+    "maintenanceCapacityMw",
+    "机组检修容量",
+    hunanInfoDisclosureTimeLabels,
+    hunanInfoMaintenanceCapacityValues,
+    "MW",
+  );
+  var hunanInfoMaintenanceScheduleRawRows = [
+    [1,"湖南.湘潭B5厂","湖南.湘潭B5厂/20kV.#4机","20kV","2026-04-17 10:49","2026-06-15 18:00"],
+    [2,"牛排山风电场","牛排山风电场#23机组","0.6kV","2026-05-07 09:00","2026-05-14 22:00"],
+    [3,"华中.华容电厂","华中.华容电厂/27kV.#2机","27kV","2026-04-16 00:02","2026-05-25 23:59"],
+    [4,"益阳B5火电厂","益阳电厂#4机","20kV","2026-04-18 08:00","2026-05-12 23:59"],
+    [5,"黔东A5火电厂","黔东电厂#2机","20kV","2026-05-05 08:00","2026-05-29 18:00"],
+    [6,"华中.黑麋峰厂","华中.黑麋峰厂/18kV.#1机","18kV","2026-05-07 10:36","2026-05-13 07:59"],
+    [7,"浦宁燃气发电厂","浦宁电厂#1机","20kV","2026-04-12 08:00","2026-06-05 18:00"],
+    [8,"金竹山B5火电厂","金竹山电厂#1机","20kV","2026-04-17 08:00","2026-06-10 18:00"],
+    [9,"岩门口A2火电厂","岩门口电厂#1G","20kV","2026-05-03 08:00","2026-05-30 18:00"],
+    [10,"华岳B2火电厂","华岳电厂#5机","20kV","2026-05-09 08:00","2026-06-12 23:00"],
+    [11,"长安石门B5火电厂","长安石门电厂#3机","20kV","2026-04-27 08:00","2026-05-08 18:00"],
+    [12,"湘潭B5火电厂","湘潭电厂#4机","20kV","2026-04-17 08:00","2026-06-15 18:00"],
+    [13,"牛排山风电场","牛排山风电场#27机组","0.6kV","2026-05-07 09:00","2026-05-14 22:00"],
+    [14,"湖南.黔东A5厂","湖南.黔东A5厂/20kV.#2机","20kV","2026-05-05 11:55","2026-05-29 18:00"],
+    [15,"牛排山风电场","牛排山风电场#5机组","0.6kV","2026-05-07 09:00","2026-05-14 22:00"],
+    [16,"牛排山风电场","牛排山风电场#20机组","0.6kV","2026-05-07 09:00","2026-05-14 22:00"],
+    [17,"湖南.永州A2厂","湖南.永州A2厂/27kV.#1机","27kV","2026-04-27 09:05","2026-06-15 23:00"],
+    [18,"常德A2火电厂","常德电厂#1机","20kV","2026-05-01 08:00","2026-05-28 18:00"],
+    [19,"绥宁储能电站","绥宁储能电站#1储能单元","35kV","2026-05-06 08:00","2026-05-08 20:00"],
+    [20,"牛排山风电场","牛排山风电场#9机组","0.6kV","2026-05-07 09:00","2026-05-14 22:00"],
+    [21,"牛排山风电场","牛排山风电场#13机组","0.6kV","2026-05-07 09:00","2026-05-14 22:00"],
+    [22,"长沙A5火电厂","长沙电厂#2机","20kV","2026-04-27 08:00","2026-06-15 23:00"],
+    [23,"涟源A2火电厂","涟源电厂#2机","20kV","2026-04-01 00:00","2026-05-30 23:50"],
+    [24,"白竹洲水电厂","白竹洲电厂#3机组","6kV","2025-11-01 08:00","2026-04-30 18:00"],
+    [25,"湖南.金竹山B5厂","湖南.金竹山B5厂/20kV.#1机","20kV","2026-04-17 09:46","2026-06-10 18:00"],
+    [26,"牛排山风电场","牛排山风电场#4机组","0.6kV","2026-05-07 09:00","2026-05-14 22:00"],
+    [27,"华岳C5火电厂","华岳电厂#6机","20kV","2026-04-09 08:00","2026-05-08 23:00"],
+    [28,"牛排山风电场","牛排山风电场#3机组","0.6kV","2026-05-07 09:00","2026-05-14 22:00"],
+    [29,"华中.平江A5厂","华中.平江A5厂/27kV.#1机","27kV","2026-05-04 07:37","2026-05-31 11:00"],
+    [30,"挂治水电厂","挂治电厂#3机","10kV","2026-04-18 08:00","2026-05-12 18:00"],
+    [31,"永州A2电厂","永州电厂#1机组","27kV","2026-04-27 00:00","2026-06-15 23:00"],
+    [32,"湖南.华电长沙A5厂","湖南.华电长沙A5厂/20kV.#2机","20kV","2026-04-27 13:33","2026-06-15 23:00"],
+    [33,"湖南.益阳B5厂","湖南.益阳B5厂/20kV.#4机","20kV","2026-04-18 07:29","2026-05-12 23:59"],
+    [34,"国调.韶山换流站","国调.韶山换流站/20kV.1T调相机","20kV","2026-05-07 02:31","2026-05-10 18:00"],
+    [35,"资兴煤矸石火电厂","资兴煤矸石电厂#3机组","10kV","2026-05-02 08:00","2026-05-19 18:00"]
+  ];
+  function getHunanInfoMaintenancePlanStatus(startTime, endTime) {
+    var mockDayStart = standardDefaultDate + " 00:00";
+    var mockDayEnd = standardDefaultDate + " 23:59";
+    if (endTime < mockDayStart) {
+      return "已结束";
+    }
+    if (startTime > mockDayEnd) {
+      return "待开始";
+    }
+    return "执行中";
+  }
+
+  var hunanUnifiedMaintenanceScheduleRows = hunanInfoMaintenanceScheduleRawRows.map(function mapMaintenancePlan(row) {
     return {
       date: standardDefaultDate,
-      operationDate: standardDefaultDate,
-      declarationPeriod: time,
-      declarationType: index >= 64 ? "晚峰量价申报" : index >= 40 ? "平段量价申报" : "谷段量价申报",
-      volumeValue: hunanUnifiedDeclarationVolumeValues[index],
-      priceValue: hunanUnifiedDeclarationPriceValues[index],
-      declarationStatus: index % 12 === 0 ? "待校验" : index % 4 === 0 ? "已回传" : "已提交",
-      updatedAt: buildUpdatedAt(dataUpdatedAt, -8),
+      planDate: standardDefaultDate,
+      sequence: row[0],
+      plantName: row[1],
+      equipmentName: row[2],
+      voltageLevel: row[3],
+      startTime: row[4],
+      endTime: row[5],
+      planStatus: getHunanInfoMaintenancePlanStatus(row[4], row[5]),
+      updatedAt: hunanInfoMockUpdateTime,
     };
   });
-  var hunanUnifiedDeclarationPage = createPageData({
-    title: "日前申报",
-    description: "湖南交易中心信息披露页统一结构下的日前申报 mock 数据。",
-    updateTime: buildUpdatedAt(dataUpdatedAt, -8),
-    dataSource: "湖南电力交易中心日前申报 mock",
-    filters: {
-      date: standardDefaultDate,
-      granularity: "15min",
-      primaryTab: "日前申报",
-      secondaryTab: "",
-    },
-    viewType: "mixedTrendTable",
-    chartTitle: "日前申报量价趋势",
-    labelKey: "declarationPeriod",
-    leftUnit: "MWh",
-    rightUnit: "元/MWh",
-    datePickerMode: "single",
-    dateLabel: "运行日期",
-    tooltipMode: "declarationBid",
-    filterFields: [
-      {
-        type: "select",
-        label: "申报类型",
-        fieldKey: "declarationType",
-        options: ["全部", "谷段量价申报", "平段量价申报", "晚峰量价申报"],
-        defaultValue: "全部",
-      },
-    ],
-    barSeriesDefinitions: [
-      { id: "hn-info-declaration-volume", label: "申报电量", color: "#9DC4FF", valueKey: "volumeValue" },
-    ],
-    lineSeriesDefinitions: [
-      { id: "hn-info-declaration-price", label: "申报价格", color: "#FF7A45", valueKey: "priceValue" },
-    ],
-    tableColumns: [
-      { key: "operationDate", title: "运行日期" },
-      { key: "declarationPeriod", title: "申报时段" },
-      { key: "declarationType", title: "申报类型" },
-      { key: "volumeValue", title: "申报电量（MWh）" },
-      { key: "priceValue", title: "申报价格（元/MWh）" },
-      { key: "declarationStatus", title: "申报状态" },
-      { key: "updatedAt", title: "更新时间" },
-    ],
-    tableData: hunanUnifiedDeclarationRows,
-    tableMinWidth: 1240,
-    emptyText: "当前日期暂无湖南日前申报 mock 数据。",
-  });
-  var hunanUnifiedUnitStatusRows = [
-    {
-      date: standardDefaultDate,
-      runDate: standardDefaultDate,
-      unitName: "长沙燃机 1 号机",
-      unitCode: "HN-GEN-001",
-      operatingStatus: "运行",
-      values: buildWaveValues(15, 96, {
-        base: 564,
-        dayAmplitude: 24,
-        peakAmplitude: 38,
-        dayShift: 6,
-        peakShift: 15,
-        pattern: [-6, 4, 8, -2],
-        integer: true,
-      }),
-    },
-    {
-      date: standardDefaultDate,
-      runDate: standardDefaultDate,
-      unitName: "株洲煤机 2 号机",
-      unitCode: "HN-GEN-002",
-      operatingStatus: "运行",
-      values: buildWaveValues(15, 96, {
-        base: 896,
-        dayAmplitude: 22,
-        peakAmplitude: 34,
-        dayShift: 6,
-        peakShift: 14,
-        pattern: [-8, 6, 10, -4],
-        integer: true,
-      }),
-    },
-    {
-      date: standardDefaultDate,
-      runDate: standardDefaultDate,
-      unitName: "湘潭水电 3 号机",
-      unitCode: "HN-GEN-003",
-      operatingStatus: "运行",
-      values: buildWaveValues(15, 96, {
-        base: 312,
-        dayAmplitude: 42,
-        peakAmplitude: 56,
-        dayShift: 8,
-        peakShift: 11,
-        pattern: [-10, 6, 12, -4],
-        integer: true,
-      }),
-    },
-    {
-      date: standardDefaultDate,
-      runDate: standardDefaultDate,
-      unitName: "衡阳风场集群",
-      unitCode: "HN-GEN-004",
-      operatingStatus: "受限运行",
-      values: quarterHours.map(function mapWindValue(_, index) {
-        var baseValue = buildWaveValues(15, 96, {
-          base: 216,
-          dayAmplitude: 64,
-          peakAmplitude: 84,
-          dayShift: 7,
-          peakShift: 12,
-          pattern: [-16, 10, 18, -6],
-          integer: true,
-        })[index];
-        return index >= 24 && index <= 80 ? Math.max(baseValue - 48, 96) : baseValue;
-      }),
-    },
-    {
-      date: standardDefaultDate,
-      runDate: standardDefaultDate,
-      unitName: "岳阳光伏 5 号机",
-      unitCode: "HN-GEN-005",
-      operatingStatus: "运行",
-      values: quarterHours.map(function mapSolarValue(_, index) {
-        var hour = index / 4;
-        if (hour < 6 || hour > 18.5) {
-          return 0;
-        }
-        return Math.round(Math.max(0, Math.sin(((hour - 6) / 12.5) * Math.PI) * 226) + [0, 8, -4, 12][index % 4]);
-      }),
-    },
-    {
-      date: standardDefaultDate,
-      runDate: standardDefaultDate,
-      unitName: "郴州抽蓄 1 号机",
-      unitCode: "HN-GEN-006",
-      operatingStatus: "检修",
-      values: quarterHours.map(function mapOutageValue() {
-        return 0;
-      }),
-    },
-    {
-      date: standardDefaultDate,
-      runDate: standardDefaultDate,
-      unitName: "娄底燃机 2 号机",
-      unitCode: "HN-GEN-008",
-      operatingStatus: "备用",
-      values: quarterHours.map(function mapStandbyValue(_, index) {
-        if (index < 48) {
-          return 0;
-        }
-        return 168 + [0, 6, -4, 10][index % 4];
-      }),
-    },
-  ].map(function mapUnitStatusRow(row) {
-    var formattedRow = {
-      date: row.date,
-      runDate: row.runDate,
-      unitName: row.unitName,
-      unitCode: row.unitCode,
-      operatingStatus: row.operatingStatus,
-      updatedAt: buildUpdatedAt(dataUpdatedAt, -6),
-    };
-    quarterHours.forEach(function eachTime(time, index) {
-      formattedRow[time] = row.values[index];
-    });
-    return formattedRow;
-  });
-  var hunanUnifiedMaintenanceScheduleRows = [
-    {
-      date: standardDefaultDate,
-      planDate: standardDefaultDate,
-      equipmentType: "发电机组",
-      equipmentName: "郴州抽蓄 1 号机",
-      stationName: "郴州抽蓄电站",
-      startTime: "2026-05-09 00:00",
-      endTime: "2026-05-09 23:59",
-      planStatus: "执行中",
-      impactCapacity: 300,
-      updatedAt: buildUpdatedAt(dataUpdatedAt, -2),
-    },
-    {
-      date: standardDefaultDate,
-      planDate: standardDefaultDate,
-      equipmentType: "主变",
-      equipmentName: "长沙北 500kV 主变 A",
-      stationName: "长沙北变电站",
-      startTime: "2026-05-09 02:00",
-      endTime: "2026-05-09 08:00",
-      planStatus: "已批复",
-      impactCapacity: 120,
-      updatedAt: buildUpdatedAt(dataUpdatedAt, -2),
-    },
-    {
-      date: standardDefaultDate,
-      planDate: standardDefaultDate,
-      equipmentType: "输电线路",
-      equipmentName: "湘潭南 I 回线路",
-      stationName: "湘潭南站",
-      startTime: "2026-05-09 05:00",
-      endTime: "2026-05-09 12:00",
-      planStatus: "执行中",
-      impactCapacity: 86,
-      updatedAt: buildUpdatedAt(dataUpdatedAt, -2),
-    },
-    {
-      date: standardDefaultDate,
-      planDate: standardDefaultDate,
-      equipmentType: "母线",
-      equipmentName: "株洲东 220kV 母线 B",
-      stationName: "株洲东变电站",
-      startTime: "2026-05-09 09:00",
-      endTime: "2026-05-09 15:00",
-      planStatus: "待开始",
-      impactCapacity: 58,
-      updatedAt: buildUpdatedAt(dataUpdatedAt, -2),
-    },
-    {
-      date: standardDefaultDate,
-      planDate: standardDefaultDate,
-      equipmentType: "变压器",
-      equipmentName: "衡阳西 220kV 主变 2",
-      stationName: "衡阳西变电站",
-      startTime: "2026-05-09 13:00",
-      endTime: "2026-05-09 21:00",
-      planStatus: "待开始",
-      impactCapacity: 72,
-      updatedAt: buildUpdatedAt(dataUpdatedAt, -2),
-    },
-  ];
   var hunanUnifiedMaintenancePage = createPageData({
+    center: "hunan",
+    tabKey: "机组检修容量",
+    hasDataSource: true,
     title: "机组检修容量",
-    description: "湖南交易中心信息披露页统一结构下的机组状态与检修计划 mock 数据。",
-    updateTime: buildUpdatedAt(dataUpdatedAt, -2),
-    dataSource: "湖南电力交易中心机组检修与设备计划 mock",
+    description: "湖南交易中心信息披露页按样例文件转换的机组检修容量与检修计划 mock 数据。",
+    updateTime: hunanInfoMockUpdateTime,
+    dataUpdateTime: hunanInfoMockUpdateTime,
+    publishTime: hunanInfoMockPublishTime,
+    dataPublishTime: hunanInfoMockPublishTime,
+    dataSource: hunanInfoMockSource,
+    source: hunanInfoMockSource,
+    unit: "MW",
     filters: {
       date: standardDefaultDate,
       granularity: "15min",
       primaryTab: "负荷信息",
       secondaryTab: "机组检修容量",
     },
+    fileList: [
+      {
+        id: "hn-info-unit-status-source",
+        fileName: "8.1._【事后】机组状态 (1).xlsx",
+        fileType: "XLSX",
+        publishTime: hunanInfoMockPublishTime,
+        size: "248KB",
+        downloadUrl: "#",
+      },
+      {
+        id: "hn-info-maintenance-plan-source",
+        fileName: "发输变电设备检修计划-日 (1).xlsx",
+        fileType: "XLSX",
+        publishTime: hunanInfoMockPublishTime,
+        size: "55KB",
+        downloadUrl: "#",
+      },
+    ],
     viewType: "maintenanceComposite",
     maintenanceChart: {
       title: "机组检修容量趋势图",
-      labels: hours.slice(),
+      labels: hunanInfoDisclosureTimeLabels.slice(),
       unit: "MW",
       series: [
         {
           id: "hn-info-maintenance-capacity",
           label: "机组检修容量",
           color: "#1677FF",
-          values: hunanMaintenanceCapacityValues.slice(),
+          values: hunanInfoMaintenanceCapacityValues.slice(),
         },
       ],
     },
+    chartSeries: [hunanInfoMaintenanceCapacitySeries],
+    summaryCards: buildSummaryCardsFromStats(hunanInfoMaintenanceCapacitySeries.stats, "MW", [
+      { label: "检修机组数峰值", value: Math.max.apply(null, hunanInfoMaintenanceUnitCountValues), unit: "台" },
+      { label: "检修计划数", value: hunanUnifiedMaintenanceScheduleRows.length, unit: "条" },
+    ]),
     unitStatusTable: {
       title: "机组状态明细表",
-      columns: [{ key: "runDate", title: "日期" }, { key: "unitName", title: "机组名称" }, { key: "unitCode", title: "机组编码" }, { key: "operatingStatus", title: "运行状态" }]
-        .concat(quarterHours.map(function mapTime(time) {
+      columns: [
+        { key: "runDate", title: "日期" },
+        { key: "unitCode", title: "机组编码" },
+        { key: "unitName", title: "机组名称" },
+        { key: "installedCapacityMw", title: "装机容量（MW）" },
+        { key: "operatingStatus", title: "运行状态" },
+      ]
+        .concat(hunanInfoDisclosureTimeLabels.map(function mapTime(time) {
           return { key: time, title: time };
         }))
         .concat([{ key: "updatedAt", title: "更新时间" }]),
       data: hunanUnifiedUnitStatusRows,
-      minWidth: 8920,
+      minWidth: 9300,
     },
     extraTables: [
       {
-        title: "发输变电设备检修计划（日）",
+        title: "表1 2026年05月09日发电设备检修计划",
         columns: [
-          { key: "planDate", title: "检修日期" },
-          { key: "equipmentType", title: "设备类型" },
-          { key: "equipmentName", title: "设备名称" },
-          { key: "stationName", title: "所属厂站" },
-          { key: "startTime", title: "检修开始时间" },
-          { key: "endTime", title: "检修结束时间" },
+          { key: "sequence", title: "序号" },
+          { key: "plantName", title: "电厂名称" },
+          { key: "equipmentName", title: "发输变电设备" },
+          { key: "voltageLevel", title: "电压等级" },
+          { key: "startTime", title: "开始时间" },
+          { key: "endTime", title: "结束时间" },
           { key: "planStatus", title: "检修状态" },
-          { key: "impactCapacity", title: "影响容量（MW）" },
-          { key: "updatedAt", title: "更新时间" },
         ],
         data: hunanUnifiedMaintenanceScheduleRows,
-        minWidth: 1680,
+        minWidth: 1320,
       },
     ],
+    tableColumns: [
+      { key: "time", title: "时刻" },
+      { key: "maintenanceCapacityMw", title: "机组检修容量（MW）" },
+      { key: "maintenanceUnitCount", title: "检修机组数（台）" },
+    ],
+    tableData: hunanInfoDisclosureTimeLabels.map(function mapMaintenancePoint(time, index) {
+      return {
+        date: standardDefaultDate,
+        time: time,
+        maintenanceCapacityMw: hunanInfoMaintenanceCapacityValues[index],
+        maintenanceUnitCount: hunanInfoMaintenanceUnitCountValues[index],
+      };
+    }),
     emptyText: "当前日期暂无湖南机组检修容量 mock 数据。",
   });
-  var hunanUnifiedReserveRows = quarterHours.map(function mapReserveRow(time, index) {
+  var hunanInfoPositiveReserveValues = [
+    5350.1, 5355.0, 5811.3, 6209.0, 6405.8, 6871.3, 6958.9, 7243.2, 7479.4, 6674.2, 6352.8, 6329.7,
+    6305.8, 6353.3, 6443.4, 6609.6, 6387.4, 6194.0, 6414.5, 6432.8, 6464.5, 6247.0, 6090.7, 5801.2,
+    6092.3, 5971.7, 5970.4, 6187.2, 6500.0, 6736.7, 7207.1, 6764.5, 6799.3, 6686.5, 7073.1, 6967.6,
+    7246.9, 7431.8, 7427.6, 7426.9, 7009.2, 7331.5, 6744.1, 6904.7, 7201.5, 7393.3, 7370.6, 7494.1,
+    6653.6, 6704.2, 6331.1, 6805.3, 6188.5, 6306.9, 6086.0, 6530.2, 6823.1, 6668.0, 6479.1, 6251.6,
+    6222.3, 5887.1, 6173.6, 6427.8, 6597.2, 6465.0, 6038.1, 6150.7, 5700.2, 5805.1, 5972.1, 6263.6,
+    6038.3, 5750.4, 6136.0, 5912.4, 5837.9, 5837.7, 5665.4, 5356.2, 5695.5, 5592.3, 5053.4, 5041.6,
+    5109.4, 5267.2, 5508.1, 5733.8, 5515.8, 5896.8, 6076.9, 6796.6, 6886.1, 6816.9, 7207.7, 6986.9
+  ];
+  var hunanInfoNegativeReserveValues = [
+    1145.9, 699.0, 76.7, 55.0, 0.0, 451.7, 384.1, 83.8, 275.6, 309.8, 807.2, 707.3,
+    440.2, 554.7, 866.6, 358.4, 363.6, 547.0, 317.5, 556.2, 448.5, 540.0, 1023.3, 874.8,
+    2299.7, 1812.3, 1572.6, 1480.8, 1061.0, 241.3, 490.9, 440.5, 29.7, 21.5, 174.9, 103.4,
+    0.0, 0.0, 0.0, 172.1, 90.8, 0.0, 1151.9, 0.0, 115.5, 0.0, 251.4, 0.0,
+    797.4, 604.8, 620.9, 0.0, 2309.5, 1896.1, 1920.0, 1086.8, 342.9, 0.0, 773.9, 786.4,
+    746.7, 1123.9, 479.4, 237.2, 797.8, 1139.0, 609.9, 439.3, 1164.8, 926.9, 1102.9, 240.4,
+    450.7, 849.6, 446.0, 708.6, 787.1, 798.3, 961.6, 1261.8, 896.5, 979.7, 1408.6, 1301.4,
+    1310.6, 992.8, 579.9, 315.2, 391.2, 0.0, 0.0, 472.4, 241.9, 114.1, 0.0, 0.0
+  ];
+  var hunanUnifiedReserveRows = hunanInfoDisclosureTimeLabels.map(function mapReserveRow(time, index) {
     return {
       date: standardDefaultDate,
       time: time,
-      positiveReserve: hunanPositiveReserveValues[index],
-      negativeReserve: hunanNegativeReserveValues[index],
-      diffValue: hunanPositiveReserveValues[index] - hunanNegativeReserveValues[index],
-      source: "湖南系统备用统一口径",
+      positiveReserve: hunanInfoPositiveReserveValues[index],
+      negativeReserve: hunanInfoNegativeReserveValues[index],
+      source: hunanInfoMockSource,
       updatedAt: buildUpdatedAt(dataUpdatedAt, -3),
     };
   });
   var hunanUnifiedReservePage = createPageData({
+    center: "hunan",
+    tabKey: "备用信息",
+    hasDataSource: true,
     title: "备用信息",
-    description: "湖南交易中心信息披露页统一结构下的系统备用信息 mock 数据。",
+    description: "湖南交易中心信息披露页按系统备用信息样例文件转换的正负备用 mock 数据。",
     updateTime: buildUpdatedAt(dataUpdatedAt, -3),
-    dataSource: "湖南电力交易中心系统备用信息 mock",
+    dataUpdateTime: buildUpdatedAt(dataUpdatedAt, -3),
+    publishTime: hunanInfoMockPublishTime,
+    dataPublishTime: hunanInfoMockPublishTime,
+    dataSource: hunanInfoMockSource,
+    source: hunanInfoMockSource,
+    unit: "MW",
     filters: {
       date: standardDefaultDate,
       granularity: "15min",
       primaryTab: "负荷信息",
       secondaryTab: "备用信息",
     },
+    fileList: [
+      {
+        id: "hn-info-reserve-source",
+        fileName: "8.7._【事后】系统备用信息 (1).xlsx",
+        fileType: "XLSX",
+        publishTime: hunanInfoMockPublishTime,
+        size: "29KB",
+        downloadUrl: "#",
+      },
+    ],
     viewType: "lineTable",
     chartTitle: "系统备用信息趋势图",
     chartUnit: "MW",
     labelKey: "time",
+    tooltipMode: "reserveDual",
     seriesDefinitions: [
       { id: "hn-info-reserve-positive", label: "正备用", color: "#1677FF", valueKey: "positiveReserve" },
       { id: "hn-info-reserve-negative", label: "负备用", color: "#2FCB8F", valueKey: "negativeReserve" },
     ],
+    chartSeries: [
+      createSeries("positiveReserve", "正备用", hunanInfoDisclosureTimeLabels, hunanInfoPositiveReserveValues, "MW"),
+      createSeries("negativeReserve", "负备用", hunanInfoDisclosureTimeLabels, hunanInfoNegativeReserveValues, "MW"),
+    ],
     tableColumns: [
-      { key: "date", title: "日期" },
       { key: "time", title: "时刻" },
       { key: "positiveReserve", title: "正备用（MW）" },
       { key: "negativeReserve", title: "负备用（MW）" },
-      { key: "diffValue", title: "差值（MW）" },
-      { key: "source", title: "数据来源" },
-      { key: "updatedAt", title: "更新时间" },
     ],
     tableData: hunanUnifiedReserveRows,
-    tableMinWidth: 1360,
+    tableMinWidth: 900,
     emptyText: "当前日期暂无湖南备用信息 mock 数据。",
   });
+  var hunanInfoDayAheadDeclarationPowerValues = [
+    46.285, 60.213, 52.438, 39.831, 31.011, 25.846, 22.929, 20.118, 19.358, 17.406, 16.643, 15.703,
+    14.939, 14.141, 13.651, 13.591, 13.665, 14.22, 15.488, 17.918, 21.171, 24.931, 24.186, 18.156,
+    9.842, 7.568, 6.966, 6.488, 6.091, 6.445, 6.685, 7.053, 7.371, 8.057, 8.562, 8.651,
+    8.264, 8.591, 9.19, 9.132, 9.202, 9.711, 10.065, 10.776, 10.109, 10.206, 10.75, 14.371,
+    53.526, 64.453, 58.921, 53.266, 48.804, 46.326, 42.191, 34.27, 19.826, 14.896, 13.561, 14.206,
+    14.891, 16.044, 15.68, 12.823, 8.069, 6.292, 5.773, 5.572, 5.515, 5.0, 4.727, 4.24,
+    4.041, 3.822, 3.99, 4.252, 4.364, 4.663, 4.541, 4.177, 3.96, 3.943, 3.963, 3.889,
+    4.692, 4.176, 3.695, 3.533, 3.391, 3.272, 2.959, 2.92, 2.903, 2.676, 2.373, 3.04
+  ];
+  var hunanUnifiedDeclarationRows = hunanInfoDayAheadDeclarationPowerValues.map(function mapDeclarationRow(value, index) {
+    var startMinutes = index * 15;
+    var endMinutes = startMinutes + 15;
+    var startTime = pad(Math.floor(startMinutes / 60)) + ":" + pad(startMinutes % 60);
+    var endTime = endMinutes === 1440 ? "24:00" : pad(Math.floor(endMinutes / 60)) + ":" + pad(endMinutes % 60);
+
+    return {
+      date: standardDefaultDate,
+      sequence: index + 1,
+      period: startTime + "-" + endTime,
+      declarationPeriod: startTime + "-" + endTime,
+      powerMw: value,
+      source: hunanInfoMockSource,
+      updatedAt: buildUpdatedAt(dataUpdatedAt, -8),
+    };
+  });
+  var hunanUnifiedDeclarationPage = createPageData({
+    center: "hunan",
+    tabKey: "日前申报",
+    hasDataSource: true,
+    title: "日前申报",
+    description: "湖南交易中心信息披露页按电能量申报数据样例文件转换的日前申报电力 mock 数据。",
+    updateTime: buildUpdatedAt(dataUpdatedAt, -8),
+    dataUpdateTime: buildUpdatedAt(dataUpdatedAt, -8),
+    publishTime: hunanInfoMockPublishTime,
+    dataPublishTime: hunanInfoMockPublishTime,
+    dataSource: hunanInfoMockSource,
+    source: hunanInfoMockSource,
+    unit: "MW",
+    filters: {
+      date: standardDefaultDate,
+      granularity: "15min",
+      primaryTab: "日前申报",
+      secondaryTab: "",
+    },
+    fileList: [
+      {
+        id: "hn-info-dayahead-declaration-source",
+        fileName: "电能量申报数据 (1) (1).xlsx",
+        fileType: "XLSX",
+        publishTime: hunanInfoMockPublishTime,
+        size: "12KB",
+        downloadUrl: "#",
+      },
+    ],
+    viewType: "lineTable",
+    chartTitle: "日前申报电力趋势图",
+    chartUnit: "MW",
+    labelKey: "period",
+    datePickerMode: "single",
+    dateLabel: "运行日期",
+    seriesDefinitions: [
+      { id: "hn-info-dayahead-declaration-power", label: "日前申报电力", color: "#1677FF", valueKey: "powerMw" },
+    ],
+    chartSeries: [createSeries("dayAheadDeclarationPower", "日前申报电力", hunanUnifiedDeclarationRows.map(function mapRow(row) { return row.period; }), hunanInfoDayAheadDeclarationPowerValues, "MW")],
+    tableColumns: [
+      { key: "sequence", title: "序号" },
+      { key: "period", title: "时段" },
+      { key: "powerMw", title: "电力（MW）" },
+    ],
+    tableData: hunanUnifiedDeclarationRows,
+    tableMinWidth: 720,
+    emptyText: "当前日期暂无湖南日前申报 mock 数据。",
+  });
   var hunanMarketPageData = {
+    defaultDate: standardDefaultDate,
     datasets: {
       generationOutput: hunanGenerationOutputPage,
       dayAheadNodePrice: hunanDayAheadNodePricePage,
@@ -2128,6 +2212,7 @@
     },
     tabs: tabs,
     dataUpdatedAt: dataUpdatedAt,
+    dataPublishTime: "2026-05-09 09:58:00",
     dataSource: dataSource,
     emptyExample: {
       range: {
@@ -2149,6 +2234,7 @@
       title: "日清月结",
       centerName: "湖南电力交易中心",
       statusText: "数据更新时间：2026-05-09 10:46:12（湖南交易中心日清算PDF解析）",
+      publishTime: "2026-05-07 17:46:20",
       tabs: ["日清算", "月结算"],
       dailyRows: settlementDailyRows,
       monthRows: settlementMonthRows,
@@ -2157,6 +2243,7 @@
       title: "零售关系",
       centerName: "湖南电力交易中心",
       statusText: "数据更新时间：2026-05-09 10:58:40（湖南交易中心零售关系台账）",
+      publishTime: "2026-05-09 10:30:00",
       defaultRange: {
         start: "2026-01-01",
         end: "2026-12-31",
@@ -2168,6 +2255,7 @@
       title: "滚搓数据",
       centerName: "湖南电力交易中心",
       statusText: "数据更新时间：2026-05-09 10:39:26（湖南交易中心滚搓任务）",
+      publishTime: "2026-05-09 10:08:00",
       defaultRange: {
         start: "2026-05-03",
         end: "2026-05-09",

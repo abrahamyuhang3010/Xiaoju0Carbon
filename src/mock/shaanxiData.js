@@ -238,11 +238,20 @@
     ].concat(extraCards || []);
   }
 
+  function getFirstFilePublishTime(fileList) {
+    var files = Array.isArray(fileList) ? fileList : [];
+    var firstFile = files.find(function findFile(file) {
+      return file && file.publishTime;
+    });
+    return firstFile ? firstFile.publishTime : "";
+  }
+
   function createPageData(options) {
     var pageData = {
       title: options.title,
       description: options.description,
       updateTime: options.updateTime,
+      publishTime: options.publishTime || options.dataPublishTime || getFirstFilePublishTime(options.fileList),
       dataSource: options.dataSource,
       filters: options.filters || {},
       summaryCards: options.summaryCards || [],
@@ -1434,6 +1443,90 @@
     fileList: buildMockFileList("sx", "sale-company-load", standardDefaultDate, 3),
     emptyText: "当前日期暂无陕西售电公司分时电量 mock 数据。",
   });
+  var shaanxiEnterpriseNames = [
+    "碧辟小桔新能源(深圳)有限责任公司",
+    "西安碧辟小桔新能源有限责任公司",
+    "陕西九电新能源有限责任公司",
+    "陕西众成智慧能源有限公司",
+  ];
+  var shaanxiUnifiedEnterpriseRows = settlementDates.reduce(function accumulateRows(result, date, dayIndex) {
+    return result.concat(
+      shaanxiEnterpriseNames.map(function mapEnterprise(enterpriseName, enterpriseIndex) {
+        var row = buildShaanxiQuarterProfileRow(date, enterpriseName, enterpriseIndex, dayIndex);
+        row.enterpriseName = enterpriseName;
+        row.enterpriseCode = "SX-USER-" + String(enterpriseIndex + 1).padStart(3, "0");
+        row.accountNo = "61039" + String(enterpriseIndex + 1).padStart(7, "0");
+        return row;
+      }),
+    );
+  }, []);
+  var shaanxiUnifiedEnterprisePage = createPageData({
+    title: "用电企业分时电量",
+    description: "陕西交易中心信息披露页统一结构下的用电企业分时电量 mock 数据。",
+    updateTime: buildUpdatedAt(dataUpdatedAt, -8),
+    dataSource: "陕西电力交易中心用电企业分时电量 mock",
+    filters: {
+      date: standardDefaultDate,
+      granularity: "15min",
+      primaryTab: "用电企业分时电量",
+      secondaryTab: "",
+    },
+    viewType: "profileTable",
+    chartTitle: "用电企业分时电量趋势图",
+    chartUnit: "MWh",
+    datePickerMode: "range",
+    dateLabel: "用电日期",
+    filterFields: [
+      {
+        type: "select",
+        label: "用电企业名称",
+        fieldKey: "enterpriseName",
+        options: ["全部"].concat(shaanxiEnterpriseNames),
+        defaultValue: "全部",
+      },
+    ],
+    profileModes: {
+      "96": {
+        label: "96点视图",
+        labels: quarterHours.slice(),
+        unit: "MWh",
+        valueKey: "quarterValues",
+        latestLabel: "所选周期最新日 96 点电量",
+        averageLabel: "所选周期均值 96 点电量",
+        compareLatestLabel: "对比周期最新日 96 点电量",
+        compareAverageLabel: "对比周期均值 96 点电量",
+      },
+      "24": {
+        label: "24点聚合视图",
+        labels: hours.slice(),
+        unit: "MWh",
+        valueKey: "converted24Values",
+        latestLabel: "所选周期最新日 24 点聚合电量",
+        averageLabel: "所选周期均值 24 点聚合电量",
+        compareLatestLabel: "对比周期最新日 24 点聚合电量",
+        compareAverageLabel: "对比周期均值 24 点聚合电量",
+      },
+    },
+    defaultProfileMode: "96",
+    tableColumns: [
+      { key: "date", title: "日期" },
+      { key: "enterpriseCode", title: "电力用户编码" },
+      { key: "enterpriseName", title: "电力用户名称" },
+      { key: "accountNo", title: "户号" },
+    ]
+      .concat(quarterHours.map(function mapQuarterLabel(quarterLabel) {
+        return { key: quarterLabel, title: quarterLabel };
+      }))
+      .concat([
+        { key: "total96", title: "96点合计电量（MWh）" },
+        { key: "total24", title: "24点聚合电量（MWh）" },
+        { key: "updatedAt", title: "更新时间" },
+      ]),
+    tableData: shaanxiUnifiedEnterpriseRows,
+    tableMinWidth: 8280,
+    fileList: buildMockFileList("sx", "enterprise-load", standardDefaultDate, 3),
+    emptyText: "当前日期暂无陕西用电企业分时电量 mock 数据。",
+  });
   var shaanxiNodeOptionNames = ["全省", "关中枢纽节点", "陕北新能源节点", "陕南联络节点"];
   var shaanxiUnifiedNodePriceMap = {
     "全省": {
@@ -1829,6 +1922,7 @@
       reserveInfo: shaanxiReservePage,
       infoUnifiedPrice: shaanxiUnifiedPricePage,
       infoSaleCompanyProfile: shaanxiUnifiedSaleCompanyPage,
+      infoEnterpriseProfile: shaanxiUnifiedEnterprisePage,
       infoNodePrice: shaanxiUnifiedNodePricePage,
       infoDayAheadDeclaration: shaanxiUnifiedDeclarationPage,
       infoUnitStatus: shaanxiUnifiedUnitStatusPage,
@@ -1871,7 +1965,7 @@
           "出清电量": "infoEmptyVolume",
           "交易结果": "infoEmptyTradeResult",
           "售电公司分时电量": "infoSaleCompanyProfile",
-          "用电企业分时电量": "infoEmptyEnterprise",
+          "用电企业分时电量": "infoEnterpriseProfile",
           "节点电价": "infoNodePrice",
           "日前申报": "infoDayAheadDeclaration",
         },
@@ -1900,6 +1994,7 @@
     },
     tabs: tabs,
     dataUpdatedAt: dataUpdatedAt,
+    dataPublishTime: "2026-05-09 10:08:00",
     dataSource: dataSource,
     emptyExample: {
       range: {
@@ -1921,6 +2016,7 @@
       title: "日清月结",
       centerName: "陕西电力交易中心",
       statusText: "数据更新时间：2026-05-09 10:52:48（陕西交易中心结算任务）",
+      publishTime: "2026-05-09 10:52:48",
       tabs: ["日清算", "月结算"],
       dailyRows: settlementDailyRows,
       monthRows: settlementMonthRows,
@@ -1929,6 +2025,7 @@
       title: "零售关系",
       centerName: "陕西电力交易中心",
       statusText: "数据更新时间：2026-05-09 11:04:26（陕西交易中心零售关系台账）",
+      publishTime: "2026-05-09 10:42:00",
       defaultRange: {
         start: "2026-01-01",
         end: "2026-12-31",
@@ -1940,6 +2037,7 @@
       title: "滚搓数据",
       centerName: "陕西电力交易中心",
       statusText: "数据更新时间：2026-05-09 10:44:16（陕西交易中心滚搓任务）",
+      publishTime: "2026-05-09 10:12:00",
       defaultRange: {
         start: "2026-05-03",
         end: "2026-05-09",

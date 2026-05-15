@@ -4,12 +4,17 @@
     var escapeHtml = options.escapeHtml;
     var renderIcon = options.renderIcon;
     var actions = options.actions || [];
+    var updatedAt = options.updatedAt || "-";
+    var publishTime = options.publishTime || "-";
 
     return (
       '<section class="panel status-panel data-update-bar">' +
       '<div class="status-text">' +
       "数据更新时间：<strong>" +
-      escapeHtml(options.updatedAt) +
+      escapeHtml(updatedAt) +
+      "</strong>" +
+      " ｜ 数据发布时间：<strong>" +
+      escapeHtml(publishTime) +
       "</strong>" +
       "<span>（" +
       escapeHtml(options.source) +

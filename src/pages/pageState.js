@@ -75,7 +75,34 @@
     };
   }
 
+  function formatDateValue(date) {
+    function pad(value) {
+      return String(value).padStart(2, "0");
+    }
+
+    return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate());
+  }
+
+  function buildRelativeDateRange(startOffsetDays, endOffsetDays) {
+    var now = new Date();
+    var start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var end = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    start.setDate(start.getDate() + startOffsetDays);
+    end.setDate(end.getDate() + endOffsetDays);
+    return {
+      start: formatDateValue(start),
+      end: formatDateValue(end),
+    };
+  }
+
+  function getDefaultSaleCompanyRange() {
+    return buildRelativeDateRange(-8, -1);
+  }
+
   function getTradeCenterByPageKey(pageKey) {
+    if (pageKey === "gd-info-disclosure") {
+      return "广东电力交易中心";
+    }
     if (pageKey === "hn-data-disclosure") {
       return "湖南电力交易中心";
     }
@@ -91,11 +118,20 @@
       start: "2026-05-03",
       end: "2026-05-09",
     };
+    var defaultDate =
+      (pageMock && pageMock.marketPageData && pageMock.marketPageData.defaultDate) ||
+      (pageMock && pageMock.defaultDate) ||
+      defaultRange.end ||
+      defaultRange.start;
+    var activeRange = {
+      start: defaultDate,
+      end: defaultDate,
+    };
 
     return {
       activeTab: tabs[0] || "",
-      filterRange: cloneRange(defaultRange),
-      appliedRange: cloneRange(defaultRange),
+      filterRange: cloneRange(activeRange),
+      appliedRange: cloneRange(activeRange),
       lastUpdatedAt: (pageMock && (pageMock.dataUpdatedAt || pageMock.updatedAt)) || "",
       queryCount: 0,
     };
@@ -124,7 +160,14 @@
         (infoDisclosureConfig.secondaryTabs && infoDisclosureConfig.secondaryTabs["负荷信息"]) ||
         mock.secondaryTabs ||
         ["负荷信息"];
-      var pageKey = registry.getPageKeyFromHash(options.hash);
+      var pageKey = registry.getPageKeyFromLocation(
+        options.location || {
+          hash: options.hash,
+          pathname: options.pathname,
+        }
+      );
+      var defaultEnterpriseRange = buildRelativeDateRange(-8, -1);
+      var defaultSaleCompanyRange = getDefaultSaleCompanyRange();
       var initialState = {
         currentPageKey: pageKey,
         sidebar: createSidebarState(),
@@ -188,12 +231,16 @@
               end: "2026-05-08",
             },
             saleCompanyRange: {
-              start: "2026-05-02",
-              end: "2026-05-08",
+              start: defaultSaleCompanyRange.start,
+              end: defaultSaleCompanyRange.end,
+            },
+            saleCompanyAppliedRange: {
+              start: defaultSaleCompanyRange.start,
+              end: defaultSaleCompanyRange.end,
             },
             enterpriseRange: {
-              start: "2026-05-02",
-              end: "2026-05-08",
+              start: defaultEnterpriseRange.start,
+              end: defaultEnterpriseRange.end,
             },
             enterpriseUserCode: "",
             enterpriseUserName: "",
@@ -217,12 +264,12 @@
           selectedNode: "全省",
           filters: {
             marketRunRange: {
-              start: "2026-05-09",
-              end: "2026-05-09",
+              start: (tradeResultMock.defaultRunDate || "2026-05-07"),
+              end: (tradeResultMock.defaultRunDate || "2026-05-07"),
             },
             nodeRunRange: {
-              start: "2026-05-09",
-              end: "2026-05-09",
+              start: (tradeResultMock.defaultRunDate || "2026-05-07"),
+              end: (tradeResultMock.defaultRunDate || "2026-05-07"),
             },
             nodeKeyword: "",
           },
