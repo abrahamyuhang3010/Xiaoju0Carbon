@@ -3188,6 +3188,228 @@
     };
   }
 
+  function isThermalBiddingSpaceMetric(metricConfig) {
+    return Boolean(metricConfig && metricConfig.viewMode === "thermalBiddingSpace");
+  }
+
+  function isSingleMetricNumericValue(value) {
+    return typeof value === "number" && !Number.isNaN(value);
+  }
+
+  function formatSingleMetricPowerValue(value) {
+    return Math.abs(value % 1) > 0.001 ? formatDecimal(value) : formatInteger(value);
+  }
+
+  function createThermalBiddingSpaceNumberCell(value) {
+    if (!isSingleMetricNumericValue(value)) {
+      return {
+        text: "-",
+        className: "table-number-cell",
+        sortValue: Number.NEGATIVE_INFINITY,
+        copyable: false,
+      };
+    }
+
+    return {
+      text: formatSingleMetricPowerValue(value),
+      className: "table-number-cell",
+      sortValue: value,
+    };
+  }
+
+  function calculateThermalBiddingSpaceChangeRatio(currentValue, compareValue) {
+    if (!isSingleMetricNumericValue(currentValue) || !isSingleMetricNumericValue(compareValue) || currentValue === 0) {
+      return null;
+    }
+    return (compareValue - currentValue) / currentValue;
+  }
+
+  function formatThermalBiddingSpaceChangeText(currentValue, compareValue) {
+    var changeRatio = calculateThermalBiddingSpaceChangeRatio(currentValue, compareValue);
+    if (changeRatio === null) {
+      return "-";
+    }
+    return (changeRatio > 0 ? "+" : "") + (changeRatio * 100).toFixed(2) + "%";
+  }
+
+  function createThermalBiddingSpaceChangeCell(currentValue, compareValue) {
+    var changeRatio = calculateThermalBiddingSpaceChangeRatio(currentValue, compareValue);
+    if (changeRatio === null) {
+      return {
+        text: "-",
+        className: "table-number-cell",
+        sortValue: Number.NEGATIVE_INFINITY,
+        copyable: false,
+      };
+    }
+
+    return {
+      text: (changeRatio > 0 ? "+" : "") + (changeRatio * 100).toFixed(2) + "%",
+      className: ["table-number-cell", changeRatio > 0 ? "table-positive" : changeRatio < 0 ? "table-negative" : ""].filter(Boolean).join(" "),
+      sortValue: changeRatio,
+    };
+  }
+
+  function buildSingleMetricRowsByTime(rows) {
+    var rowsByTime = {};
+    (rows || []).forEach(function eachRow(row) {
+      if (!row || !row.time) {
+        return;
+      }
+      rowsByTime[row.time] = row;
+    });
+    return rowsByTime;
+  }
+
+  function formatThermalBiddingSpaceTooltipValue(value, unit) {
+    return isSingleMetricNumericValue(value) ? formatSingleMetricPowerValue(value) + " " + unit : "-";
+  }
+
+  function buildThermalBiddingSpaceTooltip(metricConfig, rows, compareRowsByTime, index) {
+    var row = rows[index] || {};
+    var unit = (metricConfig && metricConfig.unit) || "MW";
+    var compareRow = compareRowsByTime && row.time ? compareRowsByTime[row.time] : null;
+    var compareDate = (compareRow && compareRow.date) || (state.ui.compareRangeDraft && state.ui.compareRangeDraft.start) || "";
+    var lines = [
+      "日期时间：" + [row.date, row.time].filter(Boolean).join(" "),
+      "火电竞价空间：" + formatThermalBiddingSpaceTooltipValue(row.thermalBiddingSpace, unit),
+    ];
+
+    if (state.ui.hasCompare) {
+      lines.push("对比日：" + [compareDate, row.time].filter(Boolean).join(" "));
+      lines.push("对比日火电竞价空间：" + formatThermalBiddingSpaceTooltipValue(compareRow && compareRow.thermalBiddingSpace, unit));
+      lines.push("变化幅度：" + formatThermalBiddingSpaceChangeText(row.thermalBiddingSpace, compareRow && compareRow.thermalBiddingSpace));
+    }
+
+    return lines.join("\n");
+  }
+
+  function renderThermalBiddingSpaceMetricContent(pageData, sidebarHtml, selectedItem, metricConfig) {
+    var rows = filterInfoDisclosurePageRows(metricConfig.rows || [], pageData);
+    var hasCurrentValues = rows.some(function someRow(row) {
+      return isSingleMetricNumericValue(row.thermalBiddingSpace);
+    });
+
+    if (!rows.length || !hasCurrentValues) {
+      return (
+        '<section class="panel chart-panel"><div class="chart-layout">' +
+        sidebarHtml +
+        '<div class="chart-main chart-main-empty">' +
+        renderEmptyState({
+          message: metricConfig.emptyText || "当前日期缺少竞价空间计算所需数据。",
+          escapeHtml: escapeHtml,
+          renderIcon: renderIcon,
+        }) +
+        "</div></div></section>"
+      );
+    }
+
+    var labels = rows.map(function mapRow(row) {
+      return buildInfoDisclosureRowLabel(row, pageData);
+    });
+    var chartId = "info-single-metric-chart-" + getSelectedTradeCenterKey() + "-" + selectedItem.id;
+    var tableId = "info-single-metric-table-" + getSelectedTradeCenterKey() + "-" + selectedItem.id;
+    var compareRows = state.ui.hasCompare ? filterInfoDisclosurePageRows(metricConfig.rows || [], pageData, state.ui.compareRangeDraft) : [];
+    var compareRowsByTime = buildSingleMetricRowsByTime(compareRows);
+    var chartSeries = [
+      {
+        id: chartId + "-thermal-bidding-space",
+        label: "火电竞价空间",
+        color: "#F56C42",
+        values: rows.map(function mapRow(row) {
+          return row.thermalBiddingSpace;
+        }),
+      },
+    ];
+
+    if (state.ui.hasCompare) {
+      chartSeries.push({
+        id: chartId + "-thermal-bidding-space-compare",
+        label: "对比日火电竞价空间",
+        color: "#8C6A4A",
+        dasharray: "6 4",
+        values: rows.map(function mapRow(row) {
+          var compareRow = compareRowsByTime[row.time] || null;
+          return compareRow ? compareRow.thermalBiddingSpace : null;
+        }),
+      });
+    }
+
+    var tableColumns = (metricConfig.tableColumns || []).map(function mapColumn(column) {
+      return {
+        key: column.key,
+        label: column.title,
+      };
+    });
+    if (state.ui.hasCompare) {
+      tableColumns = tableColumns.concat([
+        {
+          key: "compareThermalBiddingSpace",
+          label: formatTradeDisclosureDate(state.ui.compareRangeDraft.start) + " 火电竞价空间（MW）",
+        },
+        { key: "thermalBiddingSpaceChange", label: "变化幅度" },
+      ]);
+    }
+
+    return (
+      '<section class="panel chart-panel"><div class="chart-layout">' +
+      sidebarHtml +
+      '<div class="chart-main">' +
+      renderChartWithMarks({
+        chartId: chartId,
+        title: "火电竞价空间趋势图",
+        labels: labels,
+        unit: metricConfig.unit || pageData.chartUnit || "MW",
+        series: chartSeries,
+        inactiveSeriesIds: chartSeries
+          .filter(function filterInactiveSeries(series) {
+            return !series.values.some(isSingleMetricNumericValue);
+          })
+          .map(function mapInactiveSeries(series) {
+            return series.id;
+          }),
+        hiddenSeries: getChartHiddenState(chartId),
+        tooltipFormatter: function tooltipFormatter(_, index) {
+          return buildThermalBiddingSpaceTooltip(metricConfig, rows, compareRowsByTime, index);
+        },
+        valueFormatter: formatSingleMetricPowerValue,
+        breakOnNull: true,
+        escapeHtml: escapeHtml,
+        renderIcon: renderIcon,
+        renderEmptyState: renderEmptyState,
+        xLabelEvery: getDisclosureLabelEvery(labels.length),
+      }) +
+      renderDataTablePro({
+        tableId: tableId,
+        columns: tableColumns,
+        rows: rows.map(function mapRow(row) {
+          var compareRow = compareRowsByTime[row.time] || null;
+          var result = {
+            time: row.time,
+            systemLoad: createThermalBiddingSpaceNumberCell(row.systemLoad),
+            renewableTotalOutput: createThermalBiddingSpaceNumberCell(row.renewableTotalOutput),
+            hydroTotalOutput: createThermalBiddingSpaceNumberCell(row.hydroTotalOutput),
+            tieLineTransmission: createThermalBiddingSpaceNumberCell(row.tieLineTransmission),
+            thermalBiddingSpace: createThermalBiddingSpaceNumberCell(row.thermalBiddingSpace),
+          };
+          if (state.ui.hasCompare) {
+            result.compareThermalBiddingSpace = createThermalBiddingSpaceNumberCell(compareRow && compareRow.thermalBiddingSpace);
+            result.thermalBiddingSpaceChange = createThermalBiddingSpaceChangeCell(row.thermalBiddingSpace, compareRow && compareRow.thermalBiddingSpace);
+          }
+          return result;
+        }),
+        minWidth: state.ui.hasCompare ? 1420 : Math.max((pageData && pageData.tableMinWidth) || 900, 1120),
+        sortState: getTableSortState(tableId),
+        enableColumnDrag: true,
+        columnOrder: getTableColumnOrder(tableId),
+        escapeHtml: escapeHtml,
+        renderIcon: renderIcon,
+        renderEmptyState: renderEmptyState,
+      }) +
+      "</div></div></section>"
+    );
+  }
+
   function buildSingleMetricLoadTooltip(metricConfig, rows, index) {
     var row = rows[index] || {};
     var forecastValue = row.forecastValue;
@@ -3233,6 +3455,10 @@
         renderSingleMetricLoadLoading(metricConfig.metricName || metricConfig.title || "") +
         "</div></div></section>"
       );
+    }
+
+    if (isThermalBiddingSpaceMetric(metricConfig)) {
+      return renderThermalBiddingSpaceMetricContent(pageData, sidebarHtml, selectedItem, metricConfig);
     }
 
     var rows = filterInfoDisclosurePageRows(metricConfig.rows || [], pageData);

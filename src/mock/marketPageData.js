@@ -685,6 +685,128 @@
     });
   }
 
+  function parseThermalBiddingSpaceNumber(value) {
+    if (value === null || value === undefined || value === "") {
+      return null;
+    }
+    if (typeof value === "number") {
+      return Number.isFinite(value) ? value : null;
+    }
+    var normalizedValue = String(value).replace(/,/g, "").trim();
+    if (!normalizedValue) {
+      return null;
+    }
+    var numericValue = Number(normalizedValue);
+    return Number.isFinite(numericValue) ? numericValue : null;
+  }
+
+  function calculateThermalBiddingSpace(systemLoad, renewableOutput, hydroOutput, tieLineTransmission) {
+    var parsedSystemLoad = parseThermalBiddingSpaceNumber(systemLoad);
+    var parsedRenewableOutput = parseThermalBiddingSpaceNumber(renewableOutput);
+    var parsedHydroOutput = parseThermalBiddingSpaceNumber(hydroOutput);
+    var parsedTieLineTransmission = parseThermalBiddingSpaceNumber(tieLineTransmission);
+
+    if (
+      parsedSystemLoad === null ||
+      parsedRenewableOutput === null ||
+      parsedHydroOutput === null ||
+      parsedTieLineTransmission === null
+    ) {
+      return null;
+    }
+
+    return roundNumber(parsedSystemLoad - parsedRenewableOutput - parsedHydroOutput - parsedTieLineTransmission);
+  }
+
+  function buildRowsByDateTime(rows) {
+    var indexedRows = {};
+    (rows || []).forEach(function eachRow(row) {
+      if (!row || !row.date || !row.time) {
+        return;
+      }
+      indexedRows[row.date + " " + row.time] = row;
+    });
+    return indexedRows;
+  }
+
+  function buildThermalBiddingSpaceRows(options) {
+    var settings = options || {};
+    var systemLoadRows = settings.systemLoadRows || [];
+    var renewableRows = settings.renewableRows || [];
+    var hydroRows = settings.hydroRows || [];
+    var tieLineRows = settings.tieLineRows || [];
+
+    if (!systemLoadRows.length || !renewableRows.length || !hydroRows.length || !tieLineRows.length) {
+      return {
+        hasRequiredData: false,
+        rows: [],
+      };
+    }
+
+    var renewableRowsByTime = buildRowsByDateTime(renewableRows);
+    var hydroRowsByTime = buildRowsByDateTime(hydroRows);
+    var tieLineRowsByTime = buildRowsByDateTime(tieLineRows);
+
+    return {
+      hasRequiredData: true,
+      rows: systemLoadRows.map(function mapSystemLoadRow(systemRow) {
+        var key = systemRow.date + " " + systemRow.time;
+        var renewableRow = renewableRowsByTime[key] || null;
+        var hydroRow = hydroRowsByTime[key] || null;
+        var tieLineRow = tieLineRowsByTime[key] || null;
+        var systemLoad = parseThermalBiddingSpaceNumber(systemRow.value);
+        var renewableOutput = renewableRow ? parseThermalBiddingSpaceNumber(renewableRow.value) : null;
+        var hydroOutput = hydroRow ? parseThermalBiddingSpaceNumber(hydroRow.value) : null;
+        var tieLineTransmission = tieLineRow ? parseThermalBiddingSpaceNumber(tieLineRow.value) : null;
+
+        return {
+          date: systemRow.date,
+          time: systemRow.time,
+          systemLoad: systemLoad,
+          renewableTotalOutput: renewableOutput,
+          hydroTotalOutput: hydroOutput,
+          tieLineTransmission: tieLineTransmission,
+          thermalBiddingSpace: calculateThermalBiddingSpace(systemLoad, renewableOutput, hydroOutput, tieLineTransmission),
+          source: uniqueStrings([
+            systemRow.source,
+            renewableRow && renewableRow.source,
+            hydroRow && hydroRow.source,
+            tieLineRow && tieLineRow.source,
+          ]).join(" / "),
+          updatedAt: getLatestTextValue([
+            systemRow.updatedAt,
+            renewableRow && renewableRow.updatedAt,
+            hydroRow && hydroRow.updatedAt,
+            tieLineRow && tieLineRow.updatedAt,
+          ]),
+        };
+      }),
+    };
+  }
+
+  function createThermalBiddingSpaceMetric(metricId, rowsConfig) {
+    var result = buildThermalBiddingSpaceRows(rowsConfig);
+    return {
+      id: metricId,
+      metricName: "火电竞价空间",
+      title: "竞价空间",
+      unit: "MW",
+      viewMode: "thermalBiddingSpace",
+      valueKey: "thermalBiddingSpace",
+      rows: result.rows,
+      hasRequiredData: result.hasRequiredData,
+      emptyText: "当前日期缺少竞价空间计算所需数据。",
+      tableColumns: [
+        { key: "time", title: "时刻" },
+        { key: "systemLoad", title: "系统负荷（MW）" },
+        { key: "renewableTotalOutput", title: "新能源总出力（MW）" },
+        { key: "hydroTotalOutput", title: "水电(含抽蓄)总出力（MW）" },
+        { key: "tieLineTransmission", title: "省间联络线输电（MW）" },
+        { key: "thermalBiddingSpace", title: "火电竞价空间（MW）" },
+      ],
+    };
+  }
+
   function mergeSingleMetricRows(forecastRows, actualRows) {
     var merged = {};
 
@@ -1210,6 +1332,12 @@
         buildQuarterRowsFromGuangdongMetric(bundle, "dispatch-load", "forecast"),
         buildQuarterRowsFromGuangdongMetric(bundle, "dispatch-load", "actual"),
       ),
+      "thermal-bidding-space": createThermalBiddingSpaceMetric("thermal-bidding-space", {
+        systemLoadRows: buildQuarterRowsFromGuangdongMetric(bundle, "dispatch-load", "actual"),
+        renewableRows: buildQuarterRowsFromGuangdongMetric(bundle, "spot-renewable", "actual"),
+        hydroRows: buildQuarterRowsFromGuangdongMetric(bundle, "hydro-total", "actual"),
+        tieLineRows: buildQuarterRowsFromGuangdongMetric(bundle, "west-east", "actual"),
+      }),
       "province-a": createSingleMetricLoadMetric(
         "province-a",
         "省内A类电源",
@@ -1318,6 +1446,10 @@
         {
           label: "系统负荷",
           items: [{ id: "dispatch-load", label: "统调负荷" }],
+        },
+        {
+          label: "竞价空间",
+          items: [{ id: "thermal-bidding-space", label: "火电竞价空间" }],
         },
         {
           label: "省内电源",
@@ -2117,6 +2249,10 @@
           items: [{ id: "hn-system-load", label: "系统负荷" }],
         },
         {
+          label: "竞价空间",
+          items: [{ id: "hn-thermal-bidding-space", label: "火电竞价空间" }],
+        },
+        {
           label: "发电出力",
           items: [
             { id: "hn-generation-output", label: "发电总出力" },
@@ -2144,6 +2280,12 @@
           buildQuarterRowsFromModule(bundle, "系统负荷预测（日）"),
           buildQuarterRowsFromModule(bundle, "实际负荷"),
         ),
+        "hn-thermal-bidding-space": createThermalBiddingSpaceMetric("hn-thermal-bidding-space", {
+          systemLoadRows: buildQuarterRowsFromModule(bundle, "实际负荷"),
+          renewableRows: buildQuarterRowsFromModule(bundle, "新能源总出力"),
+          hydroRows: buildQuarterRowsFromModule(bundle, "水电（含抽蓄）总出力"),
+          tieLineRows: buildQuarterRowsFromModule(bundle, "省间联络线输电情况"),
+        }),
         "hn-generation-output": createSingleMetricLoadMetric(
           "hn-generation-output",
           "发电总出力",
@@ -2494,6 +2636,10 @@
           items: [{ id: "sx-system-load", label: "系统负荷" }],
         },
         {
+          label: "竞价空间",
+          items: [{ id: "sx-thermal-bidding-space", label: "火电竞价空间" }],
+        },
+        {
           label: "发电出力",
           items: [
             { id: "sx-generation-output", label: "发电总出力" },
@@ -2521,6 +2667,12 @@
           buildQuarterRowsFromModule(bundle, "系统负荷预测（日）"),
           buildQuarterRowsFromModule(bundle, "实际负荷"),
         ),
+        "sx-thermal-bidding-space": createThermalBiddingSpaceMetric("sx-thermal-bidding-space", {
+          systemLoadRows: buildQuarterRowsFromModule(bundle, "实际负荷"),
+          renewableRows: buildQuarterRowsFromModule(bundle, "新能源总出力"),
+          hydroRows: buildQuarterRowsFromModule(bundle, "水电（含抽蓄）出力"),
+          tieLineRows: buildQuarterRowsFromModule(bundle, "省间联络线输电情况"),
+        }),
         "sx-generation-output": createSingleMetricLoadMetric(
           "sx-generation-output",
           "发电总出力",
