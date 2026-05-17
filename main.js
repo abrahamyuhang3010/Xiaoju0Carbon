@@ -7391,24 +7391,15 @@
     });
   }
 
-  function getSettlementSummaryCards(rows) {
-    var summary = rows.reduce(
-      function reduce(result, row) {
-        result.energy += row.energy;
-        result.totalFee += row.totalFee;
-        result.deviationFee += row.deviationFee;
-        result.imbalanceFee += row.imbalanceFee;
-        return result;
-      },
-      { energy: 0, totalFee: 0, deviationFee: 0, imbalanceFee: 0 },
-    );
+  function getSettlementDailyRowsForSummary() {
+    var filters = state.settlement.filters;
+    return (getSettlementMock().dailyRows || []).filter(function filterRow(row) {
+      return includesKeyword(row.enterpriseName, filters.dailyUserName) && includesKeyword(row.accountNo, filters.dailyAccountNo);
+    });
+  }
 
-    return [
-      { label: "日清算总电量", value: formatMoney(summary.energy), unit: "MWh" },
-      { label: "日清算总电费", value: formatMoney(summary.totalFee), unit: "元" },
-      { label: "偏差费用", value: formatMoney(summary.deviationFee), unit: "元" },
-      { label: "市场不平衡电费", value: formatMoney(summary.imbalanceFee), unit: "元" },
-    ];
+  function getSettlementSummaryCards() {
+    return buildDailySettlementMetricCards(getSettlementDailyRowsForSummary());
   }
 
   function getSettlementViewPageData(primaryTab, secondaryTab) {
@@ -7735,11 +7726,233 @@
     });
   }
 
+  function buildHunanDailySettlementSummaryCards() {
+    return buildDailySettlementMetricCards(getHunanDailySettlementRows());
+  }
+
   function formatFixedNumber(value, digits) {
     return Number(value || 0).toLocaleString("zh-CN", {
       minimumFractionDigits: digits,
       maximumFractionDigits: digits,
     });
+  }
+
+  function getFiniteNumber(value) {
+    if (value === null || value === undefined || value === "" || value === "--") {
+      return null;
+    }
+
+    var numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue : null;
+  }
+
+  function getFirstFiniteNumber(source, keys) {
+    var target = source || {};
+
+    for (var index = 0; index < keys.length; index += 1) {
+      var numericValue = getFiniteNumber(target[keys[index]]);
+
+      if (numericValue !== null) {
+        return numericValue;
+      }
+    }
+
+    return null;
+  }
+
+  function getFirstFiniteNumberFromRows(rows, keys) {
+    for (var index = 0; index < (rows || []).length; index += 1) {
+      var numericValue = getFirstFiniteNumber(rows[index], keys);
+
+      if (numericValue !== null) {
+        return numericValue;
+      }
+    }
+
+    return null;
+  }
+
+  function formatTruncatedSettlementMetricValue(value, digits) {
+    var numericValue = getFiniteNumber(value);
+
+    if (numericValue === null) {
+      return "--";
+    }
+
+    var sign = numericValue < 0 ? "-" : "";
+    var absoluteText = Math.abs(numericValue).toLocaleString("en-US", {
+      useGrouping: false,
+      maximumFractionDigits: 20,
+    });
+    var parts = absoluteText.split(".");
+    var integerText = Number(parts[0] || 0).toLocaleString("zh-CN");
+    var decimalText = (parts[1] || "").slice(0, digits).padEnd(digits, "0");
+
+    return sign + integerText + (digits > 0 ? "." + decimalText : "");
+  }
+
+  function getDailySettlementDate(row) {
+    return (row && (row.settlementDate || row.date || row.day || row.tradeDate)) || "";
+  }
+
+  function getDateMonthKey(dateValue) {
+    var text = String(dateValue || "");
+    return /^\d{4}-\d{2}/.test(text) ? text.slice(0, 7) : "";
+  }
+
+  function isDailySettlementTotalRow(row) {
+    return Boolean(
+      row &&
+        (row.period === "合计" ||
+          row.timePoint === "合计" ||
+          row.subjectCode === "合计" ||
+          row.remark === "合计" ||
+          row.subjectName === "售电公司月结算合计"),
+    );
+  }
+
+  function getDailySettlementMetricRows(rows) {
+    var detailRows = (rows || []).filter(function filterRow(row) {
+      return !isDailySettlementTotalRow(row);
+    });
+    var activeMonth = getDateMonthKey(state.settlement.filters.dailyRange && state.settlement.filters.dailyRange.start);
+
+    if (activeMonth) {
+      var activeMonthRows = detailRows.filter(function filterByActiveMonth(row) {
+        return getDateMonthKey(getDailySettlementDate(row)) === activeMonth;
+      });
+
+      if (activeMonthRows.length) {
+        return activeMonthRows;
+      }
+    }
+
+    var firstDataMonth = "";
+    detailRows.some(function findMonth(row) {
+      firstDataMonth = getDateMonthKey(getDailySettlementDate(row));
+      return Boolean(firstDataMonth);
+    });
+
+    if (!firstDataMonth) {
+      return detailRows;
+    }
+
+    return detailRows.filter(function filterByFirstMonth(row) {
+      return getDateMonthKey(getDailySettlementDate(row)) === firstDataMonth;
+    });
+  }
+
+  function sumDailyMetric(rows, mapper) {
+    var hasValue = false;
+    var total = (rows || []).reduce(function reduce(result, row) {
+      var numericValue = mapper(row);
+
+      if (numericValue === null) {
+        return result;
+      }
+
+      hasValue = true;
+      return result + numericValue;
+    }, 0);
+
+    return hasValue ? total : null;
+  }
+
+  function getDailyActualUsage(row) {
+    return getFirstFiniteNumber(row, ["actualUsage", "energy", "settlementPower", "usage", "power"]);
+  }
+
+  function getDailyMediumLongTermTradingPower(row) {
+    var directValue = getFirstFiniteNumber(row, [
+      "mediumLongTermTradingPower",
+      "mediumLongTermTradingVolume",
+      "mediumLongTermVolume",
+      "mediumLongTermContractVolume",
+      "contractPower",
+      "contractVolume",
+    ]);
+
+    if (directValue !== null) {
+      return directValue;
+    }
+
+    var intraProvinceValue = getFiniteNumber(row && row.intraProvinceNetContractVolume);
+    var interProvinceValue = getFiniteNumber(row && row.interProvinceNetContractVolume);
+
+    if (intraProvinceValue !== null || interProvinceValue !== null) {
+      return (intraProvinceValue || 0) + (interProvinceValue || 0);
+    }
+
+    return null;
+  }
+
+  function getDailyDataDateCount(rows) {
+    var dateMap = {};
+
+    (rows || []).forEach(function eachRow(row) {
+      var dateValue = getDailySettlementDate(row);
+
+      if (dateValue) {
+        dateMap[dateValue] = true;
+      }
+    });
+
+    return Object.keys(dateMap).length;
+  }
+
+  function getDailyTradeCostPrice(rows) {
+    return getFirstFiniteNumberFromRows(rows, [
+      "tradingCostPrice",
+      "transactionCostPrice",
+      "tradeCostPrice",
+      "tradingCostPriceYuanPerMwh",
+      "transactionCostPriceYuanPerMwh",
+    ]);
+  }
+
+  function buildDailySettlementMetricCards(rows) {
+    var metricRows = getDailySettlementMetricRows(rows);
+    var monthlyActualUsage = getFirstFiniteNumberFromRows(metricRows, [
+      "monthlyActualUsage",
+      "currentMonthActualUsage",
+      "actualMonthlyUsage",
+    ]);
+    if (monthlyActualUsage === null) {
+      monthlyActualUsage = sumDailyMetric(metricRows, getDailyActualUsage);
+    }
+
+    var dataDateCount = getDailyDataDateCount(metricRows);
+    var dailyAverageUsage = getFirstFiniteNumberFromRows(metricRows, ["dailyAverageUsage", "averageDailyUsage", "avgDailyUsage"]);
+    if (dailyAverageUsage === null && monthlyActualUsage !== null && dataDateCount > 0) {
+      dailyAverageUsage = monthlyActualUsage / dataDateCount;
+    }
+
+    var mediumLongTermTradingPower = getFirstFiniteNumberFromRows(metricRows, [
+      "monthlyMediumLongTermTradingPower",
+      "mediumLongTermMonthlyTradingPower",
+      "mediumLongTermTradingPower",
+    ]);
+    if (mediumLongTermTradingPower === null) {
+      mediumLongTermTradingPower = sumDailyMetric(metricRows, getDailyMediumLongTermTradingPower);
+    }
+
+    var mediumLongTermUsageRatio = getFirstFiniteNumberFromRows(metricRows, [
+      "mediumLongTermUsageRatio",
+      "mediumLongTermActualUsageRatio",
+      "mediumLongTermRatio",
+    ]);
+
+    if (mediumLongTermUsageRatio === null && monthlyActualUsage !== null && monthlyActualUsage !== 0 && mediumLongTermTradingPower !== null) {
+      mediumLongTermUsageRatio = (mediumLongTermTradingPower / monthlyActualUsage) * 100;
+    }
+
+    return [
+      { label: "当月实际用电量", value: formatTruncatedSettlementMetricValue(monthlyActualUsage, 3), unit: "MWh", compact: false },
+      { label: "日均用电量", value: formatTruncatedSettlementMetricValue(dailyAverageUsage, 3), unit: "MWh", compact: false },
+      { label: "中长期交易电量", value: formatTruncatedSettlementMetricValue(mediumLongTermTradingPower, 3), unit: "MWh", compact: false },
+      { label: "中长期占实际用电比例", value: formatTruncatedSettlementMetricValue(mediumLongTermUsageRatio, 3), unit: "%", compact: false },
+      { label: "交易成本价", value: formatTruncatedSettlementMetricValue(getDailyTradeCostPrice(metricRows), 3), unit: "元/MWh", compact: false },
+    ];
   }
 
   function createSettlementTextCell(text, extraClassName, copyable) {
@@ -7805,6 +8018,15 @@
     }
 
     return formatFixedNumber(Number(value), digits);
+  }
+
+  function buildMonthlySettlementMetricCards(summary) {
+    return [
+      { label: "当年实际用电量", value: formatSettlementMetricValue(summary.annualActualUsage, 3), unit: "MWh", compact: false },
+      { label: "中长期交易电量", value: formatSettlementMetricValue(summary.mediumLongTermTradingPower, 3), unit: "MWh", compact: false },
+      { label: "中长期占实际用电比例", value: formatSettlementMetricValue(summary.mediumLongTermUsageRatio, 2), unit: "%", compact: false },
+      { label: "度电收益", value: formatSettlementMetricValue(summary.unitRevenue, 2), unit: "厘", compact: false },
+    ];
   }
 
   function mapHunanDailySettlementDisplayRow(row) {
@@ -7969,17 +8191,23 @@
   function renderHunanDailySettlementContent() {
     var pageData = getSettlementViewPageData("日清算", "");
     var rows = getHunanDailySettlementRows();
+    var summaryCardsHtml = renderSummaryCards(buildHunanDailySettlementSummaryCards(), "summary-card-grid-5");
 
     if (!rows.length) {
-      return renderTradeCenterPageEmptyPanel(pageData.emptyText || "当前筛选条件下暂无湖南日清算明细数据。") + renderSettlementFileTableSection(
-        "settlement-hunan-daily-files-empty",
-        "原始 PDF 文件",
-        "获取时间",
-        pageData.fileList,
+      return (
+        summaryCardsHtml +
+        renderTradeCenterPageEmptyPanel(pageData.emptyText || "当前筛选条件下暂无湖南日清算明细数据。") +
+        renderSettlementFileTableSection(
+          "settlement-hunan-daily-files-empty",
+          "原始 PDF 文件",
+          "获取时间",
+          pageData.fileList,
+        )
       );
     }
 
     return (
+      summaryCardsHtml +
       renderHunanDailySettlementTypePanel() +
       renderSettlementTableSection(
         "日清算结果明细",
@@ -8008,20 +8236,7 @@
   }
 
   function buildHunanMonthlySettlementSummaryCards(summary) {
-    var settlementFee = Number(summary.settlementFee || 0);
-
-    return [
-      { label: "结算电量", value: formatFixedNumber(summary.settlementPower, 3), unit: "MWh", compact: false },
-      { label: "合同电量", value: formatFixedNumber(summary.contractPower, 3), unit: "MWh", compact: false },
-      { label: "偏差电量", value: formatFixedNumber(summary.deviationPower, 3), unit: "MWh", compact: false },
-      {
-        label: "结算电费",
-        value: formatFixedNumber(settlementFee, 2),
-        unit: "元",
-        compact: false,
-        valueClassName: settlementFee < 0 ? "summary-card-value-negative" : "",
-      },
-    ];
+    return buildMonthlySettlementMetricCards(summary);
   }
 
   function mapHunanMonthlySettlementDisplayRow(row) {
@@ -8204,6 +8419,10 @@
     });
   }
 
+  function buildShaanxiDailySettlementSummaryCards() {
+    return buildDailySettlementMetricCards(getShaanxiDailySettlementRows());
+  }
+
   function mapShaanxiDailySettlementDisplayRow(row) {
     var isTotalRow = row.period === "合计";
     var totalClass = isTotalRow ? "settlement-total-cell" : "";
@@ -8358,9 +8577,11 @@
     var pageData = getSettlementViewPageData("日清算", "");
     var detailRows = getShaanxiDailySettlementRows();
     var rowsWithTotal = detailRows.length ? detailRows.concat([buildShaanxiDailySettlementTotalRow(detailRows)]) : [];
+    var summaryCardsHtml = renderSummaryCards(buildShaanxiDailySettlementSummaryCards(), "summary-card-grid-5");
 
     if (!rowsWithTotal.length) {
       return (
+        summaryCardsHtml +
         renderShaanxiDailySettlementTypePanel() +
         renderTradeCenterPageEmptyPanel(pageData.emptyText || "当前筛选条件下暂无陕西日清算分账单数据。") +
         renderSettlementFileTableSection(
@@ -8373,6 +8594,7 @@
     }
 
     return (
+      summaryCardsHtml +
       renderShaanxiDailySettlementTypePanel() +
       renderSettlementTableSection(
         "日清算结果明细",
@@ -8401,12 +8623,7 @@
   }
 
   function buildShaanxiMonthlySettlementSummaryCards(summary) {
-    return [
-      { label: "当年实际用电量", value: formatSettlementMetricValue(summary.annualActualUsage, 3), unit: "MWh", compact: false },
-      { label: "中长期交易电量", value: formatSettlementMetricValue(summary.mediumLongTermTradingPower, 3), unit: "MWh", compact: false },
-      { label: "中长期占实际用电比例", value: formatSettlementMetricValue(summary.mediumLongTermUsageRatio, 2), unit: "%", compact: false },
-      { label: "度电收益", value: formatSettlementMetricValue(summary.unitRevenue, 2), unit: "厘", compact: false },
-    ];
+    return buildMonthlySettlementMetricCards(summary);
   }
 
   function mapShaanxiMonthlySettlementDisplayRow(row) {
@@ -10030,7 +10247,7 @@
       renderSettlementFilterBar() +
       renderDownloadOnlyBar(status, false) +
       (hasData
-        ? (activeTab === "日清算" ? renderSummaryCards(getSettlementSummaryCards(getSettlementDailyRows())) : "") + bodyHtml
+        ? (activeTab === "日清算" ? renderSummaryCards(getSettlementSummaryCards(), "summary-card-grid-5") : "") + bodyHtml
         : renderTradeCenterPageEmptyPanel()) +
       "</div>"
     );
