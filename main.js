@@ -2483,7 +2483,8 @@
   function renderPageTabs(tabs, activeTab) {
     return (tabs || [])
       .map(function mapTab(tab) {
-        return '<button class="primary-tab ' + (activeTab === tab ? "active" : "") + '" data-page-tab="' + escapeHtml(tab) + '">' + escapeHtml(tab) + "</button>";
+        var isActive = activeTab === tab;
+        return '<button type="button" class="primary-tab ' + (isActive ? "active" : "") + '" data-page-tab="' + escapeHtml(tab) + '"' + (isActive ? ' aria-current="page"' : "") + ">" + escapeHtml(tab) + "</button>";
       })
       .join("");
   }
@@ -2491,7 +2492,8 @@
   function renderSecondaryTabs(tabs, activeTab) {
     return (tabs || [])
       .map(function mapTab(tab) {
-        return '<button class="secondary-tab ' + (activeTab === tab ? "active" : "") + '" data-secondary-tab="' + escapeHtml(tab) + '">' + escapeHtml(tab) + "</button>";
+        var isActive = activeTab === tab;
+        return '<button type="button" class="secondary-tab ' + (isActive ? "active" : "") + '" data-secondary-tab="' + escapeHtml(tab) + '"' + (isActive ? ' aria-pressed="true"' : "") + ">" + escapeHtml(tab) + "</button>";
       })
       .join("");
   }
@@ -3004,9 +3006,12 @@
     return renderInfoUnsupportedEmptyState(INFO_DISCLOSURE_NO_DATA_SOURCE_MESSAGE);
   }
 
-  function renderInfoEmptyWithSidebar(sidebarHtml, message) {
+  function renderInfoEmptyWithSidebar(sidebarHtml, message, layoutClassName) {
+    var layoutClass = "chart-layout" + (layoutClassName ? " " + layoutClassName : "");
     return (
-      '<section class="panel chart-panel"><div class="chart-layout">' +
+      '<section class="panel chart-panel"><div class="' +
+      layoutClass +
+      '">' +
       sidebarHtml +
       '<div class="chart-main chart-main-empty">' +
       renderEmptyState({
@@ -3527,6 +3532,154 @@
     return cell;
   }
 
+  function getMarketNodeItemId(item) {
+    return String((item && (item.id || item.label)) || "");
+  }
+
+  function getMarketNodeItemLabel(item) {
+    return String((item && (item.label || item.id)) || "");
+  }
+
+  function renderMarketNodeName(label, metaText) {
+    var text = String(label || "");
+    var dividerIndex = text.indexOf("/");
+
+    if (dividerIndex > 0) {
+      return (
+        '<span class="market-node-label"><span class="market-node-name-main">' +
+        escapeHtml(text.slice(0, dividerIndex)) +
+        '</span><span class="market-node-name-meta">' +
+        escapeHtml(text.slice(dividerIndex + 1)) +
+        "</span></span>"
+      );
+    }
+
+    return (
+      '<span class="market-node-label"><span class="market-node-name-main">' +
+      escapeHtml(text) +
+      "</span>" +
+      (metaText ? '<span class="market-node-name-meta">' + escapeHtml(metaText) + "</span>" : "") +
+      "</span>"
+    );
+  }
+
+  function findMarketNodeLabel(selectedNode, groups) {
+    var selectedId = String(selectedNode || "");
+    var allItems = [];
+
+    (groups || []).forEach(function eachGroup(group) {
+      allItems = allItems.concat(group.items || []);
+    });
+
+    var matchedItem = allItems.find(function findItem(item) {
+      return getMarketNodeItemId(item) === selectedId;
+    });
+
+    return matchedItem ? getMarketNodeItemLabel(matchedItem) : selectedId;
+  }
+
+  function renderMarketNodeItem(item, selectedNode, options) {
+    var resolvedOptions = options || {};
+    var itemId = getMarketNodeItemId(item);
+    var itemLabel = getMarketNodeItemLabel(item);
+    var isActive = itemId === selectedNode;
+    var classNames = ["market-node-item"];
+
+    if (resolvedOptions.variant) {
+      classNames.push("market-node-item-" + resolvedOptions.variant);
+    }
+    if (isActive) {
+      classNames.push("active");
+    }
+
+    return (
+      '<button type="button" class="' +
+      classNames.join(" ") +
+      '" data-trade-node="' +
+      escapeHtml(itemId) +
+      '" aria-label="' +
+      escapeHtml(itemLabel) +
+      '" title="' +
+      escapeHtml(itemLabel) +
+      '"' +
+      (isActive ? ' aria-current="true" aria-pressed="true"' : ' aria-pressed="false"') +
+      '><span class="market-node-state" aria-hidden="true"></span>' +
+      renderMarketNodeName(itemLabel, resolvedOptions.metaText) +
+      "</button>"
+    );
+  }
+
+  function renderMarketNodeGroup(title, hint, bodyHtml, extraClassName) {
+    return (
+      '<div class="market-node-group ' +
+      (extraClassName || "") +
+      '" role="group" aria-label="' +
+      escapeHtml(title) +
+      '"><div class="market-node-group-title"><span>' +
+      escapeHtml(title) +
+      "</span>" +
+      (hint ? '<span class="market-node-group-title-meta">' + escapeHtml(hint) + "</span>" : "") +
+      '</div><div class="market-node-group-list">' +
+      bodyHtml +
+      "</div></div>"
+    );
+  }
+
+  function renderMarketNodeSidebar(config) {
+    var resolvedConfig = config || {};
+    var provinceItems = resolvedConfig.provinceItems || [];
+    var otherItems = resolvedConfig.otherItems || [];
+    var groups = [
+      { items: provinceItems },
+      { items: otherItems },
+    ];
+    var selectedNode = resolvedConfig.selectedNode || "";
+    var selectedLabel = findMarketNodeLabel(selectedNode, groups);
+    var keyword = String(resolvedConfig.keyword || "").trim();
+    var selectedInVisibleList = groups.some(function hasSelectedGroup(group) {
+      return (group.items || []).some(function hasSelectedItem(item) {
+        return getMarketNodeItemId(item) === selectedNode;
+      });
+    });
+    var currentScopeLabel = selectedNode === "全省" ? "当前范围" : "当前节点";
+    var hiddenSelectedHint = keyword && selectedNode && !selectedInVisibleList
+      ? '<div class="market-node-filter-note">当前节点未匹配搜索，右侧仍保持所选节点。</div>'
+      : "";
+    var provinceHtml = provinceItems
+      .map(function mapProvince(item) {
+        return renderMarketNodeItem(item, selectedNode, {
+          variant: "special",
+          metaText: "全省范围",
+        });
+      })
+      .join("");
+    var otherEmptyText = keyword ? "暂无匹配节点" : "暂无其他节点";
+    var otherHtml = otherItems.length
+      ? otherItems
+          .map(function mapNode(item) {
+            return renderMarketNodeItem(item, selectedNode);
+          })
+          .join("")
+      : '<div class="placeholder-note trade-node-empty">' + escapeHtml(otherEmptyText) + "</div>";
+
+    return (
+      '<aside class="market-node-sidebar" aria-label="节点列表"><div class="market-node-header"><div class="tree-header">节点列表</div>' +
+      '<div class="market-node-current" title="' +
+      escapeHtml(selectedLabel || "全省") +
+      '"><span>' +
+      currentScopeLabel +
+      "</span><strong>" +
+      escapeHtml(selectedLabel || "全省") +
+      "</strong></div>" +
+      hiddenSelectedHint +
+      "</div>" +
+      '<div class="market-node-list">' +
+      renderMarketNodeGroup("范围选择", "全部", provinceHtml, "market-node-group-scope") +
+      renderMarketNodeGroup("其他节点", otherItems.length + "项", otherHtml, "market-node-group-other") +
+      "</div></aside>"
+    );
+  }
+
   function buildInfoTradeNodeSidebar(pageData, selectedNode) {
     var keyword = String(state.tradeResult.filters.nodeKeyword || "").trim().toLowerCase();
     var groups = pageData.sidebarGroups || [];
@@ -3554,32 +3707,12 @@
       provinceItems.push({ id: "全省", label: "全省" });
     }
 
-    function renderItem(item) {
-      var isActive = item.id === selectedNode;
-      return (
-        '<button class="market-node-item ' +
-        (isActive ? "active" : "") +
-        '" data-trade-node="' +
-        escapeHtml(item.id) +
-        '">' +
-        escapeHtml(item.label || item.id) +
-        "</button>"
-      );
-    }
-
-    return (
-      '<aside class="market-node-sidebar"><div class="tree-header">节点列表</div>' +
-      '<div class="market-node-group"><div class="market-node-group-title">全部</div></div>' +
-      '<div class="market-node-group"><div class="market-node-group-title">全省</div>' +
-      provinceItems.map(renderItem).join("") +
-      "</div>" +
-      '<div class="market-node-group"><div class="market-node-group-title">其他</div>' +
-      (otherItems.length
-        ? otherItems.map(renderItem).join("")
-        : '<div class="placeholder-note trade-node-empty">暂无匹配节点</div>') +
-      "</div>" +
-      "</aside>"
-    );
+    return renderMarketNodeSidebar({
+      selectedNode: selectedNode,
+      provinceItems: provinceItems,
+      otherItems: otherItems,
+      keyword: keyword,
+    });
   }
 
   function renderSingleMetricLoadFilterBar() {
@@ -3899,7 +4032,7 @@
     var realTimeLabel = pageData.realTimeSeriesLabel || "实时节点电价";
 
     if (!nodeData || !rows.length) {
-      return renderInfoEmptyWithSidebar(sidebarHtml, pageData.emptyText || INFO_DISCLOSURE_EMPTY_MESSAGE);
+      return renderInfoEmptyWithSidebar(sidebarHtml, pageData.emptyText || INFO_DISCLOSURE_EMPTY_MESSAGE, "chart-layout-node");
     }
 
     function getNodeDayAheadPrice(row) {
@@ -6423,9 +6556,10 @@
     return dataset && dataset.points ? dataset.points.slice() : [];
   }
 
-  function getTradeResultNodeLabels() {
+  function getTradeResultNodeLabels(options) {
+    var resolvedOptions = options || {};
     var dataset = getTradeResultNodePriceDataset();
-    var keyword = String(state.tradeResult.filters.nodeKeyword || "").trim().toLowerCase();
+    var keyword = resolvedOptions.ignoreKeyword ? "" : String(state.tradeResult.filters.nodeKeyword || "").trim().toLowerCase();
     var nodes = (dataset && dataset.nodes) || [];
     var provinceLabels = [];
     var otherLabels = [];
@@ -6498,9 +6632,9 @@
   function getSelectedTradeNode() {
     var dataset = getTradeResultNodePriceDataset();
     var nodes = (dataset && dataset.nodes) || [];
-    var visibleNodes = getTradeResultNodeLabels();
+    var availableNodes = getTradeResultNodeLabels({ ignoreKeyword: true });
     if (
-      visibleNodes.indexOf(state.tradeResult.selectedNode) >= 0 &&
+      availableNodes.indexOf(state.tradeResult.selectedNode) >= 0 &&
       nodes.some(function hasSelectedNode(node) {
         return node.nodeName === state.tradeResult.selectedNode;
       })
@@ -6838,30 +6972,25 @@
 
   function renderTradeNodeSidebar() {
     var visibleNodes = getTradeResultNodeLabels();
+    var selectedNode = getSelectedTradeNode();
+    var keyword = String(state.tradeResult.filters.nodeKeyword || "").trim();
+    var provinceItems = visibleNodes.indexOf("全省") >= 0 ? [{ id: "全省", label: "全省" }] : [];
     var otherNodes = visibleNodes.filter(function filterNode(label) {
       return label !== "全省";
     });
-    return (
-      '<aside class="market-node-sidebar"><div class="tree-header">节点列表</div>' +
-      '<div class="market-node-group"><div class="market-node-group-title">全部</div></div>' +
-      '<div class="market-node-group"><div class="market-node-group-title">全省</div>' +
-      (visibleNodes.indexOf("全省") >= 0
-        ? '<button class="market-node-item ' +
-          (getSelectedTradeNode() === "全省" ? "active" : "") +
-          '" data-trade-node="全省">全省</button>'
-        : "") +
-      "</div>" +
-      '<div class="market-node-group"><div class="market-node-group-title">其他</div>' +
-      (otherNodes.length
-        ? otherNodes
-            .map(function mapNode(label) {
-              return '<button class="market-node-item ' + (getSelectedTradeNode() === label ? "active" : "") + '" data-trade-node="' + escapeHtml(label) + '">' + escapeHtml(label) + "</button>";
-            })
-            .join("")
-        : '<div class="placeholder-note trade-node-empty">暂无匹配节点</div>') +
-      "</div>" +
-      "</aside>"
-    );
+
+    if (!provinceItems.length) {
+      provinceItems.push({ id: "全省", label: "全省" });
+    }
+
+    return renderMarketNodeSidebar({
+      selectedNode: selectedNode,
+      provinceItems: provinceItems,
+      otherItems: otherNodes.map(function mapNode(label) {
+        return { id: label, label: label };
+      }),
+      keyword: keyword,
+    });
   }
 
   function renderTradeResultFilterBar() {
