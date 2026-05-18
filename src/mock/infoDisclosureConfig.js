@@ -55,6 +55,10 @@
         "日前申报": true,
       },
     },
+    supportCompare: {
+      "售电公司分时电量": false,
+      "日前申报": false,
+    },
     noDataSourceMessage: "当前交易中心暂无可展示的信息披露数据",
     emptyStateMessage: "当前交易中心暂未接入该披露类型数据，请切换其他披露类型或手动更新数据。",
     tradeCenters: {

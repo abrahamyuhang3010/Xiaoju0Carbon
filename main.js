@@ -397,6 +397,40 @@
     return access[tab] === true;
   }
 
+  function isInfoDisclosureCompareEnabledByConfig(tab) {
+    var supportCompare = infoDisclosureConfig.supportCompare || {};
+    var centerSupportCompare =
+      (infoDisclosureConfig.supportCompareByCenter && infoDisclosureConfig.supportCompareByCenter[getSelectedTradeCenterKey()]) || {};
+    var compareSupport = infoDisclosureConfig.compareSupport || {};
+    var disabledTabs = compareSupport.disabledTabs || {};
+    var centerDisabledTabs =
+      (compareSupport.disabledTabsByCenter && compareSupport.disabledTabsByCenter[getSelectedTradeCenterKey()]) || {};
+    var activeTab = tab || getActiveInfoTab();
+
+    if (Object.prototype.hasOwnProperty.call(centerSupportCompare, activeTab)) {
+      return centerSupportCompare[activeTab] !== false;
+    }
+    if (Object.prototype.hasOwnProperty.call(supportCompare, activeTab)) {
+      return supportCompare[activeTab] !== false;
+    }
+
+    return disabledTabs[activeTab] !== true && centerDisabledTabs[activeTab] !== true;
+  }
+
+  function isInfoDisclosureCompareActive(tab) {
+    return state.ui.hasCompare && isInfoDisclosureCompareEnabledByConfig(tab);
+  }
+
+  function isCompareSupportedInCurrentContext() {
+    if (isInfoDisclosurePage(state.currentPageKey)) {
+      return isInfoDisclosureCompareSupported();
+    }
+    if (state.currentPageKey === "gd-trade-result") {
+      return isTradeResultCompareSupported();
+    }
+    return true;
+  }
+
   function getVisibleInfoSecondaryTabs(primaryTab, tradeCenterKey) {
     var secondaryTabs =
       (infoDisclosureConfig.secondaryTabs && infoDisclosureConfig.secondaryTabs[primaryTab]) ||
@@ -1839,7 +1873,7 @@
   }
 
   function getSaleCompanyCompareDataset() {
-    if (!state.ui.hasCompare) {
+    if (!isInfoDisclosureCompareActive("售电公司分时电量")) {
       return null;
     }
     if (!isRangeValid(state.ui.compareRangeDraft) || getRangeDays(state.ui.compareRangeDraft) !== getRangeDays(getSaleCompanyAppliedRange())) {
@@ -1924,16 +1958,21 @@
   }
 
   function renderSaleCompanyUpdateBar(updateInfo) {
+    var compareSupported = isInfoDisclosureCompareEnabledByConfig("售电公司分时电量");
+    var actions = [];
+
+    if (compareSupported) {
+      actions.push({ label: "对比", variant: "ghost", icon: "compare", action: "open-compare" });
+    }
+    actions.push({ label: "下载", variant: "primary", icon: "download", action: "open-download" });
+
     return renderDataUpdateBar({
       updatedAt: updateInfo.time || "-",
       publishTime: updateInfo.publishTime || "-",
       source: updateInfo.source || "-",
-      hasCompare: state.ui.hasCompare,
+      hasCompare: compareSupported && state.ui.hasCompare,
       showTaskEntry: false,
-      actions: [
-        { label: "对比", variant: "ghost", icon: "compare", action: "open-compare" },
-        { label: "下载", variant: "primary", icon: "download", action: "open-download" },
-      ],
+      actions: actions,
       escapeHtml: escapeHtml,
       renderIcon: renderIcon,
     });
@@ -2970,8 +3009,9 @@
 
   function renderInfoUnifiedDataUpdateBar(status, compareSupported) {
     var actions = [{ label: "更多", variant: "ghost", icon: "ellipsis", action: "open-manual-update" }];
+    var canCompare = compareSupported && isInfoDisclosureCompareEnabledByConfig(getActiveInfoTab());
 
-    if (compareSupported) {
+    if (canCompare) {
       actions.push({ label: "对比", variant: "ghost", icon: "compare", action: "open-compare" });
     }
 
@@ -2982,7 +3022,7 @@
       updatedAt: status.time,
       publishTime: status.publishTime,
       source: status.source,
-      hasCompare: compareSupported && state.ui.hasCompare,
+      hasCompare: canCompare && state.ui.hasCompare,
       showTaskEntry: true,
       actions: actions,
       escapeHtml: escapeHtml,
@@ -5143,8 +5183,14 @@
   }
 
   function isInfoDisclosureCompareSupported() {
-    if (isUnifiedMockInfoTradeTab(getActiveInfoTab())) {
-      return getActiveInfoTab() === "全省统一出清价" || getActiveInfoTab() === "交易结果";
+    var activeTab = getActiveInfoTab();
+
+    if (!isInfoDisclosureCompareEnabledByConfig(activeTab)) {
+      return false;
+    }
+
+    if (isUnifiedMockInfoTradeTab(activeTab)) {
+      return activeTab === "全省统一出清价" || activeTab === "交易结果";
     }
 
     if (isCurrentMarketDisclosureView()) {
@@ -5152,7 +5198,6 @@
       return Boolean(pageData.viewType && pageData.viewType !== "empty");
     }
 
-    var activeTab = getActiveInfoTab();
     return activeTab === "负荷信息" || activeTab === "全省统一出清价" || activeTab === "出清电量" || activeTab === "交易结果";
   }
 
@@ -5699,6 +5744,9 @@
 
   function getMarketDisclosureCompareRows(module) {
     if (!state.ui.hasCompare) {
+      return [];
+    }
+    if (isInfoDisclosurePage(state.currentPageKey) && !isInfoDisclosureCompareEnabledByConfig(getActiveInfoTab())) {
       return [];
     }
     return filterRowsByDateRange(module.tableRows || [], state.ui.compareRangeDraft);
@@ -11241,6 +11289,9 @@
     if (!state.ui.compareModalVisible) {
       return "";
     }
+    if (!isCompareSupportedInCurrentContext()) {
+      return "";
+    }
 
     return renderCompareModal({
       datePickerHtml: renderStandardDatePicker({
@@ -11438,6 +11489,14 @@
   function confirmCompare() {
     var baseRange = getCurrentCompareBaseRange();
     var compareHasData = true;
+    if (!isCompareSupportedInCurrentContext()) {
+      state.ui.compareError = "";
+      state.ui.hasCompare = false;
+      state.ui.compareModalVisible = false;
+      closeDatePicker("compare-range", false);
+      setFlashMessage("当前页面不支持对比。", "info");
+      return;
+    }
     if (!isRangeValid(state.ui.compareRangeDraft) || !isRangeValid(baseRange)) {
       state.ui.compareError = "请选择有效的对比日期范围。";
       return;
@@ -11507,6 +11566,13 @@
 
   function handleUiAction(action, target) {
     if (action === "open-compare") {
+      if (!isCompareSupportedInCurrentContext()) {
+        state.ui.hasCompare = false;
+        state.ui.compareModalVisible = false;
+        state.ui.compareError = "";
+        setFlashMessage("当前页面不支持对比。", "info");
+        return true;
+      }
       syncCompareDraftToCurrentContext();
       state.ui.compareModalVisible = true;
       state.ui.compareError = "";
