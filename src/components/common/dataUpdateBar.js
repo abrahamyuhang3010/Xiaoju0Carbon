@@ -5,7 +5,6 @@
     var renderIcon = options.renderIcon;
     var actions = options.actions || [];
     var updatedAt = options.updatedAt || "-";
-    var publishTime = options.publishTime || "-";
 
     return (
       '<section class="panel status-panel data-update-bar">' +
@@ -13,12 +12,10 @@
       "数据更新时间：<strong>" +
       escapeHtml(updatedAt) +
       "</strong>" +
-      " ｜ 数据发布时间：<strong>" +
-      escapeHtml(publishTime) +
-      "</strong>" +
       "<span>（" +
       escapeHtml(options.source) +
       "）</span>" +
+      '<button class="status-link-button" data-ui-action="open-data-disclosure-time">数据披露时间</button>' +
       (options.hasCompare ? '<span class="compare-badge">已添加对比</span>' : "") +
       "</div>" +
       '<div class="status-actions">' +

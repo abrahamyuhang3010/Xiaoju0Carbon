@@ -200,6 +200,17 @@
           manualUpdateModalVisible: false,
           downloadModalVisible: false,
           downloadTaskDrawerVisible: false,
+          disclosureTimeDrawerVisible: false,
+          disclosureTimeFilters: {
+            tradeCenter: getTradeCenterByPageKey(pageKey) === "湖南电力交易中心"
+              ? "hunan"
+              : getTradeCenterByPageKey(pageKey) === "陕西电力交易中心"
+                ? "shaanxi"
+                : "guangdong",
+            dataKeyword: "",
+            categoryKeyword: "",
+          },
+          disclosureTimePage: 1,
           hasCompare: false,
           compareError: "",
           manualUpdateMode: "upload",

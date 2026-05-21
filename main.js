@@ -13,6 +13,7 @@
   var fetchMonitorMock = appMocks.fetchMonitor || {};
   var simulationMock = appMocks.simulation || {};
   var algorithmMock = appMocks.algorithm || {};
+  var dataDisclosureTimeConfig = global.BOSS_DATA_DISCLOSURE_TIME_CONFIG || {};
 
   var renderTradeCenterSelector = components.renderTradeCenterSelector || function renderEmpty() {
     return "";
@@ -69,13 +70,16 @@
     "全省统一出清价",
     "出清电量",
     "交易结果",
-    "售电公司分时电量",
-    "用电企业分时电量",
+    "分时电量",
     "节点电价",
     "日前申报",
   ];
   var INFO_DISCLOSURE_SECONDARY_TABS =
     (infoDisclosureConfig.secondaryTabs && infoDisclosureConfig.secondaryTabs["负荷信息"]) || ["负荷信息", "负荷详情", "机组检修容量", "备用信息"];
+  var INFO_DISCLOSURE_TIME_SHARING_TAB = "分时电量";
+  var INFO_DISCLOSURE_TIME_SHARING_TABS =
+    (infoDisclosureConfig.secondaryTabs && infoDisclosureConfig.secondaryTabs[INFO_DISCLOSURE_TIME_SHARING_TAB]) ||
+    ["售电公司分时电量", "用电企业分时电量"];
   var INFO_DISCLOSURE_EMPTY_MESSAGE =
     infoDisclosureConfig.emptyStateMessage || "当前交易中心暂未接入该披露类型数据，请切换其他披露类型或手动更新数据。";
   var INFO_DISCLOSURE_NO_DATA_SOURCE_MESSAGE =
@@ -106,6 +110,7 @@
     maxVisibleRecords: 10,
     maxRowsPerFile: 200000,
   };
+  var DISCLOSURE_TIME_PAGE_SIZE = 12;
 
   var flashTimer = null;
   var singleMetricLoadTimer = null;
@@ -378,7 +383,15 @@
   function hasInfoDisclosureDataSource(tab, tradeCenterKey) {
     var normalizedTradeCenterKey = tradeCenterKey || getSelectedTradeCenterKey();
     var secondaryTabs = INFO_DISCLOSURE_SECONDARY_TABS || [];
+    var timeSharingTabs = INFO_DISCLOSURE_TIME_SHARING_TABS || [];
     var isSecondaryTab = secondaryTabs.indexOf(tab) >= 0;
+
+    if (tab === INFO_DISCLOSURE_TIME_SHARING_TAB) {
+      return timeSharingTabs.some(function someTimeSharingTab(timeSharingTab) {
+        return hasInfoDisclosureDataSource(timeSharingTab, normalizedTradeCenterKey);
+      });
+    }
+
     var pageData = resolveMarketPageViewData({
       pageType: "infoDisclosure",
       tradeCenter: normalizedTradeCenterKey,
@@ -570,12 +583,17 @@
   }
 
   function getInfoDisclosurePageData() {
+    var activePrimaryTab = getActiveInfoPrimaryTab();
+    var activeSecondaryTab = getActiveInfoSecondaryTab();
+    var primaryTabForData = activePrimaryTab === INFO_DISCLOSURE_TIME_SHARING_TAB ? activeSecondaryTab : activePrimaryTab;
+    var secondaryTabForData = activePrimaryTab === "负荷信息" ? activeSecondaryTab : "";
+
     return (
       resolveMarketPageViewData({
         pageType: "infoDisclosure",
         tradeCenter: state.ui.selectedTradeCenter,
-        primaryTab: getActiveInfoPrimaryTab(),
-        secondaryTab: getActiveInfoPrimaryTab() === "负荷信息" ? getActiveInfoSecondaryTab() : "",
+        primaryTab: primaryTabForData,
+        secondaryTab: secondaryTabForData,
       }) || {}
     );
   }
@@ -1224,7 +1242,7 @@
 
   function getActiveInfoTab() {
     var primaryTab = getActiveInfoPrimaryTab();
-    if (primaryTab === "负荷信息") {
+    if (primaryTab === "负荷信息" || primaryTab === INFO_DISCLOSURE_TIME_SHARING_TAB) {
       return getActiveInfoSecondaryTab();
     }
     return primaryTab;
@@ -2429,6 +2447,23 @@
     });
   }
 
+  function renderInfoFilterPanel(fieldsHtml, actionsHtml) {
+    var resolvedFieldsHtml = fieldsHtml || "";
+    var resolvedActionsHtml = actionsHtml || "";
+
+    if (!resolvedFieldsHtml && !resolvedActionsHtml) {
+      return "";
+    }
+
+    return (
+      '<section class="panel info-filter-panel"><div class="info-filter-fields">' +
+      resolvedFieldsHtml +
+      '</div><div class="info-filter-actions">' +
+      resolvedActionsHtml +
+      "</div></section>"
+    );
+  }
+
   function renderTextFilter(label, key, placeholder) {
     return (
       '<label class="info-filter-field info-filter-input-field"><span class="filter-label">' +
@@ -2566,48 +2601,19 @@
     var fieldsHtml = "";
     var actionsHtml = "";
 
-    if (activeTab === "负荷信息") {
-      fieldsHtml =
-        '<div class="info-filter-field"><span class="filter-label">运行日期：</span>' + renderInfoDatePicker("info-runtime", "single") + "</div>";
-    } else if (activeTab === "负荷详情") {
-      fieldsHtml =
-        '<div class="info-filter-field"><span class="filter-label">运行日期：</span>' +
-        renderInfoDatePicker("info-detail-runtime", "single") +
-        "</div>";
-    } else if (activeTab === "售电公司分时电量") {
-      fieldsHtml =
-        '<div class="info-filter-field"><span class="filter-label">用电日期：</span>' +
-        renderInfoDatePicker("sale-company-range", "range") +
-        "</div>";
+    if (activeTab === "售电公司分时电量") {
       actionsHtml = renderUiActionButton("重置", "ghost", "reset-sale-company") + renderUiActionButton("查询", "primary", "query-sale-company");
     } else if (activeTab === "用电企业分时电量") {
       fieldsHtml =
-        '<div class="info-filter-field"><span class="filter-label">用电日期：</span>' +
-        renderInfoDatePicker("enterprise-range", "range") +
-        "</div>" +
         renderTextFilter("电力用户编码", "enterpriseUserCode", "请输入电力用户编码") +
         renderTextFilter("电力用户名称", "enterpriseUserName", "请输入电力用户名称") +
         renderTextFilter("用户户号", "enterpriseAccountNo", "请输入用户户号") +
         renderTextFilter("微电网名称", "enterpriseMicrogridName", "请输入微电网名称") +
         renderTextFilter("微电网ID", "enterpriseMicrogridId", "请输入微电网ID");
       actionsHtml = renderUiActionButton("重置", "ghost", "reset-enterprise") + renderUiActionButton("查询", "primary", "query-enterprise");
-    } else if (activeTab === "机组检修容量") {
-      fieldsHtml =
-        '<div class="info-filter-field"><span class="filter-label">运行日期：</span>' +
-        renderInfoDatePicker("maintenance-runtime", "single") +
-        "</div>";
-    } else {
-      fieldsHtml =
-        '<div class="info-filter-field"><span class="filter-label">运行日期：</span>' + renderInfoDatePicker("reserve-runtime", "single") + "</div>";
     }
 
-    return (
-      '<section class="panel info-filter-panel"><div class="info-filter-fields">' +
-      fieldsHtml +
-      '</div><div class="info-filter-actions">' +
-      actionsHtml +
-      "</div></section>"
-    );
+    return renderInfoFilterPanel(fieldsHtml, actionsHtml);
   }
 
   function renderInfoDataUpdateBar(status) {
@@ -3982,13 +3988,7 @@
   }
 
   function renderSingleMetricLoadFilterBar() {
-    var pickerId = getSelectedTradeCenterKey() === "guangdong" ? "info-runtime" : "market-disclosure-range";
-    return (
-      '<section class="panel info-filter-panel"><div class="info-filter-fields">' +
-      '<div class="info-filter-field"><span class="filter-label">运行日期：</span>' +
-      renderInfoDatePicker(pickerId, "single") +
-      '</div></div><div class="info-filter-actions"></div></section>'
-    );
+    return "";
   }
 
   function renderUnifiedInfoDisclosureFilterBar(pageData) {
@@ -3997,11 +3997,7 @@
     }
 
     if (pageData && pageData.viewType === "nodePrice") {
-      return (
-        '<section class="panel info-filter-panel"><div class="info-filter-fields">' +
-        '<div class="info-filter-field"><span class="filter-label">运行日期：</span>' +
-        renderInfoDatePicker("trade-node-runtime", "single") +
-        "</div>" +
+      return renderInfoFilterPanel(
         renderBoundTextFilter(
           "节点搜索",
           state.tradeResult.filters.nodeKeyword,
@@ -4009,12 +4005,11 @@
           "nodeKeyword",
           "tradeResult",
           "filter-input-wide"
-        ) +
-        '</div><div class="info-filter-actions"></div></section>'
+        ),
+        ""
       );
     }
 
-    var dateMode = getUnifiedInfoDisclosureDatePickerMode(pageData);
     var filterFieldsHtml = (pageData && pageData.filterFields ? pageData.filterFields : [])
       .map(function mapField(field) {
         if (!field) {
@@ -4041,18 +4036,10 @@
       })
       .join("");
 
-    return (
-      '<section class="panel info-filter-panel"><div class="info-filter-fields">' +
-      '<div class="info-filter-field"><span class="filter-label">' +
-      escapeHtml((pageData && pageData.dateLabel) || (dateMode === "single" ? "运行日期" : "日期范围")) +
-      "：</span>" +
-      renderInfoDatePicker("market-disclosure-range", dateMode) +
-      "</div>" +
-      filterFieldsHtml +
-      '</div><div class="info-filter-actions">' +
+    return renderInfoFilterPanel(
+      filterFieldsHtml,
       renderUiActionButton("重置", "ghost", "reset-market-disclosure") +
-      renderUiActionButton("查询", "primary", "query-market-disclosure") +
-      "</div></section>"
+        renderUiActionButton("查询", "primary", "query-market-disclosure")
     );
   }
 
@@ -4904,34 +4891,19 @@
     var fieldsHtml = "";
 
     if (activeTab === "节点电价") {
-      fieldsHtml =
-        '<div class="info-filter-field"><span class="filter-label">运行日期：</span>' +
-        renderInfoDatePicker("trade-node-runtime", "single") +
-        "</div>" +
-        renderBoundTextFilter("节点搜索", state.tradeResult.filters.nodeKeyword, "请输入节点名称", "nodeKeyword", "tradeResult", "filter-input-wide");
-    } else {
-      fieldsHtml =
-        '<div class="info-filter-field"><span class="filter-label">运行日期：</span>' +
-        renderInfoDatePicker("trade-result-runtime", "single") +
-        "</div>";
+      fieldsHtml = renderBoundTextFilter("节点搜索", state.tradeResult.filters.nodeKeyword, "请输入节点名称", "nodeKeyword", "tradeResult", "filter-input-wide");
     }
 
-    return '<section class="panel info-filter-panel"><div class="info-filter-fields">' + fieldsHtml + '</div><div class="info-filter-actions"></div></section>';
+    return renderInfoFilterPanel(fieldsHtml, "");
   }
 
   function renderDeclarationFilterBar() {
     var declarationMock = getDeclarationMock();
-    return (
-      '<section class="panel info-filter-panel"><div class="info-filter-fields">' +
-      '<div class="info-filter-field"><span class="filter-label">申报日期：</span>' +
-      renderInfoDatePicker("declaration-date", "single") +
-      "</div>" +
+    return renderInfoFilterPanel(
       renderBoundSelectFilter("交易单元", state.declaration.filters.unit, declarationMock.unitOptions || [], "unit", "declaration", "filter-select-native") +
-      renderBoundSelectFilter("申报状态", state.declaration.filters.status, declarationMock.statusOptions || [], "status", "declaration", "filter-select-native") +
-      '</div><div class="info-filter-actions">' +
+        renderBoundSelectFilter("申报状态", state.declaration.filters.status, declarationMock.statusOptions || [], "status", "declaration", "filter-select-native"),
       renderUiActionButton("重置", "ghost", "reset-declaration") +
-      renderUiActionButton("查询", "primary", "query-declaration") +
-      "</div></section>"
+        renderUiActionButton("查询", "primary", "query-declaration")
     );
   }
 
@@ -5244,6 +5216,69 @@
       return parseInfoStatus(getDeclarationMock().statusText, getModulePublishTime(getDeclarationMock()));
     }
     return parseInfoStatus(getInfoMock().statusText, getModulePublishTime(getInfoMock()));
+  }
+
+  function getInfoDisclosureTabDatePickerConfig(pageData) {
+    var activeTab = getActiveInfoTab();
+
+    if (activeTab === "售电公司分时电量") {
+      return { id: "sale-company-range", mode: "range" };
+    }
+
+    if (activeTab === "用电企业分时电量") {
+      return { id: "enterprise-range", mode: "range" };
+    }
+
+    if (activeTab === "节点电价") {
+      return { id: "trade-node-runtime", mode: "single" };
+    }
+
+    if (!isGuangdongInfoDisclosureCenter()) {
+      return {
+        id: "market-disclosure-range",
+        mode: getUnifiedInfoDisclosureDatePickerMode(pageData),
+      };
+    }
+
+    if (activeTab === "日前申报") {
+      return { id: "declaration-date", mode: "single" };
+    }
+
+    if (activeTab === "负荷信息") {
+      return { id: "info-runtime", mode: "single" };
+    }
+
+    if (activeTab === "负荷详情") {
+      return { id: "info-detail-runtime", mode: "single" };
+    }
+
+    if (activeTab === "机组检修容量") {
+      return { id: "maintenance-runtime", mode: "single" };
+    }
+
+    if (activeTab === "备用信息") {
+      return { id: "reserve-runtime", mode: "single" };
+    }
+
+    if (activeTab === "全省统一出清价" || activeTab === "出清电量" || activeTab === "交易结果") {
+      return { id: "trade-result-runtime", mode: "single" };
+    }
+
+    return null;
+  }
+
+  function renderInfoDisclosureTabDatePicker(pageData) {
+    var datePickerConfig = getInfoDisclosureTabDatePickerConfig(pageData);
+
+    if (!datePickerConfig) {
+      return "";
+    }
+
+    return (
+      '<div class="info-tab-date-query"><span class="filter-label">运行日期：</span>' +
+      renderInfoDatePicker(datePickerConfig.id, datePickerConfig.mode) +
+      "</div>"
+    );
   }
 
   function renderInfoDisclosureFilterBar() {
@@ -5649,11 +5684,12 @@
     var visibleSecondaryTabs = getVisibleInfoSecondaryTabs(activePrimaryTab);
     var activeTab = getActiveInfoTab();
     var hasVisibleTabs = visiblePrimaryTabs.length > 0;
+    var tabDatePickerHtml = hasVisibleTabs ? renderInfoDisclosureTabDatePicker(pageData) : "";
     var primaryTabsHtml = visiblePrimaryTabs.map(function mapTab(tab) {
       return '<button class="primary-tab ' + (activePrimaryTab === tab ? "active" : "") + '" data-primary-tab="' + escapeHtml(tab) + '">' + escapeHtml(tab) + "</button>";
     }).join("");
     var secondaryTabsHtml =
-      activePrimaryTab === "负荷信息" && visibleSecondaryTabs.length
+      (activePrimaryTab === "负荷信息" || activePrimaryTab === INFO_DISCLOSURE_TIME_SHARING_TAB) && visibleSecondaryTabs.length
         ? '<div class="secondary-tabs">' + renderSecondaryTabs(visibleSecondaryTabs, getActiveInfoSecondaryTab()) + "</div>"
         : "";
 
@@ -5673,9 +5709,11 @@
       }) +
       "</section>" +
       (hasVisibleTabs
-        ? '<section class="panel tabs-panel"><div class="panel-topline"><div class="primary-tabs">' +
+        ? '<section class="panel tabs-panel"><div class="panel-topline info-tabs-topline"><div class="primary-tabs">' +
           primaryTabsHtml +
-          "</div></div>" +
+          "</div>" +
+          tabDatePickerHtml +
+          "</div>" +
           secondaryTabsHtml +
           "</section>"
         : "") +
@@ -11372,8 +11410,215 @@
     });
   }
 
+  function ensureDisclosureTimeState() {
+    state.ui.disclosureTimeFilters = state.ui.disclosureTimeFilters || {
+      tradeCenter: getSelectedTradeCenterKey(),
+      dataKeyword: "",
+      categoryKeyword: "",
+    };
+    if (!state.ui.disclosureTimeFilters.tradeCenter) {
+      state.ui.disclosureTimeFilters.tradeCenter = getSelectedTradeCenterKey();
+    }
+    state.ui.disclosureTimePage = state.ui.disclosureTimePage || 1;
+    return state.ui.disclosureTimeFilters;
+  }
+
+  function openDisclosureTimeDrawer() {
+    var filters = ensureDisclosureTimeState();
+    filters.tradeCenter = getSelectedTradeCenterKey();
+    filters.dataKeyword = "";
+    filters.categoryKeyword = "";
+    state.ui.disclosureTimePage = 1;
+    state.ui.disclosureTimeDrawerVisible = true;
+  }
+
+  function updateDisclosureTimeFilter(target) {
+    var filters = ensureDisclosureTimeState();
+    var key = target.getAttribute("data-disclosure-time-filter");
+    filters[key] = target.value;
+    state.ui.disclosureTimePage = 1;
+  }
+
+  function getDisclosureTimeTradeCenters() {
+    return (dataDisclosureTimeConfig.tradeCenters && dataDisclosureTimeConfig.tradeCenters.length
+      ? dataDisclosureTimeConfig.tradeCenters
+      : [
+          { key: "guangdong", name: "广东交易中心" },
+          { key: "hunan", name: "湖南交易中心" },
+          { key: "shaanxi", name: "陕西交易中心" },
+        ]);
+  }
+
+  function matchesDisclosureKeyword(row, keyword, keys) {
+    var normalizedKeyword = String(keyword || "").trim().toLowerCase();
+    if (!normalizedKeyword) {
+      return true;
+    }
+    return keys.some(function someKey(key) {
+      return String(row[key] || "").toLowerCase().indexOf(normalizedKeyword) >= 0;
+    });
+  }
+
+  function getFilteredDisclosureTimeRows() {
+    var filters = ensureDisclosureTimeState();
+    var rows = Array.isArray(dataDisclosureTimeConfig.rows) ? dataDisclosureTimeConfig.rows : [];
+
+    return rows.filter(function filterRow(row) {
+      var centerMatched = !filters.tradeCenter || filters.tradeCenter === "all" || row.tradeCenterKey === filters.tradeCenter;
+      return (
+        centerMatched &&
+        matchesDisclosureKeyword(row, filters.dataKeyword, ["dataName", "dataSubItem"]) &&
+        matchesDisclosureKeyword(row, filters.categoryKeyword, ["dataCategory", "dataName"])
+      );
+    });
+  }
+
+  function renderDisclosureTimeFilters() {
+    var filters = ensureDisclosureTimeState();
+    var centerOptions =
+      '<option value="all"' +
+      (filters.tradeCenter === "all" ? " selected" : "") +
+      ">全部交易中心</option>" +
+      getDisclosureTimeTradeCenters()
+        .map(function mapCenter(center) {
+          return (
+            '<option value="' +
+            escapeHtml(center.key) +
+            '"' +
+            (filters.tradeCenter === center.key ? " selected" : "") +
+            ">" +
+            escapeHtml(center.name) +
+            "</option>"
+          );
+        })
+        .join("");
+
+    return (
+      '<div class="disclosure-time-filters">' +
+      '<label class="info-filter-field"><span class="filter-label">交易中心：</span><select class="filter-select-native" data-disclosure-time-filter="tradeCenter">' +
+      centerOptions +
+      "</select></label>" +
+      '<label class="info-filter-field info-filter-input-field"><span class="filter-label">数据名称 / 数据子项：</span><input class="filter-input filter-input-wide" type="text" value="' +
+      escapeHtml(filters.dataKeyword || "") +
+      '" placeholder="请输入数据名称或子项" data-disclosure-time-filter="dataKeyword" /></label>' +
+      '<label class="info-filter-field info-filter-input-field"><span class="filter-label">数据分类 / 数据分子：</span><input class="filter-input filter-input-wide" type="text" value="' +
+      escapeHtml(filters.categoryKeyword || "") +
+      '" placeholder="请输入分类或数据分子" data-disclosure-time-filter="categoryKeyword" /></label>' +
+      "</div>"
+    );
+  }
+
+  function renderDisclosureTimeTable(rows) {
+    var columns = dataDisclosureTimeConfig.columns || [
+      { key: "tradeCenter", label: "交易中心" },
+      { key: "dataCategory", label: "数据分类" },
+      { key: "dataName", label: "数据名称 / 数据分子" },
+      { key: "dataSubItem", label: "数据子项" },
+      { key: "priority", label: "优先级" },
+      { key: "timePoint", label: "时间点位" },
+      { key: "pageAddress", label: "页面地址" },
+      { key: "downloadFile", label: "下载文件" },
+      { key: "disclosureTime", label: "数据披露时间" },
+      { key: "valueRange", label: "取值范围" },
+      { key: "fetchToolTimeliness", label: "取数工具时效" },
+      { key: "remark", label: "备注" },
+    ];
+    var totalRows = rows.length;
+    var totalPages = Math.max(1, Math.ceil(totalRows / DISCLOSURE_TIME_PAGE_SIZE));
+    var currentPage = Math.min(Math.max(Number(state.ui.disclosureTimePage) || 1, 1), totalPages);
+    var startIndex = (currentPage - 1) * DISCLOSURE_TIME_PAGE_SIZE;
+    var pageRows = rows.slice(startIndex, startIndex + DISCLOSURE_TIME_PAGE_SIZE);
+    var headHtml = columns
+      .map(function mapColumn(column) {
+        return "<th>" + escapeHtml(column.label) + "</th>";
+      })
+      .join("");
+    var bodyHtml = pageRows
+      .map(function mapRow(row) {
+        return (
+          "<tr>" +
+          columns
+            .map(function mapColumn(column) {
+              return '<td><span class="table-cell-text">' + escapeHtml(row[column.key] || "--") + "</span></td>";
+            })
+            .join("") +
+          "</tr>"
+        );
+      })
+      .join("");
+
+    state.ui.disclosureTimePage = currentPage;
+
+    if (!totalRows) {
+      return (
+        '<div class="disclosure-time-empty">' +
+        renderEmptyState({
+          escapeHtml: escapeHtml,
+          renderIcon: renderIcon,
+          message: "当前筛选条件下暂无数据披露时间配置",
+        }) +
+        "</div>"
+      );
+    }
+
+    return (
+      '<div class="table-wrap disclosure-time-table-wrap"><table class="data-table disclosure-time-table"><thead><tr>' +
+      headHtml +
+      "</tr></thead><tbody>" +
+      bodyHtml +
+      "</tbody></table></div>" +
+      '<div class="disclosure-time-pagination"><span>共 ' +
+      escapeHtml(totalRows) +
+      " 条，第 " +
+      escapeHtml(currentPage) +
+      " / " +
+      escapeHtml(totalPages) +
+      ' 页</span><div class="disclosure-time-page-actions">' +
+      '<button class="ghost-btn" data-ui-action="prev-disclosure-time-page"' +
+      (currentPage <= 1 ? " disabled" : "") +
+      ">上一页</button>" +
+      '<button class="ghost-btn" data-ui-action="next-disclosure-time-page"' +
+      (currentPage >= totalPages ? " disabled" : "") +
+      ">下一页</button>" +
+      "</div></div>"
+    );
+  }
+
+  function renderDisclosureTimeDrawerOverlay() {
+    var rows;
+
+    if (!state.ui.disclosureTimeDrawerVisible) {
+      return "";
+    }
+
+    rows = getFilteredDisclosureTimeRows();
+
+    return (
+      '<div class="drawer-overlay disclosure-time-drawer-overlay">' +
+      '<aside class="drawer-panel disclosure-time-drawer-panel" role="dialog" aria-modal="true" aria-labelledby="disclosure-time-title">' +
+      '<div class="drawer-header"><div><strong id="disclosure-time-title">数据披露时间查询</strong><div class="disclosure-time-source">来源：' +
+      escapeHtml(dataDisclosureTimeConfig.sourceFile || "交易市场披露数据梳理-副本 (2).xlsx") +
+      '</div></div><button class="notification-close" data-ui-action="close-data-disclosure-time">' +
+      renderIcon("close", "notification-close-icon") +
+      "</button></div>" +
+      '<div class="drawer-body disclosure-time-drawer-body">' +
+      renderDisclosureTimeFilters() +
+      renderDisclosureTimeTable(rows) +
+      "</div>" +
+      "</aside>" +
+      "</div>"
+    );
+  }
+
   function renderOverlays() {
-    return renderCompareModalOverlay() + renderManualUpdateModalOverlay() + renderDownloadModalOverlay() + renderDownloadTaskDrawerOverlay() + renderFlashMessage();
+    return (
+      renderCompareModalOverlay() +
+      renderManualUpdateModalOverlay() +
+      renderDownloadModalOverlay() +
+      renderDownloadTaskDrawerOverlay() +
+      renderDisclosureTimeDrawerOverlay() +
+      renderFlashMessage()
+    );
   }
 
   function renderContent() {
@@ -11628,6 +11873,22 @@
       state.ui.downloadTaskDrawerVisible = false;
       return true;
     }
+    if (action === "open-data-disclosure-time") {
+      openDisclosureTimeDrawer();
+      return true;
+    }
+    if (action === "close-data-disclosure-time") {
+      state.ui.disclosureTimeDrawerVisible = false;
+      return true;
+    }
+    if (action === "prev-disclosure-time-page") {
+      state.ui.disclosureTimePage = Math.max(1, (state.ui.disclosureTimePage || 1) - 1);
+      return true;
+    }
+    if (action === "next-disclosure-time-page") {
+      state.ui.disclosureTimePage = (state.ui.disclosureTimePage || 1) + 1;
+      return true;
+    }
     if (action === "refresh-empty-state") {
       setFlashMessage("刷新请求已提交。", "info");
       return true;
@@ -11680,7 +11941,7 @@
     }
     if (action === "query-sale-company") {
       if (!isRangeValid(state.info.filters.saleCompanyRange)) {
-        setFlashMessage("请选择有效的用电日期范围。", "info");
+        setFlashMessage("请选择有效的运行日期范围。", "info");
         return true;
       }
       if (getRangeDays(state.info.filters.saleCompanyRange) > 366) {
@@ -11701,7 +11962,7 @@
     }
     if (action === "query-enterprise") {
       if (!isRangeValid(state.info.filters.enterpriseRange)) {
-        setFlashMessage("请选择有效的用电日期范围。", "info");
+        setFlashMessage("请选择有效的运行日期范围。", "info");
         return true;
       }
       if (getRangeDays(state.info.filters.enterpriseRange) > 366) {
@@ -12096,6 +12357,7 @@
       state.ui.compareModalVisible = false;
       state.ui.manualUpdateModalVisible = false;
       state.ui.downloadModalVisible = false;
+      state.ui.disclosureTimeDrawerVisible = false;
       var shouldRenderImmediately = pageState.navigate(state, pageButton.getAttribute("data-page-key"), registry, global.location);
       if (shouldRenderImmediately) {
         renderApp();
@@ -12200,7 +12462,9 @@
     if (primaryTabButton) {
       state.info.primaryTab = primaryTabButton.getAttribute("data-primary-tab");
       var visibleSecondaryTabs = getVisibleInfoSecondaryTabs(state.info.primaryTab);
-      if (state.info.primaryTab === "负荷信息" && visibleSecondaryTabs.indexOf(state.info.secondaryTab) < 0) {
+      if (state.info.primaryTab === INFO_DISCLOSURE_TIME_SHARING_TAB) {
+        state.info.secondaryTab = visibleSecondaryTabs[0] || "";
+      } else if (state.info.primaryTab === "负荷信息" && visibleSecondaryTabs.indexOf(state.info.secondaryTab) < 0) {
         state.info.secondaryTab = visibleSecondaryTabs[0] || "";
       }
       ensureVisibleInfoDisclosureTab();
@@ -12225,6 +12489,7 @@
       if (state.info.secondaryTab !== "负荷信息") {
         state.ui.hasCompare = false;
       }
+      state.ui.downloadDataType = getCurrentDownloadType();
       renderApp();
       return;
     }
@@ -12368,6 +12633,7 @@
 
     if (event.target.classList.contains("drawer-overlay")) {
       state.ui.downloadTaskDrawerVisible = false;
+      state.ui.disclosureTimeDrawerVisible = false;
       renderApp();
       return;
     }
@@ -12407,6 +12673,12 @@
   }
 
   document.addEventListener("input", function handleInput(event) {
+    if (event.target.matches('[data-disclosure-time-filter][type="text"]')) {
+      updateDisclosureTimeFilter(event.target);
+      renderApp();
+      return;
+    }
+
     if (event.target.matches('[data-filter-scope][data-filter-key][type="text"]')) {
       updateScopedFilterValue(event.target);
       renderApp();
@@ -12419,6 +12691,12 @@
   });
 
   document.addEventListener("change", function handleChange(event) {
+    if (event.target.matches("select[data-disclosure-time-filter]")) {
+      updateDisclosureTimeFilter(event.target);
+      renderApp();
+      return;
+    }
+
     if (event.target.matches("[data-manual-upload-file]")) {
       state.ui.manualUploadFileName = event.target.files && event.target.files[0] ? event.target.files[0].name : "";
       renderApp();
