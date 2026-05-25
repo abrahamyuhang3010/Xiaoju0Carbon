@@ -112,6 +112,14 @@
     return "";
   }
 
+  function isSupportedTradeCenter(centerName) {
+    return (
+      centerName === "广东电力交易中心" ||
+      centerName === "湖南电力交易中心" ||
+      centerName === "陕西电力交易中心"
+    );
+  }
+
   function createMarketDisclosureState(pageMock) {
     var tabs = (pageMock && pageMock.tabs) || [];
     var defaultRange = (pageMock && pageMock.defaultRange) || {
@@ -249,6 +257,10 @@
               start: defaultSaleCompanyRange.start,
               end: defaultSaleCompanyRange.end,
             },
+            timeSharingRange: {
+              start: defaultSaleCompanyRange.start,
+              end: defaultSaleCompanyRange.end,
+            },
             enterpriseRange: {
               start: defaultEnterpriseRange.start,
               end: defaultEnterpriseRange.end,
@@ -287,6 +299,7 @@
         },
         settlement: {
           activeTab: (settlementMock.tabs && settlementMock.tabs[0]) || "日清算",
+          monthlySide: "购电侧",
           filters: {
             dailyRange: {
               start: "2026-05-03",
@@ -305,6 +318,14 @@
             monthlySellerCompanyName: "",
             monthlyEnterpriseName: "",
             monthlyEnterpriseAccountNo: "",
+            monthlyRetailUserCode: "",
+            monthlyRetailUserName: "",
+            monthlyRetailCity: "全部",
+            monthlyRetailCategory: "全部",
+            monthlyRetailEnergyMin: "",
+            monthlyRetailEnergyMax: "",
+            monthlyRetailFeeMin: "",
+            monthlyRetailFeeMax: "",
           },
         },
         retailRelation: {
@@ -522,8 +543,12 @@
         nextSidebar[toggleKey] = true;
       });
       state.sidebar = nextSidebar;
-      if (getTradeCenterByPageKey(pageKey)) {
-        state.ui.selectedTradeCenter = getTradeCenterByPageKey(pageKey);
+      var pageTradeCenter = getTradeCenterByPageKey(pageKey);
+      if (pageTradeCenter) {
+        if (pageKey === "gd-info-disclosure" && isSupportedTradeCenter(state.ui.selectedTradeCenter)) {
+          pageTradeCenter = state.ui.selectedTradeCenter;
+        }
+        state.ui.selectedTradeCenter = pageTradeCenter;
       }
       if (pageKey === "spot-mock-trading") {
         state.simulation.permissionVisible = true;

@@ -65,6 +65,11 @@
     "陕西电力交易中心",
     "测试交易中心",
   ];
+  var SETTLEMENT_TRADE_CENTER_OPTIONS = [
+    "广东电力交易中心",
+    "湖南电力交易中心",
+    "陕西电力交易中心",
+  ];
   var INFO_DISCLOSURE_PRIMARY_TABS = infoDisclosureConfig.primaryTabs || [
     "负荷信息",
     "全省统一出清价",
@@ -115,6 +120,7 @@
   var flashTimer = null;
   var singleMetricLoadTimer = null;
   var singleMetricLoadToken = 0;
+  var marketPageViewDataCache = {};
 
   var ICON_PATHS = {
     search: '<circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path>',
@@ -392,6 +398,11 @@
       });
     }
 
+    var access = getDisclosureDataSourceAccess(normalizedTradeCenterKey);
+    if (access && Object.prototype.hasOwnProperty.call(access, tab)) {
+      return access[tab] === true;
+    }
+
     var pageData = resolveMarketPageViewData({
       pageType: "infoDisclosure",
       tradeCenter: normalizedTradeCenterKey,
@@ -403,11 +414,10 @@
       return pageData.hasDataSource;
     }
 
-    var access = getDisclosureDataSourceAccess(tradeCenterKey);
     if (!access) {
       return true;
     }
-    return access[tab] === true;
+    return true;
   }
 
   function isInfoDisclosureCompareEnabledByConfig(tab) {
@@ -574,10 +584,34 @@
     return (bundle && bundle[pageType]) || null;
   }
 
+  function getMarketPageRequestTradeCenterKey(value) {
+    var text = String(value || "").toLowerCase();
+    if (text === "hunan" || text.indexOf("湖南") >= 0) {
+      return "hunan";
+    }
+    if (text === "shaanxi" || text.indexOf("陕西") >= 0) {
+      return "shaanxi";
+    }
+    return "guangdong";
+  }
+
+  function getMarketPageRequestCacheKey(request) {
+    return [
+      request && request.pageType ? request.pageType : "",
+      getMarketPageRequestTradeCenterKey(request && request.tradeCenter),
+      request && request.primaryTab ? request.primaryTab : "",
+      request && request.secondaryTab ? request.secondaryTab : "",
+    ].join("|");
+  }
+
   function resolveMarketPageViewData(request) {
     var marketPageRegistry = global.BOSS_MARKET_PAGE_DATA;
     if (marketPageRegistry && typeof marketPageRegistry.getMarketPageData === "function") {
-      return marketPageRegistry.getMarketPageData(request) || null;
+      var cacheKey = getMarketPageRequestCacheKey(request || {});
+      if (!Object.prototype.hasOwnProperty.call(marketPageViewDataCache, cacheKey)) {
+        marketPageViewDataCache[cacheKey] = marketPageRegistry.getMarketPageData(request) || null;
+      }
+      return marketPageViewDataCache[cacheKey];
     }
     return null;
   }
@@ -609,6 +643,18 @@
   function getInfoDisclosureActiveRange(pageData, overrideRange) {
     if (overrideRange) {
       return overrideRange;
+    }
+
+    if (isUnifiedMockInfoTradeTab(getActiveInfoTab())) {
+      return getCurrentInfoDateRange();
+    }
+
+    if (getActiveInfoPrimaryTab() === INFO_DISCLOSURE_TIME_SHARING_TAB) {
+      return getInfoTimeSharingRange();
+    }
+
+    if (!isCurrentMarketDisclosureView()) {
+      return getCurrentInfoDateRange();
     }
 
     if (isSingleMetricLoadPage(pageData) && getSelectedTradeCenterKey() === "guangdong") {
@@ -697,13 +743,62 @@
   }
 
   function resetUnifiedInfoDisclosureFieldFilters(pageData) {
-    (pageData && pageData.filterFields ? pageData.filterFields : []).forEach(function eachField(field) {
+    getVisibleInfoDisclosureBusinessFilterFields(pageData).forEach(function eachField(field) {
       if (!field || !field.fieldKey) {
         return;
       }
       state.info.filters[field.fieldKey] =
         field.defaultValue !== undefined ? field.defaultValue : (field.options && field.options[0]) || "";
     });
+  }
+
+  function isRunDateFilterField(field) {
+    var label = String((field && (field.label || field.title || field.name)) || "");
+    var fieldKey = String((field && (field.fieldKey || field.key || field.id)) || "");
+    var normalizedKey = fieldKey.toLowerCase();
+
+    return (
+      label.indexOf("运行日期") >= 0 ||
+      label.indexOf("用电日期") >= 0 ||
+      label.indexOf("日期范围") >= 0 ||
+      normalizedKey === "rundate" ||
+      normalizedKey === "run_date" ||
+      normalizedKey === "daterange" ||
+      normalizedKey === "date_range" ||
+      normalizedKey === "operationdate" ||
+      normalizedKey === "operation_date"
+    );
+  }
+
+  function getVisibleInfoDisclosureBusinessFilterFields(pageData) {
+    return (pageData && pageData.filterFields ? pageData.filterFields : []).filter(function filterField(field) {
+      return field && !isRunDateFilterField(field);
+    });
+  }
+
+  function renderUnifiedInfoDisclosureBusinessFilterFields(pageData) {
+    return getVisibleInfoDisclosureBusinessFilterFields(pageData)
+      .map(function mapField(field) {
+        if (field.type === "text") {
+          return renderBoundTextFilter(
+            field.label,
+            getUnifiedInfoDisclosureFilterFieldValue(field),
+            field.placeholder || "",
+            field.fieldKey,
+            "info",
+            field.widthClass || "",
+          );
+        }
+        return renderBoundSelectFilter(
+          field.label,
+          getUnifiedInfoDisclosureFilterFieldValue(field),
+          field.options || [],
+          field.fieldKey,
+          "info",
+          field.extraClass || "filter-select-native",
+        );
+      })
+      .join("");
   }
 
   function getInfoDisclosureProfileMode(pageData) {
@@ -885,10 +980,44 @@
     return buildRelativeDateRange(-8, -1);
   }
 
+  function getInfoTimeSharingRange() {
+    var filters = state.info.filters;
+    if (filters.timeSharingRange && isRangeValid(filters.timeSharingRange)) {
+      return filters.timeSharingRange;
+    }
+    if (filters.saleCompanyAppliedRange && isRangeValid(filters.saleCompanyAppliedRange)) {
+      return filters.saleCompanyAppliedRange;
+    }
+    if (filters.saleCompanyRange && isRangeValid(filters.saleCompanyRange)) {
+      return filters.saleCompanyRange;
+    }
+    return filters.enterpriseRange || getDefaultSaleCompanyPowerRange();
+  }
+
+  function setInfoTimeSharingRange(range) {
+    var clonedRange = cloneRange(range);
+    state.info.filters.timeSharingRange = cloneRange(clonedRange);
+    state.info.filters.saleCompanyRange = cloneRange(clonedRange);
+    state.info.filters.saleCompanyAppliedRange = cloneRange(clonedRange);
+    state.info.filters.enterpriseRange = cloneRange(clonedRange);
+  }
+
+  function isInfoLoadRunDatePicker(id) {
+    return id === "info-runtime" || id === "info-detail-runtime" || id === "maintenance-runtime" || id === "reserve-runtime";
+  }
+
+  function setInfoLoadRunDateRange(range) {
+    var clonedRange = cloneRange(range);
+    state.ui.runtimeRange = cloneRange(clonedRange);
+    state.info.filters.loadDetailRange = cloneRange(clonedRange);
+    state.info.filters.maintenanceRange = cloneRange(clonedRange);
+    state.info.filters.reserveRange = cloneRange(clonedRange);
+  }
+
   function resetSaleCompanyPowerFilters() {
     var defaultRange = getDefaultSaleCompanyPowerRange();
-    state.info.filters.saleCompanyRange = cloneRange(defaultRange);
-    state.info.filters.saleCompanyAppliedRange = cloneRange(defaultRange);
+    setInfoTimeSharingRange(defaultRange);
+    resetSaleCompanyPowerBusinessFilters();
     if (state.ui.tableSort) {
       delete state.ui.tableSort["sale-company-table"];
     }
@@ -897,8 +1026,11 @@
     }
   }
 
-  function resetEnterprisePowerFilters() {
-    state.info.filters.enterpriseRange = getDefaultEnterprisePowerRange();
+  function resetSaleCompanyPowerBusinessFilters() {
+    state.info.filters.saleCompanyName = "全部";
+  }
+
+  function resetEnterprisePowerBusinessFilters() {
     state.info.filters.enterpriseUserCode = "";
     state.info.filters.enterpriseUserName = "";
     state.info.filters.enterpriseAccountNo = "";
@@ -907,6 +1039,11 @@
     if (state.ui.tableSort) {
       delete state.ui.tableSort["enterprise-table"];
     }
+  }
+
+  function resetEnterprisePowerFilters() {
+    setInfoTimeSharingRange(getDefaultEnterprisePowerRange());
+    resetEnterprisePowerBusinessFilters();
   }
 
   function resetInfoDisclosureFiltersForTradeCenterSwitch() {
@@ -983,6 +1120,9 @@
     if (id === "market-disclosure-range") {
       return getMarketDisclosureState().filterRange;
     }
+    if (id === "time-sharing-range") {
+      return getInfoTimeSharingRange();
+    }
     if (id === "info-runtime") {
       return state.ui.runtimeRange;
     }
@@ -1058,6 +1198,10 @@
   function setPickerTargetRange(id, range) {
     if (id === "market-disclosure-range") {
       getMarketDisclosureState().filterRange = cloneRange(range);
+    } else if (id === "time-sharing-range") {
+      setInfoTimeSharingRange(range);
+    } else if (isInfoLoadRunDatePicker(id)) {
+      setInfoLoadRunDateRange(range);
     } else if (id === "info-runtime") {
       state.ui.runtimeRange = cloneRange(range);
     } else if (id === "info-detail-runtime") {
@@ -1130,7 +1274,7 @@
 
   function applyDatePicker(id) {
     if (
-      (id === "enterprise-range" || id === "sale-company-range") &&
+      (id === "enterprise-range" || id === "sale-company-range" || id === "time-sharing-range") &&
       state.ui.datePickerDrafts &&
       state.ui.datePickerDrafts[id] &&
       isRangeValid(state.ui.datePickerDrafts[id]) &&
@@ -1144,6 +1288,17 @@
       setPickerTargetRange(id, state.ui.datePickerDrafts[id]);
     }
     closeDatePicker(id, false);
+
+    if (id === "market-disclosure-range" && isInfoDisclosurePage(state.currentPageKey)) {
+      getMarketDisclosureState().appliedRange = cloneRange(getMarketDisclosureState().filterRange);
+      getMarketDisclosureState().lastUpdatedAt = formatDateTime(new Date());
+    }
+
+    if (id === "time-sharing-range") {
+      state.ui.hasCompare = false;
+      state.info.companyQueryAt = Date.now();
+      state.info.enterpriseQueryAt = Date.now();
+    }
 
     if (id === "market-disclosure-range" && isSingleMetricLoadPage(getInfoDisclosurePageData())) {
       getMarketDisclosureState().appliedRange = cloneRange(getMarketDisclosureState().filterRange);
@@ -2451,7 +2606,7 @@
     var resolvedFieldsHtml = fieldsHtml || "";
     var resolvedActionsHtml = actionsHtml || "";
 
-    if (!resolvedFieldsHtml && !resolvedActionsHtml) {
+    if (!resolvedFieldsHtml) {
       return "";
     }
 
@@ -2534,7 +2689,8 @@
     );
   }
 
-  function renderMarketPageHeader(title, tabsHtml) {
+  function renderMarketPageHeader(title, tabsHtml, options) {
+    var headerOptions = options || {};
     return (
       '<div class="page-stack">' +
       '<section class="page-header"><h1>' +
@@ -2542,7 +2698,7 @@
       "</h1>" +
       renderTradeCenterSelector({
         selected: state.ui.selectedTradeCenter,
-        options: TRADE_CENTER_OPTIONS,
+        options: headerOptions.tradeCenterOptions || TRADE_CENTER_OPTIONS,
         isOpen: state.ui.tradeCenterOpen,
         escapeHtml: escapeHtml,
         renderIcon: renderIcon,
@@ -2559,6 +2715,19 @@
       .map(function mapTab(tab) {
         var isActive = activeTab === tab;
         return '<button type="button" class="primary-tab ' + (isActive ? "active" : "") + '" data-page-tab="' + escapeHtml(tab) + '"' + (isActive ? ' aria-current="page"' : "") + ">" + escapeHtml(tab) + "</button>";
+      })
+      .join("");
+  }
+
+  function renderSettlementPageTabs(tabs, activeTab) {
+    var tabLabels = {
+      "日清算": "日清算结果",
+      "月结算": "月结算结果",
+    };
+    return (tabs || [])
+      .map(function mapTab(tab) {
+        var isActive = activeTab === tab;
+        return '<button type="button" class="primary-tab ' + (isActive ? "active" : "") + '" data-page-tab="' + escapeHtml(tab) + '"' + (isActive ? ' aria-current="page"' : "") + ">" + escapeHtml(tabLabels[tab] || tab) + "</button>";
       })
       .join("");
   }
@@ -2596,13 +2765,16 @@
     });
   }
 
-  function renderInfoFilterBar() {
+  function renderInfoFilterBar(pageData) {
     var activeTab = getActiveInfoTab();
     var fieldsHtml = "";
     var actionsHtml = "";
 
     if (activeTab === "售电公司分时电量") {
-      actionsHtml = renderUiActionButton("重置", "ghost", "reset-sale-company") + renderUiActionButton("查询", "primary", "query-sale-company");
+      fieldsHtml = renderUnifiedInfoDisclosureBusinessFilterFields(pageData);
+      actionsHtml = fieldsHtml
+        ? renderUiActionButton("重置", "ghost", "reset-sale-company") + renderUiActionButton("查询", "primary", "query-sale-company")
+        : "";
     } else if (activeTab === "用电企业分时电量") {
       fieldsHtml =
         renderTextFilter("电力用户编码", "enterpriseUserCode", "请输入电力用户编码") +
@@ -4006,40 +4178,19 @@
           "tradeResult",
           "filter-input-wide"
         ),
-        ""
+        renderUiActionButton("重置", "ghost", "reset-info-disclosure-filters") +
+          renderUiActionButton("查询", "primary", "query-info-disclosure-filters")
       );
     }
 
-    var filterFieldsHtml = (pageData && pageData.filterFields ? pageData.filterFields : [])
-      .map(function mapField(field) {
-        if (!field) {
-          return "";
-        }
-        if (field.type === "text") {
-          return renderBoundTextFilter(
-            field.label,
-            getUnifiedInfoDisclosureFilterFieldValue(field),
-            field.placeholder || "",
-            field.fieldKey,
-            "info",
-            field.widthClass || "",
-          );
-        }
-        return renderBoundSelectFilter(
-          field.label,
-          getUnifiedInfoDisclosureFilterFieldValue(field),
-          field.options || [],
-          field.fieldKey,
-          "info",
-          field.extraClass || "filter-select-native",
-        );
-      })
-      .join("");
+    var filterFieldsHtml = renderUnifiedInfoDisclosureBusinessFilterFields(pageData);
 
     return renderInfoFilterPanel(
       filterFieldsHtml,
-      renderUiActionButton("重置", "ghost", "reset-market-disclosure") +
-        renderUiActionButton("查询", "primary", "query-market-disclosure")
+      filterFieldsHtml
+        ? renderUiActionButton("重置", "ghost", "reset-info-disclosure-filters") +
+          renderUiActionButton("查询", "primary", "query-info-disclosure-filters")
+        : ""
     );
   }
 
@@ -4889,12 +5040,16 @@
 
   function renderTradeResultFilterBarByTab(activeTab) {
     var fieldsHtml = "";
+    var actionsHtml = "";
 
     if (activeTab === "节点电价") {
       fieldsHtml = renderBoundTextFilter("节点搜索", state.tradeResult.filters.nodeKeyword, "请输入节点名称", "nodeKeyword", "tradeResult", "filter-input-wide");
+      actionsHtml =
+        renderUiActionButton("重置", "ghost", "reset-info-disclosure-filters") +
+        renderUiActionButton("查询", "primary", "query-info-disclosure-filters");
     }
 
-    return renderInfoFilterPanel(fieldsHtml, "");
+    return renderInfoFilterPanel(fieldsHtml, actionsHtml);
   }
 
   function renderDeclarationFilterBar() {
@@ -5220,13 +5375,10 @@
 
   function getInfoDisclosureTabDatePickerConfig(pageData) {
     var activeTab = getActiveInfoTab();
+    var activePrimaryTab = getActiveInfoPrimaryTab();
 
-    if (activeTab === "售电公司分时电量") {
-      return { id: "sale-company-range", mode: "range" };
-    }
-
-    if (activeTab === "用电企业分时电量") {
-      return { id: "enterprise-range", mode: "range" };
+    if (activePrimaryTab === INFO_DISCLOSURE_TIME_SHARING_TAB) {
+      return { id: "time-sharing-range", mode: "range" };
     }
 
     if (activeTab === "节点电价") {
@@ -5288,10 +5440,10 @@
 
     var pageData = getInfoDisclosurePageData();
     if (getActiveInfoTab() === "售电公司分时电量") {
-      return renderInfoFilterBar();
+      return renderInfoFilterBar(pageData);
     }
     if (getActiveInfoTab() === "用电企业分时电量") {
-      return renderInfoFilterBar();
+      return renderInfoFilterBar(pageData);
     }
     if (isScopedLoadInfoTab() && isSingleMetricLoadPage(pageData)) {
       return renderSingleMetricLoadFilterBar();
@@ -5308,7 +5460,7 @@
     if (activePrimaryTab === "日前申报") {
       return renderDeclarationFilterBar();
     }
-    return renderInfoFilterBar();
+    return renderInfoFilterBar(pageData);
   }
 
   function renderInfoTradePriceContent() {
@@ -7437,7 +7589,7 @@
     );
   }
 
-	  function renderTradeResultPage() {
+  function renderTradeResultPage() {
 	    var tradeMock = getTradeResultMock();
 	    var status = getTradeResultStatusByTab(state.tradeResult.activeTab);
 
@@ -7449,6 +7601,138 @@
       "</div>"
     );
   }
+
+  var MONTHLY_SETTLEMENT_SIDES = ["购电侧", "售电侧"];
+
+  var hunanMonthlySettlementColumns = [
+    { key: "seq", label: "序号", fixed: true, width: 72 },
+    { key: "sellerCompanyName", label: "售电公司名称", fixed: true, width: 220 },
+    { key: "cityPowerCompany", label: "地市供电公司", fixed: true, width: 160 },
+    { key: "userCode", label: "用户编号", fixed: true, width: 138 },
+    { key: "userName", label: "用户名称", fixed: true, width: 220 },
+    { key: "userCategory", label: "用户类别", width: 132 },
+    {
+      label: "市场化用电量",
+      children: [
+        { key: "marketTotal", label: "总", type: "energy", summary: "sum", width: 108 },
+        { key: "marketSharp", label: "尖", type: "energy", summary: "sum", width: 92 },
+        { key: "marketPeak", label: "峰", type: "energy", summary: "sum", width: 92 },
+        { key: "marketFlat", label: "平", type: "energy", summary: "sum", width: 92 },
+        { key: "marketValley", label: "谷", type: "energy", summary: "sum", width: 92 },
+      ],
+    },
+    {
+      label: "其中：结算省内电量",
+      children: [
+        { key: "provinceTotal", label: "总", type: "energy", summary: "sum", width: 108 },
+        { key: "provinceSharp", label: "尖", type: "energy", summary: "sum", width: 92 },
+        { key: "provincePeak", label: "峰", type: "energy", summary: "sum", width: 92 },
+        { key: "provinceFlat", label: "平", type: "energy", summary: "sum", width: 92 },
+        { key: "provinceValley", label: "谷", type: "energy", summary: "sum", width: 92 },
+      ],
+    },
+    {
+      label: "省内电量价差",
+      children: [
+        { key: "provinceSpreadTotal", label: "总", type: "price", width: 108 },
+        { key: "provinceSpreadSharp", label: "尖", type: "price", width: 92 },
+        { key: "provinceSpreadPeak", label: "峰", type: "price", width: 92 },
+        { key: "provinceSpreadFlat", label: "平", type: "price", width: 92 },
+        { key: "provinceSpreadValley", label: "谷", type: "price", width: 92 },
+      ],
+    },
+    {
+      label: "市场化价差电费",
+      children: [
+        { key: "marketFeeTotal", label: "总", type: "money", summary: "sum", width: 118 },
+        { key: "marketFeeSharp", label: "尖", type: "money", summary: "sum", width: 98 },
+        { key: "marketFeePeak", label: "峰", type: "money", summary: "sum", width: 98 },
+        { key: "marketFeeFlat", label: "平", type: "money", summary: "sum", width: 98 },
+        { key: "marketFeeValley", label: "谷", type: "money", summary: "sum", width: 98 },
+      ],
+    },
+  ];
+
+  var shaanxiMonthlySettlementColumns = [
+    { key: "subjectCode", label: "结算科目编码", fixed: true, width: 142 },
+    { key: "subjectName", label: "结算科目", fixed: true, width: 142 },
+    { key: "retailUserName", label: "零售用户名称", fixed: true, width: 240 },
+    { key: "accountOrMeterNo", label: "户号/电源编号/计量点编号", fixed: true, width: 190 },
+    { key: "contractPeriod", label: "合同时段", fixed: true, width: 210 },
+    { key: "actualUsage", label: "实际用电量", type: "energy", summary: "sum", width: 128 },
+    { key: "contractPower", label: "合同电量", type: "energy", summary: "sum", width: 118 },
+    { key: "settlementPowerOrCapacity", label: "结算电量/容量", type: "energy", summary: "sum", width: 142 },
+    { key: "settlementPrice", label: "结算电价", type: "price", width: 118 },
+    { key: "settlementFee", label: "结算电费", type: "money", summary: "sum", width: 128 },
+    { key: "remark", label: "备注", width: 120 },
+  ];
+
+  var hunanMonthlySettlementFilters = [
+    { type: "text", label: "用户编号", fieldKey: "monthlyRetailUserCode", rowKey: "userCode", placeholder: "请输入用户编号" },
+    { type: "text", label: "用户名称", fieldKey: "monthlyRetailUserName", rowKey: "userName", placeholder: "请输入用户名称" },
+    { type: "select", label: "地市供电公司", fieldKey: "monthlyRetailCity", rowKey: "cityPowerCompany" },
+    { type: "select", label: "用户类别", fieldKey: "monthlyRetailCategory", rowKey: "userCategory" },
+    { type: "range", label: "电量区间", minKey: "monthlyRetailEnergyMin", maxKey: "monthlyRetailEnergyMax", rowKey: "marketTotal" },
+    { type: "range", label: "电费区间", minKey: "monthlyRetailFeeMin", maxKey: "monthlyRetailFeeMax", rowKey: "marketFeeTotal" },
+  ];
+
+  var shaanxiMonthlySettlementFilters = [
+    { type: "text", label: "户号/电源编号/计量点编号", fieldKey: "monthlyRetailUserCode", rowKey: "accountOrMeterNo", placeholder: "请输入户号或计量点编号" },
+    { type: "text", label: "用户名称", fieldKey: "monthlyRetailUserName", rowKey: "retailUserName", placeholder: "请输入用户名称" },
+    { type: "range", label: "电量区间", minKey: "monthlyRetailEnergyMin", maxKey: "monthlyRetailEnergyMax", rowKey: "settlementPowerOrCapacity" },
+    { type: "range", label: "电费区间", minKey: "monthlyRetailFeeMin", maxKey: "monthlyRetailFeeMax", rowKey: "settlementFee" },
+  ];
+
+  var hunanMonthlySettlementRetailRows = [
+    { seq: 1, sellerCompanyName: "北京小桔新能源汽车科技有限公司", cityPowerCompany: "国网长沙供电公司", userCode: "4303115926887", userName: "湖南优车新能源有限公司", userCategory: "其它市场用户", marketTotal: 55.09, marketSharp: 0, marketPeak: 0, marketFlat: 0, marketValley: 0, provinceTotal: 55.09, provinceSharp: 0, provincePeak: 0, provinceFlat: 0, provinceValley: 0, provinceSpreadTotal: 260.361, marketFeeTotal: 14343.29, marketFeeSharp: 0, marketFeePeak: 0, marketFeeFlat: 0, marketFeeValley: 0 },
+    { seq: 2, sellerCompanyName: "北京小桔新能源汽车科技有限公司", cityPowerCompany: "国网长沙供电公司", userCode: "4303118459252", userName: "湖南白鹿巷新能源有限责任公司", userCategory: "其它市场用户", marketTotal: 57.87, marketSharp: 0, marketPeak: 0, marketFlat: 0, marketValley: 0, provinceTotal: 57.87, provinceSharp: 0, provincePeak: 0, provinceFlat: 0, provinceValley: 0, provinceSpreadTotal: 260.361, marketFeeTotal: 15067.09, marketFeeSharp: 0, marketFeePeak: 0, marketFeeFlat: 0, marketFeeValley: 0 },
+    { seq: 3, sellerCompanyName: "北京小桔新能源汽车科技有限公司", cityPowerCompany: "国网长沙供电公司", userCode: "4303119243463", userName: "湖南优车新能源有限公司", userCategory: "其它市场用户", marketTotal: 24.28, marketSharp: 0, marketPeak: 0, marketFlat: 0, marketValley: 0, provinceTotal: 24.28, provinceSharp: 0, provincePeak: 0, provinceFlat: 0, provinceValley: 0, provinceSpreadTotal: 260.361, marketFeeTotal: 6321.57, marketFeeSharp: 0, marketFeePeak: 0, marketFeeFlat: 0, marketFeeValley: 0 },
+    { seq: 4, sellerCompanyName: "北京小桔新能源汽车科技有限公司", cityPowerCompany: "国网长沙供电公司", userCode: "4303121158849", userName: "湖南长云新能源有限公司", userCategory: "其它市场用户", marketTotal: 43.63, marketSharp: 0, marketPeak: 0, marketFlat: 0, marketValley: 0, provinceTotal: 43.63, provinceSharp: 0, provincePeak: 0, provinceFlat: 0, provinceValley: 0, provinceSpreadTotal: 260.361, marketFeeTotal: 11359.55, marketFeeSharp: 0, marketFeePeak: 0, marketFeeFlat: 0, marketFeeValley: 0 },
+    { seq: 5, sellerCompanyName: "北京小桔新能源汽车科技有限公司", cityPowerCompany: "国网长沙供电公司", userCode: "4303121200843", userName: "湖南长云新能源有限公司", userCategory: "其它市场用户", marketTotal: 64.62, marketSharp: 0, marketPeak: 0, marketFlat: 0, marketValley: 0, provinceTotal: 64.62, provinceSharp: 0, provincePeak: 0, provinceFlat: 0, provinceValley: 0, provinceSpreadTotal: 260.361, marketFeeTotal: 16824.53, marketFeeSharp: 0, marketFeePeak: 0, marketFeeFlat: 0, marketFeeValley: 0 },
+    { seq: 6, sellerCompanyName: "北京小桔新能源汽车科技有限公司", cityPowerCompany: "国网长沙供电公司", userCode: "4303121254228", userName: "湖南优车新能源有限公司", userCategory: "其它市场用户", marketTotal: 119.085, marketSharp: 0, marketPeak: 0, marketFlat: 0, marketValley: 0, provinceTotal: 119.085, provinceSharp: 0, provincePeak: 0, provinceFlat: 0, provinceValley: 0, provinceSpreadTotal: 260.361, marketFeeTotal: 31005.09, marketFeeSharp: 0, marketFeePeak: 0, marketFeeFlat: 0, marketFeeValley: 0 },
+    { seq: 7, sellerCompanyName: "北京小桔新能源汽车科技有限公司", cityPowerCompany: "国网长沙供电公司", userCode: "4303121287116", userName: "湖南途途快充科技有限公司", userCategory: "其它市场用户", marketTotal: 77.595, marketSharp: 0, marketPeak: 0, marketFlat: 0, marketValley: 0, provinceTotal: 77.595, provinceSharp: 0, provincePeak: 0, provinceFlat: 0, provinceValley: 0, provinceSpreadTotal: 260.361, marketFeeTotal: 20202.71, marketFeeSharp: 0, marketFeePeak: 0, marketFeeFlat: 0, marketFeeValley: 0 },
+    { seq: 8, sellerCompanyName: "北京小桔新能源汽车科技有限公司", cityPowerCompany: "国网长沙供电公司", userCode: "4303121741467", userName: "湖南优车新能源有限公司", userCategory: "其它市场用户", marketTotal: 79.41, marketSharp: 0, marketPeak: 0, marketFlat: 0, marketValley: 0, provinceTotal: 79.41, provinceSharp: 0, provincePeak: 0, provinceFlat: 0, provinceValley: 0, provinceSpreadTotal: 260.361, marketFeeTotal: 20675.27, marketFeeSharp: 0, marketFeePeak: 0, marketFeeFlat: 0, marketFeeValley: 0 },
+    { seq: 9, sellerCompanyName: "北京小桔新能源汽车科技有限公司", cityPowerCompany: "国网长沙供电公司", userCode: "4303121924688", userName: "湖南长云新能源有限公司", userCategory: "其它市场用户", marketTotal: 0, marketSharp: 0, marketPeak: 0, marketFlat: 0, marketValley: 0, provinceTotal: 0, provinceSharp: 0, provincePeak: 0, provinceFlat: 0, provinceValley: 0, provinceSpreadTotal: null, marketFeeTotal: 0, marketFeeSharp: 0, marketFeePeak: 0, marketFeeFlat: 0, marketFeeValley: 0 },
+    { seq: 10, sellerCompanyName: "北京小桔新能源汽车科技有限公司", cityPowerCompany: "国网长沙供电公司", userCode: "4303121973941", userName: "湖南景充科技有限公司", userCategory: "其它市场用户", marketTotal: 76.095, marketSharp: 0, marketPeak: 0, marketFlat: 0, marketValley: 0, provinceTotal: 76.095, provinceSharp: 0, provincePeak: 0, provinceFlat: 0, provinceValley: 0, provinceSpreadTotal: 260.361, marketFeeTotal: 19812.17, marketFeeSharp: 0, marketFeePeak: 0, marketFeeFlat: 0, marketFeeValley: 0 },
+    { seq: 11, sellerCompanyName: "北京小桔新能源汽车科技有限公司", cityPowerCompany: "国网长沙供电公司", userCode: "4303122966953", userName: "长沙车库电桩科技有限公司", userCategory: "其它市场用户", marketTotal: 80.025, marketSharp: 0, marketPeak: 0, marketFlat: 0, marketValley: 0, provinceTotal: 80.025, provinceSharp: 0, provincePeak: 0, provinceFlat: 0, provinceValley: 0, provinceSpreadTotal: 257.757, marketFeeTotal: 20627, marketFeeSharp: 0, marketFeePeak: 0, marketFeeFlat: 0, marketFeeValley: 0 },
+    { seq: 12, sellerCompanyName: "北京小桔新能源汽车科技有限公司", cityPowerCompany: "国网长沙供电公司", userCode: "4303123271278", userName: "湖南星投新能源有限公司", userCategory: "其它市场用户", marketTotal: 46.905, marketSharp: 0, marketPeak: 0, marketFlat: 0, marketValley: 0, provinceTotal: 46.905, provinceSharp: 0, provincePeak: 0, provinceFlat: 0, provinceValley: 0, provinceSpreadTotal: 260.361, marketFeeTotal: 12212.23, marketFeeSharp: 0, marketFeePeak: 0, marketFeeFlat: 0, marketFeeValley: 0 },
+  ];
+
+  var shaanxiMonthlySettlementRetailRows = [
+    { subjectCode: "010102031105", subjectName: "常规企业-时段1", retailUserName: "大荔县双宇心新能源服务有限公司", accountOrMeterNo: "6103882654734", contractPeriod: "2026-01-01 至 2026-12-31", actualUsage: 0.662, contractPower: null, settlementPowerOrCapacity: 0.662, settlementPrice: 360.136, settlementFee: 238.41, remark: "" },
+    { subjectCode: "010102031105", subjectName: "常规企业-时段1", retailUserName: "西安尚稷商业运营管理有限公司", accountOrMeterNo: "6103882654734", contractPeriod: "2026-01-01 至 2026-12-31", actualUsage: 6.449, contractPower: null, settlementPowerOrCapacity: 6.449, settlementPrice: 360.135, settlementFee: 2322.51, remark: "" },
+    { subjectCode: "010102031105", subjectName: "常规企业-时段1", retailUserName: "陕西皓跃科技有限公司", accountOrMeterNo: "6103882654734", contractPeriod: "2026-01-01 至 2026-12-31", actualUsage: 3.296, contractPower: null, settlementPowerOrCapacity: 3.296, settlementPrice: 358.134, settlementFee: 1180.41, remark: "" },
+    { subjectCode: "010102031105", subjectName: "常规企业-时段1", retailUserName: "碧辟小桔新能源（深圳）有限责任公司", accountOrMeterNo: "6103882654734", contractPeriod: "2026-01-01 至 2026-12-31", actualUsage: 5.509, contractPower: null, settlementPowerOrCapacity: 5.509, settlementPrice: 355.135, settlementFee: 1956.44, remark: "" },
+    { subjectCode: "010102031105", subjectName: "常规企业-时段1", retailUserName: "中建科工集团智慧停车科技有限公司", accountOrMeterNo: "6103882654734", contractPeriod: "2026-01-01 至 2026-12-31", actualUsage: 12.684, contractPower: null, settlementPowerOrCapacity: 12.684, settlementPrice: 357.135, settlementFee: 4529.9, remark: "" },
+    { subjectCode: "010102031105", subjectName: "常规企业-时段1", retailUserName: "大荔县鑫旭新能源有限公司", accountOrMeterNo: "6103882654734", contractPeriod: "2026-01-01 至 2026-12-31", actualUsage: 0.757, contractPower: null, settlementPowerOrCapacity: 0.757, settlementPrice: 360.132, settlementFee: 272.62, remark: "" },
+    { subjectCode: "010102031105", subjectName: "常规企业-时段1", retailUserName: "陕西永沣聚星新能源科技有限公司", accountOrMeterNo: "6103882654734", contractPeriod: "2026-01-01 至 2026-12-31", actualUsage: 3.555, contractPower: null, settlementPowerOrCapacity: 3.555, settlementPrice: 360.135, settlementFee: 1280.28, remark: "" },
+    { subjectCode: "010102031105", subjectName: "常规企业-时段1", retailUserName: "陕西九电新能源有限责任公司", accountOrMeterNo: "6103882654734", contractPeriod: "2026-01-01 至 2026-12-31", actualUsage: 0.78, contractPower: null, settlementPowerOrCapacity: 0.78, settlementPrice: 360.141, settlementFee: 280.91, remark: "" },
+    { subjectCode: "010102031105", subjectName: "常规企业-时段1", retailUserName: "陕西众成智慧能源有限公司", accountOrMeterNo: "6103882654734", contractPeriod: "2026-01-01 至 2026-12-31", actualUsage: 24.032, contractPower: null, settlementPowerOrCapacity: 24.032, settlementPrice: 356.135, settlementFee: 8558.64, remark: "" },
+    { subjectCode: "010102031105", subjectName: "常规企业-时段1", retailUserName: "西安行必达共享服务有限公司", accountOrMeterNo: "6103882654734", contractPeriod: "2026-01-01 至 2026-12-31", actualUsage: 0.067, contractPower: null, settlementPowerOrCapacity: 0.067, settlementPrice: 358.209, settlementFee: 24, remark: "" },
+    { subjectCode: "010102031105", subjectName: "常规企业-时段1", retailUserName: "西安碧辟小桔新能源有限责任公司", accountOrMeterNo: "6103882654734", contractPeriod: "2026-01-01 至 2026-12-31", actualUsage: 49.189, contractPower: null, settlementPowerOrCapacity: 49.189, settlementPrice: 355.135, settlementFee: 17468.74, remark: "" },
+    { subjectCode: "010102031106", subjectName: "常规企业-时段2", retailUserName: "大荔县双宇心新能源服务有限公司", accountOrMeterNo: "6103882654734", contractPeriod: "2026-01-01 至 2026-12-31", actualUsage: 0.3, contractPower: null, settlementPowerOrCapacity: 0.3, settlementPrice: 305.533, settlementFee: 91.66, remark: "" },
+  ];
+
+  var monthlySettlementProvinceConfigs = {
+    hunan: {
+      centerName: "湖南交易中心",
+      sellerCompanyName: "北京小桔新能源汽车科技有限公司",
+      columns: hunanMonthlySettlementColumns,
+      filters: hunanMonthlySettlementFilters,
+      rows: hunanMonthlySettlementRetailRows,
+      summaryLabelKey: "userCode",
+      minWidth: 3250,
+    },
+    shaanxi: {
+      centerName: "陕西交易中心",
+      sellerCompanyName: "北京小桔新能源汽车科技有限公司",
+      columns: shaanxiMonthlySettlementColumns,
+      filters: shaanxiMonthlySettlementFilters,
+      rows: shaanxiMonthlySettlementRetailRows,
+      summaryLabelKey: "subjectCode",
+      minWidth: 1680,
+    },
+  };
 
   function getSettlementMock() {
     return getMarketPageData("settlement") || {};
@@ -7544,7 +7828,7 @@
 
   function getSettlementDefaultMonth() {
     var pageData = getSettlementViewPageData("月结算", "售电公司");
-    return (pageData.filters && pageData.filters.month) || "2026-05";
+    return (pageData.settlementSummary && pageData.settlementSummary.settlementMonth) || (pageData.filters && pageData.filters.month) || "2026-05";
   }
 
   function syncSettlementStateForTradeCenter() {
@@ -7591,6 +7875,8 @@
     state.settlement.filters.monthlySellerCompanyName = "";
     state.settlement.filters.monthlyEnterpriseName = "";
     state.settlement.filters.monthlyEnterpriseAccountNo = "";
+    state.settlement.monthlySide = "购电侧";
+    clearMonthlyRetailFilters();
   }
 
   function getSettlementStatusTone(status) {
@@ -8907,6 +9193,577 @@
     );
   }
 
+  function getMonthlySettlementConfig() {
+    var centerKey = getSelectedTradeCenterKey();
+    return monthlySettlementProvinceConfigs[centerKey] || monthlySettlementProvinceConfigs.hunan;
+  }
+
+  function getMonthlySettlementPageData() {
+    return getSettlementViewPageData("月结算", "售电公司");
+  }
+
+  function clearMonthlyRetailFilters() {
+    state.settlement.filters.monthlyRetailUserCode = "";
+    state.settlement.filters.monthlyRetailUserName = "";
+    state.settlement.filters.monthlyRetailCity = "全部";
+    state.settlement.filters.monthlyRetailCategory = "全部";
+    state.settlement.filters.monthlyRetailEnergyMin = "";
+    state.settlement.filters.monthlyRetailEnergyMax = "";
+    state.settlement.filters.monthlyRetailFeeMin = "";
+    state.settlement.filters.monthlyRetailFeeMax = "";
+  }
+
+  function getMonthlySettlementSide() {
+    if (MONTHLY_SETTLEMENT_SIDES.indexOf(state.settlement.monthlySide) < 0) {
+      state.settlement.monthlySide = MONTHLY_SETTLEMENT_SIDES[0];
+    }
+    return state.settlement.monthlySide;
+  }
+
+  function getMonthlySettlementRunMonth() {
+    return state.settlement.filters.monthlyMonth || getSettlementDefaultMonth();
+  }
+
+  function getMonthlySubjectPower(row) {
+    return getFirstFiniteNumber(row, ["settlementPowerOrCapacity", "settlementPower", "settlementEnergy"]);
+  }
+
+  function getMonthlySubjectPrice(row) {
+    return getFirstFiniteNumber(row, ["settlementPriceOrAverage", "settlementPrice", "settlementAveragePrice"]);
+  }
+
+  function getMonthlySubjectFee(row) {
+    return getFirstFiniteNumber(row, ["settlementFee", "fee", "totalFee"]);
+  }
+
+  function isMonthlySubjectTotalRow(row) {
+    return row && (row.subjectCode === "合计" || row.subjectName === "售电公司月结算合计" || row.remark === "合计");
+  }
+
+  function getMonthlySubjectRowsForSide(pageData, side) {
+    var rows = ((pageData && pageData.tableData) || []).filter(function filterTotal(row) {
+      return !isMonthlySubjectTotalRow(row);
+    });
+    var centerKey = getSelectedTradeCenterKey();
+
+    if (centerKey === "shaanxi") {
+      return rows.filter(function filterShaanxi(row) {
+        return String(row.remark || "").indexOf(side) >= 0;
+      });
+    }
+
+    if (side === "售电侧") {
+      return rows.filter(function filterHunanSeller(row) {
+        var text = String(row.subjectName || "") + String(row.remark || "");
+        return text.indexOf("代理服务收益") >= 0 || text.indexOf("售电") >= 0;
+      });
+    }
+
+    return rows.filter(function filterHunanBuyer(row) {
+      var text = String(row.subjectName || "") + String(row.remark || "");
+      return text.indexOf("代理服务收益") < 0 && text.indexOf("售电服务") < 0;
+    });
+  }
+
+  function sumMonthlySubjectMetric(rows, getter) {
+    return (rows || []).reduce(function reduce(total, row) {
+      var value = getter(row);
+      return value === null ? total : total + value;
+    }, 0);
+  }
+
+  function buildMonthlySideSummaryCards(rows, side) {
+    var totalPower = sumMonthlySubjectMetric(rows, getMonthlySubjectPower);
+    var totalFee = sumMonthlySubjectMetric(rows, getMonthlySubjectFee);
+    var averagePrice = totalPower ? totalFee / totalPower : null;
+
+    return [
+      { label: side + "总结算电量", value: formatSettlementMetricValue(totalPower, 3), unit: "MWh", compact: false },
+      { label: side + "结算电费", value: formatSettlementMetricValue(totalFee, 2), unit: "元", compact: false, valueClassName: totalFee < 0 ? "summary-card-value-negative" : "" },
+      { label: side + "结算均价", value: formatSettlementMetricValue(averagePrice, 3), unit: "元/MWh", compact: false },
+    ];
+  }
+
+  function renderMonthlySideTabs(activeSide) {
+    return (
+      '<div class="monthly-side-tabs">' +
+      MONTHLY_SETTLEMENT_SIDES.map(function mapSide(side) {
+        return (
+          '<button type="button" class="monthly-side-tab ' +
+          (side === activeSide ? "active" : "") +
+          '" data-monthly-settlement-side="' +
+          escapeHtml(side) +
+          '">' +
+          escapeHtml(side) +
+          "</button>"
+        );
+      }).join("") +
+      "</div>"
+    );
+  }
+
+  function renderMonthlyMetricGrid(cards) {
+    return (
+      '<div class="monthly-metric-grid">' +
+      (cards || [])
+        .map(function mapCard(card) {
+          var className = ["monthly-metric-value", card.valueClassName || ""].filter(Boolean).join(" ");
+          return (
+            '<div class="monthly-metric-item"><span class="monthly-metric-label">' +
+            escapeHtml(card.label) +
+            '</span><strong class="' +
+            escapeHtml(className) +
+            '">' +
+            escapeHtml(card.value || "--") +
+            '<span class="monthly-metric-unit">' +
+            escapeHtml(card.unit || "") +
+            "</span></strong></div>"
+          );
+        })
+        .join("") +
+      "</div>"
+    );
+  }
+
+  function buildMonthlySubjectTable(rows) {
+    return {
+      columns: [
+        { key: "subjectCode", label: "结算科目编码" },
+        { key: "subjectName", label: "结算科目名称" },
+        { key: "settlementPower", label: "结算电量" },
+        { key: "settlementAveragePrice", label: "结算均价" },
+        { key: "settlementFee", label: "结算电费" },
+        { key: "remark", label: "备注" },
+      ],
+      rows: rows.map(function mapSubject(row) {
+        var power = getMonthlySubjectPower(row);
+        var price = getMonthlySubjectPrice(row);
+        var fee = getMonthlySubjectFee(row);
+        return {
+          subjectCode: createSettlementTextCell(row.subjectCode),
+          subjectName: createSettlementTextCell(row.subjectName),
+          settlementPower: createSettlementNullableNumberCell(power, 3),
+          settlementAveragePrice: createSettlementNullableNumberCell(price, 3),
+          settlementFee: createSettlementNullableNumberCell(fee, 2),
+          remark: createSettlementTextCell(row.remark),
+        };
+      }),
+      minWidth: 1080,
+      enableColumnDrag: false,
+    };
+  }
+
+  function renderMonthlySubjectOverview(rows) {
+    var displayRows = (rows || [])
+      .slice()
+      .sort(function sortByFee(a, b) {
+        return Math.abs(getMonthlySubjectFee(b) || 0) - Math.abs(getMonthlySubjectFee(a) || 0);
+      })
+      .slice(0, 4);
+
+    if (!displayRows.length) {
+      return "";
+    }
+
+    return (
+      '<div class="monthly-subject-overview"><div class="monthly-subject-overview-title">主要结算科目金额</div>' +
+      '<div class="monthly-subject-overview-grid">' +
+      displayRows
+        .map(function mapRow(row) {
+          return (
+            '<div class="monthly-subject-overview-item"><span>' +
+            escapeHtml(row.subjectName || "--") +
+            '</span><strong class="' +
+            (Number(getMonthlySubjectFee(row) || 0) < 0 ? "table-negative" : "") +
+            '">' +
+            escapeHtml(formatSettlementMetricValue(getMonthlySubjectFee(row), 2)) +
+            " 元</strong></div>"
+          );
+        })
+        .join("") +
+      "</div></div>"
+    );
+  }
+
+  function renderMonthlySettlementSummaryModule(pageData) {
+    var activeSide = getMonthlySettlementSide();
+    var rows = getMonthlySubjectRowsForSide(pageData, activeSide);
+    var table = buildMonthlySubjectTable(rows);
+
+    return (
+      '<section class="panel monthly-summary-panel">' +
+      '<div class="section-heading monthly-section-heading">' +
+      '<div><div class="section-heading-title">购售侧结算汇总</div>' +
+      '<div class="section-subtitle">按当前月结算单解析结果切换查看购电侧与售电侧科目</div></div>' +
+      renderMonthlySideTabs(activeSide) +
+      "</div>" +
+      renderMonthlyMetricGrid(buildMonthlySideSummaryCards(rows, activeSide)) +
+      renderMonthlySubjectOverview(rows) +
+      '<div class="monthly-subject-table-title">结算科目数据看板</div>' +
+      renderDataTablePro({
+        tableId: "settlement-monthly-subject-table-" + getSelectedTradeCenterKey() + "-" + activeSide,
+        columns: table.columns,
+        rows: table.rows,
+        minWidth: table.minWidth,
+        sortState: getTableSortState("settlement-monthly-subject-table-" + getSelectedTradeCenterKey() + "-" + activeSide),
+        escapeHtml: escapeHtml,
+        renderIcon: renderIcon,
+        renderEmptyState: renderEmptyState,
+      }) +
+      "</section>"
+    );
+  }
+
+  function getMonthlyColumnLeafCount(column) {
+    var children = column.children || [];
+    if (!children.length) {
+      return 1;
+    }
+    return children.reduce(function reduce(total, child) {
+      return total + getMonthlyColumnLeafCount(child);
+    }, 0);
+  }
+
+  function getMonthlyColumnDepth(columns) {
+    return (columns || []).reduce(function reduce(maxDepth, column) {
+      var children = column.children || [];
+      var depth = children.length ? 1 + getMonthlyColumnDepth(children) : 1;
+      return Math.max(maxDepth, depth);
+    }, 1);
+  }
+
+  function flattenMonthlyColumns(columns) {
+    return (columns || []).reduce(function reduce(result, column) {
+      var children = column.children || [];
+      if (children.length) {
+        return result.concat(flattenMonthlyColumns(children));
+      }
+      result.push(column);
+      return result;
+    }, []);
+  }
+
+  function buildMonthlyHeaderRows(columns, maxDepth, level, rows) {
+    rows[level] = rows[level] || [];
+    (columns || []).forEach(function eachColumn(column) {
+      var children = column.children || [];
+      var isLeaf = !children.length;
+      rows[level].push({
+        column: column,
+        label: column.label,
+        colspan: isLeaf ? 1 : getMonthlyColumnLeafCount(column),
+        rowspan: isLeaf ? maxDepth - level : 1,
+        isLeaf: isLeaf,
+        level: level,
+      });
+      if (children.length) {
+        buildMonthlyHeaderRows(children, maxDepth, level + 1, rows);
+      }
+    });
+    return rows;
+  }
+
+  function getMonthlyLeafOffsets(leafColumns) {
+    var fixedLeft = 0;
+    var offsets = {};
+    (leafColumns || []).forEach(function eachColumn(column) {
+      if (column.fixed) {
+        offsets[column.key] = fixedLeft;
+        fixedLeft += column.width || 120;
+      }
+    });
+    return offsets;
+  }
+
+  function getMonthlyColumnWidthStyle(column, offsets) {
+    var styles = [];
+    var width = column.width || 120;
+    styles.push("min-width:" + width + "px");
+    styles.push("width:" + width + "px");
+    if (column.fixed) {
+      styles.push("left:" + (offsets[column.key] || 0) + "px");
+    }
+    return styles.join(";");
+  }
+
+  function formatMonthlyRetailValue(value, column) {
+    if (value === null || value === undefined || value === "") {
+      return "--";
+    }
+    if (column.type === "money") {
+      return formatSettlementMetricValue(value, 2);
+    }
+    if (column.type === "energy" || column.type === "price") {
+      return formatSettlementMetricValue(value, 3);
+    }
+    if (typeof value === "number") {
+      return Number.isInteger(value) ? String(value) : formatSettlementMetricValue(value, 3);
+    }
+    return String(value);
+  }
+
+  function renderMonthlyRetailHeader(columns, leafColumns, offsets) {
+    var maxDepth = getMonthlyColumnDepth(columns);
+    var headerRows = buildMonthlyHeaderRows(columns, maxDepth, 0, []);
+
+    return headerRows
+      .map(function mapRow(row, rowIndex) {
+        var cells = row
+          .map(function mapCell(cell) {
+            var column = cell.column;
+            var classes = ["monthly-retail-th", cell.isLeaf && column.fixed ? "monthly-fixed-col" : ""].filter(Boolean);
+            var style = ["top:" + rowIndex * 38 + "px"];
+            if (cell.isLeaf) {
+              style.push(getMonthlyColumnWidthStyle(column, offsets));
+            }
+            return (
+              '<th class="' +
+              escapeHtml(classes.join(" ")) +
+              '" colspan="' +
+              cell.colspan +
+              '" rowspan="' +
+              cell.rowspan +
+              '" style="' +
+              escapeHtml(style.join(";")) +
+              '">' +
+              escapeHtml(cell.label || "") +
+              "</th>"
+            );
+          })
+          .join("");
+        return "<tr>" + cells + "</tr>";
+      })
+      .join("");
+  }
+
+  function renderMonthlyRetailCell(row, column, offsets, isSummary) {
+    var value = row[column.key];
+    var numericValue = getFiniteNumber(value);
+    var classes = ["monthly-retail-cell"];
+    var style = getMonthlyColumnWidthStyle(column, offsets);
+    if (column.type || typeof value === "number") {
+      classes.push("table-number-cell");
+    }
+    if (column.fixed) {
+      classes.push("monthly-fixed-col");
+    }
+    if (isSummary) {
+      classes.push("settlement-total-cell");
+    }
+    if (numericValue !== null && numericValue < 0) {
+      classes.push("table-negative");
+    }
+    return (
+      '<td class="' +
+      escapeHtml(classes.join(" ")) +
+      '" style="' +
+      escapeHtml(style) +
+      '"><span class="table-cell-text">' +
+      escapeHtml(formatMonthlyRetailValue(value, column)) +
+      "</span></td>"
+    );
+  }
+
+  function buildMonthlyRetailSummaryRow(rows, leafColumns, summaryLabelKey) {
+    var summary = {};
+    (leafColumns || []).forEach(function eachColumn(column) {
+      if (column.key === summaryLabelKey) {
+        summary[column.key] = "汇总";
+        return;
+      }
+      if (column.summary !== "sum") {
+        summary[column.key] = "--";
+        return;
+      }
+      var hasNumber = false;
+      var total = (rows || []).reduce(function reduce(sum, row) {
+        var value = getFiniteNumber(row[column.key]);
+        if (value === null) {
+          return sum;
+        }
+        hasNumber = true;
+        return sum + value;
+      }, 0);
+      summary[column.key] = hasNumber ? total : "--";
+    });
+    return summary;
+  }
+
+  function getMonthlyRetailTableMinWidth(config, leafColumns) {
+    return (
+      config.minWidth ||
+      (leafColumns || []).reduce(function reduce(total, column) {
+        return total + (column.width || 120);
+      }, 0)
+    );
+  }
+
+  function renderMonthlyRetailTable(config, rows) {
+    var leafColumns = flattenMonthlyColumns(config.columns);
+    var offsets = getMonthlyLeafOffsets(leafColumns);
+    var summaryRow = buildMonthlyRetailSummaryRow(rows, leafColumns, config.summaryLabelKey);
+    var bodyRows = (rows || [])
+      .map(function mapRow(row) {
+        return (
+          "<tr>" +
+          leafColumns
+            .map(function mapColumn(column) {
+              return renderMonthlyRetailCell(row, column, offsets, false);
+            })
+            .join("") +
+          "</tr>"
+        );
+      })
+      .join("");
+    var summaryHtml =
+      "<tr>" +
+      leafColumns
+        .map(function mapColumn(column) {
+          return renderMonthlyRetailCell(summaryRow, column, offsets, true);
+        })
+        .join("") +
+      "</tr>";
+
+    return (
+      '<div class="monthly-retail-table-wrap">' +
+      '<table class="data-table monthly-retail-table" style="min-width:' +
+      escapeHtml(String(getMonthlyRetailTableMinWidth(config, leafColumns))) +
+      'px"><thead>' +
+      renderMonthlyRetailHeader(config.columns, leafColumns, offsets) +
+      "</thead><tbody>" +
+      bodyRows +
+      "</tbody><tfoot>" +
+      summaryHtml +
+      "</tfoot></table></div>"
+    );
+  }
+
+  function getMonthlySelectOptions(rows, rowKey) {
+    var options = ["全部"];
+    (rows || []).forEach(function eachRow(row) {
+      var value = row[rowKey];
+      if (value !== null && value !== undefined && value !== "" && options.indexOf(String(value)) < 0) {
+        options.push(String(value));
+      }
+    });
+    return options;
+  }
+
+  function renderMonthlyRangeFilter(filter) {
+    var filters = state.settlement.filters;
+    return (
+      '<label class="info-filter-field monthly-range-filter"><span class="filter-label">' +
+      escapeHtml(filter.label) +
+      "：</span>" +
+      '<input class="filter-input monthly-range-input" type="text" value="' +
+      escapeHtml(filters[filter.minKey] || "") +
+      '" placeholder="最小值" data-filter-scope="settlement" data-filter-key="' +
+      escapeHtml(filter.minKey) +
+      '" />' +
+      '<span class="monthly-range-separator">至</span>' +
+      '<input class="filter-input monthly-range-input" type="text" value="' +
+      escapeHtml(filters[filter.maxKey] || "") +
+      '" placeholder="最大值" data-filter-scope="settlement" data-filter-key="' +
+      escapeHtml(filter.maxKey) +
+      '" /></label>'
+    );
+  }
+
+  function renderMonthlyRetailFilters(config) {
+    return (config.filters || [])
+      .map(function mapFilter(filter) {
+        if (filter.type === "select") {
+          return renderBoundSelectFilter(
+            filter.label,
+            state.settlement.filters[filter.fieldKey] || "全部",
+            getMonthlySelectOptions(config.rows, filter.rowKey),
+            filter.fieldKey,
+            "settlement",
+            "filter-select-native",
+          );
+        }
+        if (filter.type === "range") {
+          return renderMonthlyRangeFilter(filter);
+        }
+        return renderBoundTextFilter(
+          filter.label,
+          state.settlement.filters[filter.fieldKey],
+          filter.placeholder || "请输入" + filter.label,
+          filter.fieldKey,
+          "settlement",
+        );
+      })
+      .join("");
+  }
+
+  function parseMonthlyRangeValue(value) {
+    if (value === null || value === undefined || value === "") {
+      return null;
+    }
+    var parsed = Number(String(value).replace(/,/g, ""));
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  function getFilteredMonthlyRetailRows(config) {
+    var filters = state.settlement.filters;
+    if (getMonthlySettlementRunMonth() !== getSettlementDefaultMonth()) {
+      return [];
+    }
+
+    return (config.rows || []).filter(function filterRow(row) {
+      return (config.filters || []).every(function matchFilter(filter) {
+        if (filter.type === "text") {
+          return includesKeyword(row[filter.rowKey], filters[filter.fieldKey]);
+        }
+        if (filter.type === "select") {
+          return matchesOption(String(row[filter.rowKey] || ""), filters[filter.fieldKey], "全部");
+        }
+        if (filter.type === "range") {
+          var numericValue = getFiniteNumber(row[filter.rowKey]);
+          var minValue = parseMonthlyRangeValue(filters[filter.minKey]);
+          var maxValue = parseMonthlyRangeValue(filters[filter.maxKey]);
+          if (numericValue === null) {
+            return minValue === null && maxValue === null;
+          }
+          return (minValue === null || numericValue >= minValue) && (maxValue === null || numericValue <= maxValue);
+        }
+        return true;
+      });
+    });
+  }
+
+  function renderMonthlyRetailDetailModule() {
+    var config = getMonthlySettlementConfig();
+    var rows = getFilteredMonthlyRetailRows(config);
+
+    return (
+      '<section class="panel monthly-retail-panel">' +
+      '<div class="section-heading monthly-section-heading">' +
+      '<div><div class="section-heading-title">零售用户结算明细</div>' +
+      '<div class="section-subtitle">按当前交易中心加载对应省份 Excel 原始表头、字段顺序与汇总口径</div></div>' +
+      "</div>" +
+      '<div class="monthly-retail-filter-row">' +
+      renderMonthlyRetailFilters(config) +
+      "</div>" +
+      (rows.length
+        ? renderMonthlyRetailTable(config, rows)
+        : renderEmptyState({
+            escapeHtml: escapeHtml,
+            renderIcon: renderIcon,
+            message: "当前结算月份或筛选条件下暂无月结算零售用户明细数据",
+          })) +
+      "</section>"
+    );
+  }
+
+  function renderUnifiedMonthlySettlementContent() {
+    var pageData = getMonthlySettlementPageData();
+    return (
+      renderMonthlySettlementSummaryModule(pageData) +
+      renderMonthlyRetailDetailModule()
+    );
+  }
+
   function renderUnifiedSettlementContent() {
     var centerKey = getSelectedTradeCenterKey();
     var secondaryTab = getSettlementActiveSecondaryTab();
@@ -8915,14 +9772,14 @@
       if (state.settlement.activeTab === "日清算") {
         return renderHunanDailySettlementContent();
       }
-      return renderHunanMonthlySellerContent();
+      return renderUnifiedMonthlySettlementContent();
     }
 
     if (state.settlement.activeTab === "日清算") {
       return renderShaanxiDailySettlementContent();
     }
     if (centerKey === "shaanxi") {
-      return renderShaanxiMonthlySellerContent();
+      return renderUnifiedMonthlySettlementContent();
     }
     if (secondaryTab === "用电企业") {
       return renderShaanxiMonthlyConsumerContent();
@@ -10316,7 +11173,9 @@
 
     if (isUnifiedCenter) {
       return (
-        renderMarketPageHeader(settlementMock.title || "日清月结", renderPageTabs(settlementMock.tabs || [], activeTab)) +
+        renderMarketPageHeader(settlementMock.title || "日清月结", renderSettlementPageTabs(settlementMock.tabs || [], activeTab), {
+          tradeCenterOptions: SETTLEMENT_TRADE_CENTER_OPTIONS,
+        }) +
         secondaryTabsHtml +
         renderSettlementFilterBar() +
         renderDownloadOnlyBar(status, false) +
@@ -10329,7 +11188,9 @@
     var hasData = Boolean((settlementMock.dailyRows || []).length || (settlementMock.monthRows || []).length);
 
     return (
-      renderMarketPageHeader(settlementMock.title || "日清月结", renderPageTabs(settlementMock.tabs || [], activeTab)) +
+      renderMarketPageHeader(settlementMock.title || "日清月结", renderSettlementPageTabs(settlementMock.tabs || [], activeTab), {
+        tradeCenterOptions: SETTLEMENT_TRADE_CENTER_OPTIONS,
+      }) +
       renderSettlementFilterBar() +
       renderDownloadOnlyBar(status, false) +
       (hasData
@@ -11893,6 +12754,34 @@
       setFlashMessage("刷新请求已提交。", "info");
       return true;
     }
+    if (action === "query-info-disclosure-filters") {
+      var infoFilterPageData = getInfoDisclosurePageData();
+      var infoFilterRange = getInfoDisclosureActiveRange(infoFilterPageData);
+      if (!isRangeValid(infoFilterRange)) {
+        setFlashMessage("请选择有效的运行日期。", "info");
+        return true;
+      }
+      if (isCurrentMarketDisclosureView()) {
+        getMarketDisclosureState().lastUpdatedAt = formatDateTime(new Date());
+        getMarketDisclosureState().queryCount += 1;
+      }
+      if (isSingleMetricLoadPage(infoFilterPageData)) {
+        triggerSingleMetricLoadRefresh();
+        return true;
+      }
+      setFlashMessage("已按当前运行日期和筛选条件刷新数据。", "success");
+      return true;
+    }
+    if (action === "reset-info-disclosure-filters") {
+      var resetFilterPageData = getInfoDisclosurePageData();
+      resetUnifiedInfoDisclosureFieldFilters(resetFilterPageData);
+      if ((resetFilterPageData && resetFilterPageData.viewType === "nodePrice") || getActiveInfoTab() === "节点电价") {
+        state.tradeResult.filters.nodeKeyword = "";
+      }
+      state.info.profileViewMode = "";
+      setFlashMessage("筛选条件已重置。", "info");
+      return true;
+    }
     if (action === "query-market-disclosure") {
       var disclosureState = getMarketDisclosureState();
       if (!isRangeValid(disclosureState.filterRange)) {
@@ -11940,32 +12829,34 @@
       return true;
     }
     if (action === "query-sale-company") {
-      if (!isRangeValid(state.info.filters.saleCompanyRange)) {
+      var saleCompanyQueryRange = getInfoTimeSharingRange();
+      if (!isRangeValid(saleCompanyQueryRange)) {
         setFlashMessage("请选择有效的运行日期范围。", "info");
         return true;
       }
-      if (getRangeDays(state.info.filters.saleCompanyRange) > 366) {
+      if (getRangeDays(saleCompanyQueryRange) > 366) {
         setFlashMessage("单次查询时间范围最大支持 1 年", "info");
         return true;
       }
-      state.info.filters.saleCompanyAppliedRange = cloneRange(state.info.filters.saleCompanyRange);
+      setInfoTimeSharingRange(saleCompanyQueryRange);
       state.ui.hasCompare = false;
       state.info.companyQueryAt = Date.now();
-      setFlashMessage("已按当前日期范围更新售电公司分时电量。", "success");
+      setFlashMessage("已按当前运行日期和筛选条件更新售电公司分时电量。", "success");
       return true;
     }
     if (action === "reset-sale-company") {
-      resetSaleCompanyPowerFilters();
+      resetSaleCompanyPowerBusinessFilters();
       state.info.companyQueryAt = Date.now();
       setFlashMessage("售电公司分时电量筛选已重置。", "info");
       return true;
     }
     if (action === "query-enterprise") {
-      if (!isRangeValid(state.info.filters.enterpriseRange)) {
+      var enterpriseQueryRange = getInfoTimeSharingRange();
+      if (!isRangeValid(enterpriseQueryRange)) {
         setFlashMessage("请选择有效的运行日期范围。", "info");
         return true;
       }
-      if (getRangeDays(state.info.filters.enterpriseRange) > 366) {
+      if (getRangeDays(enterpriseQueryRange) > 366) {
         setFlashMessage("单次查询时间范围最大支持 1 年", "info");
         return true;
       }
@@ -11973,7 +12864,7 @@
       return true;
     }
     if (action === "reset-enterprise") {
-      resetEnterprisePowerFilters();
+      resetEnterprisePowerBusinessFilters();
       setFlashMessage("用电企业分时电量筛选已重置。", "info");
       return true;
     }
@@ -12009,9 +12900,11 @@
     }
     if (action === "query-settlement-month") {
       setFlashMessage(
-        getSelectedTradeCenterKey() === "shaanxi"
-          ? "已按结算月份刷新陕西月结算数据。"
-          : "已更新月结算结果。",
+        getSelectedTradeCenterKey() === "hunan"
+          ? "已按结算月份刷新湖南月结算页面全部数据。"
+          : getSelectedTradeCenterKey() === "shaanxi"
+            ? "已按结算月份刷新陕西月结算页面全部数据。"
+            : "已更新月结算结果。",
         "success"
       );
       return true;
@@ -12026,6 +12919,8 @@
         state.settlement.filters.monthlySellerCompanyName = "";
         state.settlement.filters.monthlyEnterpriseName = "";
         state.settlement.filters.monthlyEnterpriseAccountNo = "";
+        state.settlement.monthlySide = "购电侧";
+        clearMonthlyRetailFilters();
       }
       setFlashMessage("月结算筛选已重置。", "info");
       return true;
@@ -12137,10 +13032,12 @@
       return true;
     }
     if (action === "reset-declaration") {
-      state.declaration.filters.declarationRange = {
-        start: "2026-05-09",
-        end: "2026-05-09",
-      };
+      if (!isInfoDisclosurePage(state.currentPageKey)) {
+        state.declaration.filters.declarationRange = {
+          start: "2026-05-09",
+          end: "2026-05-09",
+        };
+      }
       state.declaration.filters.unit = "全部";
       state.declaration.filters.status = "全部";
       setFlashMessage("日前申报筛选已重置。", "info");
@@ -12506,6 +13403,13 @@
     if (shaanxiSettlementTypeButton) {
       state.settlement.filters.dailyStatementType = shaanxiSettlementTypeButton.getAttribute("data-shaanxi-settlement-type");
       state.ui.downloadDataType = getCurrentDownloadType();
+      renderApp();
+      return;
+    }
+
+    var monthlySettlementSideButton = event.target.closest("[data-monthly-settlement-side]");
+    if (monthlySettlementSideButton) {
+      state.settlement.monthlySide = monthlySettlementSideButton.getAttribute("data-monthly-settlement-side");
       renderApp();
       return;
     }

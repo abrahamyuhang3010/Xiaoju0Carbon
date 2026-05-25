@@ -5,6 +5,16 @@
     var renderIcon = options.renderIcon;
     var dropdown = "";
 
+    function getOptionLabel(option) {
+      if (option === "湖南电力交易中心") {
+        return "湖南交易中心";
+      }
+      if (option === "陕西电力交易中心") {
+        return "陕西交易中心";
+      }
+      return option || "";
+    }
+
     if (options.isOpen) {
       dropdown =
         '<div class="selector-dropdown trade-center-dropdown">' +
@@ -17,7 +27,7 @@
               escapeHtml(option) +
               '">' +
               "<span>" +
-              escapeHtml(option) +
+              escapeHtml(getOptionLabel(option)) +
               "</span>" +
               "</button>"
             );
@@ -30,7 +40,7 @@
       '<div class="selector-shell trade-center-selector">' +
       '<button class="select-like selector-trigger" data-trade-center-toggle="main">' +
       "<span>" +
-      escapeHtml(options.selected) +
+      escapeHtml(getOptionLabel(options.selected)) +
       "</span>" +
       renderIcon("chevron-down", "inline-caret-icon") +
       "</button>" +
