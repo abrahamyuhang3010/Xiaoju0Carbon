@@ -822,6 +822,8 @@
 
     return {
       settlementDate: "2026-04-01",
+      settlementTypeName: "清分单据",
+      dataType: "日清算明细",
       sellerName: "北京小桔新能源汽车科技有限公司",
       period: period,
       actualUsage: hunanDailySettlementActualUsageRows[index],
@@ -843,6 +845,8 @@
   });
   hunanDailySettlementRows.push({
     settlementDate: "2026-04-01",
+    settlementTypeName: "清分单据",
+    dataType: "日清算明细",
     sellerName: "北京小桔新能源汽车科技有限公司",
     period: "合计",
     actualUsage: 321.163,
@@ -868,8 +872,8 @@
     dataSource: "湖南交易中心日清算PDF解析",
     filters: {
       dateRange: {
-        start: "2026-05-01",
-        end: "2026-05-08",
+        start: "2026-04-01",
+        end: "2026-04-01",
       },
       primaryTab: "日清算",
       secondaryTab: "",
@@ -999,6 +1003,58 @@
       remark: "合计",
     },
   ];
+  var hunanMonthlySettlementColumns = [
+    { key: "subjectCode", label: "结算科目编码", fixed: true, width: 150 },
+    { key: "subjectName", label: "结算科目", fixed: true, width: 220 },
+    { key: "tradePlanPower", label: "交易计划电量", type: "energy", width: 150 },
+    { key: "settlementPowerOrCapacity", label: "结算电量/容量", type: "energy", width: 150 },
+    { key: "settlementPriceOrAverage", label: "结算电价/均价", type: "price", width: 150 },
+    { key: "settlementFee", label: "结算电费", type: "money", width: 150 },
+    { key: "remark", label: "备注", width: 180 },
+  ];
+  var hunanMonthlyPurchaseRows = [
+    { subjectCode: "01010202", subjectName: "批发市场购电费用", tradePlanPower: 0.000, settlementPowerOrCapacity: 0.000, settlementPriceOrAverage: 0.000, settlementFee: 0.00, remark: "" },
+    { subjectCode: "01010203", subjectName: "中长期合约电能量费用", tradePlanPower: 5824.700, settlementPowerOrCapacity: 5824.700, settlementPriceOrAverage: 369.529, settlementFee: 2152397.10, remark: "" },
+    { subjectCode: "01020201", subjectName: "日前市场电能量费用", tradePlanPower: 4775.315, settlementPowerOrCapacity: 4775.315, settlementPriceOrAverage: 43.595, settlementFee: 208181.59, remark: "" },
+    { subjectCode: "0102020301", subjectName: "实时市场电能量费用", tradePlanPower: -699.663, settlementPowerOrCapacity: -699.663, settlementPriceOrAverage: 72.816, settlementFee: -50946.44, remark: "" },
+    { subjectCode: "01020205", subjectName: "偏差考核费用", tradePlanPower: 115.880, settlementPowerOrCapacity: 115.880, settlementPriceOrAverage: 50.188, settlementFee: 5815.76, remark: "" },
+    { subjectCode: "01020204", subjectName: "辅助服务费用", tradePlanPower: 2.069, settlementPowerOrCapacity: 2.069, settlementPriceOrAverage: 75.099, settlementFee: 155.38, remark: "" },
+    { subjectCode: "小计", subjectName: "购电侧小计", tradePlanPower: 9902.421, settlementPowerOrCapacity: 9902.421, settlementPriceOrAverage: 233.83, settlementFee: 2315603.39, remark: "" },
+  ];
+  var hunanMonthlySaleRows = [
+    { subjectCode: "0202030101", subjectName: "零售市场售电收入", tradePlanPower: 9902.421, settlementPowerOrCapacity: 9902.421, settlementPriceOrAverage: 309.986, settlementFee: 3069707.89, remark: "" },
+    { subjectCode: "0202030104", subjectName: "代理服务收益", tradePlanPower: 0.000, settlementPowerOrCapacity: 0.000, settlementPriceOrAverage: null, settlementFee: 377052.25, remark: "" },
+    { subjectCode: "小计", subjectName: "售电侧小计", tradePlanPower: 9902.421, settlementPowerOrCapacity: 9902.421, settlementPriceOrAverage: 348.060, settlementFee: 3446760.14, remark: "" },
+    { subjectCode: "合计", subjectName: "售电公司月结算合计", tradePlanPower: 9902.421, settlementPowerOrCapacity: 9902.421, settlementPriceOrAverage: 271.919, settlementFee: 2692655.64, remark: "" },
+  ];
+  var hunanMonthlySettlementData = {
+    provinceCode: "hn",
+    provinceName: "湖南",
+    hasPurchaseSaleSide: true,
+    month: "2026-04",
+    updateTime: hunanMonthlySettlementSummary.updateTime,
+    updateSource: "PDF解析",
+    purchaseSide: {
+      summaryCards: [
+        { label: "当年实际用电量", value: null, unit: "MWh", digits: 3 },
+        { label: "中长期交易电量", value: 5824.700, unit: "MWh", digits: 3 },
+        { label: "中长期占实际用电比例", value: null, unit: "%", digits: 2 },
+        { label: "度电收益", value: null, unit: "厘", digits: 2 },
+      ],
+      tableColumns: hunanMonthlySettlementColumns,
+      tableRows: hunanMonthlyPurchaseRows,
+    },
+    saleSide: {
+      summaryCards: [
+        { label: "当年实际用电量", value: null, unit: "MWh", digits: 3 },
+        { label: "中长期交易电量", value: null, unit: "MWh", digits: 3 },
+        { label: "中长期占实际用电比例", value: null, unit: "%", digits: 2 },
+        { label: "度电收益", value: 38.08, unit: "厘", digits: 2 },
+      ],
+      tableColumns: hunanMonthlySettlementColumns,
+      tableRows: hunanMonthlySaleRows,
+    },
+  };
   var hunanMonthlySettlementFiles = [
     {
       id: "hn-monthly-pdf-001",
@@ -2165,8 +2221,9 @@
             secondaryTabs: {
               "负荷信息": "infoGenerationOutput",
               "负荷详情": "infoGenerationOutput",
-              "机组检修容量": "infoMaintenanceComposite",
               "备用信息": "infoReserve",
+              "机组状态": "infoMaintenanceComposite",
+              "发输变电设备检修计划": "infoMaintenanceComposite",
             },
           },
           "全省统一出清价": "infoUnifiedPrice",
@@ -2238,6 +2295,7 @@
       tabs: ["日清算", "月结算"],
       dailyRows: settlementDailyRows,
       monthRows: settlementMonthRows,
+      monthlySettlementData: hunanMonthlySettlementData,
     },
     retailRelation: {
       title: "零售关系",

@@ -2239,8 +2239,29 @@ a {
   background: #fbfcff;
 }
 
+.data-table .table-fixed-col {
+  position: sticky;
+  z-index: 2;
+  background: #fff;
+  box-shadow: 1px 0 0 var(--line);
+}
+
+.data-table thead .table-fixed-col {
+  z-index: 4;
+  background: #f8fafc;
+}
+
+.data-table tbody tr:nth-child(even) .table-fixed-col {
+  background: #fbfcff;
+}
+
 .data-table tbody td.settlement-total-cell {
   font-weight: 700;
+  background: #f4f8ff;
+}
+
+.data-table tbody tr:nth-child(even) .table-fixed-col.settlement-total-cell,
+.data-table tbody .table-fixed-col.settlement-total-cell {
   background: #f4f8ff;
 }
 
@@ -2564,10 +2585,16 @@ a {
   gap: 16px;
 }
 
+.monthly-side-filter .filter-label {
+  white-space: nowrap;
+}
+
 .monthly-side-tabs {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  max-width: 100%;
+  overflow-x: auto;
   padding: 4px;
   background: #f3f6fb;
   border: 1px solid var(--line);
@@ -2575,12 +2602,14 @@ a {
 }
 
 .monthly-side-tab {
+  flex: 0 0 auto;
   height: 30px;
   padding: 0 14px;
   color: var(--muted);
   border-radius: 6px;
   font-size: 13px;
   font-weight: 700;
+  white-space: nowrap;
   cursor: pointer;
 }
 
@@ -2588,6 +2617,82 @@ a {
   color: var(--blue);
   background: #fff;
   box-shadow: 0 4px 10px rgba(22, 119, 255, 0.08);
+}
+
+.monthly-settlement-card-grid {
+  margin-top: 14px;
+}
+
+.monthly-settlement-card-grid .summary-card {
+  padding: 14px 16px;
+  border-radius: 8px;
+}
+
+.monthly-settlement-card-grid .summary-card-value {
+  margin-top: 10px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.monthly-settlement-update-bar {
+  margin-top: 14px;
+}
+
+.monthly-settlement-actions {
+  position: relative;
+}
+
+.monthly-settlement-actions .ghost-btn,
+.monthly-settlement-actions .primary-btn {
+  white-space: nowrap;
+}
+
+.monthly-more-dropdown {
+  position: relative;
+}
+
+.monthly-more-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  display: none;
+  min-width: 124px;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.monthly-more-dropdown:hover .monthly-more-menu,
+.monthly-more-dropdown:focus-within .monthly-more-menu {
+  display: block;
+}
+
+.monthly-more-menu-item {
+  width: 100%;
+  height: 32px;
+  padding: 0 10px;
+  color: var(--text);
+  font-size: 13px;
+  text-align: left;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.monthly-more-menu-item:hover {
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+
+.monthly-settlement-table-panel {
+  margin-top: 14px;
+}
+
+.monthly-settlement-table-wrap {
+  max-height: 560px;
 }
 
 .monthly-metric-grid {
@@ -3434,5 +3539,12 @@ a {
 
   .hn-settlement-doc-meta {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1120px) {
+  .summary-card-grid.monthly-settlement-card-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
   }
 }

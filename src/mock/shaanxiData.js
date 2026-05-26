@@ -774,6 +774,8 @@
     if (index === 0) {
       return {
         settlementDate: shaanxiDailySettlementDate,
+        settlementTypeName: "用户侧日清分账单",
+        dataType: "解析结果",
         settlementUnitName: shaanxiDailySettlementUnitName,
         period: "1",
         timePoint: "00:15",
@@ -797,6 +799,8 @@
     if (index === 1) {
       return {
         settlementDate: shaanxiDailySettlementDate,
+        settlementTypeName: "用户侧日清分账单",
+        dataType: "解析结果",
         settlementUnitName: shaanxiDailySettlementUnitName,
         period: "2",
         timePoint: "00:30",
@@ -857,6 +861,8 @@
 
     return {
       settlementDate: shaanxiDailySettlementDate,
+      settlementTypeName: "用户侧日清分账单",
+      dataType: "解析结果",
       settlementUnitName: shaanxiDailySettlementUnitName,
       period: String(periodNumber),
       timePoint: timePoint,
@@ -1084,6 +1090,61 @@
       remark: "合计",
     },
   ];
+  var shaanxiMonthlySettlementColumns = [
+    { key: "subjectCode", label: "结算科目编码", fixed: true, width: 150 },
+    { key: "subjectName", label: "结算科目", fixed: true, width: 220 },
+    { key: "monthlyTradePlanPower", label: "分月交易计划电量", type: "energy", width: 160 },
+    { key: "settlementPower", label: "结算电量", type: "energy", width: 140 },
+    { key: "settlementPriceOrAverage", label: "结算电价/均价", type: "price", width: 150 },
+    { key: "settlementFee", label: "结算电费", type: "money", width: 150 },
+    { key: "remark", label: "备注", width: 220 },
+  ];
+  var shaanxiMonthlyPurchaseRows = [
+    { subjectCode: "01", subjectName: "电量清分", monthlyTradePlanPower: 6025.925, settlementPower: 6025.925, settlementPriceOrAverage: 190.633, settlementFee: 1148739.45, remark: "" },
+    { subjectCode: "0101", subjectName: "中长期交易", monthlyTradePlanPower: 3193.288, settlementPower: 3193.288, settlementPriceOrAverage: 259.275, settlementFee: 827939.23, remark: "" },
+    { subjectCode: "0101020311", subjectName: "双边协商", monthlyTradePlanPower: 2389.006, settlementPower: 2389.006, settlementPriceOrAverage: 315.000, settlementFee: 752536.89, remark: "" },
+    { subjectCode: "0101020312", subjectName: "集中竞价", monthlyTradePlanPower: 1098.585, settlementPower: 1098.585, settlementPriceOrAverage: 166.040, settlementFee: 182409.13, remark: "" },
+    { subjectCode: "010110", subjectName: "其他中长期交易", monthlyTradePlanPower: -294.303, settlementPower: -294.303, settlementPriceOrAverage: 363.594, settlementFee: -107006.79, remark: "" },
+    { subjectCode: "01020201", subjectName: "日前交易", monthlyTradePlanPower: 0.000, settlementPower: 2821.989, settlementPriceOrAverage: 105.991, settlementFee: 299106.52, remark: "" },
+    { subjectCode: "01020203", subjectName: "实时交易", monthlyTradePlanPower: 0.000, settlementPower: 10.648, settlementPriceOrAverage: 2037.350, settlementFee: 21693.70, remark: "" },
+    { subjectCode: "0202030013", subjectName: "日前申报偏差获益回收", monthlyTradePlanPower: 0.000, settlementPower: 14.260, settlementPriceOrAverage: 647.667, settlementFee: 9235.73, remark: "" },
+    { subjectCode: "其中（国网）", subjectName: "其中（国网）", monthlyTradePlanPower: 6025.925, settlementPower: 6025.925, settlementPriceOrAverage: 190.633, settlementFee: 1148739.45, remark: "" },
+    { subjectCode: "合计", subjectName: "购电侧合计", monthlyTradePlanPower: 6025.925, settlementPower: 6025.925, settlementPriceOrAverage: 192.166, settlementFee: 1157975.18, remark: "" },
+  ];
+  var shaanxiMonthlySaleRows = [
+    { subjectCode: "0101020315", subjectName: "零售交易", monthlyTradePlanPower: 6025.925, settlementPower: 6025.925, settlementPriceOrAverage: 202.995, settlementFee: 1223232.87, remark: "" },
+    { subjectCode: "0202030018", subjectName: "封顶价差返还", monthlyTradePlanPower: 0.000, settlementPower: 0.000, settlementPriceOrAverage: null, settlementFee: -65257.69, remark: "封顶价差返还费用" },
+    { subjectCode: "其中（国网）", subjectName: "其中（国网）", monthlyTradePlanPower: 6025.925, settlementPower: 6025.925, settlementPriceOrAverage: 202.995, settlementFee: 1223232.87, remark: "" },
+    { subjectCode: "合计", subjectName: "售电公司月结算合计", monthlyTradePlanPower: 6025.925, settlementPower: 6025.925, settlementPriceOrAverage: 192.166, settlementFee: 1157975.18, remark: "" },
+  ];
+  var shaanxiMonthlySettlementData = {
+    provinceCode: "sx",
+    provinceName: "陕西",
+    hasPurchaseSaleSide: true,
+    month: shaanxiMonthlySettlementSummary.settlementMonth,
+    updateTime: shaanxiMonthlySettlementSummary.updateTime,
+    updateSource: "PDF解析",
+    purchaseSide: {
+      summaryCards: [
+        { label: "当年实际用电量", value: null, unit: "MWh", digits: 3 },
+        { label: "中长期交易电量", value: shaanxiMonthlySettlementSummary.buyerContractPower, unit: "MWh", digits: 3 },
+        { label: "中长期占实际用电比例", value: null, unit: "%", digits: 2 },
+        { label: "度电收益", value: null, unit: "厘", digits: 2 },
+      ],
+      tableColumns: shaanxiMonthlySettlementColumns,
+      tableRows: shaanxiMonthlyPurchaseRows,
+    },
+    saleSide: {
+      summaryCards: [
+        { label: "当年实际用电量", value: null, unit: "MWh", digits: 3 },
+        { label: "中长期交易电量", value: null, unit: "MWh", digits: 3 },
+        { label: "中长期占实际用电比例", value: null, unit: "%", digits: 2 },
+        { label: "度电收益", value: 10.83, unit: "厘", digits: 2 },
+      ],
+      tableColumns: shaanxiMonthlySettlementColumns,
+      tableRows: shaanxiMonthlySaleRows,
+    },
+  };
   var shaanxiMonthlySettlementFiles = [
     {
       id: "sx-monthly-pdf-001",
@@ -1957,8 +2018,8 @@
             secondaryTabs: {
               "负荷信息": "infoEmptyLoad",
               "负荷详情": "infoEmptyLoadDetail",
-              "机组检修容量": "infoUnitStatus",
               "备用信息": "infoReserve",
+              "机组状态": "infoUnitStatus",
             },
           },
           "全省统一出清价": "infoUnifiedPrice",
@@ -2020,6 +2081,7 @@
       tabs: ["日清算", "月结算"],
       dailyRows: settlementDailyRows,
       monthRows: settlementMonthRows,
+      monthlySettlementData: shaanxiMonthlySettlementData,
     },
     retailRelation: {
       title: "零售关系",

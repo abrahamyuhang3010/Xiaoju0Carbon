@@ -251,6 +251,41 @@
     };
   }
 
+  function buildDisclosureTablePage(options) {
+    var columns = cloneValue(options.columns || []);
+    var rows = cloneValue(options.rows || []);
+    var updateTime = options.updateTime || "";
+    var updateSource = options.updateSource || options.dataSource || "";
+
+    return {
+      title: options.title || "",
+      description: options.description || "",
+      updateTime: updateTime,
+      publishTime: options.publishTime || options.dataPublishTime || getFirstFilePublishTime(options.fileList),
+      dataSource: options.dataSource || updateSource,
+      updateSource: updateSource,
+      hasDataSource: options.hasDataSource !== false,
+      filters: cloneValue(options.filters || {}),
+      viewType: "disclosureTable",
+      datePickerMode: "single",
+      tableTitle: options.tableTitle || options.title || "",
+      tableColumns: columns,
+      tableData: rows,
+      tableMinWidth: options.tableMinWidth || Math.max(920, columns.length * 148),
+      disclosureTableData: {
+        provinceCode: options.provinceCode || "",
+        tabKey: options.tabKey || "",
+        updateTime: updateTime,
+        updateSource: updateSource,
+        columns: columns,
+        rows: rows,
+        minWidth: options.tableMinWidth || Math.max(920, columns.length * 148),
+      },
+      fileList: cloneValue(options.fileList || []),
+      emptyText: options.emptyText || DEFAULT_EMPTY_TEXT,
+    };
+  }
+
   function ensurePageData(data, fallback) {
     var normalized = createEmptyPageData(fallback || {});
     var source = data ? cloneValue(data) : {};
@@ -1105,13 +1140,14 @@
     }
 
     var dayValues = rows.slice(0, 8).map(function mapRow(row) {
-      return Number(row.totalFee || 0);
+      return Number(row.totalFee || (row.dataType === "电费" ? row.totalValue || row["合计值"] : 0) || 0);
     });
     var daySeries = createSeries(
       "dailySettlementFee",
       "日清算总电费",
       rows.slice(0, 8).map(function mapRow(row) {
-        return row.enterpriseName + " " + row.date.slice(5);
+        var rowDate = row.date || row["日期"] || "";
+        return (row.enterpriseName || row["企业名称"] || "") + " " + String(rowDate).slice(5);
       }),
       dayValues,
       "元",
@@ -1128,6 +1164,10 @@
         pageType: "settlement",
         primaryTab: "日清算",
         secondaryTab: "",
+        dateRange: settlement.dailyDateRange || {
+          start: rows[0].date || rows[0]["日期"] || "",
+          end: rows[0].date || rows[0]["日期"] || "",
+        },
       },
       summaryCards: [
         { label: "明细条数", value: rows.length, unit: "条" },
@@ -1150,7 +1190,7 @@
       chartType: "bar",
       chartUnit: "元",
       chartSeries: [daySeries],
-      tableColumns: [
+      tableColumns: settlement.dailyColumns || [
         { key: "date", title: "清算日期" },
         { key: "enterpriseCode", title: "用户编码" },
         { key: "enterpriseName", title: "用户名称" },
@@ -1536,6 +1576,52 @@
       fileList: createMockFileList("gd-maintenance", "2026-05-09", 3),
       emptyText: "当前日期暂无广东检修容量 mock 数据。",
     };
+  }
+
+  function buildGuangdongTransmissionMaintenancePlanPage(bundle) {
+    var info = bundle.infoDisclosure || {};
+    var rows = info.transmissionMaintenancePlanRows || [];
+
+    return buildDisclosureTablePage({
+      provinceCode: "gd",
+      tabKey: "transmissionMaintenancePlan",
+      title: "发输变电设备检修计划",
+      tableTitle: "发输变电设备检修计划",
+      description: "广东交易中心发输变电设备检修计划按上传文件字段展示。",
+      updateTime: info.transmissionMaintenancePlanUpdateTime || bundle.dataUpdatedAt || "",
+      publishTime: info.transmissionMaintenancePlanPublishTime || info.publishTime || bundle.dataPublishTime || "",
+      dataSource: "广东电力交易中心发输变电设备检修计划",
+      updateSource: "广东-机组检修预测信息.xlsx",
+      filters: {
+        tradeCenter: "guangdong",
+        pageType: "infoDisclosure",
+        primaryTab: "负荷信息",
+        secondaryTab: "发输变电设备检修计划",
+        date: info.defaultRunDate || "",
+      },
+      columns: [
+        { key: "sequence", title: "序号" },
+        { key: "plantName", title: "电厂名称" },
+        { key: "unitName", title: "机组名称" },
+        { key: "statusType", title: "状态类型" },
+        { key: "changeReason", title: "设备改变原因" },
+        { key: "startTime", title: "开始时间" },
+        { key: "endTime", title: "结束时间" },
+      ],
+      rows: rows,
+      tableMinWidth: 1180,
+      fileList: [
+        {
+          id: "gd-transmission-maintenance-plan-source",
+          fileName: "广东-机组检修预测信息.xlsx",
+          fileType: "XLSX",
+          publishTime: info.transmissionMaintenancePlanPublishTime || "",
+          size: "20KB",
+          downloadUrl: "#",
+        },
+      ],
+      emptyText: "当前日期暂无广东发输变电设备检修计划数据。",
+    });
   }
 
   function buildGuangdongReservePage(bundle) {
@@ -2165,6 +2251,9 @@
       if (activeSecondaryTab === "备用信息") {
         return buildGuangdongReservePage(bundle);
       }
+      if (activeSecondaryTab === "发输变电设备检修计划") {
+        return buildGuangdongTransmissionMaintenancePlanPage(bundle);
+      }
       if (activeSecondaryTab !== "负荷信息") {
         return null;
       }
@@ -2226,6 +2315,25 @@
       return "success";
     }
     return "default";
+  }
+
+  function buildUnavailableLoadInfoSubTabPage(tradeCenterKey, bundle, secondaryTab) {
+    return {
+      title: secondaryTab || "",
+      description: "",
+      updateTime: bundle.dataUpdatedAt || "",
+      publishTime: bundle.dataPublishTime || "",
+      dataSource: TRADE_CENTER_NAMES[tradeCenterKey] || "",
+      hasDataSource: false,
+      viewType: "empty",
+      filters: {
+        tradeCenter: tradeCenterKey,
+        pageType: "infoDisclosure",
+        primaryTab: "负荷信息",
+        secondaryTab: secondaryTab || "",
+      },
+      emptyText: (TRADE_CENTER_NAMES[tradeCenterKey] || "当前交易中心") + "暂未接入" + (secondaryTab || "该") + "数据源。",
+    };
   }
 
   function buildHunanLoadInfoPage(bundle) {
@@ -2451,6 +2559,134 @@
       ],
       tableMinWidth: 3120,
       emptyText: "当前日期暂无湖南负荷详情 mock 数据。",
+    });
+  }
+
+  function buildHunanUnitStatusPage(bundle) {
+    var dataset = getBundleDatasets(bundle).infoMaintenanceComposite || {};
+    var unitTable = dataset.unitStatusTable || {};
+    var quarterColumns = (unitTable.columns || []).filter(function filterColumn(column) {
+      return /^\d{2}:\d{2}$/.test(column.key);
+    });
+    var unitBaseColumns = (unitTable.columns || []).filter(function filterColumn(column) {
+      return column.key !== "updatedAt" && !/^\d{2}:\d{2}$/.test(column.key);
+    });
+
+    if (!unitBaseColumns.length) {
+      unitBaseColumns = [
+        { key: "runDate", title: "日期" },
+        { key: "unitName", title: "机组名称" },
+        { key: "unitCode", title: "机组编码" },
+        { key: "operatingStatus", title: "运行状态" },
+      ];
+    }
+
+    var unitRows = (unitTable.data || []).map(function mapRow(row) {
+      var nextRow = {};
+
+      unitBaseColumns.forEach(function eachColumn(column) {
+        if (column.key === "operatingStatus") {
+          nextRow[column.key] = createBadgeCell(row.operatingStatus, getUnitStatusTone(row.operatingStatus));
+          return;
+        }
+        nextRow[column.key] = row[column.key];
+      });
+
+      quarterColumns.forEach(function eachColumn(column) {
+        var value = row[column.key];
+        var statusText = "停机";
+        if (row.operatingStatus === "检修") {
+          statusText = "检修";
+        } else if (row.operatingStatus === "备用") {
+          statusText = Number(value || 0) > 0 ? "运行" : "备用";
+        } else if (row.operatingStatus === "受限运行") {
+          statusText = Number(value || 0) > 0 ? "运行" : "停机";
+        } else if (Number(value || 0) > 0) {
+          statusText = "运行";
+        }
+        nextRow[column.key] = createBadgeCell(statusText, getUnitStatusTone(statusText), statusText);
+      });
+
+      nextRow.updatedAt = row.updatedAt;
+      return nextRow;
+    });
+
+    return buildDisclosureTablePage({
+      provinceCode: "hn",
+      tabKey: "unitStatus",
+      title: "机组状态",
+      tableTitle: unitTable.title || "机组状态明细表",
+      description: "湖南交易中心机组状态独立披露数据。",
+      updateTime: dataset.updateTime || bundle.dataUpdatedAt || "",
+      publishTime: dataset.publishTime || dataset.dataPublishTime || bundle.dataPublishTime || "",
+      dataSource: dataset.dataSource || "湖南电力交易中心机组状态",
+      updateSource: "8.1._【事后】机组状态 (1).xlsx",
+      hasDataSource: dataset.hasDataSource === true,
+      filters: {
+        tradeCenter: "hunan",
+        pageType: "infoDisclosure",
+        primaryTab: "负荷信息",
+        secondaryTab: "机组状态",
+        date: (dataset.filters && dataset.filters.date) || "",
+      },
+      columns: unitBaseColumns
+        .concat(quarterColumns.map(function mapColumn(column) {
+          return { key: column.key, title: column.title };
+        }))
+        .concat([{ key: "updatedAt", title: "更新时间" }]),
+      rows: unitRows,
+      tableMinWidth: unitTable.minWidth || 8920,
+      fileList: dataset.fileList || [],
+      emptyText: "当前日期暂无湖南机组状态 mock 数据。",
+    });
+  }
+
+  function buildHunanTransmissionMaintenancePlanPage(bundle) {
+    var dataset = getBundleDatasets(bundle).infoMaintenanceComposite || {};
+    var scheduleTable = dataset.extraTables && dataset.extraTables[0] ? dataset.extraTables[0] : {};
+    var scheduleColumns =
+      scheduleTable.columns && scheduleTable.columns.length
+        ? scheduleTable.columns
+        : [
+            { key: "planDate", title: "检修日期" },
+            { key: "equipmentType", title: "设备类型" },
+            { key: "equipmentName", title: "设备名称" },
+            { key: "stationName", title: "所属厂站" },
+            { key: "startTime", title: "检修开始时间" },
+            { key: "endTime", title: "检修结束时间" },
+            { key: "planStatus", title: "检修状态" },
+            { key: "impactCapacity", title: "影响容量（MW）" },
+            { key: "updatedAt", title: "更新时间" },
+          ];
+    var scheduleRows = (scheduleTable.data || []).map(function mapRow(row) {
+      var nextRow = cloneValue(row);
+      nextRow.planStatus = createBadgeCell(row.planStatus, getPlanStatusTone(row.planStatus));
+      return nextRow;
+    });
+
+    return buildDisclosureTablePage({
+      provinceCode: "hn",
+      tabKey: "transmissionMaintenancePlan",
+      title: "发输变电设备检修计划",
+      tableTitle: scheduleTable.title || "发输变电设备检修计划（日）",
+      description: "湖南交易中心发输变电设备检修计划独立披露数据。",
+      updateTime: dataset.updateTime || bundle.dataUpdatedAt || "",
+      publishTime: dataset.publishTime || dataset.dataPublishTime || bundle.dataPublishTime || "",
+      dataSource: dataset.dataSource || "湖南电力交易中心发输变电设备检修计划",
+      updateSource: "发输变电设备检修计划-日 (1).xlsx",
+      hasDataSource: dataset.hasDataSource === true,
+      filters: {
+        tradeCenter: "hunan",
+        pageType: "infoDisclosure",
+        primaryTab: "负荷信息",
+        secondaryTab: "发输变电设备检修计划",
+        date: (dataset.filters && dataset.filters.date) || "",
+      },
+      columns: scheduleColumns,
+      rows: scheduleRows,
+      tableMinWidth: scheduleTable.minWidth || 1320,
+      fileList: dataset.fileList || [],
+      emptyText: "当前日期暂无湖南发输变电设备检修计划 mock 数据。",
     });
   }
 
@@ -2821,6 +3057,79 @@
     });
   }
 
+  function buildShaanxiUnitStatusPage(bundle) {
+    var dataset = getBundleDatasets(bundle).infoUnitStatus || {};
+    var unitTable = dataset.unitStatusTable || {};
+    var quarterColumns = (unitTable.columns || []).filter(function filterColumn(column) {
+      return /^\d{2}:\d{2}$/.test(column.key);
+    });
+    var unitRows = (unitTable.data || []).map(function mapRow(row) {
+      var nextRow = {
+        runDate: row.runDate,
+        disclosureType: row.disclosureType,
+        unitId: row.unitId,
+        unitName: row.unitName,
+        operatingStatus: createBadgeCell(
+          row.operatingStatus === "受限运行" ? "异常" : row.operatingStatus,
+          getUnitStatusTone(row.operatingStatus === "受限运行" ? "异常" : row.operatingStatus),
+        ),
+        updatedAt: row.updatedAt,
+      };
+
+      quarterColumns.forEach(function eachColumn(column) {
+        var value = row[column.key];
+        var statusText = "停机";
+        if (row.operatingStatus === "检修") {
+          statusText = "检修";
+        } else if (row.operatingStatus === "备用") {
+          statusText = Number(value || 0) > 0 ? "运行" : "备用";
+        } else if (row.operatingStatus === "受限运行") {
+          statusText = Number(value || 0) > 0 ? "异常" : "停机";
+        } else if (Number(value || 0) > 0) {
+          statusText = "运行";
+        }
+        nextRow[column.key] = createBadgeCell(statusText, getUnitStatusTone(statusText), statusText);
+      });
+
+      return nextRow;
+    });
+
+    return buildDisclosureTablePage({
+      provinceCode: "sx",
+      tabKey: "unitStatus",
+      title: "机组状态",
+      tableTitle: unitTable.title || "机组状态明细表",
+      description: "陕西交易中心机组状态独立披露数据。",
+      updateTime: dataset.updateTime || bundle.dataUpdatedAt || "",
+      publishTime: dataset.publishTime || dataset.dataPublishTime || bundle.dataPublishTime || "",
+      dataSource: dataset.dataSource || "陕西电力交易中心机组状态",
+      updateSource: "陕西电力交易中心机组状态 mock",
+      hasDataSource: dataset.hasDataSource !== false,
+      filters: {
+        tradeCenter: "shaanxi",
+        pageType: "infoDisclosure",
+        primaryTab: "负荷信息",
+        secondaryTab: "机组状态",
+        date: (dataset.filters && dataset.filters.date) || "",
+      },
+      columns: [
+        { key: "runDate", title: "机组运行日期" },
+        { key: "disclosureType", title: "披露类型" },
+        { key: "unitId", title: "机组 ID" },
+        { key: "unitName", title: "机组名称" },
+        { key: "operatingStatus", title: "运行状态" },
+      ]
+        .concat(quarterColumns.map(function mapColumn(column) {
+          return { key: column.key, title: column.title };
+        }))
+        .concat([{ key: "updatedAt", title: "更新时间" }]),
+      rows: unitRows,
+      tableMinWidth: unitTable.minWidth || 9240,
+      fileList: dataset.fileList || [],
+      emptyText: "当前日期暂无陕西机组状态 mock 数据。",
+    });
+  }
+
   function buildShaanxiMaintenancePage(bundle) {
     var dataset = getBundleDatasets(bundle).infoUnitStatus || {};
     var unitTable = dataset.unitStatusTable || {};
@@ -2951,10 +3260,16 @@
         return buildHunanLoadDetailPage(bundle);
       }
       if (secondaryTab === "机组检修容量") {
-        return buildHunanMaintenancePage(bundle);
+        return buildUnavailableLoadInfoSubTabPage("hunan", bundle, secondaryTab);
       }
       if (secondaryTab === "备用信息") {
         return buildHunanReservePage(bundle);
+      }
+      if (secondaryTab === "机组状态") {
+        return buildHunanUnitStatusPage(bundle);
+      }
+      if (secondaryTab === "发输变电设备检修计划") {
+        return buildHunanTransmissionMaintenancePlanPage(bundle);
       }
       return buildHunanLoadInfoPage(bundle);
     }
@@ -2964,10 +3279,16 @@
         return buildShaanxiLoadDetailPage(bundle);
       }
       if (secondaryTab === "机组检修容量") {
-        return buildShaanxiMaintenancePage(bundle);
+        return buildUnavailableLoadInfoSubTabPage("shaanxi", bundle, secondaryTab);
       }
       if (secondaryTab === "备用信息") {
         return buildShaanxiReservePage(bundle);
+      }
+      if (secondaryTab === "机组状态") {
+        return buildShaanxiUnitStatusPage(bundle);
+      }
+      if (secondaryTab === "发输变电设备检修计划") {
+        return buildUnavailableLoadInfoSubTabPage("shaanxi", bundle, secondaryTab);
       }
       return buildShaanxiLoadInfoPage(bundle);
     }

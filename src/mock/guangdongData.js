@@ -545,6 +545,63 @@
     };
   });
 
+  var transmissionMaintenancePlanRawRows = [
+    [1, "广州恒运热电有限责任公司", "恒运D#8机组", "大修", "计划检修", "2026-02-16 00:00:00", "2026-04-11 23:59:00"],
+    [2, "广东粤华发电有限责任公司", "黄埔A#2机组", "大修", "计划检修", "2026-03-06 01:00:00", "2026-03-30 23:59:00"],
+    [3, "深圳妈湾电力有限公司", "妈湾#6机组", "大修", "计划检修", "2026-03-01 00:00:00", "2026-03-08 23:59:00"],
+    [4, "广东珠海金湾发电有限公司", "珠海B#4机组", "大修", "计划检修", "2026-01-01 03:00:00", "2026-03-20 23:59:00"],
+    [5, "华能（广东）能源开发有限公司海门电厂", "海门#1机组", "大修", "计划检修", "2026-02-01 03:00:00", "2026-05-04 23:59:00"],
+    [6, "佛山市顺德五沙热电有限公司", "德胜#2机组", "大修", "计划检修", "2026-02-20 05:00:00", "2026-04-18 23:59:00"],
+    [7, "佛山恒益热电有限公司", "恒益#1机组", "大修", "计划检修", "2026-02-22 02:00:00", "2026-04-07 23:59:59"],
+    [8, "广东粤电韶关发电厂有限公司", "韶关A#2机组", "大修", "计划检修", "2026-03-01 03:00:00", "2026-05-09 23:59:00"],
+    [9, "广东惠州平海发电厂有限公司", "平海#1机组", "大修", "计划检修", "2026-02-13 12:00:00", "2026-03-16 00:00:00"],
+    [10, "阳西海滨电力发展有限公司", "阳西#6机组", "大修", "计划检修", "2026-02-28 06:30:00", "2026-05-13 22:00:00"],
+    [11, "阳西海滨电力发展有限公司", "阳西#4机组", "大修", "计划检修", "2026-02-24 06:30:00", "2026-04-29 22:00:00"],
+    [12, "广东能源茂名热电厂有限公司", "茂名#7机组", "大修", "计划检修", "2025-12-25 00:00:00", "2026-04-18 23:59:00"],
+    [13, "广东粤电靖海发电有限公司", "靖海#6机组", "大修", "计划检修", "2026-02-25 04:00:00", "2026-03-25 23:59:00"],
+    [14, "广东粤电靖海发电有限公司", "靖海B#4机组", "大修", "计划检修", "2026-02-24 04:00:00", "2026-07-09 00:00:00"],
+    [15, "深圳市深汕特别合作区华润电力有限公司", "小漠#2机组", "大修", "计划检修", "2026-02-11 04:00:00", "2026-03-15 23:59:00"],
+    [16, "广东粤电大埔发电有限公司", "汇东#1机组", "大修", "计划检修", "2026-02-21 03:00:00", "2026-03-19 00:00:00"],
+    [17, "南海发电一厂有限公司", "新田A#2机组", "大修", "计划检修", "2026-02-26 00:00:00", "2026-03-27 23:59:00"],
+    [18, "广东粤电博贺能源有限公司", "博贺#1机组", "大修", "计划检修", "2026-02-24 00:15:00", "2026-03-15 23:50:00"],
+    [19, "广东粤电博贺能源有限公司", "博贺#4机组", "大修", "计划检修", "2026-03-01 11:15:00", "2026-04-10 23:45:00"],
+    [20, "深能（河源）电力有限公司", "源和B#4机组", "大修", "计划检修", "2026-03-01 05:00:00", "2026-04-05 00:00:00"],
+    [21, "国电投（珠海横琴）热电有限公司", "望洋#1、#2机组", "大修", "计划检修", "2026-03-02 03:00:00", "2026-04-30 23:59:00"],
+    [22, "中海油珠海天然气发电有限公司", "依海#1、#2机组", "大修", "计划检修", "2026-03-02 03:30:00", "2026-03-08 23:59:00"],
+    [23, "深圳市东部电力有限公司", "能东#1机组", "大修", "计划检修", "2026-01-05 00:00:00", "2026-03-08 23:59:00"],
+    [24, "深圳市东部电力有限公司", "能东#2机组", "大修", "计划检修", "2026-02-11 00:00:00", "2026-03-13 23:59:00"],
+    [25, "深圳市东部电力有限公司", "能东#3机组", "大修", "计划检修", "2026-02-18 00:00:00", "2026-03-08 23:59:00"],
+    [26, "广东粤电中山热电厂有限公司", "怡丰#1、#2机组", "大修", "计划检修", "2026-03-02 06:00:00", "2026-04-30 20:00:00"],
+    [27, "深圳南山热电股份有限公司", "南山#10、#11机组", "大修", "计划检修", "2026-02-26 00:00:00", "2026-03-31 23:59:00"],
+    [28, "东莞虎门电厂", "虎门#3、#7机组", "大修", "计划检修", "2024-06-12 00:00:00", "2026-12-31 23:59:00"],
+    [29, "东莞深能源樟洋电力有限公司", "樟洋#1、#2机组", "大修", "计划检修", "2026-03-06 04:00:00", "2026-04-05 00:00:00"],
+    [30, "东莞深能源樟洋电力有限公司", "樟洋#3、#4机组", "大修", "计划检修", "2026-03-06 04:00:00", "2026-03-19 00:00:00"],
+    [31, "华能东莞燃机热电有限责任公司", "谢岗#1、#2机组", "大修", "计划检修", "2026-02-24 03:00:00", "2026-04-25 01:00:00"],
+    [32, "东莞市粤湾新能源有限公司", "悦湾#3、#4机组", "大修", "计划检修", "2026-03-01 03:00:00", "2026-04-16 01:00:00"],
+    [33, "大唐佛山热电有限责任公司", "鳌围#1、#2机组", "大修", "计划检修", "2026-02-28 23:00:00", "2026-04-01 01:00:00"],
+    [34, "大唐佛山热电有限责任公司", "鳌围#3、#4机组", "大修", "计划检修", "2026-02-28 23:30:00", "2026-03-16 00:30:00"],
+    [35, "广东粤电大亚湾综合能源有限公司", "煜阳#2、#4机组", "大修", "计划检修", "2026-02-19 21:00:00", "2026-05-06 23:59:00"],
+    [36, "广东粤电永安天然气热电有限公司", "鼎安#1、#2机组", "大修", "计划检修", "2026-01-01 01:00:00", "2026-04-30 01:00:00"],
+    [37, "广东粤电滨海湾能源有限公司", "滨海湾#3机组", "大修", "计划检修", "2026-03-01 02:00:00", "2026-03-14 00:00:00"],
+    [38, "岭澳核电有限公司", "岭澳#2机组", "大修", "计划检修", "2026-02-03 03:30:00", "2026-03-14 23:00:00"],
+    [39, "阳江核电有限公司", "阳核#6机组", "大修", "计划检修", "2026-02-15 05:04:30", "2026-03-13 06:30:00"],
+    [40, "深圳能源光明电力有限公司", "光明#2机组", "大修", "计划检修", "2026-03-03 00:00:00", "2026-03-13 23:59:00"],
+    [41, "东亚电力（阳江）有限公司", "陵湾#3、#4机组", "大修", "计划检修", "2026-03-06 08:30:00", "2026-03-15 23:30:00"],
+  ];
+
+  var transmissionMaintenancePlanRows = transmissionMaintenancePlanRawRows.map(function mapTransmissionMaintenancePlan(row) {
+    return {
+      date: "2026-05-08",
+      sequence: row[0],
+      plantName: row[1],
+      unitName: row[2],
+      statusType: row[3],
+      changeReason: row[4],
+      startTime: row[5],
+      endTime: row[6],
+    };
+  });
+
   var reservePositiveForecast = interpolateAnchors(96, {
     0: 10340,
     8: 8260,
@@ -754,35 +811,92 @@
     };
   }
 
-  var settlementDates = buildDateRange("2026-05-03", 7);
-  var settlementDailyTemplates = [
-    { enterpriseCode: "GDQY001", enterpriseName: "广州南沙充电网络", accountNo: "H0001" },
-    { enterpriseCode: "GDQY002", enterpriseName: "广州番禺公交场站", accountNo: "H0002" },
-    { enterpriseCode: "GDQY003", enterpriseName: "佛山顺德站群", accountNo: "H0003" },
-    { enterpriseCode: "GDQY004", enterpriseName: "佛山综合补能园区", accountNo: "H0004" },
-  ];
-  var settlementDailyRows = [];
-  settlementDates.forEach(function eachSettlementDate(date, dayIndex) {
-    settlementDailyTemplates.forEach(function eachTemplate(template, templateIndex) {
-      var energy = 9200 + dayIndex * 360 + templateIndex * 520;
-      var dayaheadFee = 428000 + dayIndex * 16000 + templateIndex * 22000;
-      var realtimeFee = 121000 + dayIndex * 6800 + templateIndex * 9200;
-      var deviationFee = 16800 + dayIndex * 760 + templateIndex * 1100;
-      var imbalanceFee = 9600 + dayIndex * 540 + templateIndex * 720;
-      settlementDailyRows.push({
-        date: date,
-        enterpriseCode: template.enterpriseCode,
-        enterpriseName: template.enterpriseName,
-        accountNo: template.accountNo,
-        energy: energy,
-        dayaheadFee: dayaheadFee,
-        realtimeFee: realtimeFee,
-        deviationFee: deviationFee,
-        imbalanceFee: imbalanceFee,
-        totalFee: dayaheadFee + realtimeFee + deviationFee + imbalanceFee,
-      });
-    });
+  var settlementDailyHourColumns = Array.from({ length: 24 }, function createHourColumn(_, index) {
+    return String(index) + "时";
   });
+  var settlementDailyColumns = [
+    { key: "日期", title: "日期" },
+    { key: "结算类型名称", title: "结算类型名称" },
+    { key: "数据类型", title: "数据类型" },
+    { key: "企业编码", title: "企业编码" },
+    { key: "企业名称", title: "企业名称" },
+    { key: "合计值", title: "合计值" },
+  ].concat(
+    settlementDailyHourColumns.map(function mapHourColumn(hourLabel) {
+      return { key: hourLabel, title: hourLabel };
+    }),
+  );
+  var guangdongDailySettlementDate = "2026-05-08";
+  var guangdongDailySettlementEnterprise = {
+    enterpriseCode: "SD508",
+    enterpriseName: "广州汇桔新能源科技有限公司",
+  };
+  var guangdongActualEnergyValues = [
+    1.862, 1.736, 1.684, 1.642, 1.705, 1.918, 2.214, 2.756, 3.128, 3.466, 3.702, 3.846,
+    3.912, 3.688, 3.524, 3.476, 3.732, 4.168, 4.586, 4.812, 4.604, 3.958, 3.204, 2.438,
+  ];
+  var guangdongRenewableEnergyValues = [
+    0.186, 0.174, 0.168, 0.164, 0.171, 0.192, 0.221, 0.276, 0.313, 0.347, 0.37, 0.385,
+    0.391, 0.369, 0.352, 0.348, 0.373, 0.417, 0.459, 0.481, 0.46, 0.396, 0.32, 0.244,
+  ];
+  var guangdongTotalEnergyValues = guangdongActualEnergyValues.map(function mapEnergyValue(value, index) {
+    return Number((value + guangdongRenewableEnergyValues[index]).toFixed(3));
+  });
+  var guangdongSettlementPriceValues = [
+    362.148, 358.234, 356.906, 355.772, 357.418, 361.826, 368.552, 382.364, 395.216, 408.735, 416.428, 420.316,
+    418.642, 411.279, 403.668, 399.824, 407.352, 426.905, 438.118, 442.673, 435.229, 418.754, 397.331, 376.842,
+  ];
+  var guangdongSettlementFeeValues = guangdongTotalEnergyValues.map(function mapFeeValue(value, index) {
+    return Number((value * guangdongSettlementPriceValues[index]).toFixed(2));
+  });
+
+  function sumGuangdongDailyValues(values, digits) {
+    return Number(
+      (values || [])
+        .reduce(function accumulate(total, value) {
+          return total + Number(value || 0);
+        }, 0)
+        .toFixed(digits),
+    );
+  }
+
+  function createGuangdongDailySettlementRow(settlementTypeName, dataType, values, totalValue) {
+    var digits = dataType === "电费" ? 2 : 3;
+    var row = {
+      date: guangdongDailySettlementDate,
+      settlementTypeName: settlementTypeName,
+      dataType: dataType,
+      enterpriseCode: guangdongDailySettlementEnterprise.enterpriseCode,
+      enterpriseName: guangdongDailySettlementEnterprise.enterpriseName,
+      "日期": guangdongDailySettlementDate,
+      "结算类型名称": settlementTypeName,
+      "数据类型": dataType,
+      "企业编码": guangdongDailySettlementEnterprise.enterpriseCode,
+      "企业名称": guangdongDailySettlementEnterprise.enterpriseName,
+      "合计值": totalValue === undefined ? sumGuangdongDailyValues(values, digits) : totalValue,
+    };
+
+    settlementDailyHourColumns.forEach(function eachHour(hourLabel, index) {
+      row[hourLabel] = Number(Number(values[index] || 0).toFixed(digits));
+    });
+
+    if (settlementTypeName === "实际分时电量" && dataType === "电量") {
+      row.actualUsage = row["合计值"];
+      row.monthlyActualUsage = row["合计值"];
+    }
+
+    return row;
+  }
+
+  var guangdongTotalEnergy = sumGuangdongDailyValues(guangdongTotalEnergyValues, 3);
+  var guangdongTotalFee = sumGuangdongDailyValues(guangdongSettlementFeeValues, 2);
+  var settlementDailyRows = [
+    createGuangdongDailySettlementRow("实际分时电量", "电量", guangdongActualEnergyValues),
+    createGuangdongDailySettlementRow("非现货可再生电量", "电量", guangdongRenewableEnergyValues),
+    createGuangdongDailySettlementRow("合计（当期）", "电量", guangdongTotalEnergyValues, guangdongTotalEnergy),
+    createGuangdongDailySettlementRow("合计（当期）", "电价", guangdongSettlementPriceValues, Number((guangdongTotalFee / guangdongTotalEnergy).toFixed(3))),
+    createGuangdongDailySettlementRow("合计（当期）", "电费", guangdongSettlementFeeValues, guangdongTotalFee),
+  ];
 
   var settlementMonthRows = [
     { month: "2026-05", enterpriseCode: "GDQY001", enterpriseName: "广州南沙充电网络", accountNo: "H0001", energy: 318600, fee: 14820000, agencyIncome: 362000, status: "已出账" },
@@ -794,6 +908,155 @@
     { month: "2026-04", enterpriseCode: "GDQY003", enterpriseName: "佛山顺德站群", accountNo: "H0003", energy: 252800, fee: 11670000, agencyIncome: 288000, status: "已出账" },
     { month: "2026-04", enterpriseCode: "GDQY004", enterpriseName: "佛山综合补能园区", accountNo: "H0004", energy: 229600, fee: 10630000, agencyIncome: 266000, status: "已出账" },
   ];
+
+  var guangdongMonthlySettlementGroups = [
+    { label: "合计（含追补）", children: ["电量", "电价", "电费"] },
+    { label: "追补电费", children: ["电量", "电价", "电费"] },
+    { label: "售电公司批零差价分享电费", children: ["电费"] },
+    { label: "售电公司批零差价回收电费", children: ["电费"] },
+    { label: "零售合同退补补充协议", children: ["电费"] },
+    { label: "合计（当期）", children: ["电量", "电价", "电费"] },
+    { label: "跨省点对点中长期合约", children: ["电量", "电价", "电费"] },
+    { label: "跨省点对点中长期合约阻塞电费", children: ["电费"] },
+    { label: "中长期市场化", children: ["电量", "电价", "电费"] },
+    { label: "年度", children: ["电量", "电价", "电费"] },
+    { label: "多月", children: ["电量", "电价", "电费"] },
+    { label: "月度", children: ["电量", "电价", "电费"] },
+    { label: "周", children: ["电量", "电价", "电费"] },
+    { label: "多日", children: ["电量", "电价", "电费"] },
+    { label: "偏差价差收益转移结算电费", children: ["电量", "电价", "电费"] },
+    { label: "日前偏差", children: ["电量", "电价", "电费"] },
+    { label: "实时偏差", children: ["电量", "电价", "电费"] },
+    { label: "分摊电费", children: ["电费"] },
+    { label: "用户侧偏差收益转移资金分摊电费", children: ["电费"] },
+    { label: "退补联动分摊电费", children: ["电费"] },
+    { label: "日内临时非计划停运考核分摊电费", children: ["电费"] },
+    { label: "实时发电计划执行偏差考核分摊电费", children: ["电费"] },
+    { label: "热电联产考核分摊电费", children: ["电费"] },
+    { label: "限高限低考核分摊电费", children: ["电费"] },
+    { label: "阻塞盈余分摊电费", children: ["电费"] },
+    { label: "分摊未付款项分摊电费", children: ["电费"] },
+    { label: "年度基数合约电量偏差电费分摊电费", children: ["电费"] },
+    { label: "四舍五入差额分摊电费", children: ["电费"] },
+    { label: "变动成本补偿分摊电费", children: ["电费"] },
+    { label: "运行补偿费用分摊电费", children: ["电量", "电价", "电费"] },
+    { label: "启动补偿分摊电费", children: ["电费"] },
+    { label: "发用电不平衡分摊电费", children: ["电费"] },
+    { label: "机组中长期偏差考核分摊电费", children: ["电费"] },
+    { label: "返还电费", children: ["电费"] },
+    { label: "零售电费", children: ["电费"] },
+    { label: "峰谷平衡电费", children: ["电费"] },
+    { label: "峰谷平衡退补电费", children: ["电费"] },
+    { label: "用电偏差考核电费", children: ["电费"] },
+    { label: "中长期交易偏差考核电费", children: ["电费"] },
+    { label: "需求申报偏差考核电费", children: ["电费"] },
+    { label: "非现货可再生合同电能量电费", children: ["电量", "电价", "电费"] },
+    { label: "非现货可再生环境溢价", children: ["电量", "电价", "电费"] },
+    { label: "现货可再生合同电能量电费", children: ["电量", "电价", "电费"] },
+    { label: "现货可再生环境溢价", children: ["电量", "电价", "电费"] },
+    { label: "消纳量交易", children: ["电量", "电价", "电费"] },
+    { label: "保底售电平衡资金", children: ["电费"] },
+    { label: "核电中长期差价回收", children: ["电费"] },
+    { label: "退补电费", children: ["电费"] },
+    { label: "跨省中长期合约", children: ["电量", "电价", "电费"] },
+    { label: "省内分摊跨省中长期阻塞", children: ["电量", "电价", "电费"] },
+    { label: "跨省交易阻塞盈余分摊", children: ["电费"] },
+    { label: "跨省超额偏差收益回收分摊", children: ["电费"] },
+    { label: "批零结构不匹配考核电费", children: ["电费"] },
+    { label: "多月集中竞争盈亏（违约处置）", children: ["电费"] },
+  ];
+
+  function getGuangdongMonthlyColumnKey(groupIndex, childLabel) {
+    var suffixMap = {
+      "电量": "energy",
+      "电价": "price",
+      "电费": "fee",
+    };
+    return "gd_" + String(groupIndex + 1).padStart(2, "0") + "_" + suffixMap[childLabel];
+  }
+
+  function getGuangdongMonthlyColumnType(childLabel) {
+    if (childLabel === "电量") {
+      return "energy";
+    }
+    if (childLabel === "电价") {
+      return "price";
+    }
+    return "money";
+  }
+
+  function buildGuangdongMonthlySettlementColumns() {
+    return [
+      { key: "seq", label: "序号", fixed: true, width: 76 },
+      { key: "enterpriseCode", label: "企业编码", fixed: true, width: 126 },
+      { key: "enterpriseName", label: "企业名称", fixed: true, width: 240 },
+    ].concat(
+      guangdongMonthlySettlementGroups.map(function mapGroup(group, groupIndex) {
+        return {
+          label: group.label,
+          children: group.children.map(function mapChild(childLabel) {
+            return {
+              key: getGuangdongMonthlyColumnKey(groupIndex, childLabel),
+              label: childLabel,
+              type: getGuangdongMonthlyColumnType(childLabel),
+              width: childLabel === "电费" ? 130 : 116,
+            };
+          }),
+        };
+      }),
+    );
+  }
+
+  function getGuangdongMonthlyMockValue(groupIndex, childLabel) {
+    var polarity = groupIndex % 9 === 1 || groupIndex % 13 === 4 ? -1 : 1;
+    var energy = Number((326.418 - groupIndex * 2.731).toFixed(3));
+    var price = Number((384.126 + (groupIndex % 7) * 3.417).toFixed(3));
+    if (childLabel === "电量") {
+      return Math.abs(energy) < 1 ? 0 : Number((energy * polarity).toFixed(3));
+    }
+    if (childLabel === "电价") {
+      return Math.abs(energy) < 1 ? 0 : price;
+    }
+    if (guangdongMonthlySettlementGroups[groupIndex].children.indexOf("电量") >= 0) {
+      return Number(((Math.abs(energy) < 1 ? 0 : energy) * price * polarity).toFixed(2));
+    }
+    return Number(((groupIndex + 1) * 186.72 * polarity).toFixed(2));
+  }
+
+  function buildGuangdongMonthlySettlementRows() {
+    var row = {
+      seq: 1,
+      enterpriseCode: "SD508",
+      enterpriseName: "广州汇桔新能源科技有限公司",
+    };
+
+    guangdongMonthlySettlementGroups.forEach(function eachGroup(group, groupIndex) {
+      group.children.forEach(function eachChild(childLabel) {
+        row[getGuangdongMonthlyColumnKey(groupIndex, childLabel)] = getGuangdongMonthlyMockValue(groupIndex, childLabel);
+      });
+    });
+
+    return [row];
+  }
+
+  var guangdongMonthlySettlementData = {
+    provinceCode: "gd",
+    provinceName: "广东",
+    hasPurchaseSaleSide: false,
+    month: "2026-01",
+    updateTime: "2026-02-09 10:58:26",
+    updateSource: "人工上传",
+    purchaseSide: {
+      summaryCards: [
+        { label: "当年实际用电量", value: 326.418, unit: "MWh", digits: 3 },
+        { label: "中长期交易电量", value: 298.764, unit: "MWh", digits: 3 },
+        { label: "中长期占实际用电比例", value: 91.53, unit: "%", digits: 2 },
+        { label: "度电收益", value: 2.36, unit: "厘", digits: 2 },
+      ],
+      tableColumns: buildGuangdongMonthlySettlementColumns(),
+      tableRows: buildGuangdongMonthlySettlementRows(),
+    },
+  };
 
   var retailRelationRows = [
     { userCode: "GDUSER001", userName: "广州南沙充电网络", accountNo: "H0001", microgridName: "-", startDate: "2026-01-01", endDate: "2026-12-31", status: "合作中", sellerCompany: "滴滴电力（广东）有限公司" },
@@ -862,6 +1125,9 @@
       saleCompanyRows: saleCompanyRows,
       enterpriseRows: enterpriseRows,
       maintenanceRows: maintenanceRows,
+      transmissionMaintenancePlanRows: transmissionMaintenancePlanRows,
+      transmissionMaintenancePlanUpdateTime: "2026-05-26 10:46:00",
+      transmissionMaintenancePlanPublishTime: "2026-05-26 10:46:00",
       reserveRows: reserveRows,
     },
     tradeResult: {
@@ -883,8 +1149,14 @@
       statusText: "数据更新时间：2026-05-09 10:58:26（结算任务）",
       publishTime: "2026-05-09 10:30:00",
       tabs: ["日清算", "月结算"],
+      dailyColumns: settlementDailyColumns,
+      dailyDateRange: {
+        start: guangdongDailySettlementDate,
+        end: guangdongDailySettlementDate,
+      },
       dailyRows: settlementDailyRows,
       monthRows: settlementMonthRows,
+      monthlySettlementData: guangdongMonthlySettlementData,
     },
     retailRelation: {
       title: "零售关系",

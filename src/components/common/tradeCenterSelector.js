@@ -6,12 +6,6 @@
     var dropdown = "";
 
     function getOptionLabel(option) {
-      if (option === "湖南电力交易中心") {
-        return "湖南交易中心";
-      }
-      if (option === "陕西电力交易中心") {
-        return "陕西交易中心";
-      }
       return option || "";
     }
 

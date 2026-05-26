@@ -23,19 +23,32 @@
   global.BOSS_COMPONENTS.renderDataTablePro = function renderDataTablePro(options) {
     var escapeHtml = options.escapeHtml;
     var renderEmptyState = options.renderEmptyState;
+    var fixedLeft = 0;
     var columns = (options.columns || []).map(function normalize(column, index) {
       if (typeof column === "string") {
         return {
           key: "col-" + index,
           label: column,
           sortable: true,
+          fixed: false,
+          width: 128,
+          left: 0,
         };
       }
-      return {
+      var width = Number(column.width || 128);
+      var normalizedColumn = {
         key: column.key || "col-" + index,
-        label: column.label,
+        label: column.label || column.title || column.key || "列" + (index + 1),
         sortable: column.sortable !== false,
+        fixed: Boolean(column.fixed),
+        width: width,
+        left: 0,
       };
+      if (normalizedColumn.fixed) {
+        normalizedColumn.left = fixedLeft;
+        fixedLeft += width;
+      }
+      return normalizedColumn;
     });
     var columnOrder = Array.isArray(options.columnOrder) ? options.columnOrder : [];
     if (columnOrder.length) {
@@ -85,6 +98,12 @@
       .map(function mapColumn(column) {
         var direction = sortState.key === column.key ? sortState.direction : "";
         var thAttrs = "";
+        var className = column.fixed ? ' class="table-fixed-col"' : "";
+        var style = column.fixed
+          ? ' style="left:' + escapeHtml(String(column.left)) + "px;width:" + escapeHtml(String(column.width)) + "px;min-width:" + escapeHtml(String(column.width)) + 'px;"'
+          : column.width
+            ? ' style="min-width:' + escapeHtml(String(column.width)) + 'px;"'
+            : "";
         if (options.enableColumnDrag && column.sortable !== false) {
           thAttrs =
             ' draggable="true" data-table-id="' +
@@ -94,10 +113,12 @@
             '"';
         }
         if (column.sortable === false) {
-          return "<th" + thAttrs + "><span>" + escapeHtml(column.label) + "</span></th>";
+          return "<th" + className + style + thAttrs + "><span>" + escapeHtml(column.label) + "</span></th>";
         }
         return (
           "<th" +
+          className +
+          style +
           thAttrs +
           ">" +
           '<button class="table-header-sort" data-table-id="' +
@@ -149,14 +170,24 @@
               displayValue !== "--" &&
               !Number.isNaN(Number(displayValue)) &&
               Number(displayValue) < 0;
+            var cellClassName = [column.fixed ? "table-fixed-col" : "", negative ? "table-negative" : "", extraClassName]
+              .filter(Boolean)
+              .join(" ");
+            var cellStyle = column.fixed
+              ? ' style="left:' + escapeHtml(String(column.left)) + "px;width:" + escapeHtml(String(column.width)) + "px;min-width:" + escapeHtml(String(column.width)) + 'px;"'
+              : column.width
+                ? ' style="min-width:' + escapeHtml(String(column.width)) + 'px;"'
+                : "";
             var copyable = !(value && typeof value === "object" && value.copyable === false);
             var contentHtml = value && typeof value === "object" && value.badge
               ? '<span class="table-badge table-badge-' + escapeHtml(value.tone || "default") + '">' + escapeHtml(displayValue) + "</span>"
               : '<span class="table-cell-text">' + escapeHtml(displayValue) + "</span>";
             return (
               '<td class="' +
-              [negative ? "table-negative" : "", extraClassName].filter(Boolean).join(" ") +
-              '">' +
+              cellClassName +
+              '"' +
+              cellStyle +
+              ">" +
               '<div class="table-cell-shell">' +
               contentHtml +
               (copyable
