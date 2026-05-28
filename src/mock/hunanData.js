@@ -37,6 +37,17 @@
     });
   }
 
+  function buildTimeSlotLabel(stepMinutes, index) {
+    var startMinutes = index * stepMinutes;
+    var endMinutes = startMinutes + stepMinutes;
+    var startHour = Math.floor(startMinutes / 60);
+    var startMinute = startMinutes % 60;
+    var endHour = Math.floor(endMinutes / 60);
+    var endMinute = endMinutes % 60;
+    var endLabel = endMinutes === 24 * 60 ? "24:00" : pad(endHour) + ":" + pad(endMinute);
+    return pad(startHour) + ":" + pad(startMinute) + "-" + endLabel;
+  }
+
   function round(value) {
     return Number(Number(value).toFixed(1));
   }
@@ -1454,12 +1465,20 @@
   }
 
   var hunanUnifiedPriceRows = settlementPriceRows.map(function mapPriceRow(row) {
+    var hourIndex = Number(String(row.time || "").slice(0, 2)) || 0;
+    var timeSlot = buildTimeSlotLabel(60, hourIndex);
     return {
+      province: "hn",
+      tradeCenterName: "湖南交易中心",
       date: row.date,
-      time: row.time,
+      timeGranularity: "1h",
+      periodCount: 24,
+      timeSlot: timeSlot,
+      time: timeSlot,
       dayAheadPrice: row.dayaheadPrice,
       realTimePrice: row.realtimePrice,
       priceDiff: round(row.realtimePrice - row.dayaheadPrice),
+      spread: round(row.realtimePrice - row.dayaheadPrice),
       updatedAt: row.updatedAt,
     };
   });
@@ -1475,23 +1494,28 @@
       secondaryTab: "",
     },
     viewType: "lineTable",
-    chartTitle: "用户侧统一结算价格趋势图",
+    isUnifiedClearingPrice: true,
+    timeGranularity: "1h",
+    periodCount: 24,
+    province: "hn",
+    tradeCenterName: "湖南交易中心",
+    chartTitle: "全省统一出清价趋势图",
     chartUnit: "元/MWh",
-    labelKey: "time",
+    labelKey: "timeSlot",
     datePickerMode: "single",
     dateLabel: "运行日期",
-    dayAheadSeriesLabel: "日前用户侧统一结算价格",
-    realTimeSeriesLabel: "实时用户侧统一结算价格",
+    dayAheadSeriesLabel: "日前统一结算价格",
+    realTimeSeriesLabel: "实时统一结算价格",
     tooltipMode: "priceSpread",
     seriesDefinitions: [
-      { id: "hn-info-price-dayahead", label: "日前用户侧统一结算价格", color: "#1677FF", valueKey: "dayAheadPrice" },
-      { id: "hn-info-price-realtime", label: "实时用户侧统一结算价格", color: "#2FCB8F", valueKey: "realTimePrice" },
+      { id: "hn-info-price-dayahead", label: "日前统一结算价格", color: "#1677FF", valueKey: "dayAheadPrice" },
+      { id: "hn-info-price-realtime", label: "实时统一结算价格", color: "#2FCB8F", valueKey: "realTimePrice" },
     ],
     tableColumns: [
       { key: "date", title: "日期" },
-      { key: "time", title: "时刻" },
-      { key: "dayAheadPrice", title: "日前用户侧统一结算价格（元/MWh）" },
-      { key: "realTimePrice", title: "实时用户侧统一结算价格（元/MWh）" },
+      { key: "timeSlot", title: "时段" },
+      { key: "dayAheadPrice", title: "日前统一结算价格（元/MWh）" },
+      { key: "realTimePrice", title: "实时统一结算价格（元/MWh）" },
       { key: "priceDiff", title: "价差（元/MWh）" },
       { key: "updatedAt", title: "更新时间" },
     ],

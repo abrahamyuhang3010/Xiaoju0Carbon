@@ -1297,6 +1297,11 @@ a {
   padding: 14px 20px;
 }
 
+.history-scope-panel {
+  margin-top: 18px;
+  padding: 12px 20px;
+}
+
 .status-text {
   display: inline-flex;
   align-items: center;

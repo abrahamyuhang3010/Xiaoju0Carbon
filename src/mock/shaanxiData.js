@@ -37,6 +37,17 @@
     });
   }
 
+  function buildTimeSlotLabel(stepMinutes, index) {
+    var startMinutes = index * stepMinutes;
+    var endMinutes = startMinutes + stepMinutes;
+    var startHour = Math.floor(startMinutes / 60);
+    var startMinute = startMinutes % 60;
+    var endHour = Math.floor(endMinutes / 60);
+    var endMinute = endMinutes % 60;
+    var endLabel = endMinutes === 24 * 60 ? "24:00" : pad(endHour) + ":" + pad(endMinute);
+    return pad(startHour) + ":" + pad(startMinute) + "-" + endLabel;
+  }
+
   function round(value) {
     return Number(Number(value).toFixed(1));
   }
@@ -1383,16 +1394,30 @@
   var shaanxiUnifiedRealTimeWeightedValues = shaanxiUnifiedDayAheadWeightedValues.map(function mapRealTimeValue(value, index) {
     return round(value + [5.6, -3.4, 2.8, 6.4][index % 4]);
   });
-  var shaanxiUnifiedPriceRows = quarterHours.map(function mapWeightedPriceRow(time, index) {
-    return {
-      date: standardDefaultDate,
-      time: time,
-      dayAheadPrice: shaanxiUnifiedDayAheadWeightedValues[index],
-      realTimePrice: shaanxiUnifiedRealTimeWeightedValues[index],
-      priceDiff: round(shaanxiUnifiedRealTimeWeightedValues[index] - shaanxiUnifiedDayAheadWeightedValues[index]),
-      updatedAt: buildUpdatedAt(dataUpdatedAt, -16),
-    };
-  });
+  var shaanxiUnifiedPriceRows = availableDates.reduce(function buildWeightedPriceRows(result, date, dayIndex) {
+    return result.concat(
+      quarterHours.map(function mapWeightedPriceRow(_, index) {
+        var timeSlot = buildTimeSlotLabel(15, index);
+        var dayAheadValue = round(shaanxiUnifiedDayAheadWeightedValues[index] + dayIndex * 1.8 + ((dayIndex % 3) - 1) * 1.2);
+        var realTimeValue = round(dayAheadValue + [5.6, -3.4, 2.8, 6.4][index % 4] + (dayIndex % 2 === 0 ? 1.1 : -1.3));
+        var spread = round(realTimeValue - dayAheadValue);
+        return {
+          province: "sx",
+          tradeCenterName: "陕西交易中心",
+          date: date,
+          timeGranularity: "15min",
+          periodCount: 96,
+          timeSlot: timeSlot,
+          time: timeSlot,
+          dayAheadPrice: dayAheadValue,
+          realTimePrice: realTimeValue,
+          priceDiff: spread,
+          spread: spread,
+          updatedAt: buildUpdatedAt(dataUpdatedAt, -16),
+        };
+      }),
+    );
+  }, []);
   var shaanxiUnifiedPricePage = createPageData({
     title: "全省统一出清价",
     description: "陕西交易中心信息披露页统一结构下的用户侧加权电价 mock 数据。",
@@ -1405,9 +1430,14 @@
       secondaryTab: "",
     },
     viewType: "lineTable",
+    isUnifiedClearingPrice: true,
+    timeGranularity: "15min",
+    periodCount: 96,
+    province: "sx",
+    tradeCenterName: "陕西交易中心",
     chartTitle: "用户侧加权电价趋势图",
     chartUnit: "元/MWh",
-    labelKey: "time",
+    labelKey: "timeSlot",
     datePickerMode: "single",
     dateLabel: "运行日期",
     dayAheadSeriesLabel: "日前用户侧加权电价",
@@ -1419,7 +1449,7 @@
     ],
     tableColumns: [
       { key: "date", title: "日期" },
-      { key: "time", title: "时刻" },
+      { key: "timeSlot", title: "时段" },
       { key: "dayAheadPrice", title: "日前用户侧加权电价（元/MWh）" },
       { key: "realTimePrice", title: "实时用户侧加权电价（元/MWh）" },
       { key: "priceDiff", title: "价差（元/MWh）" },

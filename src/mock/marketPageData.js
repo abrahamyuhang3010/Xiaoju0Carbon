@@ -3351,6 +3351,15 @@
       resolvedData = buildUnifiedLoadInfoPage(tradeCenterKey, bundle, request.secondaryTab || "负荷信息");
     }
 
+    if (
+      !resolvedData &&
+      request.pageType === "infoDisclosure" &&
+      request.primaryTab === "全省统一出清价" &&
+      tradeCenterKey !== "guangdong"
+    ) {
+      resolvedData = resolveCatalogEntry(catalog, request.pageType, request.primaryTab, request.secondaryTab);
+    }
+
     if (!resolvedData && request.pageType === "infoDisclosure" && request.primaryTab === "全省统一出清价") {
       resolvedData = buildUnifiedProvinceClearingPricePage(tradeCenterKey, bundle);
     }

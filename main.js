@@ -85,6 +85,9 @@
   var INFO_DISCLOSURE_TIME_SHARING_TABS =
     (infoDisclosureConfig.secondaryTabs && infoDisclosureConfig.secondaryTabs[INFO_DISCLOSURE_TIME_SHARING_TAB]) ||
     ["售电公司分时电量", "用电企业分时电量"];
+  var INFO_DISCLOSURE_SELLER_HISTORY_TAB = "售电公司分时电量历史回溯";
+  var INFO_DISCLOSURE_USER_HISTORY_TAB = "用电企业分时电量历史回溯";
+  var HISTORY_RETRACE_SCOPE_TEXT = "当前数据为历史回溯口径，按所选代理月份对应的实际代理用户清单统计，与常规分时电量页面的数据口径可能存在差异。";
   var INFO_DISCLOSURE_EMPTY_MESSAGE =
     infoDisclosureConfig.emptyStateMessage || "当前交易中心暂未接入该披露类型数据，请切换其他披露类型或手动更新数据。";
   var INFO_DISCLOSURE_NO_DATA_SOURCE_MESSAGE =
@@ -107,6 +110,7 @@
   ]
     .concat(INFO_DISCLOSURE_PRIMARY_TABS || [])
     .concat(INFO_DISCLOSURE_SECONDARY_TABS || [])
+    .concat(INFO_DISCLOSURE_TIME_SHARING_TABS || [])
     .filter(function dedupe(item, index, source) {
       return source.indexOf(item) === index;
     });
@@ -438,6 +442,11 @@
     return config[tradeCenterKey || getSelectedTradeCenterKey()] || {};
   }
 
+  function getUnifiedClearingPriceConfig(tradeCenterKey) {
+    var configs = infoDisclosureConfig.unifiedClearingPrice || {};
+    return configs[tradeCenterKey || getSelectedTradeCenterKey()] || {};
+  }
+
   function hasInfoDisclosureDataSource(tab, tradeCenterKey) {
     var normalizedTradeCenterKey = tradeCenterKey || getSelectedTradeCenterKey();
     var secondaryTabs = INFO_DISCLOSURE_SECONDARY_TABS || [];
@@ -453,6 +462,13 @@
       return timeSharingTabs.some(function someTimeSharingTab(timeSharingTab) {
         return hasInfoDisclosureDataSource(timeSharingTab, normalizedTradeCenterKey);
       });
+    }
+
+    if (tab === "全省统一出清价") {
+      var unifiedClearingPriceConfig = getUnifiedClearingPriceConfig(normalizedTradeCenterKey);
+      if (Object.prototype.hasOwnProperty.call(unifiedClearingPriceConfig, "hasDataSource")) {
+        return unifiedClearingPriceConfig.hasDataSource === true;
+      }
     }
 
     var access = getDisclosureDataSourceAccess(normalizedTradeCenterKey);
@@ -1042,8 +1058,79 @@
     return buildRelativeDateRange(-8, -1);
   }
 
+  function getHistoryRowsByType(type) {
+    var infoMock = getInfoMock();
+    if (type === "seller") {
+      return infoMock.sellerHourlyPowerHistoryRows || [];
+    }
+    return infoMock.userHourlyPowerHistoryRows || [];
+  }
+
+  function getHistoryAgentMonths(type) {
+    var monthMap = {};
+    getHistoryRowsByType(type).forEach(function eachHistoryRow(row) {
+      if (row && row.agentMonth) {
+        monthMap[row.agentMonth] = true;
+      }
+    });
+
+    return Object.keys(monthMap).sort();
+  }
+
+  function getDefaultHistoryAgentMonth(type) {
+    var months = getHistoryAgentMonths(type);
+    return months[months.length - 1] || "2025-05";
+  }
+
+  function getDefaultHistoryRange(type, agentMonth) {
+    var month = agentMonth || getDefaultHistoryAgentMonth(type);
+    var dates = getHistoryRowsByType(type)
+      .filter(function filterMonth(row) {
+        return row.agentMonth === month;
+      })
+      .map(function mapDate(row) {
+        return row.usageDate;
+      })
+      .filter(function filterDate(date, index, source) {
+        return date && source.indexOf(date) === index;
+      })
+      .sort();
+
+    if (dates.length) {
+      return {
+        start: dates[0],
+        end: dates[Math.min(dates.length - 1, 6)],
+      };
+    }
+
+    return {
+      start: month + "-01",
+      end: month + "-07",
+    };
+  }
+
+  function isHistoryTimeSharingTab(tab) {
+    var activeTab = tab || getActiveInfoTab();
+    return activeTab === INFO_DISCLOSURE_SELLER_HISTORY_TAB || activeTab === INFO_DISCLOSURE_USER_HISTORY_TAB;
+  }
+
+  function setRegularInfoTimeSharingRange(range) {
+    var clonedRange = cloneRange(range);
+    state.info.filters.timeSharingRange = cloneRange(clonedRange);
+    state.info.filters.saleCompanyRange = cloneRange(clonedRange);
+    state.info.filters.saleCompanyAppliedRange = cloneRange(clonedRange);
+    state.info.filters.enterpriseRange = cloneRange(clonedRange);
+  }
+
   function getInfoTimeSharingRange() {
+    var activeTab = getActiveInfoTab();
     var filters = state.info.filters;
+    if (activeTab === INFO_DISCLOSURE_SELLER_HISTORY_TAB) {
+      return filters.sellerHistoryRange || getDefaultHistoryRange("seller", filters.sellerHistoryAgentMonth);
+    }
+    if (activeTab === INFO_DISCLOSURE_USER_HISTORY_TAB) {
+      return filters.userHistoryRange || getDefaultHistoryRange("user", filters.userHistoryAgentMonth);
+    }
     if (filters.timeSharingRange && isRangeValid(filters.timeSharingRange)) {
       return filters.timeSharingRange;
     }
@@ -1057,11 +1144,16 @@
   }
 
   function setInfoTimeSharingRange(range) {
-    var clonedRange = cloneRange(range);
-    state.info.filters.timeSharingRange = cloneRange(clonedRange);
-    state.info.filters.saleCompanyRange = cloneRange(clonedRange);
-    state.info.filters.saleCompanyAppliedRange = cloneRange(clonedRange);
-    state.info.filters.enterpriseRange = cloneRange(clonedRange);
+    var activeTab = getActiveInfoTab();
+    if (activeTab === INFO_DISCLOSURE_SELLER_HISTORY_TAB) {
+      state.info.filters.sellerHistoryRange = cloneRange(range);
+      return;
+    }
+    if (activeTab === INFO_DISCLOSURE_USER_HISTORY_TAB) {
+      state.info.filters.userHistoryRange = cloneRange(range);
+      return;
+    }
+    setRegularInfoTimeSharingRange(range);
   }
 
   function isInfoLoadRunDatePicker(id) {
@@ -1084,7 +1176,7 @@
 
   function resetSaleCompanyPowerFilters() {
     var defaultRange = getDefaultSaleCompanyPowerRange();
-    setInfoTimeSharingRange(defaultRange);
+    setRegularInfoTimeSharingRange(defaultRange);
     resetSaleCompanyPowerBusinessFilters();
     if (state.ui.tableSort) {
       delete state.ui.tableSort["sale-company-table"];
@@ -1110,13 +1202,43 @@
   }
 
   function resetEnterprisePowerFilters() {
-    setInfoTimeSharingRange(getDefaultEnterprisePowerRange());
+    setRegularInfoTimeSharingRange(getDefaultEnterprisePowerRange());
     resetEnterprisePowerBusinessFilters();
+  }
+
+  function resetSellerHistoryFilters() {
+    var defaultMonth = getDefaultHistoryAgentMonth("seller");
+    state.info.filters.sellerHistoryAgentMonth = defaultMonth;
+    state.info.filters.sellerHistoryRange = getDefaultHistoryRange("seller", defaultMonth);
+    state.info.filters.sellerHistoryCompanyName = "全部";
+    if (state.ui.tableSort) {
+      delete state.ui.tableSort["seller-history-table"];
+    }
+    if (state.ui.chartHiddenSeries) {
+      delete state.ui.chartHiddenSeries["seller-history-chart"];
+    }
+  }
+
+  function resetUserHistoryFilters() {
+    var defaultMonth = getDefaultHistoryAgentMonth("user");
+    state.info.filters.userHistoryAgentMonth = defaultMonth;
+    state.info.filters.userHistoryRange = getDefaultHistoryRange("user", defaultMonth);
+    state.info.filters.userHistoryUserCode = "";
+    state.info.filters.userHistoryUserName = "";
+    state.info.filters.userHistoryAccountNo = "";
+    state.info.filters.userHistoryMicrogridName = "";
+    state.info.filters.userHistoryMicrogridId = "";
+    state.info.filters.userHistoryCompanyName = "全部";
+    if (state.ui.tableSort) {
+      delete state.ui.tableSort["user-history-table"];
+    }
   }
 
   function resetInfoDisclosureFiltersForTradeCenterSwitch() {
     resetSaleCompanyPowerFilters();
     resetEnterprisePowerFilters();
+    resetSellerHistoryFilters();
+    resetUserHistoryFilters();
     state.info.filters.saleCompanyName = "全部";
     state.info.filters.declarationType = "全部";
     state.tradeResult.filters.nodeKeyword = "";
@@ -1367,6 +1489,11 @@
     }
 
     if (id === "time-sharing-range") {
+      if (getActiveInfoTab() === INFO_DISCLOSURE_SELLER_HISTORY_TAB) {
+        state.info.sellerHistoryQueryAt = Date.now();
+      } else if (getActiveInfoTab() === INFO_DISCLOSURE_USER_HISTORY_TAB) {
+        state.info.userHistoryQueryAt = Date.now();
+      }
       state.ui.hasCompare = false;
       state.info.companyQueryAt = Date.now();
       state.info.enterpriseQueryAt = Date.now();
@@ -1555,6 +1682,12 @@
     }
     if (activeTab === "用电企业分时电量") {
       return state.info.filters.enterpriseRange;
+    }
+    if (activeTab === INFO_DISCLOSURE_SELLER_HISTORY_TAB) {
+      return state.info.filters.sellerHistoryRange || getDefaultHistoryRange("seller", state.info.filters.sellerHistoryAgentMonth);
+    }
+    if (activeTab === INFO_DISCLOSURE_USER_HISTORY_TAB) {
+      return state.info.filters.userHistoryRange || getDefaultHistoryRange("user", state.info.filters.userHistoryAgentMonth);
     }
     if (activeTab === "机组检修容量") {
       return state.info.filters.maintenanceRange;
@@ -2359,6 +2492,350 @@
     );
   }
 
+  function isHistoryNumericValue(value) {
+    return typeof value === "number" && !Number.isNaN(value);
+  }
+
+  function normalizeHistoryPower(value) {
+    if (value === null || value === undefined || value === "") {
+      return null;
+    }
+    var numeric = Number(value);
+    return Number.isNaN(numeric) ? null : numeric;
+  }
+
+  function roundHistoryMetric(value) {
+    return Number(Number(value).toFixed(2));
+  }
+
+  function formatHistoryPower(value) {
+    return value === null || value === undefined || Number.isNaN(Number(value)) ? "-" : Number(value).toFixed(2);
+  }
+
+  function formatHistoryMicrogrid(value) {
+    return value ? value : "-";
+  }
+
+  function getLatestHistoryUpdateInfo(rows, fallbackRows) {
+    var sourceRows = rows && rows.length ? rows : fallbackRows || [];
+    var latestRow = null;
+
+    sourceRows.forEach(function eachHistoryUpdate(row) {
+      if (!row || !row.updateTime) {
+        return;
+      }
+      if (!latestRow || String(row.updateTime) > String(latestRow.updateTime || "")) {
+        latestRow = row;
+      }
+    });
+
+    if (!latestRow) {
+      return createStatus("-", "-", "-");
+    }
+
+    return createStatus(latestRow.updateTime, latestRow.dataSource || "历史回溯", "-");
+  }
+
+  function getSellerHistoryDataset() {
+    var filters = state.info.filters;
+    var agentMonth = filters.sellerHistoryAgentMonth || getDefaultHistoryAgentMonth("seller");
+    var range = filters.sellerHistoryRange || getDefaultHistoryRange("seller", agentMonth);
+    var sellerName = filters.sellerHistoryCompanyName || "全部";
+    var dateLabels = buildDateRangeList(range);
+    var hours = getInfoMock().hours || mock.hours || [];
+    var allRows = getHistoryRowsByType("seller");
+    var monthRows = allRows.filter(function filterMonth(row) {
+      return row.agentMonth === agentMonth;
+    });
+    var companyRows = monthRows.filter(function filterCompany(row) {
+      return sellerName === "全部" || row.sellerCompanyName === sellerName;
+    });
+    var dateRows = isRangeValid(range)
+      ? companyRows.filter(function filterDate(row) {
+          return row.usageDate >= range.start && row.usageDate <= range.end;
+        })
+      : [];
+    var rowMap = {};
+    var dailyMap = {};
+    var dailyCompanySeen = {};
+    var fallbackRow = companyRows[0] || monthRows[0] || allRows[0] || {};
+
+    dateRows.forEach(function eachSellerHistoryRow(row) {
+      rowMap[row.usageDate + "|" + row.hour] = row;
+      var dailyKey = row.usageDate + "|" + row.sellerCompanyCode;
+      if (dailyCompanySeen[dailyKey]) {
+        return;
+      }
+      dailyCompanySeen[dailyKey] = true;
+      if (!dailyMap[row.usageDate]) {
+        dailyMap[row.usageDate] = {
+          total: 0,
+          hasValue: false,
+          row: row,
+        };
+      }
+      if (isHistoryNumericValue(row.dailyPower)) {
+        dailyMap[row.usageDate].total += row.dailyPower;
+        dailyMap[row.usageDate].hasValue = true;
+      }
+    });
+
+    var dailyTrendRows = dateLabels.map(function mapSellerHistoryDate(date) {
+      var daily = dailyMap[date];
+      return {
+        agentMonth: agentMonth,
+        usageDate: date,
+        sellerCompanyName: sellerName === "全部" ? (fallbackRow.sellerCompanyName || "全部售电公司") : sellerName,
+        dailyPower: daily && daily.hasValue ? roundHistoryMetric(daily.total) : null,
+      };
+    });
+
+    return {
+      agentMonth: agentMonth,
+      activeRange: cloneRange(range),
+      monthHasData: monthRows.length > 0,
+      hasData: dateRows.some(function someHistoryPower(row) {
+        return isHistoryNumericValue(row.power);
+      }),
+      dateLabels: dateLabels,
+      dailyTrendRows: dailyTrendRows,
+      tableRows: dateRows.length
+        ? dateLabels.reduce(function buildSellerHistoryRows(acc, date) {
+            return acc.concat(
+              hours.map(function mapSellerHistoryHour(hour) {
+                var matched = rowMap[date + "|" + hour];
+                return {
+                  agentMonth: agentMonth,
+                  sellerCompanyCode: (matched && matched.sellerCompanyCode) || fallbackRow.sellerCompanyCode || "-",
+                  sellerCompanyName: (matched && matched.sellerCompanyName) || fallbackRow.sellerCompanyName || "-",
+                  usageDate: date,
+                  hour: hour,
+                  power: matched ? normalizeHistoryPower(matched.power) : null,
+                  dailyPower: matched ? normalizeHistoryPower(matched.dailyPower) : null,
+                  userCount: matched && matched.userCount !== undefined ? matched.userCount : "-",
+                  dataSource: (matched && matched.dataSource) || "-",
+                  updateTime: (matched && matched.updateTime) || "-",
+                };
+              }),
+            );
+          }, [])
+        : [],
+      latestUpdateInfo: getLatestHistoryUpdateInfo(dateRows, monthRows.length ? monthRows : allRows),
+    };
+  }
+
+  function formatSellerHistoryTooltip(dataset, index) {
+    var row = (dataset.dailyTrendRows || [])[index] || {};
+    return (
+      '<div class="chart-tooltip-stack">' +
+      "<div>代理月份: " +
+      escapeHtml(row.agentMonth || "-") +
+      "</div><div>用电日期: " +
+      escapeHtml(row.usageDate || "-") +
+      "</div><div>售电公司名称: " +
+      escapeHtml(row.sellerCompanyName || "-") +
+      "</div><div>日总电量: " +
+      escapeHtml(formatHistoryPower(row.dailyPower)) +
+      " MWh</div><div>数据口径: " +
+      escapeHtml(HISTORY_RETRACE_SCOPE_TEXT) +
+      "</div></div>"
+    );
+  }
+
+  function getSellerHistoryTableConfig(dataset) {
+    return {
+      columns: [
+        { key: "agentMonth", label: "代理月份" },
+        { key: "sellerCompanyCode", label: "售电公司编码" },
+        { key: "sellerCompanyName", label: "售电公司名称" },
+        { key: "usageDate", label: "用电日期" },
+        { key: "hour", label: "时刻" },
+        { key: "power", label: "分时电量（MWh）" },
+        { key: "dailyPower", label: "日总电量（MWh）" },
+        { key: "userCount", label: "统计用户数" },
+        { key: "dataSource", label: "数据来源" },
+        { key: "updateTime", label: "数据更新时间" },
+      ],
+      rows: (dataset.tableRows || []).map(function mapSellerHistoryTableRow(row) {
+        return {
+          agentMonth: row.agentMonth || "-",
+          sellerCompanyCode: row.sellerCompanyCode || "-",
+          sellerCompanyName: row.sellerCompanyName || "-",
+          usageDate: row.usageDate || "-",
+          hour: row.hour || "-",
+          power: {
+            text: formatHistoryPower(row.power),
+            sortValue: isHistoryNumericValue(row.power) ? row.power : Number.NEGATIVE_INFINITY,
+          },
+          dailyPower: {
+            text: formatHistoryPower(row.dailyPower),
+            sortValue: isHistoryNumericValue(row.dailyPower) ? row.dailyPower : Number.NEGATIVE_INFINITY,
+          },
+          userCount: row.userCount,
+          dataSource: row.dataSource || "-",
+          updateTime: row.updateTime || "-",
+        };
+      }),
+      minWidth: 1760,
+    };
+  }
+
+  function getUserHistoryDataset() {
+    var filters = state.info.filters;
+    var agentMonth = filters.userHistoryAgentMonth || getDefaultHistoryAgentMonth("user");
+    var range = filters.userHistoryRange || getDefaultHistoryRange("user", agentMonth);
+    var sellerName = filters.userHistoryCompanyName || "全部";
+    var dateLabels = buildDateRangeList(range);
+    var hours = getInfoMock().hours || mock.hours || [];
+    var allRows = getHistoryRowsByType("user");
+    var monthRows = allRows.filter(function filterMonth(row) {
+      return row.agentMonth === agentMonth;
+    });
+    var filteredRows = isRangeValid(range)
+      ? monthRows.filter(function filterUserHistory(row) {
+          return (
+            row.usageDate >= range.start &&
+            row.usageDate <= range.end &&
+            (sellerName === "全部" || row.sellerCompanyName === sellerName) &&
+            includesCodeKeyword(row.powerUserCode, filters.userHistoryUserCode) &&
+            includesKeyword(row.powerUserName, filters.userHistoryUserName) &&
+            includesCodeKeyword(row.accountNo, filters.userHistoryAccountNo) &&
+            includesNullableMicrogridValue(row.microgridName, filters.userHistoryMicrogridName) &&
+            includesNullableMicrogridValue(row.microgridId, filters.userHistoryMicrogridId)
+          );
+        })
+      : [];
+    var rowMap = {};
+    var userMap = {};
+
+    filteredRows.forEach(function eachUserHistoryRow(row) {
+      rowMap[row.powerUserCode + "|" + row.usageDate + "|" + row.hour] = row;
+      if (!userMap[row.powerUserCode]) {
+        userMap[row.powerUserCode] = {
+          agentMonth: row.agentMonth,
+          sellerCompanyCode: row.sellerCompanyCode,
+          sellerCompanyName: row.sellerCompanyName,
+          powerUserCode: row.powerUserCode,
+          powerUserName: row.powerUserName,
+          accountNo: row.accountNo,
+          meterPointNo: row.meterPointNo,
+          microgridName: row.microgridName,
+          microgridId: row.microgridId,
+        };
+      }
+    });
+
+    var users = Object.keys(userMap)
+      .sort()
+      .map(function mapUser(key) {
+        return userMap[key];
+      });
+
+    return {
+      agentMonth: agentMonth,
+      activeRange: cloneRange(range),
+      monthHasData: monthRows.length > 0,
+      hasData: filteredRows.some(function someUserHistoryPower(row) {
+        return isHistoryNumericValue(row.power);
+      }),
+      tableRows: filteredRows.length
+        ? users.reduce(function buildUserHistoryRows(acc, user) {
+            dateLabels.forEach(function eachUserHistoryDate(date) {
+              hours.forEach(function eachUserHistoryHour(hour) {
+                var matched = rowMap[user.powerUserCode + "|" + date + "|" + hour];
+                acc.push({
+                  agentMonth: agentMonth,
+                  sellerCompanyCode: user.sellerCompanyCode || "-",
+                  sellerCompanyName: user.sellerCompanyName || "-",
+                  powerUserCode: user.powerUserCode || "-",
+                  powerUserName: user.powerUserName || "-",
+                  accountNo: user.accountNo || "-",
+                  meterPointNo: user.meterPointNo || "-",
+                  microgridName: formatHistoryMicrogrid(user.microgridName),
+                  microgridId: formatHistoryMicrogrid(user.microgridId),
+                  usageDate: date,
+                  hour: hour,
+                  power: matched ? normalizeHistoryPower(matched.power) : null,
+                  dataSource: (matched && matched.dataSource) || "-",
+                  updateTime: (matched && matched.updateTime) || "-",
+                });
+              });
+            });
+            return acc;
+          }, [])
+        : [],
+      latestUpdateInfo: getLatestHistoryUpdateInfo(filteredRows, monthRows.length ? monthRows : allRows),
+    };
+  }
+
+  function getUserHistoryTableConfig(dataset) {
+    return {
+      columns: [
+        { key: "agentMonth", label: "代理月份" },
+        { key: "sellerCompanyCode", label: "售电公司编码" },
+        { key: "sellerCompanyName", label: "售电公司名称" },
+        { key: "powerUserCode", label: "电力用户编码" },
+        { key: "powerUserName", label: "电力用户名称" },
+        { key: "accountNo", label: "用户户号" },
+        { key: "meterPointNo", label: "计量点编号" },
+        { key: "microgridName", label: "微电网名称" },
+        { key: "microgridId", label: "微电网ID" },
+        { key: "usageDate", label: "用电日期" },
+        { key: "hour", label: "时刻" },
+        { key: "power", label: "分时电量（MWh）" },
+        { key: "dataSource", label: "数据来源" },
+        { key: "updateTime", label: "数据更新时间" },
+      ],
+      rows: (dataset.tableRows || []).map(function mapUserHistoryTableRow(row) {
+        return {
+          agentMonth: row.agentMonth || "-",
+          sellerCompanyCode: row.sellerCompanyCode || "-",
+          sellerCompanyName: row.sellerCompanyName || "-",
+          powerUserCode: row.powerUserCode || "-",
+          powerUserName: row.powerUserName || "-",
+          accountNo: row.accountNo || "-",
+          meterPointNo: row.meterPointNo || "-",
+          microgridName: formatHistoryMicrogrid(row.microgridName),
+          microgridId: formatHistoryMicrogrid(row.microgridId),
+          usageDate: row.usageDate || "-",
+          hour: row.hour || "-",
+          power: {
+            text: formatHistoryPower(row.power),
+            sortValue: isHistoryNumericValue(row.power) ? row.power : Number.NEGATIVE_INFINITY,
+          },
+          dataSource: row.dataSource || "-",
+          updateTime: row.updateTime || "-",
+        };
+      }),
+      minWidth: 2260,
+    };
+  }
+
+  function renderHistoryUpdateBar(updateInfo) {
+    return renderDataUpdateBar({
+      updatedAt: updateInfo.time || "-",
+      publishTime: updateInfo.publishTime || "-",
+      source: updateInfo.source || "-",
+      hasCompare: false,
+      showTaskEntry: false,
+      actions: [{ label: "下载", variant: "primary", icon: "download", action: "open-download" }],
+      escapeHtml: escapeHtml,
+      renderIcon: renderIcon,
+    });
+  }
+
+  function renderHistoryEmptyPanel(message) {
+    return (
+      '<section class="panel chart-panel chart-panel-plain"><div class="chart-main chart-main-plain chart-main-empty">' +
+      renderEmptyState({
+        message: message,
+        escapeHtml: escapeHtml,
+        renderIcon: renderIcon,
+      }) +
+      "</div></section>"
+    );
+  }
+
   function getMaintenanceRows() {
     var infoMock = getInfoMock();
     return state.info.filters.maintenanceRange.start === infoMock.defaultRunDate ? infoMock.maintenanceRows || [] : [];
@@ -2383,6 +2860,12 @@
     }
     if (activeTab === "用电企业分时电量") {
       return !getEnterpriseRows().length;
+    }
+    if (activeTab === INFO_DISCLOSURE_SELLER_HISTORY_TAB) {
+      return !getSellerHistoryDataset().hasData;
+    }
+    if (activeTab === INFO_DISCLOSURE_USER_HISTORY_TAB) {
+      return !getUserHistoryDataset().hasData;
     }
     if (activeTab === "机组检修容量") {
       return !getMaintenanceRows().length;
@@ -2512,9 +2995,25 @@
     var range = state.ui.downloadRangeDraft;
     var type = state.ui.downloadDataType || "负荷信息";
     var currentPage = registry.getPage(state.currentPageKey);
-    state.downloadTasks.unshift({
-      id: "dl-" + Date.now(),
-      fileName:
+    var fileName;
+
+    if (type === INFO_DISCLOSURE_SELLER_HISTORY_TAB || type === INFO_DISCLOSURE_USER_HISTORY_TAB) {
+      var agentMonth =
+        type === INFO_DISCLOSURE_SELLER_HISTORY_TAB
+          ? state.info.filters.sellerHistoryAgentMonth || getDefaultHistoryAgentMonth("seller")
+          : state.info.filters.userHistoryAgentMonth || getDefaultHistoryAgentMonth("user");
+      fileName =
+        "信息披露_" +
+        type +
+        "_代理月份" +
+        String(agentMonth || "").replace(/-/g, "") +
+        "_" +
+        formatDateCompact(range.start) +
+        "至" +
+        formatDateCompact(range.end) +
+        ".xlsx";
+    } else {
+      fileName =
         currentPage.title.replace(/\s+/g, "") +
         "_" +
         type +
@@ -2522,7 +3021,12 @@
         formatDateCompact(range.start) +
         "至" +
         formatDateCompact(range.end) +
-        ".xls",
+        ".xls";
+    }
+
+    state.downloadTasks.unshift({
+      id: "dl-" + Date.now(),
+      fileName: fileName,
       createdAt: formatDateTime(new Date()),
       status: "排队中",
       source: state.ui.selectedTradeCenter,
@@ -2853,6 +3357,57 @@
     });
   }
 
+  function getHistorySellerCompanyOptions(type) {
+    var options = ["全部"];
+    getHistoryRowsByType(type).forEach(function eachHistoryCompany(row) {
+      if (row && row.sellerCompanyName && options.indexOf(row.sellerCompanyName) < 0) {
+        options.push(row.sellerCompanyName);
+      }
+    });
+    return options;
+  }
+
+  function renderHistoryScopeNote() {
+    return '<section class="panel history-scope-panel"><div class="placeholder-note">' + escapeHtml(HISTORY_RETRACE_SCOPE_TEXT) + "</div></section>";
+  }
+
+  function renderSellerHistoryFilterBar() {
+    var filters = state.info.filters;
+    var fieldsHtml =
+      renderMonthFilter("代理月份", filters.sellerHistoryAgentMonth || getDefaultHistoryAgentMonth("seller"), "sellerHistoryAgentMonth", "info") +
+      renderBoundSelectFilter(
+        "售电公司",
+        filters.sellerHistoryCompanyName || "全部",
+        getHistorySellerCompanyOptions("seller"),
+        "sellerHistoryCompanyName",
+        "info",
+        "filter-select-native",
+      );
+    var actionsHtml = renderUiActionButton("重置", "ghost", "reset-seller-history") + renderUiActionButton("查询", "primary", "query-seller-history");
+    return renderInfoFilterPanel(fieldsHtml, actionsHtml);
+  }
+
+  function renderUserHistoryFilterBar() {
+    var filters = state.info.filters;
+    var fieldsHtml =
+      renderMonthFilter("代理月份", filters.userHistoryAgentMonth || getDefaultHistoryAgentMonth("user"), "userHistoryAgentMonth", "info") +
+      renderTextFilter("电力用户编码", "userHistoryUserCode", "请输入电力用户编码") +
+      renderTextFilter("电力用户名称", "userHistoryUserName", "请输入电力用户名称") +
+      renderTextFilter("用户户号", "userHistoryAccountNo", "请输入用户户号") +
+      renderTextFilter("微电网名称", "userHistoryMicrogridName", "请输入微电网名称") +
+      renderTextFilter("微电网ID", "userHistoryMicrogridId", "请输入微电网ID") +
+      renderBoundSelectFilter(
+        "售电公司",
+        filters.userHistoryCompanyName || "全部",
+        getHistorySellerCompanyOptions("user"),
+        "userHistoryCompanyName",
+        "info",
+        "filter-select-native",
+      );
+    var actionsHtml = renderUiActionButton("重置", "ghost", "reset-user-history") + renderUiActionButton("查询", "primary", "query-user-history");
+    return renderInfoFilterPanel(fieldsHtml, actionsHtml);
+  }
+
   function renderInfoFilterBar(pageData) {
     var activeTab = getActiveInfoTab();
     var fieldsHtml = "";
@@ -2871,6 +3426,10 @@
         renderTextFilter("微电网名称", "enterpriseMicrogridName", "请输入微电网名称") +
         renderTextFilter("微电网ID", "enterpriseMicrogridId", "请输入微电网ID");
       actionsHtml = renderUiActionButton("重置", "ghost", "reset-enterprise") + renderUiActionButton("查询", "primary", "query-enterprise");
+    } else if (activeTab === INFO_DISCLOSURE_SELLER_HISTORY_TAB) {
+      return renderSellerHistoryFilterBar();
+    } else if (activeTab === INFO_DISCLOSURE_USER_HISTORY_TAB) {
+      return renderUserHistoryFilterBar();
     }
 
     return renderInfoFilterPanel(fieldsHtml, actionsHtml);
@@ -3155,6 +3714,114 @@
     return updateHtml + '<section class="panel chart-panel chart-panel-plain"><div class="chart-main chart-main-plain">' + tableHtml + "</div></section>";
   }
 
+  function renderSellerHistoryContent() {
+    var dataset = getSellerHistoryDataset();
+    var table = getSellerHistoryTableConfig(dataset);
+    var updateHtml = renderHistoryUpdateBar(dataset.latestUpdateInfo);
+
+    if (!dataset.monthHasData) {
+      return updateHtml + renderHistoryScopeNote() + renderHistoryEmptyPanel("当前代理月份历史回溯数据暂未生成，请更换代理月份或稍后查看");
+    }
+
+    if (!dataset.hasData) {
+      return updateHtml + renderHistoryScopeNote() + renderHistoryEmptyPanel("暂无历史回溯分时电量数据");
+    }
+
+    var chartHtml = renderChartWithMarks({
+      chartId: "seller-history-chart",
+      title: "售电公司分时电量历史回溯趋势",
+      labels: dataset.dateLabels,
+      unit: "MWh",
+      series: [
+        {
+          id: "seller-history-daily-total",
+          label: "日总电量",
+          color: "#1677FF",
+          values: (dataset.dailyTrendRows || []).map(function mapSellerHistoryDaily(row) {
+            return isHistoryNumericValue(row.dailyPower) ? row.dailyPower : null;
+          }),
+        },
+      ],
+      hiddenSeries: getChartHiddenState("seller-history-chart"),
+      escapeHtml: escapeHtml,
+      renderIcon: renderIcon,
+      renderEmptyState: function renderSellerHistoryChartEmptyState(options) {
+        return renderEmptyState({
+          escapeHtml: options.escapeHtml,
+          renderIcon: options.renderIcon,
+          message: "暂无历史回溯分时电量数据",
+        });
+      },
+      xLabelEvery: 1,
+      valueFormatter: function formatSellerHistoryChartValue(value) {
+        return typeof value === "number" && !Number.isNaN(value) ? value.toFixed(2) : "--";
+      },
+      tooltipFormatter: function tooltipFormatter(_, index) {
+        return formatSellerHistoryTooltip(dataset, index);
+      },
+      tooltipIsHtml: true,
+      tooltipWidth: 360,
+      tooltipHeight: 188,
+      breakOnNull: true,
+    });
+    var tableHtml = renderDataTablePro({
+      tableId: "seller-history-table",
+      columns: table.columns,
+      rows: table.rows,
+      minWidth: table.minWidth,
+      sortState: getTableSortState("seller-history-table"),
+      escapeHtml: escapeHtml,
+      renderIcon: renderIcon,
+      renderEmptyState: function renderSellerHistoryTableEmptyState(options) {
+        return renderEmptyState({
+          escapeHtml: options.escapeHtml,
+          renderIcon: options.renderIcon,
+          message: "暂无历史回溯分时电量数据",
+        });
+      },
+    });
+
+    return (
+      updateHtml +
+      renderHistoryScopeNote() +
+      renderChartSection("售电公司历史回溯日总电量趋势", chartHtml, "单位：MWh") +
+      renderChartSection("1 小时分时电量明细", tableHtml, "单位：MWh")
+    );
+  }
+
+  function renderUserHistoryContent() {
+    var dataset = getUserHistoryDataset();
+    var table = getUserHistoryTableConfig(dataset);
+    var updateHtml = renderHistoryUpdateBar(dataset.latestUpdateInfo);
+
+    if (!dataset.monthHasData) {
+      return updateHtml + renderHistoryScopeNote() + renderHistoryEmptyPanel("当前代理月份历史回溯数据暂未生成，请更换代理月份或稍后查看");
+    }
+
+    if (!dataset.hasData) {
+      return updateHtml + renderHistoryScopeNote() + renderHistoryEmptyPanel("暂无历史回溯分时电量数据");
+    }
+
+    var tableHtml = renderDataTablePro({
+      tableId: "user-history-table",
+      columns: table.columns,
+      rows: table.rows,
+      minWidth: table.minWidth,
+      sortState: getTableSortState("user-history-table"),
+      escapeHtml: escapeHtml,
+      renderIcon: renderIcon,
+      renderEmptyState: function renderUserHistoryTableEmptyState(options) {
+        return renderEmptyState({
+          escapeHtml: options.escapeHtml,
+          renderIcon: options.renderIcon,
+          message: "暂无历史回溯分时电量数据",
+        });
+      },
+    });
+
+    return updateHtml + renderHistoryScopeNote() + renderChartSection("用电企业小时级分时电量明细", tableHtml, "单位：MWh");
+  }
+
   function renderMaintenanceContent() {
     var rows = getMaintenanceRows();
 
@@ -3329,7 +3996,14 @@
     );
   }
 
-  function renderInfoTradeNoCompareHint(activeTab) {
+  function renderInfoTradeNoCompareHint(activeTab, compareRows, pageData) {
+    if (activeTab === "全省统一出清价" && isPageBackedUnifiedClearingPrice(pageData, activeTab)) {
+      if (!state.ui.hasCompare || (compareRows || []).length) {
+        return "";
+      }
+      return '<div class="placeholder-note trade-compare-hint">对比日暂无数据</div>';
+    }
+
     return getTradeResultNoCompareHint(activeTab);
   }
 
@@ -4067,6 +4741,91 @@
     return cell;
   }
 
+  function isPageBackedUnifiedClearingPrice(pageData, tabName) {
+    var activeTab = tabName || getActiveInfoPrimaryTab();
+    return Boolean(
+      activeTab === "全省统一出清价" &&
+      !isGuangdongInfoDisclosureCenter() &&
+      pageData &&
+      pageData.isUnifiedClearingPrice === true
+    );
+  }
+
+  function getInfoClearingPriceValue(row, pageData, side) {
+    var config = getUnifiedClearingPriceConfig();
+    var configuredKey =
+      side === "dayAhead"
+        ? (pageData && pageData.dayAheadValueKey) || config.dayAheadValueKey
+        : (pageData && pageData.realTimeValueKey) || config.realTimeValueKey;
+    var fallbackKeys =
+      side === "dayAhead"
+        ? ["dayAheadPrice", "dayAheadNodePrice", "dayAheadSettlementPrice"]
+        : ["realTimePrice", "realTimeNodePrice", "realTimeSettlementPrice"];
+    var keys = configuredKey ? [configuredKey].concat(fallbackKeys) : fallbackKeys;
+
+    for (var index = 0; index < keys.length; index += 1) {
+      var value = row && row[keys[index]];
+      if (typeof value === "number" && !Number.isNaN(value)) {
+        return value;
+      }
+    }
+
+    return null;
+  }
+
+  function getInfoClearingDayAheadLabel(pageData) {
+    var config = getUnifiedClearingPriceConfig();
+    return (pageData && (pageData.dayAheadSeriesLabel || pageData.dayAheadLabel)) || config.dayAheadLabel || "日前价格";
+  }
+
+  function getInfoClearingRealTimeLabel(pageData) {
+    var config = getUnifiedClearingPriceConfig();
+    return (pageData && (pageData.realTimeSeriesLabel || pageData.realTimeLabel)) || config.realTimeLabel || "实时价格";
+  }
+
+  function getInfoClearingTimeLabel(row) {
+    return (row && (row.timeSlot || row.time || row.period)) || "";
+  }
+
+  function getInfoClearingCompareRows(pageData) {
+    if (!state.ui.hasCompare) {
+      return [];
+    }
+
+    if (isPageBackedUnifiedClearingPrice(pageData, "全省统一出清价")) {
+      return filterInfoDisclosurePageRows(pageData.tableData || [], pageData, state.ui.compareRangeDraft);
+    }
+
+    return getTradeResultCompareRowsByTab("全省统一出清价");
+  }
+
+  function getPageDataDefaultDate(pageData) {
+    return (
+      (pageData && pageData.filters && pageData.filters.date) ||
+      (pageData && pageData.date) ||
+      getTradeCenterDefaultDisclosureDate(getSelectedTradeCenterKey()) ||
+      ""
+    );
+  }
+
+  function syncPageBackedClearingPriceRunDate(pageData) {
+    if (!isPageBackedUnifiedClearingPrice(pageData, "全省统一出清价")) {
+      return;
+    }
+
+    var defaultDate = getPageDataDefaultDate(pageData);
+    if (!defaultDate || state.ui.hasCompare) {
+      return;
+    }
+
+    if (state.tradeResult.filters.marketRunRange.start === getInfoTradeMockDate("全省统一出清价")) {
+      state.tradeResult.filters.marketRunRange = {
+        start: defaultDate,
+        end: defaultDate,
+      };
+    }
+  }
+
   function getMarketNodeItemId(item) {
     return String((item && (item.id || item.label)) || "");
   }
@@ -4779,48 +5538,55 @@
     var rows = filterInfoDisclosurePageRows(pageData.tableData || [], pageData);
     var currentDateLabel = formatTradeDisclosureDate(state.tradeResult.filters.marketRunRange.start);
     var compareDateLabel = formatTradeDisclosureDate(state.ui.compareRangeDraft.start);
-    var compareRows = state.ui.hasCompare && getActiveInfoPrimaryTab() === "全省统一出清价"
-      ? getTradeResultCompareRowsByTab("全省统一出清价")
-      : [];
     var tableConfig = buildInfoDisclosureTableConfig(pageData.tableColumns, rows, pageData.tableMinWidth);
     var isProvinceClearingPage = getActiveInfoPrimaryTab() === "全省统一出清价";
+    var compareRows = isProvinceClearingPage ? getInfoClearingCompareRows(pageData) : [];
+    var dayAheadLabel = getInfoClearingDayAheadLabel(pageData);
+    var realTimeLabel = getInfoClearingRealTimeLabel(pageData);
+    var timeColumnLabel = isPageBackedUnifiedClearingPrice(pageData, "全省统一出清价") ? "时段" : "时刻";
     var tradeTableRows = isProvinceClearingPage
       ? rows.map(function mapRow(row) {
+          var dayAheadPrice = getInfoClearingPriceValue(row, pageData, "dayAhead");
+          var realTimePrice = getInfoClearingPriceValue(row, pageData, "realTime");
           return {
-            time: row.time,
-            dayAheadNodePrice: createInfoDisclosureTableCell(row.dayAheadNodePrice, formatDecimal),
-            realTimeNodePrice: createInfoDisclosureTableCell(row.realTimeNodePrice, formatDecimal),
-            spread: createInfoDisclosureSpreadCell(row.dayAheadNodePrice, row.realTimeNodePrice),
+            time: getInfoClearingTimeLabel(row),
+            dayAheadPrice: createInfoDisclosureTableCell(dayAheadPrice, formatDecimal),
+            realTimePrice: createInfoDisclosureTableCell(realTimePrice, formatDecimal),
+            spread: createInfoDisclosureSpreadCell(dayAheadPrice, realTimePrice),
           };
         })
       : null;
     var tradeTableColumns = [
-      { key: "time", label: "时刻" },
-      { key: "dayAheadNodePrice", label: "日前节点电价（元/MWh）" },
-      { key: "realTimeNodePrice", label: "实时节点电价（元/MWh）" },
+      { key: "time", label: timeColumnLabel },
+      { key: "dayAheadPrice", label: dayAheadLabel + "（元/MWh）" },
+      { key: "realTimePrice", label: realTimeLabel + "（元/MWh）" },
       { key: "spread", label: "价差（元/MWh）" },
     ];
 
     if (isProvinceClearingPage && state.ui.hasCompare) {
       tradeTableColumns = [
-        { key: "time", label: "时刻" },
-        { key: "currentDayAheadNodePrice", label: currentDateLabel + " 日前节点电价（元/MWh）" },
-        { key: "currentRealTimeNodePrice", label: currentDateLabel + " 实时节点电价（元/MWh）" },
+        { key: "time", label: timeColumnLabel },
+        { key: "currentDayAheadPrice", label: currentDateLabel + " " + dayAheadLabel + "（元/MWh）" },
+        { key: "currentRealTimePrice", label: currentDateLabel + " " + realTimeLabel + "（元/MWh）" },
         { key: "currentSpread", label: currentDateLabel + " 价差（元/MWh）" },
-        { key: "compareDayAheadNodePrice", label: compareDateLabel + " 日前节点电价（元/MWh）" },
-        { key: "compareRealTimeNodePrice", label: compareDateLabel + " 实时节点电价（元/MWh）" },
+        { key: "compareDayAheadPrice", label: compareDateLabel + " " + dayAheadLabel + "（元/MWh）" },
+        { key: "compareRealTimePrice", label: compareDateLabel + " " + realTimeLabel + "（元/MWh）" },
         { key: "compareSpread", label: compareDateLabel + " 价差（元/MWh）" },
       ];
       tradeTableRows = rows.map(function mapRow(row, index) {
         var compareRow = compareRows[index] || {};
+        var dayAheadPrice = getInfoClearingPriceValue(row, pageData, "dayAhead");
+        var realTimePrice = getInfoClearingPriceValue(row, pageData, "realTime");
+        var compareDayAheadPrice = getInfoClearingPriceValue(compareRow, pageData, "dayAhead");
+        var compareRealTimePrice = getInfoClearingPriceValue(compareRow, pageData, "realTime");
         return {
-          time: row.time,
-          currentDayAheadNodePrice: createInfoDisclosureTableCell(row.dayAheadNodePrice, formatDecimal),
-          currentRealTimeNodePrice: createInfoDisclosureTableCell(row.realTimeNodePrice, formatDecimal),
-          currentSpread: createInfoDisclosureSpreadCell(row.dayAheadNodePrice, row.realTimeNodePrice),
-          compareDayAheadNodePrice: createInfoDisclosureTableCell(compareRow.dayAheadNodePrice, formatDecimal),
-          compareRealTimeNodePrice: createInfoDisclosureTableCell(compareRow.realTimeNodePrice, formatDecimal),
-          compareSpread: createInfoDisclosureSpreadCell(compareRow.dayAheadNodePrice, compareRow.realTimeNodePrice),
+          time: getInfoClearingTimeLabel(row),
+          currentDayAheadPrice: createInfoDisclosureTableCell(dayAheadPrice, formatDecimal),
+          currentRealTimePrice: createInfoDisclosureTableCell(realTimePrice, formatDecimal),
+          currentSpread: createInfoDisclosureSpreadCell(dayAheadPrice, realTimePrice),
+          compareDayAheadPrice: createInfoDisclosureTableCell(compareDayAheadPrice, formatDecimal),
+          compareRealTimePrice: createInfoDisclosureTableCell(compareRealTimePrice, formatDecimal),
+          compareSpread: createInfoDisclosureSpreadCell(compareDayAheadPrice, compareRealTimePrice),
         };
       });
     }
@@ -4831,7 +5597,7 @@
 
     return (
       '<section class="panel chart-panel chart-panel-plain"><div class="chart-main chart-main-plain">' +
-      (isProvinceClearingPage ? renderInfoTradeNoCompareHint("全省统一出清价") : "") +
+      (isProvinceClearingPage ? renderInfoTradeNoCompareHint("全省统一出清价", compareRows, pageData) : "") +
       renderChartWithMarks({
         chartId: "info-unified-line-chart-" + getSelectedTradeCenterKey() + "-" + getActiveInfoTab(),
         title: pageData.chartTitle || pageData.title,
@@ -4844,18 +5610,18 @@
             ? [
                 {
                   id: "info-province-dayahead-compare",
-                  label: "对比日前节点电价",
+                  label: "对比" + dayAheadLabel,
                   color: "#FF7A45",
                   values: compareRows.map(function mapRow(row) {
-                    return row.dayAheadNodePrice;
+                    return getInfoClearingPriceValue(row, pageData, "dayAhead");
                   }),
                 },
                 {
                   id: "info-province-realtime-compare",
-                  label: "对比实时节点电价",
+                  label: "对比" + realTimeLabel,
                   color: "#8C6A4A",
                   values: compareRows.map(function mapRow(row) {
-                    return row.realTimeNodePrice;
+                    return getInfoClearingPriceValue(row, pageData, "realTime");
                   }),
                 },
               ]
@@ -4886,15 +5652,11 @@
             : pageData.tooltipMode === "priceSpread"
               ? function priceSpreadTooltip(_, index) {
                   var row = rows[index] || {};
-                  var dayAheadLabel = pageData.dayAheadSeriesLabel || "日前价格";
-                  var realTimeLabel = pageData.realTimeSeriesLabel || "实时价格";
-                  var dayAheadPrice =
-                    typeof row.dayAheadNodePrice === "number" ? row.dayAheadNodePrice : row.dayAheadPrice;
-                  var realTimePrice =
-                    typeof row.realTimeNodePrice === "number" ? row.realTimeNodePrice : row.realTimePrice;
+                  var dayAheadPrice = getInfoClearingPriceValue(row, pageData, "dayAhead");
+                  var realTimePrice = getInfoClearingPriceValue(row, pageData, "realTime");
                   var lines = [
                     row.date ? "日期 " + row.date : "",
-                    row.time ? "时刻 " + row.time : "",
+                    getInfoClearingTimeLabel(row) ? timeColumnLabel + " " + getInfoClearingTimeLabel(row) : "",
                     dayAheadLabel + " " + (typeof dayAheadPrice === "number" ? formatDecimal(dayAheadPrice) : "--"),
                     realTimeLabel + " " + (typeof realTimePrice === "number" ? formatDecimal(realTimePrice) : "--"),
                     typeof dayAheadPrice === "number" && typeof realTimePrice === "number"
@@ -4904,16 +5666,22 @@
 
                   if (isProvinceClearingPage && compareRows.length) {
                     var compareRow = compareRows[index] || {};
+                    var compareDayAheadPrice = getInfoClearingPriceValue(compareRow, pageData, "dayAhead");
+                    var compareRealTimePrice = getInfoClearingPriceValue(compareRow, pageData, "realTime");
                     lines.push(
-                      "对比日前节点电价 " +
-                        (typeof compareRow.dayAheadNodePrice === "number"
-                          ? formatDecimal(compareRow.dayAheadNodePrice)
+                      "对比" +
+                        dayAheadLabel +
+                        " " +
+                        (typeof compareDayAheadPrice === "number"
+                          ? formatDecimal(compareDayAheadPrice)
                           : "--"),
                     );
                     lines.push(
-                      "对比实时节点电价 " +
-                        (typeof compareRow.realTimeNodePrice === "number"
-                          ? formatDecimal(compareRow.realTimeNodePrice)
+                      "对比" +
+                        realTimeLabel +
+                        " " +
+                        (typeof compareRealTimePrice === "number"
+                          ? formatDecimal(compareRealTimePrice)
                           : "--"),
                     );
                   }
@@ -4931,7 +5699,7 @@
         tableId: "info-unified-line-table-" + getSelectedTradeCenterKey() + "-" + getActiveInfoTab(),
         columns: isProvinceClearingPage ? tradeTableColumns : tableConfig.columns,
         rows: tradeTableRows || tableConfig.rows,
-        minWidth: isProvinceClearingPage && state.ui.hasCompare ? 1680 : tableConfig.minWidth,
+        minWidth: isProvinceClearingPage && state.ui.hasCompare ? 1680 : isProvinceClearingPage ? pageData.tableMinWidth || 1120 : tableConfig.minWidth,
         enableColumnDrag: true,
         columnOrder: getTableColumnOrder("info-unified-line-table-" + getSelectedTradeCenterKey() + "-" + getActiveInfoTab()),
         sortState: getTableSortState("info-unified-line-table-" + getSelectedTradeCenterKey() + "-" + getActiveInfoTab()),
@@ -5110,7 +5878,7 @@
     var activeTab = getActiveInfoTab();
     var activeMockDate = getInfoTradeMockDate(activeTab);
 
-    if (activeTab === "全省统一出清价" || activeTab === "交易结果") {
+    if ((activeTab === "全省统一出清价" || activeTab === "交易结果") && !isPageBackedUnifiedClearingPrice(pageData, activeTab)) {
       if (activeMockDate && state.tradeResult.filters.marketRunRange.start !== activeMockDate) {
         return renderInfoUnsupportedEmptyState("当前日期暂无交易中心披露数据，请切换日期或手动更新数据");
       }
@@ -5471,6 +6239,14 @@
 
     var activeTab = getActiveInfoTab();
 
+    if (isPageBackedUnifiedClearingPrice(pageData, activeTab)) {
+      return {
+        time: pageData.updateTime || pageData.dataUpdateTime || getMarketDisclosureMock().dataUpdatedAt || "2026-05-09 10:00:00",
+        source: pageData.dataSource || pageData.source || getMarketDisclosureMock().dataSource || "交易中心披露",
+        publishTime: getPagePublishTime(pageData) || getPagePublishTime(getMarketDisclosureMock()),
+      };
+    }
+
     if (isUnifiedMockInfoTradeTab(activeTab)) {
       return getTradeResultStatusByTab(activeTab);
     }
@@ -5512,6 +6288,10 @@
       return { id: "trade-node-runtime", mode: "single" };
     }
 
+    if (activeTab === "全省统一出清价") {
+      return { id: "trade-result-runtime", mode: "single" };
+    }
+
     if (!isGuangdongInfoDisclosureCenter()) {
       return {
         id: "market-disclosure-range",
@@ -5543,7 +6323,7 @@
       return { id: "load-info-disclosure-table-runtime", mode: "single" };
     }
 
-    if (activeTab === "全省统一出清价" || activeTab === "出清电量" || activeTab === "交易结果") {
+    if (activeTab === "出清电量" || activeTab === "交易结果") {
       return { id: "trade-result-runtime", mode: "single" };
     }
 
@@ -5574,6 +6354,9 @@
       return renderInfoFilterBar(pageData);
     }
     if (getActiveInfoTab() === "用电企业分时电量") {
+      return renderInfoFilterBar(pageData);
+    }
+    if (getActiveInfoTab() === INFO_DISCLOSURE_SELLER_HISTORY_TAB || getActiveInfoTab() === INFO_DISCLOSURE_USER_HISTORY_TAB) {
       return renderInfoFilterBar(pageData);
     }
     if (isScopedLoadInfoTab() && isSingleMetricLoadPage(pageData)) {
@@ -5904,7 +6687,7 @@
     var pageData = getInfoDisclosurePageData();
     var activeMockDate = getInfoTradeMockDate(activeTab);
 
-    if (activeTab === "全省统一出清价" || activeTab === "交易结果") {
+    if ((activeTab === "全省统一出清价" || activeTab === "交易结果") && !isPageBackedUnifiedClearingPrice(pageData, activeTab)) {
       if (activeMockDate && state.tradeResult.filters.marketRunRange.start !== activeMockDate) {
         return renderInfoUnsupportedEmptyState("当前日期暂无交易中心披露数据，请切换日期或手动更新数据");
       }
@@ -5922,6 +6705,14 @@
 
     if (activeTab === "用电企业分时电量") {
       return renderEnterpriseContent();
+    }
+
+    if (activeTab === INFO_DISCLOSURE_SELLER_HISTORY_TAB) {
+      return renderSellerHistoryContent();
+    }
+
+    if (activeTab === INFO_DISCLOSURE_USER_HISTORY_TAB) {
+      return renderUserHistoryContent();
     }
 
     if (isScopedLoadInfoTab() && isSingleMetricLoadPage(pageData)) {
@@ -5966,6 +6757,7 @@
     var pageMeta = getInfoDisclosureTradeCenterMeta();
     var pageData = getInfoDisclosurePageData();
     syncUnifiedInfoDisclosureRange(pageData);
+    syncPageBackedClearingPriceRunDate(pageData);
     var activePrimaryTab = getActiveInfoPrimaryTab();
     var visiblePrimaryTabs = getVisibleInfoPrimaryTabs();
     var visibleSecondaryTabs = getVisibleInfoSecondaryTabs(activePrimaryTab);
@@ -6005,7 +6797,7 @@
           "</section>"
         : "") +
       renderInfoDisclosureFilterBar() +
-      (!hasVisibleTabs || activeTab === "用电企业分时电量" || activeTab === "售电公司分时电量"
+      (!hasVisibleTabs || activeTab === "用电企业分时电量" || activeTab === "售电公司分时电量" || isHistoryTimeSharingTab(activeTab)
         ? ""
         : renderInfoUnifiedDataUpdateBar(getInfoDisclosureStatus(), isInfoDisclosureCompareSupported())) +
       renderInfoDisclosureContent() +
@@ -12826,6 +13618,46 @@
       setFlashMessage("用电企业分时电量筛选已重置。", "info");
       return true;
     }
+    if (action === "query-seller-history") {
+      if (!state.info.filters.sellerHistoryAgentMonth) {
+        setFlashMessage("请选择代理月份。", "info");
+        return true;
+      }
+      var sellerHistoryRange = getInfoTimeSharingRange();
+      if (!isRangeValid(sellerHistoryRange)) {
+        setFlashMessage("请选择有效的运行日期范围。", "info");
+        return true;
+      }
+      state.info.sellerHistoryQueryAt = Date.now();
+      setFlashMessage("已按当前筛选条件更新售电公司分时电量历史回溯。", "success");
+      return true;
+    }
+    if (action === "reset-seller-history") {
+      resetSellerHistoryFilters();
+      state.info.sellerHistoryQueryAt = Date.now();
+      setFlashMessage("售电公司分时电量历史回溯筛选已重置。", "info");
+      return true;
+    }
+    if (action === "query-user-history") {
+      if (!state.info.filters.userHistoryAgentMonth) {
+        setFlashMessage("请选择代理月份。", "info");
+        return true;
+      }
+      var userHistoryRange = getInfoTimeSharingRange();
+      if (!isRangeValid(userHistoryRange)) {
+        setFlashMessage("请选择有效的运行日期范围。", "info");
+        return true;
+      }
+      state.info.userHistoryQueryAt = Date.now();
+      setFlashMessage("已按当前筛选条件更新用电企业分时电量历史回溯。", "success");
+      return true;
+    }
+    if (action === "reset-user-history") {
+      resetUserHistoryFilters();
+      state.info.userHistoryQueryAt = Date.now();
+      setFlashMessage("用电企业分时电量历史回溯筛选已重置。", "info");
+      return true;
+    }
     if (action === "query-settlement-day") {
       setFlashMessage(
         getSelectedTradeCenterKey() === "hunan"
@@ -13500,6 +14332,12 @@
     var key = target.getAttribute("data-filter-key");
     if (scope === "info") {
       state.info.filters[key] = target.value;
+      if (key === "sellerHistoryAgentMonth") {
+        state.info.filters.sellerHistoryRange = getDefaultHistoryRange("seller", target.value);
+      }
+      if (key === "userHistoryAgentMonth") {
+        state.info.filters.userHistoryRange = getDefaultHistoryRange("user", target.value);
+      }
     } else if (scope === "tradeResult") {
       state.tradeResult.filters[key] = target.value;
     } else if (scope === "settlement") {

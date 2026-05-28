@@ -518,6 +518,153 @@
     });
   });
 
+  function roundHistoryPower(value) {
+    return Number(Number(value).toFixed(2));
+  }
+
+  function buildHistoryDateRange(agentMonth) {
+    return buildDateRange(agentMonth + "-01", 7);
+  }
+
+  function buildSellerHistoryHourPower(monthIndex, dayIndex, hourIndex) {
+    var morning = Math.max(0, Math.sin(((hourIndex - 6) / 24) * Math.PI * 2)) * 21;
+    var evening = Math.max(0, Math.sin(((hourIndex - 14) / 24) * Math.PI * 2)) * 28;
+    var valley = hourIndex < 6 ? -12 : 0;
+    var weekendOffset = dayIndex >= 5 ? -8 : 0;
+    var base = 116 + monthIndex * 7 + dayIndex * 2.4 + morning + evening + valley + weekendOffset;
+    return roundHistoryPower(base + ((hourIndex % 4) - 1.5) * 2.35);
+  }
+
+  function buildUserHistoryHourPower(monthIndex, dayIndex, hourIndex, userIndex) {
+    var daytime = Math.max(0, Math.sin(((hourIndex - 7) / 24) * Math.PI * 2)) * (2.8 + userIndex * 0.34);
+    var peak = Math.max(0, Math.sin(((hourIndex - 15) / 24) * Math.PI * 2)) * (4.4 + monthIndex * 0.6);
+    var valley = hourIndex < 6 ? -1.1 : 0;
+    var base = 7.8 + userIndex * 1.65 + monthIndex * 0.75 + dayIndex * 0.38 + valley;
+    return roundHistoryPower(base + daytime + peak + ((hourIndex % 3) - 1) * 0.42);
+  }
+
+  var historySellerCompany = {
+    code: "SD-GD-001",
+    name: "小桔能源售电有限公司",
+  };
+
+  var historyAgentMonthConfigs = [
+    { agentMonth: "2025-04", userCount: 143, updateTime: "2026-05-28 10:10:00" },
+    { agentMonth: "2025-05", userCount: 156, updateTime: "2026-05-28 10:30:00" },
+  ];
+
+  var sellerHourlyPowerHistoryRows = [];
+  historyAgentMonthConfigs.forEach(function eachAgentMonth(config, monthIndex) {
+    buildHistoryDateRange(config.agentMonth).forEach(function eachHistoryDate(usageDate, dayIndex) {
+      var dailyValues = hours.map(function mapHistoryHour(_, hourIndex) {
+        return buildSellerHistoryHourPower(monthIndex, dayIndex, hourIndex);
+      });
+      var dailyPower = roundHistoryPower(sum(dailyValues));
+
+      hours.forEach(function eachHour(hour, hourIndex) {
+        sellerHourlyPowerHistoryRows.push({
+          agentMonth: config.agentMonth,
+          sellerCompanyCode: historySellerCompany.code,
+          sellerCompanyName: historySellerCompany.name,
+          usageDate: usageDate,
+          hour: hour,
+          power: dailyValues[hourIndex],
+          dailyPower: dailyPower,
+          userCount: config.userCount,
+          dataSource: "历史回溯",
+          updateTime: config.updateTime,
+        });
+      });
+    });
+  });
+
+  var userHistoryTemplates = [
+    {
+      powerUserCode: "USER-GD-0001",
+      powerUserName: "广州示例科技有限公司",
+      accountNo: "030000000001",
+      meterPointNo: "MP-GD-0001",
+      microgridName: "广州番禺微电网",
+      microgridId: "MG-GD-001",
+      activeMonths: ["2025-04", "2025-05"],
+    },
+    {
+      powerUserCode: "USER-GD-0002",
+      powerUserName: "广州南沙智充运营有限公司",
+      accountNo: "030000000002",
+      meterPointNo: "MP-GD-0002",
+      microgridName: "广州南沙站综合微电网",
+      microgridId: "MG-GD-002",
+      activeMonths: ["2025-04", "2025-05"],
+    },
+    {
+      powerUserCode: "USER-GD-0003",
+      powerUserName: "佛山顺德交通能源有限公司",
+      accountNo: "030000000003",
+      meterPointNo: "MP-GD-0003",
+      microgridName: "",
+      microgridId: "",
+      activeMonths: ["2025-04", "2025-05"],
+    },
+    {
+      powerUserCode: "USER-GD-0004",
+      powerUserName: "深圳湾区补能科技有限公司",
+      accountNo: "030000000004",
+      meterPointNo: "MP-GD-0004",
+      microgridName: "深圳前海微电网",
+      microgridId: "MG-GD-004",
+      activeMonths: ["2025-04"],
+    },
+    {
+      powerUserCode: "USER-GD-0005",
+      powerUserName: "珠海横琴绿色物流有限公司",
+      accountNo: "030000000005",
+      meterPointNo: "MP-GD-0005",
+      microgridName: "",
+      microgridId: "",
+      activeMonths: ["2025-04", "2025-05"],
+    },
+    {
+      powerUserCode: "USER-GD-0006",
+      powerUserName: "东莞松山湖储充科技有限公司",
+      accountNo: "030000000006",
+      meterPointNo: "MP-GD-0006",
+      microgridName: "东莞松山湖微电网",
+      microgridId: "MG-GD-006",
+      activeMonths: ["2025-05"],
+    },
+  ];
+
+  var userHourlyPowerHistoryRows = [];
+  historyAgentMonthConfigs.forEach(function eachUserHistoryMonth(config, monthIndex) {
+    var activeUsers = userHistoryTemplates.filter(function filterActiveUser(user) {
+      return user.activeMonths.indexOf(config.agentMonth) >= 0;
+    });
+
+    activeUsers.forEach(function eachUser(user, userIndex) {
+      buildHistoryDateRange(config.agentMonth).forEach(function eachUserHistoryDate(usageDate, dayIndex) {
+        hours.forEach(function eachUserHistoryHour(hour, hourIndex) {
+          userHourlyPowerHistoryRows.push({
+            agentMonth: config.agentMonth,
+            sellerCompanyCode: historySellerCompany.code,
+            sellerCompanyName: historySellerCompany.name,
+            powerUserCode: user.powerUserCode,
+            powerUserName: user.powerUserName,
+            accountNo: user.accountNo,
+            meterPointNo: user.meterPointNo,
+            microgridName: user.microgridName,
+            microgridId: user.microgridId,
+            usageDate: usageDate,
+            hour: hour,
+            power: buildUserHistoryHourPower(monthIndex, dayIndex, hourIndex, userIndex),
+            dataSource: "历史回溯",
+            updateTime: config.updateTime,
+          });
+        });
+      });
+    });
+  });
+
   var maintenanceSeries = interpolateAnchors(96, {
     0: 3180,
     8: 3240,
@@ -1124,6 +1271,9 @@
       loadDetailGroups: loadDetailGroups,
       saleCompanyRows: saleCompanyRows,
       enterpriseRows: enterpriseRows,
+      historyAgentMonths: historyAgentMonthConfigs.map(function mapHistoryMonth(config) { return config.agentMonth; }),
+      sellerHourlyPowerHistoryRows: sellerHourlyPowerHistoryRows,
+      userHourlyPowerHistoryRows: userHourlyPowerHistoryRows,
       maintenanceRows: maintenanceRows,
       transmissionMaintenancePlanRows: transmissionMaintenancePlanRows,
       transmissionMaintenancePlanUpdateTime: "2026-05-26 10:46:00",
