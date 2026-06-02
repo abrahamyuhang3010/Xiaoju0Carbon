@@ -88,6 +88,9 @@
   var INFO_DISCLOSURE_SELLER_HISTORY_TAB = "售电公司分时电量历史回溯";
   var INFO_DISCLOSURE_USER_HISTORY_TAB = "用电企业分时电量历史回溯";
   var HISTORY_RETRACE_SCOPE_TEXT = "当前数据为历史回溯口径，按所选代理月份对应的实际代理用户清单统计，与常规分时电量页面的数据口径可能存在差异。";
+  var TIME_SHARING_HOUR_LABELS = Array.from({ length: 24 }, function createTimeSharingHour(_, index) {
+    return String(index).padStart(2, "0") + ":00";
+  });
   var INFO_DISCLOSURE_EMPTY_MESSAGE =
     infoDisclosureConfig.emptyStateMessage || "当前交易中心暂未接入该披露类型数据，请切换其他披露类型或手动更新数据。";
   var INFO_DISCLOSURE_NO_DATA_SOURCE_MESSAGE =
@@ -1030,6 +1033,47 @@
     return String(value || "").replace(/-/g, "");
   }
 
+  function getTimeSharingHourLabels() {
+    return TIME_SHARING_HOUR_LABELS.slice();
+  }
+
+  function buildDateColumnKey(date) {
+    return "date-" + formatDateCompact(date);
+  }
+
+  function buildHourColumnKey(hour) {
+    return "hour-" + String(hour || "").replace(/\D/g, "");
+  }
+
+  function createNumericEnergyCell(value, formatter) {
+    var numeric = value === null || value === undefined || value === "" ? null : Number(value);
+    var hasValue = numeric !== null && !Number.isNaN(numeric);
+    return {
+      text: hasValue ? formatter(numeric) : "-",
+      sortValue: hasValue ? numeric : Number.NEGATIVE_INFINITY,
+    };
+  }
+
+  function createFixedColumn(key, label, width) {
+    return {
+      key: key,
+      label: label,
+      fixed: true,
+      draggable: false,
+      width: width,
+    };
+  }
+
+  function buildHourlyEnergyColumns(width) {
+    return getTimeSharingHourLabels().map(function mapHourlyEnergyColumn(hour) {
+      return {
+        key: buildHourColumnKey(hour),
+        label: hour,
+        width: width || 96,
+      };
+    });
+  }
+
   function formatDateValue(date) {
     function pad(value) {
       return String(value).padStart(2, "0");
@@ -1051,19 +1095,45 @@
   }
 
   function getDefaultEnterprisePowerRange() {
-    return buildRelativeDateRange(-8, -1);
+    return {
+      start: "2026-05-29",
+      end: "2026-05-29",
+    };
   }
 
   function getDefaultSaleCompanyPowerRange() {
-    return buildRelativeDateRange(-8, -1);
+    return {
+      start: "2026-05-25",
+      end: "2026-05-29",
+    };
   }
 
   function getHistoryRowsByType(type) {
+    var adapter = global.BOSS_POWER_DATA_ADAPTER || (appMocks.powerDataAdapter || {});
+    var marketKey = getSelectedTradeCenterKey();
     var infoMock = getInfoMock();
+    var generatedRows = [];
+    var legacyRows = [];
+
     if (type === "seller") {
-      return infoMock.sellerHourlyPowerHistoryRows || [];
+      generatedRows =
+        adapter && typeof adapter.getSellerHourlyPowerHistoryRows === "function"
+          ? adapter.getSellerHourlyPowerHistoryRows(marketKey)
+          : [];
+      legacyRows = infoMock.sellerHourlyPowerHistoryRows || [];
+    } else {
+      generatedRows =
+        adapter && typeof adapter.getUserHourlyPowerHistoryRows === "function"
+          ? adapter.getUserHourlyPowerHistoryRows(marketKey)
+          : [];
+      legacyRows = infoMock.userHourlyPowerHistoryRows || [];
     }
-    return infoMock.userHourlyPowerHistoryRows || [];
+
+    return generatedRows.concat(
+      legacyRows.filter(function filterLegacyHistoryRow(row) {
+        return row && row.agentMonth !== "2026-05";
+      }),
+    );
   }
 
   function getHistoryAgentMonths(type) {
@@ -1079,7 +1149,7 @@
 
   function getDefaultHistoryAgentMonth(type) {
     var months = getHistoryAgentMonths(type);
-    return months[months.length - 1] || "2025-05";
+    return months[months.length - 1] || "2026-05";
   }
 
   function getDefaultHistoryRange(type, agentMonth) {
@@ -1097,6 +1167,12 @@
       .sort();
 
     if (dates.length) {
+      if (month === "2026-05" && dates.indexOf("2026-05-25") >= 0 && dates.indexOf("2026-05-29") >= 0) {
+        return {
+          start: type === "user" ? "2026-05-29" : "2026-05-25",
+          end: "2026-05-29",
+        };
+      }
       return {
         start: dates[0],
         end: dates[Math.min(dates.length - 1, 6)],
@@ -1122,6 +1198,19 @@
     state.info.filters.enterpriseRange = cloneRange(clonedRange);
   }
 
+  function setSaleCompanyInfoTimeSharingRange(range) {
+    var clonedRange = cloneRange(range);
+    state.info.filters.timeSharingRange = cloneRange(clonedRange);
+    state.info.filters.saleCompanyRange = cloneRange(clonedRange);
+    state.info.filters.saleCompanyAppliedRange = cloneRange(clonedRange);
+  }
+
+  function setEnterpriseInfoTimeSharingRange(range) {
+    var clonedRange = cloneRange(range);
+    state.info.filters.timeSharingRange = cloneRange(clonedRange);
+    state.info.filters.enterpriseRange = cloneRange(clonedRange);
+  }
+
   function getInfoTimeSharingRange() {
     var activeTab = getActiveInfoTab();
     var filters = state.info.filters;
@@ -1131,16 +1220,19 @@
     if (activeTab === INFO_DISCLOSURE_USER_HISTORY_TAB) {
       return filters.userHistoryRange || getDefaultHistoryRange("user", filters.userHistoryAgentMonth);
     }
+    if (activeTab === "用电企业分时电量") {
+      return filters.enterpriseRange || getDefaultEnterprisePowerRange();
+    }
+    if (activeTab === "售电公司分时电量" && filters.saleCompanyAppliedRange && isRangeValid(filters.saleCompanyAppliedRange)) {
+      return filters.saleCompanyAppliedRange;
+    }
+    if (activeTab === "售电公司分时电量" && filters.saleCompanyRange && isRangeValid(filters.saleCompanyRange)) {
+      return filters.saleCompanyRange;
+    }
     if (filters.timeSharingRange && isRangeValid(filters.timeSharingRange)) {
       return filters.timeSharingRange;
     }
-    if (filters.saleCompanyAppliedRange && isRangeValid(filters.saleCompanyAppliedRange)) {
-      return filters.saleCompanyAppliedRange;
-    }
-    if (filters.saleCompanyRange && isRangeValid(filters.saleCompanyRange)) {
-      return filters.saleCompanyRange;
-    }
-    return filters.enterpriseRange || getDefaultSaleCompanyPowerRange();
+    return getDefaultSaleCompanyPowerRange();
   }
 
   function setInfoTimeSharingRange(range) {
@@ -1151,6 +1243,14 @@
     }
     if (activeTab === INFO_DISCLOSURE_USER_HISTORY_TAB) {
       state.info.filters.userHistoryRange = cloneRange(range);
+      return;
+    }
+    if (activeTab === "用电企业分时电量") {
+      setEnterpriseInfoTimeSharingRange(range);
+      return;
+    }
+    if (activeTab === "售电公司分时电量") {
+      setSaleCompanyInfoTimeSharingRange(range);
       return;
     }
     setRegularInfoTimeSharingRange(range);
@@ -1176,7 +1276,7 @@
 
   function resetSaleCompanyPowerFilters() {
     var defaultRange = getDefaultSaleCompanyPowerRange();
-    setRegularInfoTimeSharingRange(defaultRange);
+    setSaleCompanyInfoTimeSharingRange(defaultRange);
     resetSaleCompanyPowerBusinessFilters();
     if (state.ui.tableSort) {
       delete state.ui.tableSort["sale-company-table"];
@@ -1194,7 +1294,6 @@
     state.info.filters.enterpriseUserCode = "";
     state.info.filters.enterpriseUserName = "";
     state.info.filters.enterpriseAccountNo = "";
-    state.info.filters.enterpriseMicrogridName = "";
     state.info.filters.enterpriseMicrogridId = "";
     if (state.ui.tableSort) {
       delete state.ui.tableSort["enterprise-table"];
@@ -1202,7 +1301,7 @@
   }
 
   function resetEnterprisePowerFilters() {
-    setRegularInfoTimeSharingRange(getDefaultEnterprisePowerRange());
+    setEnterpriseInfoTimeSharingRange(getDefaultEnterprisePowerRange());
     resetEnterprisePowerBusinessFilters();
   }
 
@@ -1226,9 +1325,7 @@
     state.info.filters.userHistoryUserCode = "";
     state.info.filters.userHistoryUserName = "";
     state.info.filters.userHistoryAccountNo = "";
-    state.info.filters.userHistoryMicrogridName = "";
     state.info.filters.userHistoryMicrogridId = "";
-    state.info.filters.userHistoryCompanyName = "全部";
     if (state.ui.tableSort) {
       delete state.ui.tableSort["user-history-table"];
     }
@@ -2168,57 +2265,13 @@
     }
 
     if (!isRangeValid(activeRange)) {
-      if (marketKey === "guangdong") {
-        var invalidGdRows = getInfoMock().saleCompanyRows || [];
-        var invalidGdStatus = parseInfoStatus(getInfoMock().statusText, getModulePublishTime(getInfoMock()));
-        result.latestUpdateInfo = invalidGdRows.length
-          ? createStatus(invalidGdStatus.time, invalidGdStatus.source, invalidGdStatus.publishTime)
-          : createStatus("-", "-", "-");
-      } else {
-        var invalidAdapterRows = getSaleCompanyAdapterRows();
-        result.latestUpdateInfo = getLatestSaleCompanyUpdateInfo(
-          [],
-          (invalidAdapterRows.allDailyRows || []).concat(invalidAdapterRows.allHourlyRows || []),
-          marketKey,
-        );
-      }
+      var invalidAdapterRows = getSaleCompanyAdapterRows();
+      result.latestUpdateInfo = getLatestSaleCompanyUpdateInfo(
+        [],
+        (invalidAdapterRows.allDailyRows || []).concat(invalidAdapterRows.allHourlyRows || []),
+        marketKey,
+      );
       return result;
-    }
-
-    if (marketKey === "guangdong") {
-      var rows = getSaleCompanyRows(activeRange);
-      var allRows = getInfoMock().saleCompanyRows || [];
-      var rowMap = {};
-      var gdHours = getInfoMock().hours || mock.hours || [];
-      var gdStatus = parseInfoStatus(getInfoMock().statusText, getModulePublishTime(getInfoMock()));
-
-      rows.forEach(function eachRow(row) {
-        rowMap[row.date] = row;
-      });
-
-      result.tableRows = dateLabels.reduce(function buildRows(acc, date) {
-        var matchedRow = rowMap[date];
-        return acc.concat(
-          gdHours.map(function mapHour(hour, index) {
-            var hasValue = Boolean(matchedRow && Array.isArray(matchedRow.hourlyValues) && index < matchedRow.hourlyValues.length);
-            var hourlyValue = hasValue ? normalizeSaleCompanyElectricity(matchedRow.hourlyValues[index]) : null;
-            return {
-              date: date,
-              hour: hour,
-              companyName: "售电公司",
-              electricity: hourlyValue,
-              unit: "MWh",
-              updateTime: matchedRow ? gdStatus.time : "",
-              dataSource: matchedRow ? gdStatus.source : "",
-              publishTime: matchedRow ? gdStatus.publishTime : "",
-            };
-          }),
-        );
-      }, []);
-      result.latestUpdateInfo = allRows.length
-        ? createStatus(gdStatus.time, gdStatus.source, gdStatus.publishTime)
-        : createStatus("-", "-", "-");
-      return attachSaleCompanyChartRows(result);
     }
 
     var adapterRows = getSaleCompanyAdapterRows(activeRange);
@@ -2326,23 +2379,40 @@
   }
 
   function getSaleCompanyTableConfig(dataset) {
-    return {
-      columns: [
-        { key: "date", label: "日期" },
-        { key: "hour", label: "时刻" },
-        { key: "electricity", label: "时刻电量（MWh）" },
-      ],
-      rows: (dataset.tableRows || []).map(function mapRow(row) {
+    var dateLabels = (dataset.dateLabels || []).slice();
+    var rowMap = {};
+    var columns = [
+      { key: "hour", label: "时刻", fixed: true, draggable: false, width: 96 },
+    ].concat(
+      dateLabels.map(function mapSaleCompanyDateColumn(date) {
         return {
-          date: row.date,
-          hour: row.hour,
-          electricity: {
-            text: formatSaleCompanyEnergy(row.electricity),
-            sortValue: row.electricity === null || row.electricity === undefined ? Number.NEGATIVE_INFINITY : Number(row.electricity),
-          },
+          key: buildDateColumnKey(date),
+          label: formatDateCompact(date),
+          width: 132,
         };
       }),
-      minWidth: 980,
+    );
+
+    (dataset.tableRows || []).forEach(function eachSaleCompanyTableSourceRow(row) {
+      rowMap[row.hour + "|" + row.date] = row;
+    });
+
+    return {
+      columns: columns,
+      rows: getTimeSharingHourLabels().map(function mapSaleCompanyMatrixRow(hour) {
+        var tableRow = {
+          hour: hour,
+        };
+        dateLabels.forEach(function eachSaleCompanyMatrixDate(date) {
+          var matched = rowMap[hour + "|" + date];
+          tableRow[buildDateColumnKey(date)] = createNumericEnergyCell(
+            matched ? matched.electricity : null,
+            formatSaleCompanyEnergy,
+          );
+        });
+        return tableRow;
+      }),
+      minWidth: 96 + Math.max(dateLabels.length, 1) * 132,
     };
   }
 
@@ -2392,7 +2462,6 @@
           includesCodeKeyword(row.userCode, filters.enterpriseUserCode) &&
           includesKeyword(row.userName, filters.enterpriseUserName) &&
           includesCodeKeyword(row.accountNo, filters.enterpriseAccountNo) &&
-          includesNullableMicrogridValue(row.microgridName, filters.enterpriseMicrogridName) &&
           includesNullableMicrogridValue(row.microgridId, filters.enterpriseMicrogridId)
         );
       })
@@ -2426,20 +2495,30 @@
   }
 
   function getEnterpriseTable() {
-    return {
-      columns: [
-        { key: "date", label: "日期" },
-        { key: "userCode", label: "电力用户编码" },
-        { key: "userName", label: "电力用户名称" },
-        { key: "microgridName", label: "微电网名称" },
-        { key: "microgridId", label: "微电网ID" },
-        { key: "accountNo", label: "户号" },
-        { key: "meteringPointNo", label: "计量点编号" },
-        { key: "hour", label: "时刻" },
-        { key: "electricity", label: "时刻电量（MWh）" },
-      ],
-      rows: getEnterpriseRows().map(function mapRow(row) {
-        return {
+    var fixedColumns = [
+      createFixedColumn("date", "日期", 118),
+      createFixedColumn("userCode", "电力用户编码", 158),
+      createFixedColumn("userName", "电力用户名称", 220),
+      createFixedColumn("microgridName", "微电网名称", 190),
+      createFixedColumn("microgridId", "微电网ID", 132),
+      createFixedColumn("accountNo", "户号", 148),
+      createFixedColumn("meteringPointNo", "计量点编号", 152),
+    ];
+    var rowMap = {};
+    var groupedRows = {};
+
+    getEnterpriseRows().forEach(function eachEnterpriseTableSourceRow(row) {
+      var groupKey = [
+        row.date,
+        row.userCode,
+        row.userName,
+        row.microgridName,
+        row.microgridId,
+        row.accountNo,
+        row.meteringPointNo,
+      ].join("|");
+      if (!groupedRows[groupKey]) {
+        groupedRows[groupKey] = {
           date: row.date || "-",
           userCode: row.userCode || "-",
           userName: row.userName || "-",
@@ -2447,14 +2526,27 @@
           microgridId: row.microgridId || "-",
           accountNo: row.accountNo || "-",
           meteringPointNo: row.meteringPointNo || "-",
-          hour: row.hour || "-",
-          electricity: {
-            text: typeof row.electricity === "number" ? row.electricity.toFixed(3) : "-",
-            sortValue: typeof row.electricity === "number" ? row.electricity : -1,
-          },
         };
+      }
+      rowMap[groupKey + "|" + row.hour] = row.electricity;
+    });
+
+    return {
+      columns: fixedColumns.concat(buildHourlyEnergyColumns(96)),
+      rows: Object.keys(groupedRows).sort().map(function mapEnterpriseWideRow(groupKey) {
+        var tableRow = groupedRows[groupKey];
+        getTimeSharingHourLabels().forEach(function eachEnterpriseHour(hour) {
+          tableRow[buildHourColumnKey(hour)] = createNumericEnergyCell(rowMap[groupKey + "|" + hour], function formatEnterprisePower(value) {
+            return value.toFixed(3);
+          });
+        });
+        return tableRow;
       }),
-      minWidth: 1380,
+      minWidth:
+        fixedColumns.reduce(function sumFixedColumnWidth(total, column) {
+          return total + Number(column.width || 0);
+        }, 0) +
+        getTimeSharingHourLabels().length * 96,
     };
   }
 
@@ -2540,9 +2632,9 @@
     var filters = state.info.filters;
     var agentMonth = filters.sellerHistoryAgentMonth || getDefaultHistoryAgentMonth("seller");
     var range = filters.sellerHistoryRange || getDefaultHistoryRange("seller", agentMonth);
-    var sellerName = filters.sellerHistoryCompanyName || "全部";
+    var sellerName = "全部";
     var dateLabels = buildDateRangeList(range);
-    var hours = getInfoMock().hours || mock.hours || [];
+    var hours = getTimeSharingHourLabels();
     var allRows = getHistoryRowsByType("seller");
     var monthRows = allRows.filter(function filterMonth(row) {
       return row.agentMonth === agentMonth;
@@ -2561,7 +2653,18 @@
     var fallbackRow = companyRows[0] || monthRows[0] || allRows[0] || {};
 
     dateRows.forEach(function eachSellerHistoryRow(row) {
-      rowMap[row.usageDate + "|" + row.hour] = row;
+      var hourKey = row.usageDate + "|" + row.hour;
+      if (!rowMap[hourKey]) {
+        rowMap[hourKey] = {
+          row: row,
+          power: 0,
+          hasPower: false,
+        };
+      }
+      if (isHistoryNumericValue(row.power)) {
+        rowMap[hourKey].power += Number(row.power);
+        rowMap[hourKey].hasPower = true;
+      }
       var dailyKey = row.usageDate + "|" + row.sellerCompanyCode;
       if (dailyCompanySeen[dailyKey]) {
         return;
@@ -2606,15 +2709,15 @@
                 var matched = rowMap[date + "|" + hour];
                 return {
                   agentMonth: agentMonth,
-                  sellerCompanyCode: (matched && matched.sellerCompanyCode) || fallbackRow.sellerCompanyCode || "-",
-                  sellerCompanyName: (matched && matched.sellerCompanyName) || fallbackRow.sellerCompanyName || "-",
+                  sellerCompanyCode: (matched && matched.row && matched.row.sellerCompanyCode) || fallbackRow.sellerCompanyCode || "-",
+                  sellerCompanyName: (matched && matched.row && matched.row.sellerCompanyName) || fallbackRow.sellerCompanyName || "-",
                   usageDate: date,
                   hour: hour,
-                  power: matched ? normalizeHistoryPower(matched.power) : null,
-                  dailyPower: matched ? normalizeHistoryPower(matched.dailyPower) : null,
-                  userCount: matched && matched.userCount !== undefined ? matched.userCount : "-",
-                  dataSource: (matched && matched.dataSource) || "-",
-                  updateTime: (matched && matched.updateTime) || "-",
+                  power: matched && matched.hasPower ? roundHistoryMetric(matched.power) : null,
+                  dailyPower: matched && matched.row ? normalizeHistoryPower(matched.row.dailyPower) : null,
+                  userCount: matched && matched.row && matched.row.userCount !== undefined ? matched.row.userCount : "-",
+                  dataSource: (matched && matched.row && matched.row.dataSource) || "-",
+                  updateTime: (matched && matched.row && matched.row.updateTime) || "-",
                 };
               }),
             );
@@ -2643,40 +2746,40 @@
   }
 
   function getSellerHistoryTableConfig(dataset) {
-    return {
-      columns: [
-        { key: "agentMonth", label: "代理月份" },
-        { key: "sellerCompanyCode", label: "售电公司编码" },
-        { key: "sellerCompanyName", label: "售电公司名称" },
-        { key: "usageDate", label: "用电日期" },
-        { key: "hour", label: "时刻" },
-        { key: "power", label: "分时电量（MWh）" },
-        { key: "dailyPower", label: "日总电量（MWh）" },
-        { key: "userCount", label: "统计用户数" },
-        { key: "dataSource", label: "数据来源" },
-        { key: "updateTime", label: "数据更新时间" },
-      ],
-      rows: (dataset.tableRows || []).map(function mapSellerHistoryTableRow(row) {
+    var dateLabels = (dataset.dateLabels || []).slice();
+    var rowMap = {};
+    var columns = [
+      { key: "hour", label: "时刻", fixed: true, draggable: false, width: 96 },
+    ].concat(
+      dateLabels.map(function mapSellerHistoryDateColumn(date) {
         return {
-          agentMonth: row.agentMonth || "-",
-          sellerCompanyCode: row.sellerCompanyCode || "-",
-          sellerCompanyName: row.sellerCompanyName || "-",
-          usageDate: row.usageDate || "-",
-          hour: row.hour || "-",
-          power: {
-            text: formatHistoryPower(row.power),
-            sortValue: isHistoryNumericValue(row.power) ? row.power : Number.NEGATIVE_INFINITY,
-          },
-          dailyPower: {
-            text: formatHistoryPower(row.dailyPower),
-            sortValue: isHistoryNumericValue(row.dailyPower) ? row.dailyPower : Number.NEGATIVE_INFINITY,
-          },
-          userCount: row.userCount,
-          dataSource: row.dataSource || "-",
-          updateTime: row.updateTime || "-",
+          key: buildDateColumnKey(date),
+          label: formatDateCompact(date),
+          width: 132,
         };
       }),
-      minWidth: 1760,
+    );
+
+    (dataset.tableRows || []).forEach(function eachSellerHistoryTableSourceRow(row) {
+      rowMap[row.hour + "|" + row.usageDate] = row;
+    });
+
+    return {
+      columns: columns,
+      rows: getTimeSharingHourLabels().map(function mapSellerHistoryMatrixRow(hour) {
+        var tableRow = {
+          hour: hour,
+        };
+        dateLabels.forEach(function eachSellerHistoryMatrixDate(date) {
+          var matched = rowMap[hour + "|" + date];
+          tableRow[buildDateColumnKey(date)] = createNumericEnergyCell(
+            matched ? matched.power : null,
+            formatHistoryPower,
+          );
+        });
+        return tableRow;
+      }),
+      minWidth: 96 + Math.max(dateLabels.length, 1) * 132,
     };
   }
 
@@ -2684,23 +2787,30 @@
     var filters = state.info.filters;
     var agentMonth = filters.userHistoryAgentMonth || getDefaultHistoryAgentMonth("user");
     var range = filters.userHistoryRange || getDefaultHistoryRange("user", agentMonth);
-    var sellerName = filters.userHistoryCompanyName || "全部";
     var dateLabels = buildDateRangeList(range);
-    var hours = getInfoMock().hours || mock.hours || [];
+    var hours = getTimeSharingHourLabels();
     var allRows = getHistoryRowsByType("user");
     var monthRows = allRows.filter(function filterMonth(row) {
       return row.agentMonth === agentMonth;
     });
+    function getUserHistoryGroupKey(row) {
+      return [
+        row.powerUserCode || "",
+        row.powerUserName || "",
+        row.accountNo || "",
+        row.meterPointNo || "",
+        formatHistoryMicrogrid(row.microgridName),
+        formatHistoryMicrogrid(row.microgridId),
+      ].join("|");
+    }
     var filteredRows = isRangeValid(range)
       ? monthRows.filter(function filterUserHistory(row) {
           return (
             row.usageDate >= range.start &&
             row.usageDate <= range.end &&
-            (sellerName === "全部" || row.sellerCompanyName === sellerName) &&
             includesCodeKeyword(row.powerUserCode, filters.userHistoryUserCode) &&
             includesKeyword(row.powerUserName, filters.userHistoryUserName) &&
             includesCodeKeyword(row.accountNo, filters.userHistoryAccountNo) &&
-            includesNullableMicrogridValue(row.microgridName, filters.userHistoryMicrogridName) &&
             includesNullableMicrogridValue(row.microgridId, filters.userHistoryMicrogridId)
           );
         })
@@ -2709,9 +2819,11 @@
     var userMap = {};
 
     filteredRows.forEach(function eachUserHistoryRow(row) {
-      rowMap[row.powerUserCode + "|" + row.usageDate + "|" + row.hour] = row;
-      if (!userMap[row.powerUserCode]) {
-        userMap[row.powerUserCode] = {
+      var userKey = getUserHistoryGroupKey(row);
+      rowMap[userKey + "|" + row.usageDate + "|" + row.hour] = row;
+      if (!userMap[userKey]) {
+        userMap[userKey] = {
+          userKey: userKey,
           agentMonth: row.agentMonth,
           sellerCompanyCode: row.sellerCompanyCode,
           sellerCompanyName: row.sellerCompanyName,
@@ -2742,7 +2854,7 @@
         ? users.reduce(function buildUserHistoryRows(acc, user) {
             dateLabels.forEach(function eachUserHistoryDate(date) {
               hours.forEach(function eachUserHistoryHour(hour) {
-                var matched = rowMap[user.powerUserCode + "|" + date + "|" + hour];
+                var matched = rowMap[user.userKey + "|" + date + "|" + hour];
                 acc.push({
                   agentMonth: agentMonth,
                   sellerCompanyCode: user.sellerCompanyCode || "-",
@@ -2769,45 +2881,56 @@
   }
 
   function getUserHistoryTableConfig(dataset) {
-    return {
-      columns: [
-        { key: "agentMonth", label: "代理月份" },
-        { key: "sellerCompanyCode", label: "售电公司编码" },
-        { key: "sellerCompanyName", label: "售电公司名称" },
-        { key: "powerUserCode", label: "电力用户编码" },
-        { key: "powerUserName", label: "电力用户名称" },
-        { key: "accountNo", label: "用户户号" },
-        { key: "meterPointNo", label: "计量点编号" },
-        { key: "microgridName", label: "微电网名称" },
-        { key: "microgridId", label: "微电网ID" },
-        { key: "usageDate", label: "用电日期" },
-        { key: "hour", label: "时刻" },
-        { key: "power", label: "分时电量（MWh）" },
-        { key: "dataSource", label: "数据来源" },
-        { key: "updateTime", label: "数据更新时间" },
-      ],
-      rows: (dataset.tableRows || []).map(function mapUserHistoryTableRow(row) {
-        return {
-          agentMonth: row.agentMonth || "-",
-          sellerCompanyCode: row.sellerCompanyCode || "-",
-          sellerCompanyName: row.sellerCompanyName || "-",
+    var fixedColumns = [
+      createFixedColumn("usageDate", "日期", 118),
+      createFixedColumn("powerUserCode", "电力用户编码", 158),
+      createFixedColumn("powerUserName", "电力用户名称", 220),
+      createFixedColumn("microgridName", "微电网名称", 190),
+      createFixedColumn("microgridId", "微电网ID", 132),
+      createFixedColumn("accountNo", "户号", 148),
+      createFixedColumn("meterPointNo", "计量点编号", 152),
+    ];
+    var rowMap = {};
+    var groupedRows = {};
+
+    (dataset.tableRows || []).forEach(function eachUserHistoryTableSourceRow(row) {
+      var groupKey = [
+        row.usageDate,
+        row.powerUserCode,
+        row.powerUserName,
+        formatHistoryMicrogrid(row.microgridName),
+        formatHistoryMicrogrid(row.microgridId),
+        row.accountNo,
+        row.meterPointNo,
+      ].join("|");
+      if (!groupedRows[groupKey]) {
+        groupedRows[groupKey] = {
+          usageDate: row.usageDate || "-",
           powerUserCode: row.powerUserCode || "-",
           powerUserName: row.powerUserName || "-",
-          accountNo: row.accountNo || "-",
-          meterPointNo: row.meterPointNo || "-",
           microgridName: formatHistoryMicrogrid(row.microgridName),
           microgridId: formatHistoryMicrogrid(row.microgridId),
-          usageDate: row.usageDate || "-",
-          hour: row.hour || "-",
-          power: {
-            text: formatHistoryPower(row.power),
-            sortValue: isHistoryNumericValue(row.power) ? row.power : Number.NEGATIVE_INFINITY,
-          },
-          dataSource: row.dataSource || "-",
-          updateTime: row.updateTime || "-",
+          accountNo: row.accountNo || "-",
+          meterPointNo: row.meterPointNo || "-",
         };
+      }
+      rowMap[groupKey + "|" + row.hour] = row.power;
+    });
+
+    return {
+      columns: fixedColumns.concat(buildHourlyEnergyColumns(96)),
+      rows: Object.keys(groupedRows).sort().map(function mapUserHistoryWideRow(groupKey) {
+        var tableRow = groupedRows[groupKey];
+        getTimeSharingHourLabels().forEach(function eachUserHistoryWideHour(hour) {
+          tableRow[buildHourColumnKey(hour)] = createNumericEnergyCell(rowMap[groupKey + "|" + hour], formatHistoryPower);
+        });
+        return tableRow;
       }),
-      minWidth: 2260,
+      minWidth:
+        fixedColumns.reduce(function sumFixedColumnWidth(total, column) {
+          return total + Number(column.width || 0);
+        }, 0) +
+        getTimeSharingHourLabels().length * 96,
     };
   }
 
@@ -3373,16 +3496,7 @@
 
   function renderSellerHistoryFilterBar() {
     var filters = state.info.filters;
-    var fieldsHtml =
-      renderMonthFilter("代理月份", filters.sellerHistoryAgentMonth || getDefaultHistoryAgentMonth("seller"), "sellerHistoryAgentMonth", "info") +
-      renderBoundSelectFilter(
-        "售电公司",
-        filters.sellerHistoryCompanyName || "全部",
-        getHistorySellerCompanyOptions("seller"),
-        "sellerHistoryCompanyName",
-        "info",
-        "filter-select-native",
-      );
+    var fieldsHtml = renderMonthFilter("代理月份", filters.sellerHistoryAgentMonth || getDefaultHistoryAgentMonth("seller"), "sellerHistoryAgentMonth", "info");
     var actionsHtml = renderUiActionButton("重置", "ghost", "reset-seller-history") + renderUiActionButton("查询", "primary", "query-seller-history");
     return renderInfoFilterPanel(fieldsHtml, actionsHtml);
   }
@@ -3394,16 +3508,7 @@
       renderTextFilter("电力用户编码", "userHistoryUserCode", "请输入电力用户编码") +
       renderTextFilter("电力用户名称", "userHistoryUserName", "请输入电力用户名称") +
       renderTextFilter("用户户号", "userHistoryAccountNo", "请输入用户户号") +
-      renderTextFilter("微电网名称", "userHistoryMicrogridName", "请输入微电网名称") +
-      renderTextFilter("微电网ID", "userHistoryMicrogridId", "请输入微电网ID") +
-      renderBoundSelectFilter(
-        "售电公司",
-        filters.userHistoryCompanyName || "全部",
-        getHistorySellerCompanyOptions("user"),
-        "userHistoryCompanyName",
-        "info",
-        "filter-select-native",
-      );
+      renderTextFilter("微电网ID", "userHistoryMicrogridId", "请输入微电网ID");
     var actionsHtml = renderUiActionButton("重置", "ghost", "reset-user-history") + renderUiActionButton("查询", "primary", "query-user-history");
     return renderInfoFilterPanel(fieldsHtml, actionsHtml);
   }
@@ -3423,7 +3528,6 @@
         renderTextFilter("电力用户编码", "enterpriseUserCode", "请输入电力用户编码") +
         renderTextFilter("电力用户名称", "enterpriseUserName", "请输入电力用户名称") +
         renderTextFilter("用户户号", "enterpriseAccountNo", "请输入用户户号") +
-        renderTextFilter("微电网名称", "enterpriseMicrogridName", "请输入微电网名称") +
         renderTextFilter("微电网ID", "enterpriseMicrogridId", "请输入微电网ID");
       actionsHtml = renderUiActionButton("重置", "ghost", "reset-enterprise") + renderUiActionButton("查询", "primary", "query-enterprise");
     } else if (activeTab === INFO_DISCLOSURE_SELLER_HISTORY_TAB) {
@@ -3663,6 +3767,8 @@
       rows: table.rows,
       minWidth: table.minWidth,
       sortState: getTableSortState("sale-company-table"),
+      enableColumnDrag: true,
+      columnOrder: getTableColumnOrder("sale-company-table"),
       escapeHtml: escapeHtml,
       renderIcon: renderIcon,
       renderEmptyState: function renderSaleCompanyTableEmptyState(options) {
@@ -3700,6 +3806,8 @@
       rows: table.rows,
       minWidth: table.minWidth,
       sortState: getTableSortState("enterprise-table"),
+      enableColumnDrag: true,
+      columnOrder: getTableColumnOrder("enterprise-table"),
       escapeHtml: escapeHtml,
       renderIcon: renderIcon,
       renderEmptyState: function renderEnterpriseEmptyState(options) {
@@ -3770,6 +3878,8 @@
       rows: table.rows,
       minWidth: table.minWidth,
       sortState: getTableSortState("seller-history-table"),
+      enableColumnDrag: true,
+      columnOrder: getTableColumnOrder("seller-history-table"),
       escapeHtml: escapeHtml,
       renderIcon: renderIcon,
       renderEmptyState: function renderSellerHistoryTableEmptyState(options) {
@@ -3808,6 +3918,8 @@
       rows: table.rows,
       minWidth: table.minWidth,
       sortState: getTableSortState("user-history-table"),
+      enableColumnDrag: true,
+      columnOrder: getTableColumnOrder("user-history-table"),
       escapeHtml: escapeHtml,
       renderIcon: renderIcon,
       renderEmptyState: function renderUserHistoryTableEmptyState(options) {

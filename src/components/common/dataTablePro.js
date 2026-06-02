@@ -40,6 +40,7 @@
         key: column.key || "col-" + index,
         label: column.label || column.title || column.key || "列" + (index + 1),
         sortable: column.sortable !== false,
+        draggable: column.draggable !== false,
         fixed: Boolean(column.fixed),
         width: width,
         left: 0,
@@ -52,7 +53,13 @@
     });
     var columnOrder = Array.isArray(options.columnOrder) ? options.columnOrder : [];
     if (columnOrder.length) {
-      columns.sort(function compareColumns(a, b) {
+      var fixedColumns = columns.filter(function filterFixedColumn(column) {
+        return column.fixed;
+      });
+      var scrollColumns = columns.filter(function filterScrollColumn(column) {
+        return !column.fixed;
+      });
+      scrollColumns.sort(function compareColumns(a, b) {
         var aIndex = columnOrder.indexOf(a.key);
         var bIndex = columnOrder.indexOf(b.key);
         if (aIndex < 0 && bIndex < 0) {
@@ -66,6 +73,7 @@
         }
         return aIndex - bIndex;
       });
+      columns = fixedColumns.concat(scrollColumns);
     }
     var rows = (options.rows || []).slice();
     var sortState = options.sortState || {};
@@ -104,7 +112,7 @@
           : column.width
             ? ' style="min-width:' + escapeHtml(String(column.width)) + 'px;"'
             : "";
-        if (options.enableColumnDrag && column.sortable !== false) {
+        if (options.enableColumnDrag && column.sortable !== false && column.draggable !== false) {
           thAttrs =
             ' draggable="true" data-table-id="' +
             escapeHtml(options.tableId) +

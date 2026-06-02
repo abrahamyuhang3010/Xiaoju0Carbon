@@ -96,7 +96,10 @@
   }
 
   function getDefaultSaleCompanyRange() {
-    return buildRelativeDateRange(-8, -1);
+    return {
+      start: "2026-05-25",
+      end: "2026-05-29",
+    };
   }
 
   function getTradeCenterByPageKey(pageKey) {
@@ -174,13 +177,19 @@
           pathname: options.pathname,
         }
       );
-      var defaultEnterpriseRange = buildRelativeDateRange(-8, -1);
+      var defaultEnterpriseRange = {
+        start: "2026-05-29",
+        end: "2026-05-29",
+      };
       var defaultSaleCompanyRange = getDefaultSaleCompanyRange();
-      var defaultHistoryAgentMonth =
-        (infoMock.historyAgentMonths && infoMock.historyAgentMonths[infoMock.historyAgentMonths.length - 1]) || "2025-05";
-      var defaultHistoryRange = {
-        start: defaultHistoryAgentMonth + "-01",
-        end: defaultHistoryAgentMonth + "-07",
+      var defaultHistoryAgentMonth = "2026-05";
+      var defaultSellerHistoryRange = {
+        start: "2026-05-25",
+        end: "2026-05-29",
+      };
+      var defaultUserHistoryRange = {
+        start: "2026-05-29",
+        end: "2026-05-29",
       };
       var initialState = {
         currentPageKey: pageKey,
@@ -274,19 +283,16 @@
             enterpriseUserCode: "",
             enterpriseUserName: "",
             enterpriseAccountNo: "",
-            enterpriseMicrogridName: "",
             enterpriseMicrogridId: "",
             sellerHistoryAgentMonth: defaultHistoryAgentMonth,
-            sellerHistoryRange: cloneRange(defaultHistoryRange),
+            sellerHistoryRange: cloneRange(defaultSellerHistoryRange),
             sellerHistoryCompanyName: "全部",
             userHistoryAgentMonth: defaultHistoryAgentMonth,
-            userHistoryRange: cloneRange(defaultHistoryRange),
+            userHistoryRange: cloneRange(defaultUserHistoryRange),
             userHistoryUserCode: "",
             userHistoryUserName: "",
             userHistoryAccountNo: "",
-            userHistoryMicrogridName: "",
             userHistoryMicrogridId: "",
-            userHistoryCompanyName: "全部",
             maintenanceRange: {
               start: "2026-05-08",
               end: "2026-05-08",
