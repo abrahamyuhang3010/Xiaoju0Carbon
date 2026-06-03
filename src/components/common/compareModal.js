@@ -14,6 +14,9 @@
       (options.error ? '<div class="form-error">' + escapeHtml(options.error) + "</div>" : "") +
       "</div>" +
       '<div class="modal-footer">' +
+      (options.hasCompare
+        ? '<button class="ghost-btn" data-ui-action="cancel-compare"><span>取消对比</span></button>'
+        : "") +
       '<button class="ghost-btn" data-ui-action="close-compare"><span>取消</span></button>' +
       '<button class="primary-btn" data-ui-action="confirm-compare"><span>确认</span></button>' +
       "</div>" +

@@ -516,8 +516,38 @@
     return disabledTabs[activeTab] !== true && centerDisabledTabs[activeTab] !== true;
   }
 
+  function isSellerTimeSharingTargetTab(tab) {
+    var activeTab = tab || getActiveInfoTab();
+    return activeTab === "售电公司分时电量" || activeTab === INFO_DISCLOSURE_SELLER_HISTORY_TAB;
+  }
+
+  function isEnterpriseTimeSharingTargetTab(tab) {
+    var activeTab = tab || getActiveInfoTab();
+    return activeTab === "用电企业分时电量" || activeTab === INFO_DISCLOSURE_USER_HISTORY_TAB;
+  }
+
+  function isTimeSharingUpdateTargetTab(tab) {
+    return isSellerTimeSharingTargetTab(tab) || isEnterpriseTimeSharingTargetTab(tab);
+  }
+
+  function isSellerHistoryTargetTab(tab) {
+    return (tab || getActiveInfoTab()) === INFO_DISCLOSURE_SELLER_HISTORY_TAB;
+  }
+
+  function isEnterpriseHistoryTargetTab(tab) {
+    return (tab || getActiveInfoTab()) === INFO_DISCLOSURE_USER_HISTORY_TAB;
+  }
+
+  function isTimeSharingHistoryUpdateTargetTab(tab) {
+    return isSellerHistoryTargetTab(tab) || isEnterpriseHistoryTargetTab(tab);
+  }
+
+  function isSellerTimeSharingCompareEnabled(tab) {
+    return isSellerTimeSharingTargetTab(tab);
+  }
+
   function isInfoDisclosureCompareActive(tab) {
-    return state.ui.hasCompare && isInfoDisclosureCompareEnabledByConfig(tab);
+    return state.ui.hasCompare && (isSellerTimeSharingCompareEnabled(tab) || isInfoDisclosureCompareEnabledByConfig(tab));
   }
 
   function isCompareSupportedInCurrentContext() {
@@ -1026,6 +1056,31 @@
       time: normalizeStatusTime(time),
       source: source || "-",
       publishTime: normalizeStatusTime(publishTime),
+    };
+  }
+
+  function getInfoUpdateOverrideKey(tab) {
+    return getSelectedTradeCenterKey() + "|" + (tab || getActiveInfoTab());
+  }
+
+  function getInfoUpdateOverride(tab) {
+    var overrides = state.ui.infoUpdateOverrides || {};
+    return overrides[getInfoUpdateOverrideKey(tab)] || null;
+  }
+
+  function applyInfoUpdateOverride(status, tab) {
+    var override = getInfoUpdateOverride(tab);
+    if (!override) {
+      return status;
+    }
+    return createStatus(override.time || status.time, override.source || status.source, status.publishTime);
+  }
+
+  function setInfoUpdateOverride(tab, source) {
+    state.ui.infoUpdateOverrides = state.ui.infoUpdateOverrides || {};
+    state.ui.infoUpdateOverrides[getInfoUpdateOverrideKey(tab)] = {
+      time: formatDateTime(new Date()),
+      source: source,
     };
   }
 
@@ -1951,6 +2006,60 @@
     state.ui.downloadRangeDraft = cloneRange(getCurrentDownloadRange());
   }
 
+  function isCurrentSellerTimeSharingUpdateTarget() {
+    return isSellerTimeSharingTargetTab(getActiveInfoTab());
+  }
+
+  function isCurrentTimeSharingUpdateTarget() {
+    return isTimeSharingUpdateTargetTab(getActiveInfoTab());
+  }
+
+  function isTimeSharingManualUpdateContext() {
+    return (
+      (state.ui.manualUpdateContext === "time-sharing-update" ||
+        state.ui.manualUpdateContext === "seller-time-sharing") &&
+      isTimeSharingUpdateTargetTab(state.ui.manualUpdateTab)
+    );
+  }
+
+  function isSellerTimeSharingManualUpdateContext() {
+    return isTimeSharingManualUpdateContext() && isSellerTimeSharingTargetTab(state.ui.manualUpdateTab);
+  }
+
+  function isManualUpdateSubmitReady() {
+    if (!isTimeSharingManualUpdateContext()) {
+      return true;
+    }
+    if (isTimeSharingHistoryUpdateTargetTab(state.ui.manualUpdateTab) && !state.ui.manualUpdateAgentMonth) {
+      return false;
+    }
+    if (state.ui.manualUpdateMode === "upload") {
+      return Boolean(state.ui.manualUploadFileName);
+    }
+    return isRangeValid(state.ui.manualPullRangeDraft);
+  }
+
+  function syncManualUpdateDraftToCurrentContext() {
+    var activeInfoTab = getActiveInfoTab();
+    state.ui.manualUpdateContext = "time-sharing-update";
+    state.ui.manualUpdateTab = activeInfoTab;
+    state.ui.manualUpdateMode = "upload";
+    state.ui.manualUploadFileName = "";
+    state.ui.manualUpdateError = "";
+    state.ui.manualPullRangeDraft = isEnterpriseTimeSharingTargetTab(activeInfoTab)
+      ? { start: "", end: "" }
+      : cloneRange(getCurrentCompareBaseRange());
+    if (isSellerHistoryTargetTab(activeInfoTab)) {
+      state.ui.manualUpdateAgentMonth = state.info.filters.sellerHistoryAgentMonth || getDefaultHistoryAgentMonth("seller");
+    } else if (isEnterpriseHistoryTargetTab(activeInfoTab)) {
+      state.ui.manualUpdateAgentMonth = state.info.filters.userHistoryAgentMonth || getDefaultHistoryAgentMonth("user");
+    } else if (isEnterpriseTimeSharingTargetTab(activeInfoTab)) {
+      state.ui.manualUpdateAgentMonth = getDefaultHistoryAgentMonth("user");
+    } else {
+      state.ui.manualUpdateAgentMonth = getDefaultHistoryAgentMonth("seller");
+    }
+  }
+
   function getLoadInfoChartSeries() {
     var series = getActiveMetricSeries();
     var chartSeries = [
@@ -2336,10 +2445,10 @@
   }
 
   function formatSaleCompanyChange(compareValue, currentValue) {
-    if (!isSaleCompanyNumericValue(compareValue) || !isSaleCompanyNumericValue(currentValue) || currentValue === 0) {
+    if (!isSaleCompanyNumericValue(compareValue) || !isSaleCompanyNumericValue(currentValue) || compareValue === 0) {
       return '<span class="tooltip-change tooltip-change-flat">变化幅度 --</span>';
     }
-    var change = (compareValue - currentValue) / currentValue;
+    var change = (currentValue - compareValue) / compareValue;
     var className = change > 0 ? "tooltip-change-up" : change < 0 ? "tooltip-change-down" : "tooltip-change-flat";
     return '<span class="tooltip-change ' + className + '">变化幅度 ' + (change > 0 ? "+" : "") + (change * 100).toFixed(2) + "%</span>";
   }
@@ -2417,8 +2526,9 @@
   }
 
   function renderSaleCompanyUpdateBar(updateInfo) {
-    var compareSupported = isInfoDisclosureCompareEnabledByConfig("售电公司分时电量");
-    var actions = [];
+    var compareSupported = isSellerTimeSharingCompareEnabled("售电公司分时电量");
+    var status = applyInfoUpdateOverride(updateInfo, "售电公司分时电量");
+    var actions = [{ label: "更新数据", variant: "ghost", icon: "refresh", action: "open-seller-time-sharing-update" }];
 
     if (compareSupported) {
       actions.push({ label: "对比", variant: "ghost", icon: "compare", action: "open-compare" });
@@ -2426,9 +2536,9 @@
     actions.push({ label: "下载", variant: "primary", icon: "download", action: "open-download" });
 
     return renderDataUpdateBar({
-      updatedAt: updateInfo.time || "-",
-      publishTime: updateInfo.publishTime || "-",
-      source: updateInfo.source || "-",
+      updatedAt: status.time || "-",
+      publishTime: status.publishTime || "-",
+      source: status.source || "-",
       hasCompare: compareSupported && state.ui.hasCompare,
       showTaskEntry: false,
       actions: actions,
@@ -2628,10 +2738,10 @@
     return createStatus(latestRow.updateTime, latestRow.dataSource || "历史回溯", "-");
   }
 
-  function getSellerHistoryDataset() {
+  function getSellerHistoryDataset(rangeOverride) {
     var filters = state.info.filters;
     var agentMonth = filters.sellerHistoryAgentMonth || getDefaultHistoryAgentMonth("seller");
-    var range = filters.sellerHistoryRange || getDefaultHistoryRange("seller", agentMonth);
+    var range = rangeOverride || filters.sellerHistoryRange || getDefaultHistoryRange("seller", agentMonth);
     var sellerName = "全部";
     var dateLabels = buildDateRangeList(range);
     var hours = getTimeSharingHourLabels();
@@ -2727,9 +2837,33 @@
     };
   }
 
-  function formatSellerHistoryTooltip(dataset, index) {
+  function getSellerHistoryCompareDataset(dataset) {
+    var baseRange = (dataset && dataset.activeRange) || state.info.filters.sellerHistoryRange;
+    if (!isInfoDisclosureCompareActive(INFO_DISCLOSURE_SELLER_HISTORY_TAB)) {
+      return null;
+    }
+    if (!isRangeValid(state.ui.compareRangeDraft) || !isRangeValid(baseRange) || getRangeDays(state.ui.compareRangeDraft) !== getRangeDays(baseRange)) {
+      return null;
+    }
+    return getSellerHistoryDataset(state.ui.compareRangeDraft);
+  }
+
+  function buildSellerHistoryCompareValues(dataset, compareDataset) {
+    if (!dataset || !compareDataset) {
+      return [];
+    }
+    var compareRows = compareDataset.dailyTrendRows || [];
+    return (dataset.dailyTrendRows || []).map(function mapSellerHistoryCompareValue(_, index) {
+      var matched = compareRows[index];
+      return matched && isHistoryNumericValue(matched.dailyPower) ? matched.dailyPower : null;
+    });
+  }
+
+  function formatSellerHistoryTooltip(dataset, compareDataset, index) {
     var row = (dataset.dailyTrendRows || [])[index] || {};
-    return (
+    var compareRow = compareDataset && (compareDataset.dailyTrendRows || [])[index];
+    var currentValue = isHistoryNumericValue(row.dailyPower) ? row.dailyPower : null;
+    var html =
       '<div class="chart-tooltip-stack">' +
       "<div>代理月份: " +
       escapeHtml(row.agentMonth || "-") +
@@ -2738,8 +2872,23 @@
       "</div><div>售电公司名称: " +
       escapeHtml(row.sellerCompanyName || "-") +
       "</div><div>日总电量: " +
-      escapeHtml(formatHistoryPower(row.dailyPower)) +
-      " MWh</div><div>数据口径: " +
+      escapeHtml(formatHistoryPower(currentValue)) +
+      " MWh</div>";
+
+    if (compareRow) {
+      html +=
+        "<div>对比日期: " +
+        escapeHtml(compareRow.usageDate || "-") +
+        "</div><div>对比日总电量: " +
+        escapeHtml(formatHistoryPower(compareRow.dailyPower)) +
+        " MWh " +
+        formatSaleCompanyChange(compareRow.dailyPower, currentValue) +
+        "</div>";
+    }
+
+    return (
+      html +
+      "<div>数据口径: " +
       escapeHtml(HISTORY_RETRACE_SCOPE_TEXT) +
       "</div></div>"
     );
@@ -2942,6 +3091,60 @@
       hasCompare: false,
       showTaskEntry: false,
       actions: [{ label: "下载", variant: "primary", icon: "download", action: "open-download" }],
+      escapeHtml: escapeHtml,
+      renderIcon: renderIcon,
+    });
+  }
+
+  function renderEnterpriseUpdateBar(updateInfo) {
+    var status = applyInfoUpdateOverride(updateInfo, "用电企业分时电量");
+    return renderDataUpdateBar({
+      updatedAt: status.time || "-",
+      publishTime: status.publishTime || "-",
+      source: status.source || "-",
+      hasCompare: false,
+      showTaskEntry: false,
+      actions: [
+        { label: "更新数据", variant: "ghost", icon: "refresh", action: "open-time-sharing-update" },
+        { label: "下载", variant: "primary", icon: "download", action: "open-download" },
+      ],
+      escapeHtml: escapeHtml,
+      renderIcon: renderIcon,
+    });
+  }
+
+  function renderSellerHistoryUpdateBar(updateInfo) {
+    var status = applyInfoUpdateOverride(updateInfo, INFO_DISCLOSURE_SELLER_HISTORY_TAB);
+    var actions = [
+      { label: "更新数据", variant: "ghost", icon: "refresh", action: "open-seller-time-sharing-update" },
+      { label: "对比", variant: "ghost", icon: "compare", action: "open-compare" },
+      { label: "下载", variant: "primary", icon: "download", action: "open-download" },
+    ];
+
+    return renderDataUpdateBar({
+      updatedAt: status.time || "-",
+      publishTime: status.publishTime || "-",
+      source: status.source || "-",
+      hasCompare: isInfoDisclosureCompareActive(INFO_DISCLOSURE_SELLER_HISTORY_TAB),
+      showTaskEntry: false,
+      actions: actions,
+      escapeHtml: escapeHtml,
+      renderIcon: renderIcon,
+    });
+  }
+
+  function renderUserHistoryUpdateBar(updateInfo) {
+    var status = applyInfoUpdateOverride(updateInfo, INFO_DISCLOSURE_USER_HISTORY_TAB);
+    return renderDataUpdateBar({
+      updatedAt: status.time || "-",
+      publishTime: status.publishTime || "-",
+      source: status.source || "-",
+      hasCompare: false,
+      showTaskEntry: false,
+      actions: [
+        { label: "更新数据", variant: "ghost", icon: "refresh", action: "open-time-sharing-update" },
+        { label: "下载", variant: "primary", icon: "download", action: "open-download" },
+      ],
       escapeHtml: escapeHtml,
       renderIcon: renderIcon,
     });
@@ -3790,16 +3993,7 @@
     var rows = getEnterpriseRows();
     var table = getEnterpriseTable();
     var updateInfo = getEnterpriseLatestUpdateInfo(rows);
-    var updateHtml = renderDataUpdateBar({
-      updatedAt: updateInfo.time || "-",
-      publishTime: updateInfo.publishTime || "-",
-      source: updateInfo.source || "-",
-      hasCompare: false,
-      showTaskEntry: false,
-      actions: [{ label: "下载", variant: "primary", icon: "download", action: "open-download" }],
-      escapeHtml: escapeHtml,
-      renderIcon: renderIcon,
-    });
+    var updateHtml = renderEnterpriseUpdateBar(updateInfo);
     var tableHtml = renderDataTablePro({
       tableId: "enterprise-table",
       columns: table.columns,
@@ -3824,8 +4018,9 @@
 
   function renderSellerHistoryContent() {
     var dataset = getSellerHistoryDataset();
+    var compareDataset = getSellerHistoryCompareDataset(dataset);
     var table = getSellerHistoryTableConfig(dataset);
-    var updateHtml = renderHistoryUpdateBar(dataset.latestUpdateInfo);
+    var updateHtml = renderSellerHistoryUpdateBar(dataset.latestUpdateInfo);
 
     if (!dataset.monthHasData) {
       return updateHtml + renderHistoryScopeNote() + renderHistoryEmptyPanel("当前代理月份历史回溯数据暂未生成，请更换代理月份或稍后查看");
@@ -3849,7 +4044,19 @@
             return isHistoryNumericValue(row.dailyPower) ? row.dailyPower : null;
           }),
         },
-      ],
+      ].concat(
+        compareDataset && (compareDataset.dailyTrendRows || []).length
+          ? [
+              {
+                id: "seller-history-daily-total-compare",
+                label: "对比日总电量",
+                color: "#FF7A45",
+                dasharray: "6 4",
+                values: buildSellerHistoryCompareValues(dataset, compareDataset),
+              },
+            ]
+          : [],
+      ),
       hiddenSeries: getChartHiddenState("seller-history-chart"),
       escapeHtml: escapeHtml,
       renderIcon: renderIcon,
@@ -3865,11 +4072,11 @@
         return typeof value === "number" && !Number.isNaN(value) ? value.toFixed(2) : "--";
       },
       tooltipFormatter: function tooltipFormatter(_, index) {
-        return formatSellerHistoryTooltip(dataset, index);
+        return formatSellerHistoryTooltip(dataset, compareDataset, index);
       },
       tooltipIsHtml: true,
       tooltipWidth: 360,
-      tooltipHeight: 188,
+      tooltipHeight: compareDataset ? 236 : 188,
       breakOnNull: true,
     });
     var tableHtml = renderDataTablePro({
@@ -3902,7 +4109,7 @@
   function renderUserHistoryContent() {
     var dataset = getUserHistoryDataset();
     var table = getUserHistoryTableConfig(dataset);
-    var updateHtml = renderHistoryUpdateBar(dataset.latestUpdateInfo);
+    var updateHtml = renderUserHistoryUpdateBar(dataset.latestUpdateInfo);
 
     if (!dataset.monthHasData) {
       return updateHtml + renderHistoryScopeNote() + renderHistoryEmptyPanel("当前代理月份历史回溯数据暂未生成，请更换代理月份或稍后查看");
@@ -6310,6 +6517,10 @@
 
   function isInfoDisclosureCompareSupported() {
     var activeTab = getActiveInfoTab();
+
+    if (isSellerTimeSharingCompareEnabled(activeTab)) {
+      return true;
+    }
 
     if (!isInfoDisclosureCompareEnabledByConfig(activeTab)) {
       return false;
@@ -13065,19 +13276,31 @@
         renderIcon: renderIcon,
       }),
       error: state.ui.compareError,
+      hasCompare: state.ui.hasCompare,
       escapeHtml: escapeHtml,
       renderIcon: renderIcon,
     });
   }
 
   function renderManualUpdateModalOverlay() {
+    var isTimeSharingTarget = isTimeSharingManualUpdateContext();
     if (!state.ui.manualUpdateModalVisible) {
       return "";
     }
 
     return renderManualUpdateModal({
+      title: isTimeSharingTarget ? "更新数据" : "手动更新",
+      confirmText: isTimeSharingTarget ? "更新" : "确认",
       mode: state.ui.manualUpdateMode,
       fileName: state.ui.manualUploadFileName,
+      agentMonth: state.ui.manualUpdateAgentMonth,
+      showAgentMonth: isTimeSharingTarget && isTimeSharingHistoryUpdateTargetTab(state.ui.manualUpdateTab),
+      uploadLabel: isTimeSharingTarget ? "上传文件" : "原始文件",
+      uploadPlaceholder: isTimeSharingTarget ? "上传文件" : "选择文件（仅模拟，不真实上传）",
+      uploadHint: isTimeSharingTarget ? "请上传交易中心下载的数据源文件" : "",
+      pullLabel: isTimeSharingTarget ? "运行日期" : "拉取日期",
+      pullHint: isTimeSharingTarget ? "为保证性能及合规风险，单次支持更新7天" : "",
+      canSubmit: isTimeSharingTarget ? isManualUpdateSubmitReady() : true,
       error: state.ui.manualUpdateError,
       datePickerHtml: renderStandardDatePicker({
         id: "manual-pull-range",
@@ -13470,7 +13693,7 @@
       return;
     }
     if (getRangeDays(state.ui.compareRangeDraft) !== getRangeDays(baseRange)) {
-      state.ui.compareError = "对比日期范围必须与运行日期范围天数一致。";
+      state.ui.compareError = "对比日期需要与运行日期天数一致";
       return;
     }
     state.ui.compareError = "";
@@ -13487,6 +13710,9 @@
       } else if (activeInfoTab === "售电公司分时电量") {
         var saleCompanyCompareDataset = getSaleCompanyDataset(state.ui.compareRangeDraft);
         compareHasData = Boolean(saleCompanyCompareDataset && saleCompanyCompareDataset.hasData);
+      } else if (activeInfoTab === INFO_DISCLOSURE_SELLER_HISTORY_TAB) {
+        var sellerHistoryCompareDataset = getSellerHistoryDataset(state.ui.compareRangeDraft);
+        compareHasData = Boolean(sellerHistoryCompareDataset && sellerHistoryCompareDataset.hasData);
       }
     }
 
@@ -13494,8 +13720,40 @@
   }
 
   function confirmManualUpdate() {
+    var isTimeSharingTarget = isTimeSharingManualUpdateContext();
+    var activeInfoTab = isTimeSharingTarget ? state.ui.manualUpdateTab : getActiveInfoTab();
     state.ui.manualUpdateError = "";
-    if (state.ui.manualUpdateMode === "upload" && !isUnifiedMockInfoTradeTab(getActiveInfoTab())) {
+    if (isTimeSharingTarget) {
+      if (isTimeSharingHistoryUpdateTargetTab(activeInfoTab) && !state.ui.manualUpdateAgentMonth) {
+        state.ui.manualUpdateError = "请选择代理月份。";
+        return;
+      }
+      if (state.ui.manualUpdateMode === "upload") {
+        if (!state.ui.manualUploadFileName) {
+          state.ui.manualUpdateError = "请上传交易中心下载的数据源文件。";
+          return;
+        }
+        setInfoUpdateOverride(activeInfoTab, "人工上传");
+      } else {
+        if (!isRangeValid(state.ui.manualPullRangeDraft)) {
+          state.ui.manualUpdateError = "请选择有效的运行日期范围。";
+          return;
+        }
+        if (getRangeDays(state.ui.manualPullRangeDraft) > 7) {
+          state.ui.manualUpdateError = "单次系统拉取最多支持7天";
+          return;
+        }
+        setInfoUpdateOverride(activeInfoTab, "系统拉取");
+      }
+      state.ui.manualUpdateModalVisible = false;
+      state.ui.manualUpdateContext = "";
+      state.ui.manualUpdateTab = "";
+      closeDatePicker("manual-pull-range", false);
+      setFlashMessage("更新成功，数据更新时间已刷新。", "success");
+      return;
+    }
+
+    if (state.ui.manualUpdateMode === "upload" && !isUnifiedMockInfoTradeTab(activeInfoTab)) {
       if (!state.ui.manualUploadFileName) {
         state.ui.manualUpdateError = "请选择原始文件。";
         return;
@@ -13511,6 +13769,8 @@
       }
     }
     state.ui.manualUpdateModalVisible = false;
+    state.ui.manualUpdateContext = "";
+    state.ui.manualUpdateTab = "";
     closeDatePicker("manual-pull-range", false);
     setFlashMessage("更新任务已提交", "success");
   }
@@ -13552,17 +13812,35 @@
       closeDatePicker("compare-range", false);
       return true;
     }
+    if (action === "cancel-compare") {
+      state.ui.hasCompare = false;
+      state.ui.compareModalVisible = false;
+      state.ui.compareError = "";
+      closeDatePicker("compare-range", false);
+      setFlashMessage("已取消对比。", "info");
+      return true;
+    }
     if (action === "confirm-compare") {
       confirmCompare();
       return true;
     }
+    if (action === "open-seller-time-sharing-update" || action === "open-time-sharing-update") {
+      syncManualUpdateDraftToCurrentContext();
+      state.ui.manualUpdateModalVisible = true;
+      state.ui.manualUpdateError = "";
+      return true;
+    }
     if (action === "open-manual-update") {
+      state.ui.manualUpdateContext = "";
+      state.ui.manualUpdateTab = "";
       state.ui.manualUpdateModalVisible = true;
       state.ui.manualUpdateError = "";
       return true;
     }
     if (action === "close-manual-update") {
       state.ui.manualUpdateModalVisible = false;
+      state.ui.manualUpdateContext = "";
+      state.ui.manualUpdateTab = "";
       state.ui.manualUpdateError = "";
       closeDatePicker("manual-pull-range", false);
       return true;
@@ -14500,6 +14778,13 @@
 
     if (event.target.matches("[data-manual-upload-file]")) {
       state.ui.manualUploadFileName = event.target.files && event.target.files[0] ? event.target.files[0].name : "";
+      renderApp();
+      return;
+    }
+
+    if (event.target.matches("[data-manual-update-agent-month]")) {
+      state.ui.manualUpdateAgentMonth = event.target.value;
+      state.ui.manualUpdateError = "";
       renderApp();
       return;
     }
