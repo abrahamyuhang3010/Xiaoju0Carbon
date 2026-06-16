@@ -1909,31 +1909,40 @@
     [34,"国调.韶山换流站","国调.韶山换流站/20kV.1T调相机","20kV","2026-05-07 02:31","2026-05-10 18:00"],
     [35,"资兴煤矸石火电厂","资兴煤矸石电厂#3机组","10kV","2026-05-02 08:00","2026-05-19 18:00"]
   ];
-  function getHunanInfoMaintenancePlanStatus(startTime, endTime) {
-    var mockDayStart = standardDefaultDate + " 00:00";
-    var mockDayEnd = standardDefaultDate + " 23:59";
-    if (endTime < mockDayStart) {
-      return "已结束";
-    }
-    if (startTime > mockDayEnd) {
-      return "待开始";
-    }
-    return "执行中";
-  }
+  function createHunanUnifiedMaintenanceScheduleRow(row, planDate, sequence, offsetHours) {
+    var startDate = new Date(row[4].replace(" ", "T"));
+    var endDate = new Date(row[5].replace(" ", "T"));
 
-  var hunanUnifiedMaintenanceScheduleRows = hunanInfoMaintenanceScheduleRawRows.map(function mapMaintenancePlan(row) {
+    startDate.setHours(startDate.getHours() + (offsetHours || 0));
+    endDate.setHours(endDate.getHours() + (offsetHours || 0));
+
     return {
-      date: standardDefaultDate,
-      planDate: standardDefaultDate,
-      sequence: row[0],
+      date: planDate,
+      planDate: planDate,
+      sequence: sequence,
       plantName: row[1],
       equipmentName: row[2],
       voltageLevel: row[3],
-      startTime: row[4],
-      endTime: row[5],
-      planStatus: getHunanInfoMaintenancePlanStatus(row[4], row[5]),
+      startTime: formatDate(startDate) + " " + String(startDate.getHours()).padStart(2, "0") + ":" + String(startDate.getMinutes()).padStart(2, "0"),
+      endTime: formatDate(endDate) + " " + String(endDate.getHours()).padStart(2, "0") + ":" + String(endDate.getMinutes()).padStart(2, "0"),
       updatedAt: hunanInfoMockUpdateTime,
     };
+  }
+
+  var hunanUnifiedMaintenanceScheduleRows = [];
+  var hunanUnifiedMaintenanceCurrentIndexes = [0, 1, 2, 3, 4, 5, 9, 12, 18, 33];
+  var hunanUnifiedMaintenanceCompareIndexes = [0, 1, 2, 3, 6, 8, 12, 18, 22, 30];
+
+  hunanUnifiedMaintenanceCurrentIndexes.forEach(function eachCurrentPlan(rawIndex, index) {
+    hunanUnifiedMaintenanceScheduleRows.push(
+      createHunanUnifiedMaintenanceScheduleRow(hunanInfoMaintenanceScheduleRawRows[rawIndex], standardDefaultDate, index + 1, index % 2),
+    );
+  });
+
+  hunanUnifiedMaintenanceCompareIndexes.forEach(function eachComparePlan(rawIndex, index) {
+    hunanUnifiedMaintenanceScheduleRows.push(
+      createHunanUnifiedMaintenanceScheduleRow(hunanInfoMaintenanceScheduleRawRows[rawIndex], "2026-05-08", index + 1, -((index % 2) + 1)),
+    );
   });
   var hunanUnifiedMaintenancePage = createPageData({
     center: "hunan",
@@ -2017,7 +2026,6 @@
           { key: "voltageLevel", title: "电压等级" },
           { key: "startTime", title: "开始时间" },
           { key: "endTime", title: "结束时间" },
-          { key: "planStatus", title: "检修状态" },
         ],
         data: hunanUnifiedMaintenanceScheduleRows,
         minWidth: 1320,

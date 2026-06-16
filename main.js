@@ -931,7 +931,23 @@
   }
 
   function syncUnifiedInfoDisclosureRange(pageData) {
-    if (!isCurrentMarketDisclosureView() || !isUnifiedInfoDisclosureSingleDateMode(pageData) || isUnifiedMockInfoTradeTab(getActiveInfoTab())) {
+    if (!isUnifiedInfoDisclosureSingleDateMode(pageData) || isUnifiedMockInfoTradeTab(getActiveInfoTab())) {
+      return;
+    }
+
+    if (!isCurrentMarketDisclosureView()) {
+      var standaloneDefaultDate = pageData && pageData.filters && pageData.filters.date;
+      if (
+        standaloneDefaultDate &&
+        state.info.filters.maintenanceRange.start === state.info.filters.maintenanceRange.end &&
+        state.info.filters.maintenanceRange.start !== standaloneDefaultDate
+      ) {
+        var standaloneDefaultRange = {
+          start: standaloneDefaultDate,
+          end: standaloneDefaultDate,
+        };
+        setInfoLoadRunDateRange(standaloneDefaultRange);
+      }
       return;
     }
 
@@ -4851,17 +4867,7 @@
   }
 
   function filterInfoDisclosurePageRows(rows, pageData, range) {
-    var activeRange = getInfoDisclosureActiveRange(pageData, range);
-    var filteredRows = (rows || []).slice();
-
-    if (!isRangeValid(activeRange)) {
-      return filteredRows;
-    }
-
-    filteredRows = filteredRows.filter(function filterRow(row) {
-      var rowDate = row.date || row.runDate || row.planDate || row.operationDate || "";
-      return !rowDate || (rowDate >= activeRange.start && rowDate <= activeRange.end);
-    });
+    var filteredRows = filterInfoDisclosureRowsByRange(rows, pageData, range);
 
     return filteredRows.filter(function filterByField(row) {
       return (pageData && pageData.filterFields ? pageData.filterFields : []).every(function everyField(field) {
@@ -4921,8 +4927,120 @@
     return String(value);
   }
 
-  function buildInfoDisclosureTableConfig(columns, rows, minWidth) {
+  function formatCompactDateLabel(dateText) {
+    return String(dateText || "").replace(/-/g, "");
+  }
+
+  function getInfoDisclosureRowDate(row) {
+    return (row && (row.date || row.runDate || row.planDate || row.operationDate)) || "";
+  }
+
+  function filterInfoDisclosureRowsByRange(rows, pageData, range) {
+    var activeRange = getInfoDisclosureActiveRange(pageData, range);
+    var filteredRows = (rows || []).slice();
+
+    if (!isRangeValid(activeRange)) {
+      return filteredRows;
+    }
+
+    return filteredRows.filter(function filterRow(row) {
+      var rowDate = getInfoDisclosureRowDate(row);
+      return !rowDate || (rowDate >= activeRange.start && rowDate <= activeRange.end);
+    });
+  }
+
+  function buildDisclosureCompareMergeKey(row, keyFields) {
+    return (keyFields || []).map(function mapKey(key) {
+      return String((row && row[key]) || "");
+    }).join("\u0001");
+  }
+
+  function indexDisclosureRowsByMergeKey(rows, keyFields) {
+    var indexedRows = {};
+    (rows || []).forEach(function eachRow(row) {
+      var key = buildDisclosureCompareMergeKey(row, keyFields);
+      if (!key || indexedRows[key]) {
+        return;
+      }
+      indexedRows[key] = row;
+    });
+    return indexedRows;
+  }
+
+  function buildDateMergedDisclosureTableData(tableData, pageData) {
+    var sourceRows = tableData.rows || pageData.rows || pageData.tableData || [];
+    var currentRows = filterInfoDisclosureRowsByRange(sourceRows, pageData);
+    var compareRows = state.ui.hasCompare
+      ? filterInfoDisclosureRowsByRange(sourceRows, pageData, state.ui.compareRangeDraft)
+      : [];
+    var keyFields = tableData.compareMergeKeys || pageData.compareMergeKeys || ["plantName", "equipmentName", "voltageLevel"];
+    var currentRowsByKey = indexDisclosureRowsByMergeKey(currentRows, keyFields);
+    var compareRowsByKey = indexDisclosureRowsByMergeKey(compareRows, keyFields);
+    var mergedKeys = Object.keys(currentRowsByKey);
+
+    if (state.ui.hasCompare) {
+      Object.keys(compareRowsByKey).forEach(function eachCompareKey(key) {
+        if (mergedKeys.indexOf(key) < 0) {
+          mergedKeys.push(key);
+        }
+      });
+    }
+
+    mergedKeys.sort(function sortMergedRows(leftKey, rightKey) {
+      var leftRow = currentRowsByKey[leftKey] || compareRowsByKey[leftKey] || {};
+      var rightRow = currentRowsByKey[rightKey] || compareRowsByKey[rightKey] || {};
+      return (
+        String(leftRow.plantName || "").localeCompare(String(rightRow.plantName || ""), "zh-Hans-CN") ||
+        String(leftRow.equipmentName || "").localeCompare(String(rightRow.equipmentName || ""), "zh-Hans-CN") ||
+        String(leftRow.voltageLevel || "").localeCompare(String(rightRow.voltageLevel || ""), "zh-Hans-CN")
+      );
+    });
+
+    var currentRange = getInfoDisclosureActiveRange(pageData);
+    var currentDateLabel = formatCompactDateLabel(currentRange.start);
+    var columns = [
+      { key: "plantName", title: "电厂名称" },
+      { key: "equipmentName", title: "发输变电设备" },
+      { key: "voltageLevel", title: "电压等级" },
+      { key: "currentStartTime", title: "开始时间" },
+      { key: "currentEndTime", title: "结束时间" },
+    ];
+    if (state.ui.hasCompare) {
+      var compareDateLabel = formatCompactDateLabel(state.ui.compareRangeDraft.start);
+      columns = [
+        { key: "plantName", title: "电厂名称" },
+        { key: "equipmentName", title: "发输变电设备" },
+        { key: "voltageLevel", title: "电压等级" },
+        { key: "currentStartTime", title: currentDateLabel + " 检修开始时间" },
+        { key: "compareStartTime", title: compareDateLabel + " 检修开始时间" },
+        { key: "currentEndTime", title: currentDateLabel + " 检修结束时间" },
+        { key: "compareEndTime", title: compareDateLabel + " 检修结束时间" },
+      ];
+    }
+
+    return {
+      columns: columns,
+      rows: mergedKeys.map(function mapMergedRow(key) {
+        var currentRow = currentRowsByKey[key] || {};
+        var compareRow = compareRowsByKey[key] || {};
+        var baseRow = currentRowsByKey[key] || compareRowsByKey[key] || {};
+        return {
+          plantName: baseRow.plantName || "",
+          equipmentName: baseRow.equipmentName || baseRow.unitName || "",
+          voltageLevel: baseRow.voltageLevel || "",
+          currentStartTime: currentRow.startTime || "",
+          compareStartTime: compareRow.startTime || "",
+          currentEndTime: currentRow.endTime || "",
+          compareEndTime: compareRow.endTime || "",
+        };
+      }),
+      minWidth: state.ui.hasCompare ? tableData.minWidth || pageData.tableMinWidth || 1420 : tableData.baseMinWidth || pageData.baseTableMinWidth || 1040,
+    };
+  }
+
+  function buildInfoDisclosureTableConfig(columns, rows, minWidth, options) {
     var resolvedColumns = columns || [];
+    var resolvedOptions = options || {};
     return {
       columns: resolvedColumns.map(function mapColumn(column) {
         return {
@@ -4934,7 +5052,11 @@
       rows: (rows || []).map(function mapRow(row) {
         var result = {};
         resolvedColumns.forEach(function mapColumn(column) {
-          result[column.key] = formatInfoDisclosureTableValue(column, row[column.key]);
+          var value = row[column.key];
+          result[column.key] =
+            resolvedOptions.emptyAsBlank && (value === null || value === undefined || value === "")
+              ? { text: "", copyable: false, sortValue: "" }
+              : formatInfoDisclosureTableValue(column, value);
         });
         return result;
       }),
@@ -6125,8 +6247,12 @@
 
   function renderInfoDisclosureDynamicTableContent(pageData) {
     var tableData = pageData.disclosureTableData || {};
-    var columns = tableData.columns || pageData.columns || pageData.tableColumns || [];
-    var rows = filterInfoDisclosurePageRows(tableData.rows || pageData.rows || pageData.tableData || [], pageData);
+    var isDateMergeTable = (tableData.compareMode || pageData.compareMode) === "dateMerge";
+    var mergedTableData = isDateMergeTable ? buildDateMergedDisclosureTableData(tableData, pageData) : null;
+    var columns = isDateMergeTable ? mergedTableData.columns : tableData.columns || pageData.columns || pageData.tableColumns || [];
+    var rows = isDateMergeTable
+      ? mergedTableData.rows
+      : filterInfoDisclosurePageRows(tableData.rows || pageData.rows || pageData.tableData || [], pageData);
     var tableTitle = pageData.tableTitle || tableData.title || pageData.title;
     var tableId =
       "info-disclosure-dynamic-table-" +
@@ -6143,7 +6269,12 @@
     return renderInfoDisclosureDataTablePanel(
       tableTitle,
       tableId,
-      buildInfoDisclosureTableConfig(columns, rows, tableData.minWidth || pageData.tableMinWidth),
+      buildInfoDisclosureTableConfig(
+        columns,
+        rows,
+        (mergedTableData && mergedTableData.minWidth) || tableData.minWidth || pageData.tableMinWidth,
+        { emptyAsBlank: isDateMergeTable },
+      ),
       { enableColumnDrag: true },
     );
   }
@@ -6533,6 +6664,11 @@
     if (isCurrentMarketDisclosureView()) {
       var pageData = getInfoDisclosurePageData();
       return Boolean(pageData.viewType && pageData.viewType !== "empty");
+    }
+
+    var currentPageData = getInfoDisclosurePageData();
+    if (currentPageData && currentPageData.viewType === "disclosureTable") {
+      return true;
     }
 
     return activeTab === "负荷信息" || activeTab === "全省统一出清价" || activeTab === "出清电量" || activeTab === "交易结果";

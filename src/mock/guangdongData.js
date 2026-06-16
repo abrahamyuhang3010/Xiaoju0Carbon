@@ -736,17 +736,60 @@
     [41, "东亚电力（阳江）有限公司", "陵湾#3、#4机组", "大修", "计划检修", "2026-03-06 08:30:00", "2026-03-15 23:30:00"],
   ];
 
-  var transmissionMaintenancePlanRows = transmissionMaintenancePlanRawRows.map(function mapTransmissionMaintenancePlan(row) {
+  var transmissionVoltageLevels = [
+    "500kV",
+    "220kV",
+    "110kV",
+    "35kV",
+  ];
+
+  function createTransmissionMaintenancePlanRow(row, date, sequence, offsetHours, voltageLevel) {
+    var startDate = new Date(row[5].replace(" ", "T"));
+    var endDate = new Date(row[6].replace(" ", "T"));
+
+    startDate.setHours(startDate.getHours() + (offsetHours || 0));
+    endDate.setHours(endDate.getHours() + (offsetHours || 0));
+
     return {
-      date: "2026-05-08",
-      sequence: row[0],
+      date: date,
+      sequence: sequence,
       plantName: row[1],
+      equipmentName: row[2],
+      voltageLevel: voltageLevel,
       unitName: row[2],
       statusType: row[3],
       changeReason: row[4],
-      startTime: row[5],
-      endTime: row[6],
+      startTime: formatDate(startDate) + " " + String(startDate.getHours()).padStart(2, "0") + ":" + String(startDate.getMinutes()).padStart(2, "0") + ":00",
+      endTime: formatDate(endDate) + " " + String(endDate.getHours()).padStart(2, "0") + ":" + String(endDate.getMinutes()).padStart(2, "0") + ":00",
     };
+  }
+
+  var transmissionMaintenancePlanRows = [];
+  var transmissionMaintenanceCurrentIndexes = [0, 7, 9, 13, 18, 27, 30, 34, 40];
+  var transmissionMaintenanceCompareIndexes = [0, 7, 10, 13, 18, 25, 27, 34, 36];
+
+  transmissionMaintenanceCurrentIndexes.forEach(function eachCurrentPlan(rawIndex, index) {
+    transmissionMaintenancePlanRows.push(
+      createTransmissionMaintenancePlanRow(
+        transmissionMaintenancePlanRawRows[rawIndex],
+        "2026-05-09",
+        index + 1,
+        index % 3,
+        transmissionVoltageLevels[rawIndex % transmissionVoltageLevels.length],
+      ),
+    );
+  });
+
+  transmissionMaintenanceCompareIndexes.forEach(function eachComparePlan(rawIndex, index) {
+    transmissionMaintenancePlanRows.push(
+      createTransmissionMaintenancePlanRow(
+        transmissionMaintenancePlanRawRows[rawIndex],
+        "2026-05-08",
+        index + 1,
+        -((index % 2) + 1),
+        transmissionVoltageLevels[rawIndex % transmissionVoltageLevels.length],
+      ),
+    );
   });
 
   var reservePositiveForecast = interpolateAnchors(96, {
@@ -1276,6 +1319,7 @@
       userHourlyPowerHistoryRows: userHourlyPowerHistoryRows,
       maintenanceRows: maintenanceRows,
       transmissionMaintenancePlanRows: transmissionMaintenancePlanRows,
+      transmissionMaintenancePlanDefaultDate: "2026-05-09",
       transmissionMaintenancePlanUpdateTime: "2026-05-26 10:46:00",
       transmissionMaintenancePlanPublishTime: "2026-05-26 10:46:00",
       reserveRows: reserveRows,

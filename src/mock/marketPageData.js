@@ -267,11 +267,14 @@
       hasDataSource: options.hasDataSource !== false,
       filters: cloneValue(options.filters || {}),
       viewType: "disclosureTable",
+      compareMode: options.compareMode || "",
+      compareMergeKeys: cloneValue(options.compareMergeKeys || []),
       datePickerMode: "single",
       tableTitle: options.tableTitle || options.title || "",
       tableColumns: columns,
       tableData: rows,
       tableMinWidth: options.tableMinWidth || Math.max(920, columns.length * 148),
+      baseTableMinWidth: options.baseTableMinWidth || "",
       disclosureTableData: {
         provinceCode: options.provinceCode || "",
         tabKey: options.tabKey || "",
@@ -279,6 +282,9 @@
         updateSource: updateSource,
         columns: columns,
         rows: rows,
+        compareMode: options.compareMode || "",
+        compareMergeKeys: cloneValue(options.compareMergeKeys || []),
+        baseMinWidth: options.baseTableMinWidth || "",
         minWidth: options.tableMinWidth || Math.max(920, columns.length * 148),
       },
       fileList: cloneValue(options.fileList || []),
@@ -1597,19 +1603,22 @@
         pageType: "infoDisclosure",
         primaryTab: "负荷信息",
         secondaryTab: "发输变电设备检修计划",
-        date: info.defaultRunDate || "",
+        date: info.transmissionMaintenancePlanDefaultDate || info.defaultRunDate || "",
       },
       columns: [
-        { key: "sequence", title: "序号" },
         { key: "plantName", title: "电厂名称" },
-        { key: "unitName", title: "机组名称" },
-        { key: "statusType", title: "状态类型" },
-        { key: "changeReason", title: "设备改变原因" },
-        { key: "startTime", title: "开始时间" },
-        { key: "endTime", title: "结束时间" },
+        { key: "equipmentName", title: "发输变电设备" },
+        { key: "voltageLevel", title: "电压等级" },
+        { key: "currentStartTime", title: "检修开始时间" },
+        { key: "compareStartTime", title: "对比日检修开始时间" },
+        { key: "currentEndTime", title: "检修结束时间" },
+        { key: "compareEndTime", title: "对比日检修结束时间" },
       ],
       rows: rows,
-      tableMinWidth: 1180,
+      tableMinWidth: 1420,
+      baseTableMinWidth: 1040,
+      compareMode: "dateMerge",
+      compareMergeKeys: ["plantName", "equipmentName", "voltageLevel"],
       fileList: [
         {
           id: "gd-transmission-maintenance-plan-source",
@@ -2654,13 +2663,15 @@
             { key: "stationName", title: "所属厂站" },
             { key: "startTime", title: "检修开始时间" },
             { key: "endTime", title: "检修结束时间" },
-            { key: "planStatus", title: "检修状态" },
             { key: "impactCapacity", title: "影响容量（MW）" },
             { key: "updatedAt", title: "更新时间" },
           ];
+    scheduleColumns = scheduleColumns.filter(function filterColumn(column) {
+      return column.key !== "planStatus" && column.key !== "sequence" && column.key !== "updatedAt";
+    });
     var scheduleRows = (scheduleTable.data || []).map(function mapRow(row) {
       var nextRow = cloneValue(row);
-      nextRow.planStatus = createBadgeCell(row.planStatus, getPlanStatusTone(row.planStatus));
+      delete nextRow.planStatus;
       return nextRow;
     });
 
@@ -2684,7 +2695,10 @@
       },
       columns: scheduleColumns,
       rows: scheduleRows,
-      tableMinWidth: scheduleTable.minWidth || 1320,
+      tableMinWidth: 1420,
+      baseTableMinWidth: 1040,
+      compareMode: "dateMerge",
+      compareMergeKeys: ["plantName", "equipmentName", "voltageLevel"],
       fileList: dataset.fileList || [],
       emptyText: "当前日期暂无湖南发输变电设备检修计划 mock 数据。",
     });
