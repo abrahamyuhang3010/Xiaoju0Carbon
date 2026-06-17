@@ -269,7 +269,7 @@
       viewType: "disclosureTable",
       compareMode: options.compareMode || "",
       compareMergeKeys: cloneValue(options.compareMergeKeys || []),
-      datePickerMode: "single",
+      datePickerMode: options.datePickerMode || "single",
       tableTitle: options.tableTitle || options.title || "",
       tableColumns: columns,
       tableData: rows,
@@ -290,6 +290,19 @@
       fileList: cloneValue(options.fileList || []),
       emptyText: options.emptyText || DEFAULT_EMPTY_TEXT,
     };
+  }
+
+  function formatUnitStatusTimeColumnTitle(time, shiftToPeriodEnd) {
+    var parts = String(time || "").split(":");
+    var hour = Number(parts[0] || 0);
+    var minute = Number(parts[1] || 0) + (shiftToPeriodEnd ? 15 : 0);
+
+    if (minute >= 60) {
+      hour += Math.floor(minute / 60);
+      minute %= 60;
+    }
+
+    return String(hour) + ":" + String(minute).padStart(2, "0");
   }
 
   function ensurePageData(data, fallback) {
@@ -726,6 +739,24 @@
     });
   }
 
+  function buildScaledDerivedQuarterRows(baseRows, options) {
+    var settings = options || {};
+    var pattern = settings.pattern || [0];
+    var scale = settings.scale === undefined ? 1 : Number(settings.scale);
+    var baseOffset = settings.baseOffset || 0;
+
+    return (baseRows || []).map(function mapRow(row, index) {
+      var value = normalizePointValue(row.value);
+      return {
+        date: row.date,
+        time: row.time,
+        value: value === null ? null : roundNumber(value * scale + baseOffset + pattern[index % pattern.length]),
+        source: settings.source || row.source || "",
+        updatedAt: settings.updatedAt || row.updatedAt || "",
+      };
+    });
+  }
+
   function parseThermalBiddingSpaceNumber(value) {
     if (value === null || value === undefined || value === "") {
       return null;
@@ -741,22 +772,30 @@
     return Number.isFinite(numericValue) ? numericValue : null;
   }
 
-  function calculateThermalBiddingSpace(systemLoad, renewableOutput, hydroOutput, tieLineTransmission) {
+  function calculateThermalBiddingSpace(systemLoad, renewableOutput, hydroOutput, tieLineTransmission, nonMarketOutput) {
     var parsedSystemLoad = parseThermalBiddingSpaceNumber(systemLoad);
     var parsedRenewableOutput = parseThermalBiddingSpaceNumber(renewableOutput);
     var parsedHydroOutput = parseThermalBiddingSpaceNumber(hydroOutput);
     var parsedTieLineTransmission = parseThermalBiddingSpaceNumber(tieLineTransmission);
+    var parsedNonMarketOutput = parseThermalBiddingSpaceNumber(nonMarketOutput);
 
     if (
       parsedSystemLoad === null ||
       parsedRenewableOutput === null ||
       parsedHydroOutput === null ||
-      parsedTieLineTransmission === null
+      parsedTieLineTransmission === null ||
+      (nonMarketOutput !== undefined && parsedNonMarketOutput === null)
     ) {
       return null;
     }
 
-    return roundNumber(parsedSystemLoad - parsedRenewableOutput - parsedHydroOutput - parsedTieLineTransmission);
+    return roundNumber(
+      parsedSystemLoad -
+        parsedRenewableOutput -
+        parsedHydroOutput -
+        parsedTieLineTransmission -
+        (parsedNonMarketOutput || 0),
+    );
   }
 
   function buildRowsByDateTime(rows) {
@@ -776,8 +815,16 @@
     var renewableRows = settings.renewableRows || [];
     var hydroRows = settings.hydroRows || [];
     var tieLineRows = settings.tieLineRows || [];
+    var nonMarketRows = settings.nonMarketRows || [];
+    var requiresNonMarketRows = Boolean(settings.includeNonMarketOutput);
 
-    if (!systemLoadRows.length || !renewableRows.length || !hydroRows.length || !tieLineRows.length) {
+    if (
+      !systemLoadRows.length ||
+      !renewableRows.length ||
+      !hydroRows.length ||
+      !tieLineRows.length ||
+      (requiresNonMarketRows && !nonMarketRows.length)
+    ) {
       return {
         hasRequiredData: false,
         rows: [],
@@ -787,6 +834,7 @@
     var renewableRowsByTime = buildRowsByDateTime(renewableRows);
     var hydroRowsByTime = buildRowsByDateTime(hydroRows);
     var tieLineRowsByTime = buildRowsByDateTime(tieLineRows);
+    var nonMarketRowsByTime = buildRowsByDateTime(nonMarketRows);
 
     return {
       hasRequiredData: true,
@@ -795,10 +843,12 @@
         var renewableRow = renewableRowsByTime[key] || null;
         var hydroRow = hydroRowsByTime[key] || null;
         var tieLineRow = tieLineRowsByTime[key] || null;
+        var nonMarketRow = nonMarketRowsByTime[key] || null;
         var systemLoad = parseThermalBiddingSpaceNumber(systemRow.value);
         var renewableOutput = renewableRow ? parseThermalBiddingSpaceNumber(renewableRow.value) : null;
         var hydroOutput = hydroRow ? parseThermalBiddingSpaceNumber(hydroRow.value) : null;
         var tieLineTransmission = tieLineRow ? parseThermalBiddingSpaceNumber(tieLineRow.value) : null;
+        var nonMarketOutput = nonMarketRow ? parseThermalBiddingSpaceNumber(nonMarketRow.value) : null;
 
         return {
           date: systemRow.date,
@@ -807,18 +857,27 @@
           renewableTotalOutput: renewableOutput,
           hydroTotalOutput: hydroOutput,
           tieLineTransmission: tieLineTransmission,
-          thermalBiddingSpace: calculateThermalBiddingSpace(systemLoad, renewableOutput, hydroOutput, tieLineTransmission),
+          nonMarketOutput: requiresNonMarketRows ? nonMarketOutput : null,
+          thermalBiddingSpace: calculateThermalBiddingSpace(
+            systemLoad,
+            renewableOutput,
+            hydroOutput,
+            tieLineTransmission,
+            requiresNonMarketRows ? nonMarketOutput : undefined,
+          ),
           source: uniqueStrings([
             systemRow.source,
             renewableRow && renewableRow.source,
             hydroRow && hydroRow.source,
             tieLineRow && tieLineRow.source,
+            requiresNonMarketRows && nonMarketRow && nonMarketRow.source,
           ]).join(" / "),
           updatedAt: getLatestTextValue([
             systemRow.updatedAt,
             renewableRow && renewableRow.updatedAt,
             hydroRow && hydroRow.updatedAt,
             tieLineRow && tieLineRow.updatedAt,
+            requiresNonMarketRows && nonMarketRow && nonMarketRow.updatedAt,
           ]),
         };
       }),
@@ -843,8 +902,11 @@
         { key: "renewableTotalOutput", title: "新能源总出力（MW）" },
         { key: "hydroTotalOutput", title: "水电(含抽蓄)总出力（MW）" },
         { key: "tieLineTransmission", title: "省间联络线输电（MW）" },
-        { key: "thermalBiddingSpace", title: "火电竞价空间（MW）" },
-      ],
+      ].concat(
+        rowsConfig && rowsConfig.includeNonMarketOutput
+          ? [{ key: "nonMarketOutput", title: "非市场机组总出力（MW）" }]
+          : [],
+      ).concat([{ key: "thermalBiddingSpace", title: "火电竞价空间（MW）" }]),
     };
   }
 
@@ -938,6 +1000,37 @@
       tableMinWidth: options.tableMinWidth || 900,
       emptyText: options.emptyText || DEFAULT_EMPTY_TEXT,
     };
+  }
+
+  function createSingleMetricInfoSubPage(options) {
+    return createSingleMetricLoadPage({
+      title: options.title,
+      description: options.description || options.dataSource || "",
+      updateTime: options.updateTime || "",
+      statusSource: options.statusSource || options.dataSource || "",
+      dataSource: options.dataSource || "",
+      filters: {
+        tradeCenter: options.tradeCenter,
+        pageType: "infoDisclosure",
+        primaryTab: "负荷信息",
+        secondaryTab: options.secondaryTab,
+      },
+      chartTitle: options.chartTitle || options.title + "趋势图",
+      sidebarGroups: [
+        {
+          label: options.title,
+          items: [{ id: options.metric.id, label: options.metric.metricName || options.metric.title || options.title }],
+        },
+      ],
+      defaultMetricId: options.metric.id,
+      metrics: (function buildMetricMap() {
+        var map = {};
+        map[options.metric.id] = options.metric;
+        return map;
+      })(),
+      tableMinWidth: options.tableMinWidth || 920,
+      emptyText: options.emptyText || DEFAULT_EMPTY_TEXT,
+    });
   }
 
   function buildTreeComparePage(options) {
@@ -1371,6 +1464,21 @@
     var info = bundle.infoDisclosure || {};
     var statusTime = extractStatusTime(info.statusText) || bundle.dataUpdatedAt || "";
     var statusSource = extractStatusSource(info.statusText) || "取数工具";
+    var westForecastRows = buildQuarterRowsFromGuangdongMetric(bundle, "west-east", "forecast");
+    var westActualRows = buildQuarterRowsFromGuangdongMetric(bundle, "west-east", "actual");
+    var westBranchConfigs = [
+      { id: "west-three-gorges", label: "三峡", scale: 0.13, pattern: [0, 18, -10, 12] },
+      { id: "west-xingan-dc", label: "兴安直流", scale: 0.09, pattern: [0, 12, -8, 6] },
+      { id: "west-tianguang-dc", label: "天广直流", scale: 0.08, pattern: [0, 10, -6, 5] },
+      { id: "west-xindong-dc", label: "新东直流", scale: 0.08, pattern: [0, 9, -5, 7] },
+      { id: "west-kunliulong-dc", label: "昆柳龙直流", scale: 0.1, pattern: [0, 14, -9, 8] },
+      { id: "west-puqiao-dc", label: "普侨直流", scale: 0.07, pattern: [0, 8, -5, 5] },
+      { id: "west-chusui-dc", label: "楚穗直流", scale: 0.09, pattern: [0, 11, -7, 6] },
+      { id: "west-hainan-gd-total", label: "海南送广东总加", scale: 0.06, pattern: [0, 7, -4, 4] },
+      { id: "west-niucang-dc", label: "牛从直流", scale: 0.08, pattern: [0, 9, -6, 5] },
+      { id: "west-yumao-guishan-heluo-wuluo-total", label: "玉茂桂山贺罗梧罗总加", scale: 0.12, pattern: [0, 16, -10, 9] },
+      { id: "west-gaozhao-dc", label: "高肇直流", scale: 0.1, pattern: [0, 13, -8, 7] },
+    ];
     var metrics = {
       "dispatch-load": createSingleMetricLoadMetric(
         "dispatch-load",
@@ -1435,8 +1543,8 @@
       "west-east": createSingleMetricLoadMetric(
         "west-east",
         "西电东送电力",
-        buildQuarterRowsFromGuangdongMetric(bundle, "west-east", "forecast"),
-        buildQuarterRowsFromGuangdongMetric(bundle, "west-east", "actual"),
+        westForecastRows,
+        westActualRows,
       ),
       "total-output": createSingleMetricLoadMetric(
         "total-output",
@@ -1452,7 +1560,7 @@
       ),
       "dispatch-renewable": createSingleMetricLoadMetric(
         "dispatch-renewable",
-        "统调新能源出力",
+        "统调新能源总出力",
         buildQuarterRowsFromGuangdongMetric(bundle, "dispatch-renewable", "forecast"),
         buildQuarterRowsFromGuangdongMetric(bundle, "dispatch-renewable", "actual"),
       ),
@@ -1469,6 +1577,25 @@
         [],
       ),
     };
+
+    westBranchConfigs.forEach(function addWestBranchMetric(config) {
+      metrics[config.id] = createSingleMetricLoadMetric(
+        config.id,
+        config.label,
+        buildScaledDerivedQuarterRows(westForecastRows, {
+          scale: config.scale,
+          pattern: config.pattern,
+          source: "广东电力交易中心" + config.label + "预测",
+          updatedAt: statusTime,
+        }),
+        buildScaledDerivedQuarterRows(westActualRows, {
+          scale: config.scale,
+          pattern: config.pattern.map(function invertPattern(value) { return -value; }),
+          source: "广东电力交易中心" + config.label + "实际",
+          updatedAt: statusTime,
+        }),
+      );
+    });
 
     if (!Object.keys(metrics).length) {
       return null;
@@ -1489,53 +1616,34 @@
       },
       chartTitle: "负荷信息趋势图",
       sidebarGroups: [
-        {
-          label: "系统负荷",
-          items: [{ id: "dispatch-load", label: "统调负荷" }],
-        },
-        {
-          label: "竞价空间",
-          items: [{ id: "thermal-bidding-space", label: "火电竞价空间" }],
-        },
-        {
-          label: "省内电源",
-          items: [
-            { id: "province-a", label: "省内A类电源" },
-            { id: "province-b", label: "省内B类电源" },
-          ],
-        },
-        {
-          label: "地方电源出力",
-          items: [
-            {
-              id: "local-power",
-              label: "地方电源出力",
-              children: [
-                { id: "wind", label: "风电" },
-                { id: "solar", label: "光伏" },
-                { id: "thermal", label: "火电" },
-                { id: "hydro", label: "水电" },
-              ],
-            },
-          ],
-        },
-        {
-          label: "跨区联络",
-          items: [
-            { id: "hk-link", label: "粤港联络线" },
-            { id: "west-east", label: "西电东送电力" },
-          ],
-        },
-        {
-          label: "综合出力",
-          items: [
-            { id: "total-output", label: "发电总出力" },
-            { id: "spot-renewable", label: "现货新能源总出力" },
-            { id: "dispatch-renewable", label: "统调新能源出力" },
-            { id: "hydro-total", label: "水电（含抽蓄）总出力" },
-            { id: "pump-plan", label: "抽蓄电站出力计划" },
-          ],
-        },
+        { label: "负荷信息", items: [
+          { id: "dispatch-load", label: "统调负荷" },
+          { id: "province-a", label: "省内A类电源" },
+          { id: "province-b", label: "省内B类电源" },
+          {
+            id: "local-power",
+            label: "地方电源出力",
+            children: [
+              { id: "wind", label: "风电" },
+              { id: "solar", label: "光伏" },
+              { id: "thermal", label: "火电" },
+              { id: "hydro", label: "水电" },
+            ],
+          },
+          { id: "hk-link", label: "粤港联络线" },
+          {
+            id: "west-east",
+            label: "西电东送电力",
+            children: westBranchConfigs.map(function mapWestBranch(config) {
+              return { id: config.id, label: config.label };
+            }),
+          },
+          { id: "total-output", label: "发电总出力" },
+          { id: "spot-renewable", label: "现货新能源总出力" },
+          { id: "dispatch-renewable", label: "统调新能源总出力" },
+          { id: "hydro-total", label: "水电（含抽蓄）总出力" },
+          { id: "pump-plan", label: "抽蓄电站出力计划" },
+        ] },
       ],
       defaultMetricId: "dispatch-load",
       metrics: metrics,
@@ -2347,6 +2455,32 @@
 
   function buildHunanLoadInfoPage(bundle) {
     var generationForecastRows = buildQuarterRowsFromModule(bundle, "发电总出力预测");
+    var hunanRenewableForecastRows = buildQuarterRowsFromModule(bundle, "新能源总出力预测（日）");
+    var hunanRenewableActualRows = buildQuarterRowsFromModule(bundle, "新能源总出力");
+    var hunanWindForecastRows = buildScaledDerivedQuarterRows(hunanRenewableForecastRows, {
+      scale: 0.58,
+      pattern: [0, 16, -10, 8],
+      source: "湖南风电发电有功电力预测",
+      updatedAt: bundle.dataUpdatedAt || "",
+    });
+    var hunanWindActualRows = buildScaledDerivedQuarterRows(hunanRenewableActualRows, {
+      scale: 0.57,
+      pattern: [0, -14, 9, -7],
+      source: "湖南风电发电有功电力实绩",
+      updatedAt: bundle.dataUpdatedAt || "",
+    });
+    var hunanSolarForecastRows = buildScaledDerivedQuarterRows(hunanRenewableForecastRows, {
+      scale: 0.42,
+      pattern: [0, -16, 10, -8],
+      source: "湖南光伏发电有功电力预测",
+      updatedAt: bundle.dataUpdatedAt || "",
+    });
+    var hunanSolarActualRows = buildScaledDerivedQuarterRows(hunanRenewableActualRows, {
+      scale: 0.43,
+      pattern: [0, 14, -9, 7],
+      source: "湖南光伏发电有功电力实绩",
+      updatedAt: bundle.dataUpdatedAt || "",
+    });
     return createSingleMetricLoadPage({
       title: "负荷信息",
       description: "湖南交易中心负荷信息页按单指标切换展示预测、实际与分时明细。",
@@ -2361,33 +2495,20 @@
       },
       chartTitle: "负荷信息趋势图",
       sidebarGroups: [
-        {
-          label: "系统负荷",
-          items: [{ id: "hn-system-load", label: "系统负荷" }],
-        },
-        {
-          label: "竞价空间",
-          items: [{ id: "hn-thermal-bidding-space", label: "火电竞价空间" }],
-        },
-        {
-          label: "发电出力",
-          items: [
-            { id: "hn-generation-output", label: "发电总出力" },
-            { id: "hn-nonmarket-output", label: "非市场机组总出力" },
-          ],
-        },
-        {
-          label: "新能源出力",
-          items: [{ id: "hn-renewable-output", label: "新能源总出力" }],
-        },
-        {
-          label: "水电出力",
-          items: [{ id: "hn-hydro-output", label: "水电（含抽蓄）总出力" }],
-        },
-        {
-          label: "省间联络线",
-          items: [{ id: "hn-tieline-output", label: "省间联络线输电" }],
-        },
+        { label: "负荷信息", items: [
+          { id: "hn-system-load", label: "系统负荷" },
+          { id: "hn-generation-output", label: "发电总出力" },
+          { id: "hn-nonmarket-output", label: "非市场组总出力" },
+          {
+            id: "hn-renewable-output",
+            label: "新能源总出力",
+            children: [
+              { id: "hn-wind-active-power", label: "风电发电有功电力" },
+              { id: "hn-solar-active-power", label: "光伏发电有功电力" },
+            ],
+          },
+          { id: "hn-hydro-output", label: "水电（含抽蓄）总出力" },
+        ] },
       ],
       defaultMetricId: "hn-system-load",
       metrics: {
@@ -2397,12 +2518,6 @@
           buildQuarterRowsFromModule(bundle, "系统负荷预测（日）"),
           buildQuarterRowsFromModule(bundle, "实际负荷"),
         ),
-        "hn-thermal-bidding-space": createThermalBiddingSpaceMetric("hn-thermal-bidding-space", {
-          systemLoadRows: buildQuarterRowsFromModule(bundle, "实际负荷"),
-          renewableRows: buildQuarterRowsFromModule(bundle, "新能源总出力"),
-          hydroRows: buildQuarterRowsFromModule(bundle, "水电（含抽蓄）总出力"),
-          tieLineRows: buildQuarterRowsFromModule(bundle, "省间联络线输电情况"),
-        }),
         "hn-generation-output": createSingleMetricLoadMetric(
           "hn-generation-output",
           "发电总出力",
@@ -2416,15 +2531,27 @@
         ),
         "hn-nonmarket-output": createSingleMetricLoadMetric(
           "hn-nonmarket-output",
-          "非市场机组总出力",
+          "非市场组总出力",
           buildQuarterRowsFromModule(bundle, "非市场机组总出力预测"),
           buildQuarterRowsFromModule(bundle, "非市场机组总出力"),
         ),
         "hn-renewable-output": createSingleMetricLoadMetric(
           "hn-renewable-output",
           "新能源总出力",
-          buildQuarterRowsFromModule(bundle, "新能源总出力预测（日）"),
-          buildQuarterRowsFromModule(bundle, "新能源总出力"),
+          hunanRenewableForecastRows,
+          hunanRenewableActualRows,
+        ),
+        "hn-wind-active-power": createSingleMetricLoadMetric(
+          "hn-wind-active-power",
+          "风电发电有功电力",
+          hunanWindForecastRows,
+          hunanWindActualRows,
+        ),
+        "hn-solar-active-power": createSingleMetricLoadMetric(
+          "hn-solar-active-power",
+          "光伏发电有功电力",
+          hunanSolarForecastRows,
+          hunanSolarActualRows,
         ),
         "hn-hydro-output": createSingleMetricLoadMetric(
           "hn-hydro-output",
@@ -2432,15 +2559,91 @@
           buildQuarterRowsFromModule(bundle, "水电（含抽蓄）总出力预测（日）"),
           buildQuarterRowsFromModule(bundle, "水电（含抽蓄）总出力"),
         ),
+      },
+      tableMinWidth: 920,
+      emptyText: "当前日期暂无湖南负荷信息 mock 数据。",
+    });
+  }
+
+  function buildHunanTieLinePage(bundle) {
+    return createSingleMetricLoadPage({
+      title: "省间联络",
+      description: "湖南交易中心省间联络线输电数据。",
+      updateTime: bundle.dataUpdatedAt || "",
+      statusSource: "湖南电力交易中心省间联络",
+      dataSource: "湖南电力交易中心省间联络",
+      filters: {
+        tradeCenter: "hunan",
+        pageType: "infoDisclosure",
+        primaryTab: "负荷信息",
+        secondaryTab: "省间联络",
+      },
+      chartTitle: "省间联络趋势图",
+      sidebarGroups: [
+        {
+          label: "省间联络",
+          items: [
+            {
+              id: "hn-tieline-output",
+              label: "省间联络线输电",
+              children: [
+                { id: "hn-tieline-zhongheng-dayahead", label: "中衡直流（日前）" },
+                { id: "hn-tieline-main-grid-to-hunan-dayahead", label: "主网送湘（日前）" },
+                { id: "hn-tieline-qishao-dayahead", label: "祁韶直流（日前）" },
+              ],
+            },
+          ],
+        },
+      ],
+      defaultMetricId: "hn-tieline-zhongheng-dayahead",
+      metrics: {
         "hn-tieline-output": createSingleMetricLoadMetric(
           "hn-tieline-output",
           "省间联络线输电",
           buildQuarterRowsFromModule(bundle, "省间联络线输电曲线预测"),
           buildQuarterRowsFromModule(bundle, "省间联络线输电情况"),
         ),
+        "hn-tieline-zhongheng-dayahead": createSingleMetricLoadMetric(
+          "hn-tieline-zhongheng-dayahead",
+          "中衡直流（日前）",
+          buildQuarterRowsFromModule(bundle, "中衡直流（日前）预测"),
+          buildQuarterRowsFromModule(bundle, "中衡直流（日前）实绩"),
+        ),
+        "hn-tieline-main-grid-to-hunan-dayahead": createSingleMetricLoadMetric(
+          "hn-tieline-main-grid-to-hunan-dayahead",
+          "主网送湘（日前）",
+          buildQuarterRowsFromModule(bundle, "主网送湘（日前）预测"),
+          buildQuarterRowsFromModule(bundle, "主网送湘（日前）实绩"),
+        ),
+        "hn-tieline-qishao-dayahead": createSingleMetricLoadMetric(
+          "hn-tieline-qishao-dayahead",
+          "祁韶直流（日前）",
+          buildQuarterRowsFromModule(bundle, "祁韶直流（日前）预测"),
+          buildQuarterRowsFromModule(bundle, "祁韶直流（日前）实绩"),
+        ),
       },
       tableMinWidth: 920,
-      emptyText: "当前日期暂无湖南负荷信息 mock 数据。",
+      emptyText: "当前日期暂无湖南省间联络 mock 数据。",
+    });
+  }
+
+  function buildHunanThermalBiddingSpacePage(bundle) {
+    return createSingleMetricInfoSubPage({
+      title: "火电竞价空间",
+      description: "湖南交易中心火电竞价空间数据。",
+      updateTime: bundle.dataUpdatedAt || "",
+      statusSource: "湖南电力交易中心火电竞价空间",
+      dataSource: "湖南电力交易中心火电竞价空间",
+      tradeCenter: "hunan",
+      secondaryTab: "火电竞价空间",
+      metric: createThermalBiddingSpaceMetric("hn-thermal-bidding-space", {
+        systemLoadRows: buildQuarterRowsFromModule(bundle, "实际负荷"),
+        renewableRows: buildQuarterRowsFromModule(bundle, "新能源总出力"),
+        hydroRows: buildQuarterRowsFromModule(bundle, "水电（含抽蓄）总出力"),
+        tieLineRows: buildQuarterRowsFromModule(bundle, "省间联络线输电情况"),
+      }),
+      tableMinWidth: 1120,
+      emptyText: "当前日期暂无湖南火电竞价空间 mock 数据。",
     });
   }
 
@@ -2577,46 +2780,19 @@
     var quarterColumns = (unitTable.columns || []).filter(function filterColumn(column) {
       return /^\d{2}:\d{2}$/.test(column.key);
     });
-    var unitBaseColumns = (unitTable.columns || []).filter(function filterColumn(column) {
-      return column.key !== "updatedAt" && !/^\d{2}:\d{2}$/.test(column.key);
-    });
+    var shiftUnitStatusTimeTitle = Boolean(quarterColumns[0] && quarterColumns[0].key === "00:00");
 
-    if (!unitBaseColumns.length) {
-      unitBaseColumns = [
-        { key: "runDate", title: "日期" },
-        { key: "unitName", title: "机组名称" },
-        { key: "unitCode", title: "机组编码" },
-        { key: "operatingStatus", title: "运行状态" },
-      ];
-    }
+    var unitRows = (unitTable.data || []).map(function mapRow(row, index) {
+      var nextRow = {
+        sequence: row.sequence || index + 1,
+        runDate: row.runDate || row.date || "",
+        unitName: row.unitName,
+      };
 
-    var unitRows = (unitTable.data || []).map(function mapRow(row) {
-      var nextRow = {};
-
-      unitBaseColumns.forEach(function eachColumn(column) {
-        if (column.key === "operatingStatus") {
-          nextRow[column.key] = createBadgeCell(row.operatingStatus, getUnitStatusTone(row.operatingStatus));
-          return;
-        }
+      quarterColumns.forEach(function eachColumn(column) {
         nextRow[column.key] = row[column.key];
       });
 
-      quarterColumns.forEach(function eachColumn(column) {
-        var value = row[column.key];
-        var statusText = "停机";
-        if (row.operatingStatus === "检修") {
-          statusText = "检修";
-        } else if (row.operatingStatus === "备用") {
-          statusText = Number(value || 0) > 0 ? "运行" : "备用";
-        } else if (row.operatingStatus === "受限运行") {
-          statusText = Number(value || 0) > 0 ? "运行" : "停机";
-        } else if (Number(value || 0) > 0) {
-          statusText = "运行";
-        }
-        nextRow[column.key] = createBadgeCell(statusText, getUnitStatusTone(statusText), statusText);
-      });
-
-      nextRow.updatedAt = row.updatedAt;
       return nextRow;
     });
 
@@ -2631,6 +2807,7 @@
       dataSource: dataset.dataSource || "湖南电力交易中心机组状态",
       updateSource: "8.1._【事后】机组状态 (1).xlsx",
       hasDataSource: dataset.hasDataSource === true,
+      datePickerMode: "range",
       filters: {
         tradeCenter: "hunan",
         pageType: "infoDisclosure",
@@ -2638,13 +2815,16 @@
         secondaryTab: "机组状态",
         date: (dataset.filters && dataset.filters.date) || "",
       },
-      columns: unitBaseColumns
+      columns: [
+        { key: "sequence", title: "序号" },
+        { key: "runDate", title: "日期" },
+        { key: "unitName", title: "机组名称" },
+      ]
         .concat(quarterColumns.map(function mapColumn(column) {
-          return { key: column.key, title: column.title };
-        }))
-        .concat([{ key: "updatedAt", title: "更新时间" }]),
+          return { key: column.key, title: formatUnitStatusTimeColumnTitle(column.key, shiftUnitStatusTimeTitle) };
+        })),
       rows: unitRows,
-      tableMinWidth: unitTable.minWidth || 8920,
+      tableMinWidth: unitTable.minWidth || 8840,
       fileList: dataset.fileList || [],
       emptyText: "当前日期暂无湖南机组状态 mock 数据。",
     });
@@ -2867,6 +3047,32 @@
   }
 
   function buildShaanxiLoadInfoPage(bundle) {
+    var shaanxiRenewableForecastRows = buildQuarterRowsFromModule(bundle, "新能源总出力预测（日）");
+    var shaanxiRenewableActualRows = buildQuarterRowsFromModule(bundle, "新能源总出力");
+    var shaanxiSolarForecastRows = buildScaledDerivedQuarterRows(shaanxiRenewableForecastRows, {
+      scale: 0.46,
+      pattern: [0, 15, -8, 7],
+      source: "陕西光伏总出力预测",
+      updatedAt: bundle.dataUpdatedAt || "",
+    });
+    var shaanxiSolarActualRows = buildScaledDerivedQuarterRows(shaanxiRenewableActualRows, {
+      scale: 0.47,
+      pattern: [0, -12, 8, -6],
+      source: "陕西光伏总出力实绩",
+      updatedAt: bundle.dataUpdatedAt || "",
+    });
+    var shaanxiWindForecastRows = buildScaledDerivedQuarterRows(shaanxiRenewableForecastRows, {
+      scale: 0.54,
+      pattern: [0, -15, 8, -7],
+      source: "陕西风电总出力预测",
+      updatedAt: bundle.dataUpdatedAt || "",
+    });
+    var shaanxiWindActualRows = buildScaledDerivedQuarterRows(shaanxiRenewableActualRows, {
+      scale: 0.53,
+      pattern: [0, 12, -8, 6],
+      source: "陕西风电总出力实绩",
+      updatedAt: bundle.dataUpdatedAt || "",
+    });
     return createSingleMetricLoadPage({
       title: "负荷信息",
       description: "陕西交易中心负荷信息页按单指标切换展示预测、实际与分时明细。",
@@ -2881,33 +3087,20 @@
       },
       chartTitle: "负荷信息趋势图",
       sidebarGroups: [
-        {
-          label: "系统负荷",
-          items: [{ id: "sx-system-load", label: "系统负荷" }],
-        },
-        {
-          label: "竞价空间",
-          items: [{ id: "sx-thermal-bidding-space", label: "火电竞价空间" }],
-        },
-        {
-          label: "发电出力",
-          items: [
-            { id: "sx-generation-output", label: "发电总出力" },
-            { id: "sx-nonmarket-output", label: "非市场机组总出力" },
-          ],
-        },
-        {
-          label: "新能源出力",
-          items: [{ id: "sx-renewable-output", label: "新能源总出力" }],
-        },
-        {
-          label: "水电出力",
-          items: [{ id: "sx-hydro-output", label: "水电（含抽蓄）出力" }],
-        },
-        {
-          label: "省间联络线",
-          items: [{ id: "sx-tieline-output", label: "省间联络线输电" }],
-        },
+        { label: "负荷信息", items: [
+          { id: "sx-system-load", label: "系统负荷" },
+          { id: "sx-generation-output", label: "发电总出力" },
+          { id: "sx-nonmarket-output", label: "非市场组总出力" },
+          {
+            id: "sx-renewable-output",
+            label: "新能源总出力",
+            children: [
+              { id: "sx-solar-total-output", label: "光伏总出力" },
+              { id: "sx-wind-total-output", label: "风电总出力" },
+            ],
+          },
+          { id: "sx-hydro-output", label: "水电（含抽蓄）总出力" },
+        ] },
       ],
       defaultMetricId: "sx-system-load",
       metrics: {
@@ -2917,12 +3110,6 @@
           buildQuarterRowsFromModule(bundle, "系统负荷预测（日）"),
           buildQuarterRowsFromModule(bundle, "实际负荷"),
         ),
-        "sx-thermal-bidding-space": createThermalBiddingSpaceMetric("sx-thermal-bidding-space", {
-          systemLoadRows: buildQuarterRowsFromModule(bundle, "实际负荷"),
-          renewableRows: buildQuarterRowsFromModule(bundle, "新能源总出力"),
-          hydroRows: buildQuarterRowsFromModule(bundle, "水电（含抽蓄）出力"),
-          tieLineRows: buildQuarterRowsFromModule(bundle, "省间联络线输电情况"),
-        }),
         "sx-generation-output": createSingleMetricLoadMetric(
           "sx-generation-output",
           "发电总出力",
@@ -2931,31 +3118,78 @@
         ),
         "sx-nonmarket-output": createSingleMetricLoadMetric(
           "sx-nonmarket-output",
-          "非市场机组总出力",
+          "非市场组总出力",
           buildQuarterRowsFromModule(bundle, "非市场机组总出力预测"),
           buildQuarterRowsFromModule(bundle, "非市场机组总出力"),
         ),
         "sx-renewable-output": createSingleMetricLoadMetric(
           "sx-renewable-output",
           "新能源总出力",
-          buildQuarterRowsFromModule(bundle, "新能源总出力预测（日）"),
-          buildQuarterRowsFromModule(bundle, "新能源总出力"),
+          shaanxiRenewableForecastRows,
+          shaanxiRenewableActualRows,
+        ),
+        "sx-solar-total-output": createSingleMetricLoadMetric(
+          "sx-solar-total-output",
+          "光伏总出力",
+          shaanxiSolarForecastRows,
+          shaanxiSolarActualRows,
+        ),
+        "sx-wind-total-output": createSingleMetricLoadMetric(
+          "sx-wind-total-output",
+          "风电总出力",
+          shaanxiWindForecastRows,
+          shaanxiWindActualRows,
         ),
         "sx-hydro-output": createSingleMetricLoadMetric(
           "sx-hydro-output",
-          "水电（含抽蓄）出力",
+          "水电（含抽蓄）总出力",
           buildQuarterRowsFromModule(bundle, "水电（含抽蓄）总出力预测（日）"),
           buildQuarterRowsFromModule(bundle, "水电（含抽蓄）出力"),
-        ),
-        "sx-tieline-output": createSingleMetricLoadMetric(
-          "sx-tieline-output",
-          "省间联络线输电",
-          buildQuarterRowsFromModule(bundle, "省间联络线输电曲线预测"),
-          buildQuarterRowsFromModule(bundle, "省间联络线输电情况"),
         ),
       },
       tableMinWidth: 920,
       emptyText: "当前日期暂无陕西负荷信息 mock 数据。",
+    });
+  }
+
+  function buildShaanxiTieLinePage(bundle) {
+    return createSingleMetricInfoSubPage({
+      title: "省间联络",
+      description: "陕西交易中心省间联络线输电数据。",
+      updateTime: bundle.dataUpdatedAt || "",
+      statusSource: "陕西电力交易中心省间联络",
+      dataSource: "陕西电力交易中心省间联络",
+      tradeCenter: "shaanxi",
+      secondaryTab: "省间联络",
+      metric: createSingleMetricLoadMetric(
+        "sx-tieline-output",
+        "省间联络线输电",
+        buildQuarterRowsFromModule(bundle, "省间联络线输电曲线预测"),
+        buildQuarterRowsFromModule(bundle, "省间联络线输电情况"),
+      ),
+      emptyText: "当前日期暂无陕西省间联络 mock 数据。",
+    });
+  }
+
+  function buildShaanxiThermalBiddingSpacePage(bundle) {
+    return createSingleMetricInfoSubPage({
+      title: "火电竞价空间",
+      description: "陕西交易中心火电竞价空间数据。",
+      updateTime: bundle.dataUpdatedAt || "",
+      statusSource: "陕西电力交易中心火电竞价空间",
+      dataSource: "陕西电力交易中心火电竞价空间",
+      tradeCenter: "shaanxi",
+      secondaryTab: "火电竞价空间",
+      metric: createThermalBiddingSpaceMetric("sx-thermal-bidding-space", {
+        systemLoadRows: buildQuarterRowsFromModule(bundle, "实际负荷"),
+        renewableRows: buildQuarterRowsFromModule(bundle, "新能源总出力"),
+        hydroRows: buildQuarterRowsFromModule(bundle, "水电（含抽蓄）出力"),
+        tieLineRows: buildQuarterRowsFromModule(bundle, "省间联络线输电情况"),
+        nonMarketRows: buildQuarterRowsFromModule(bundle, "非市场机组总出力"),
+        includeNonMarketOutput: true,
+      }),
+      tableMinWidth: 1120,
+      emptyText: "当前日期暂无陕西火电竞价空间 mock 数据。",
     });
   }
 
@@ -3077,32 +3311,16 @@
     var quarterColumns = (unitTable.columns || []).filter(function filterColumn(column) {
       return /^\d{2}:\d{2}$/.test(column.key);
     });
-    var unitRows = (unitTable.data || []).map(function mapRow(row) {
+    var shiftUnitStatusTimeTitle = Boolean(quarterColumns[0] && quarterColumns[0].key === "00:00");
+    var unitRows = (unitTable.data || []).map(function mapRow(row, index) {
       var nextRow = {
+        sequence: row.sequence || index + 1,
         runDate: row.runDate,
-        disclosureType: row.disclosureType,
-        unitId: row.unitId,
         unitName: row.unitName,
-        operatingStatus: createBadgeCell(
-          row.operatingStatus === "受限运行" ? "异常" : row.operatingStatus,
-          getUnitStatusTone(row.operatingStatus === "受限运行" ? "异常" : row.operatingStatus),
-        ),
-        updatedAt: row.updatedAt,
       };
 
       quarterColumns.forEach(function eachColumn(column) {
-        var value = row[column.key];
-        var statusText = "停机";
-        if (row.operatingStatus === "检修") {
-          statusText = "检修";
-        } else if (row.operatingStatus === "备用") {
-          statusText = Number(value || 0) > 0 ? "运行" : "备用";
-        } else if (row.operatingStatus === "受限运行") {
-          statusText = Number(value || 0) > 0 ? "异常" : "停机";
-        } else if (Number(value || 0) > 0) {
-          statusText = "运行";
-        }
-        nextRow[column.key] = createBadgeCell(statusText, getUnitStatusTone(statusText), statusText);
+        nextRow[column.key] = row[column.key];
       });
 
       return nextRow;
@@ -3119,6 +3337,7 @@
       dataSource: dataset.dataSource || "陕西电力交易中心机组状态",
       updateSource: "陕西电力交易中心机组状态 mock",
       hasDataSource: dataset.hasDataSource !== false,
+      datePickerMode: "range",
       filters: {
         tradeCenter: "shaanxi",
         pageType: "infoDisclosure",
@@ -3127,18 +3346,15 @@
         date: (dataset.filters && dataset.filters.date) || "",
       },
       columns: [
-        { key: "runDate", title: "机组运行日期" },
-        { key: "disclosureType", title: "披露类型" },
-        { key: "unitId", title: "机组 ID" },
+        { key: "sequence", title: "序号" },
+        { key: "runDate", title: "日期" },
         { key: "unitName", title: "机组名称" },
-        { key: "operatingStatus", title: "运行状态" },
       ]
         .concat(quarterColumns.map(function mapColumn(column) {
-          return { key: column.key, title: column.title };
-        }))
-        .concat([{ key: "updatedAt", title: "更新时间" }]),
+          return { key: column.key, title: formatUnitStatusTimeColumnTitle(column.key, shiftUnitStatusTimeTitle) };
+        })),
       rows: unitRows,
-      tableMinWidth: unitTable.minWidth || 9240,
+      tableMinWidth: unitTable.minWidth || 8840,
       fileList: dataset.fileList || [],
       emptyText: "当前日期暂无陕西机组状态 mock 数据。",
     });
@@ -3285,6 +3501,12 @@
       if (secondaryTab === "发输变电设备检修计划") {
         return buildHunanTransmissionMaintenancePlanPage(bundle);
       }
+      if (secondaryTab === "省间联络") {
+        return buildHunanTieLinePage(bundle);
+      }
+      if (secondaryTab === "火电竞价空间") {
+        return buildHunanThermalBiddingSpacePage(bundle);
+      }
       return buildHunanLoadInfoPage(bundle);
     }
 
@@ -3303,6 +3525,12 @@
       }
       if (secondaryTab === "发输变电设备检修计划") {
         return buildUnavailableLoadInfoSubTabPage("shaanxi", bundle, secondaryTab);
+      }
+      if (secondaryTab === "省间联络") {
+        return buildShaanxiTieLinePage(bundle);
+      }
+      if (secondaryTab === "火电竞价空间") {
+        return buildShaanxiThermalBiddingSpacePage(bundle);
       }
       return buildShaanxiLoadInfoPage(bundle);
     }

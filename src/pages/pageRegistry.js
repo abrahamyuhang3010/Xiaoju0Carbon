@@ -41,6 +41,15 @@
   });
 
   addPage({
+    key: "data-monitor",
+    hash: "data-monitor",
+    aliases: ["market-data-monitor"],
+    title: "数据监控",
+    viewType: "data-monitor",
+    sidebarTrail: ["saleExpanded", "marketExpanded"],
+  });
+
+  addPage({
     key: "gd-retail-relation",
     hash: "gd-retail-relation",
     aliases: ["market-retail-relation"],

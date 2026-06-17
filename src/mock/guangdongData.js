@@ -196,7 +196,7 @@
     },
     { id: "total-output", label: "发电总出力" },
     { id: "spot-renewable", label: "现货新能源总出力" },
-    { id: "dispatch-renewable", label: "统调新能源出力" },
+    { id: "dispatch-renewable", label: "统调新能源总出力" },
     { id: "hydro-total", label: "水电（含抽蓄）总出力" },
     { id: "pump-plan", label: "抽蓄电站出力计划" },
   ];
@@ -396,7 +396,7 @@
       actualDelta: [-92, -48, -12, 18, 42, 66],
     },
     "dispatch-renewable": {
-      label: "统调新能源出力",
+      label: "统调新能源总出力",
       hourly: dispatchRenewableHourly,
       pattern: [0, 18, -11, 8],
       actualDelta: [-70, -34, -10, 14, 32, 50],

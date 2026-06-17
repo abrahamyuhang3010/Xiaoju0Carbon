@@ -385,6 +385,12 @@
     "实际负荷",
     "省间联络线输电曲线预测",
     "省间联络线输电情况",
+    "中衡直流（日前）预测",
+    "中衡直流（日前）实绩",
+    "主网送湘（日前）预测",
+    "主网送湘（日前）实绩",
+    "祁韶直流（日前）预测",
+    "祁韶直流（日前）实绩",
     "发电总出力预测",
     "非市场机组总出力预测",
     "新能源总出力预测（日）",
@@ -1832,12 +1838,22 @@
     return "受限运行";
   }
 
-  function buildHunanInfoUnitStatusRows(rawRows) {
+  function shiftStatusText(statusText, offset) {
+    var normalizedOffset = offset % statusText.length;
+    if (!normalizedOffset) {
+      return statusText;
+    }
+    return statusText.slice(normalizedOffset) + statusText.slice(0, normalizedOffset);
+  }
+
+  function buildHunanInfoUnitStatusRows(rawRows, runDate, statusOffset) {
+    var resolvedRunDate = runDate || standardDefaultDate;
     return rawRows.map(function mapRawUnit(row) {
-      var statusText = row[3];
+      var statusText = shiftStatusText(row[3], statusOffset || 0);
       var formattedRow = {
-        date: standardDefaultDate,
-        runDate: standardDefaultDate,
+        sequence: row[0],
+        date: resolvedRunDate,
+        runDate: resolvedRunDate,
         sourceDate: hunanInfoUnitStatusSourceDate,
         unitCode: "HN-GEN-" + String(row[0]).padStart(3, "0"),
         unitName: row[1],
@@ -1854,7 +1870,9 @@
     });
   }
 
-  var hunanUnifiedUnitStatusRows = buildHunanInfoUnitStatusRows(hunanInfoUnitStatusRawRows);
+  var hunanUnifiedUnitStatusRows = buildHunanInfoUnitStatusRows(hunanInfoUnitStatusRawRows, standardDefaultDate, 0).concat(
+    buildHunanInfoUnitStatusRows(hunanInfoUnitStatusRawRows, "2026-05-08", 4),
+  );
   var hunanInfoMaintenanceCapacityValues = hunanInfoDisclosureTimeLabels.map(function mapMaintenanceCapacity(_, index) {
     return hunanInfoUnitStatusRawRows.reduce(function sumCapacity(total, row) {
       return total + (row[3].charAt(index) === "0" ? row[2] : 0);
@@ -2475,6 +2493,96 @@
         modOffset: 1.5,
         noise: 18,
         source: "湖南省间联络线实绩",
+        updatedAt: buildUpdatedAt(dataUpdatedAt, -8),
+      }),
+      "中衡直流（日前）预测": buildTrendModule(availableDates, {
+        unit: "MW",
+        purpose: ["负荷预测", "仿真回测"],
+        base: 1680,
+        dayAmplitude: 138,
+        peakAmplitude: 210,
+        dayShift: 4,
+        peakShift: 12,
+        dayIncrement: 9,
+        modBase: 4,
+        modOffset: 1.5,
+        noise: 9,
+        source: "湖南省间联络线预测-中衡直流（日前）",
+        updatedAt: buildUpdatedAt(dataUpdatedAt, -22),
+      }),
+      "中衡直流（日前）实绩": buildTrendModule(availableDates, {
+        unit: "MW",
+        purpose: ["负荷预测", "仿真回测"],
+        base: 1625,
+        dayAmplitude: 152,
+        peakAmplitude: 226,
+        dayShift: 5,
+        peakShift: 13,
+        dayIncrement: 8,
+        modBase: 4,
+        modOffset: 1.5,
+        noise: 10,
+        source: "湖南省间联络线实绩-中衡直流（日前）",
+        updatedAt: buildUpdatedAt(dataUpdatedAt, -8),
+      }),
+      "主网送湘（日前）预测": buildTrendModule(availableDates, {
+        unit: "MW",
+        purpose: ["负荷预测", "仿真回测"],
+        base: 2150,
+        dayAmplitude: 172,
+        peakAmplitude: 248,
+        dayShift: 3,
+        peakShift: 14,
+        dayIncrement: 11,
+        modBase: 4,
+        modOffset: 1.5,
+        noise: 11,
+        source: "湖南省间联络线预测-主网送湘（日前）",
+        updatedAt: buildUpdatedAt(dataUpdatedAt, -22),
+      }),
+      "主网送湘（日前）实绩": buildTrendModule(availableDates, {
+        unit: "MW",
+        purpose: ["负荷预测", "仿真回测"],
+        base: 2085,
+        dayAmplitude: 190,
+        peakAmplitude: 266,
+        dayShift: 4,
+        peakShift: 15,
+        dayIncrement: 10,
+        modBase: 4,
+        modOffset: 1.5,
+        noise: 12,
+        source: "湖南省间联络线实绩-主网送湘（日前）",
+        updatedAt: buildUpdatedAt(dataUpdatedAt, -8),
+      }),
+      "祁韶直流（日前）预测": buildTrendModule(availableDates, {
+        unit: "MW",
+        purpose: ["负荷预测", "仿真回测"],
+        base: 1080,
+        dayAmplitude: 94,
+        peakAmplitude: 156,
+        dayShift: 6,
+        peakShift: 13,
+        dayIncrement: 6,
+        modBase: 4,
+        modOffset: 1.5,
+        noise: 8,
+        source: "湖南省间联络线预测-祁韶直流（日前）",
+        updatedAt: buildUpdatedAt(dataUpdatedAt, -22),
+      }),
+      "祁韶直流（日前）实绩": buildTrendModule(availableDates, {
+        unit: "MW",
+        purpose: ["负荷预测", "仿真回测"],
+        base: 1038,
+        dayAmplitude: 106,
+        peakAmplitude: 168,
+        dayShift: 7,
+        peakShift: 14,
+        dayIncrement: 5,
+        modBase: 4,
+        modOffset: 1.5,
+        noise: 8,
+        source: "湖南省间联络线实绩-祁韶直流（日前）",
         updatedAt: buildUpdatedAt(dataUpdatedAt, -8),
       }),
       "发电总出力预测": buildTrendModule(availableDates, {

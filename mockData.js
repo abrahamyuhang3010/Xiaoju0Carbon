@@ -12,6 +12,7 @@
     marketPageData: global.BOSS_MARKET_PAGE_DATA,
     downloadTasks: global.BOSS_DOWNLOAD_TASKS_MOCK,
     fetchMonitor: global.BOSS_FETCH_MONITOR_MOCK,
+    dataMonitor: global.BOSS_DATA_MONITOR_MOCK,
     simulation: global.BOSS_SIMULATION_DATA_MOCK,
     algorithm: global.BOSS_ALGORITHM_DATA_MOCK,
   };

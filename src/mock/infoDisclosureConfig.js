@@ -25,6 +25,8 @@
         { key: "reserveInfo", label: "备用信息", hasDataSource: true, order: 3 },
         { key: "unitStatus", label: "机组状态", hasDataSource: true, order: 4 },
         { key: "transmissionMaintenancePlan", label: "发输变电设备检修计划", hasDataSource: true, order: 5 },
+        { key: "tieLine", label: "省间联络", hasDataSource: true, order: 6 },
+        { key: "thermalBiddingSpace", label: "火电竞价空间", hasDataSource: true, order: 7 },
       ],
       sx: [
         { key: "loadInfo", label: "负荷信息", hasDataSource: true, order: 1 },
@@ -32,6 +34,8 @@
         { key: "reserveInfo", label: "备用信息", hasDataSource: true, order: 3 },
         { key: "unitStatus", label: "机组状态", hasDataSource: true, order: 4 },
         { key: "transmissionMaintenancePlan", label: "发输变电设备检修计划", hasDataSource: false, order: 5 },
+        { key: "tieLine", label: "省间联络", hasDataSource: true, order: 6 },
+        { key: "thermalBiddingSpace", label: "火电竞价空间", hasDataSource: true, order: 7 },
       ],
     },
     secondaryTabs: {
@@ -64,6 +68,8 @@
       hunan: {
         "负荷信息": true,
         "负荷详情": false,
+        "省间联络": true,
+        "火电竞价空间": true,
         "机组检修容量": false,
         "备用信息": true,
         "机组状态": true,
@@ -81,6 +87,8 @@
       shaanxi: {
         "负荷信息": true,
         "负荷详情": false,
+        "省间联络": true,
+        "火电竞价空间": true,
         "机组检修容量": false,
         "备用信息": true,
         "机组状态": true,

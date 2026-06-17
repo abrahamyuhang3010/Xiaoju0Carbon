@@ -245,6 +245,11 @@
           infoUpdateOverrides: {},
           downloadError: "",
           downloadDataType: "负荷信息",
+          dataMonitorDetailDrawerVisible: false,
+          dataMonitorSelectedRecordId: "",
+          dataMonitorIgnoreConfirmVisible: false,
+          dataMonitorPendingIgnoreId: "",
+          dataMonitorIgnoreConfirmMode: "ignore",
           flashMessage: "",
           flashType: "info",
           copiedCellValue: "",
@@ -260,7 +265,7 @@
           selectedMetric: "dispatch-load",
           profileViewMode: "",
           checkedMetrics: new Set(DEFAULT_CHECKED_METRICS),
-          expandedMetrics: new Set(["local-power", "west-east"]),
+          expandedMetrics: new Set(["local-power", "west-east", "hn-renewable-output", "sx-renewable-output"]),
           companyQueryAt: 0,
           enterpriseQueryAt: 0,
           filters: {
@@ -455,6 +460,14 @@
             }),
           },
         },
+        dataMonitor: {
+          filters: {
+            categoryPath: [],
+          },
+          ignoredIds: [],
+          rollbackIgnoredIds: [],
+          ignoredMeta: {},
+        },
         spotTradingSimulation: {
           filters: {
             tradeCenter: (simulationMock.spotTradingSimulation &&
@@ -576,6 +589,12 @@
           pageTradeCenter = state.ui.selectedTradeCenter;
         }
         state.ui.selectedTradeCenter = pageTradeCenter;
+      }
+      if (pageKey === "data-monitor") {
+        state.ui.selectedTradeCenter = "广东交易中心";
+        state.dataMonitor = state.dataMonitor || {};
+        state.dataMonitor.filters = state.dataMonitor.filters || {};
+        state.dataMonitor.filters.categoryPath = [];
       }
       if (pageKey === "spot-mock-trading") {
         state.simulation.permissionVisible = true;

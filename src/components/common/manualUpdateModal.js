@@ -14,31 +14,31 @@
         '" data-manual-update-agent-month /></div>'
       : "";
     var uploadHtml =
-      '<div class="form-field"><div class="modal-label">' +
+      '<div class="form-field form-field-inline"><div class="modal-label">' +
       escapeHtml(uploadLabel) +
-      '</div><label class="upload-field"><input type="file" data-manual-upload-file /><span>' +
+      '</div><div class="modal-field-control"><label class="upload-field"><input type="file" data-manual-upload-file /><span class="upload-icon"></span><span>' +
       escapeHtml(options.fileName || uploadPlaceholder) +
       "</span></label>" +
       (options.uploadHint ? '<div class="form-hint">' + escapeHtml(options.uploadHint) + "</div>" : "") +
-      "</div>";
+      "</div></div>";
     var pullHtml =
-      '<div class="form-field"><div class="modal-label">' +
+      '<div class="form-field form-field-inline"><div class="modal-label">' +
       escapeHtml(pullLabel) +
-      "</div>" +
+      '</div><div class="modal-field-control">' +
       options.datePickerHtml +
       (options.pullHint ? '<div class="form-hint">' + escapeHtml(options.pullHint) + "</div>" : "") +
-      "</div>";
+      "</div></div>";
     var bodyFields = options.mode === "upload" ? agentMonthHtml + uploadHtml : agentMonthHtml + pullHtml;
     return (
       '<div class="overlay-backdrop">' +
-      '<div class="modal-card modal-card-wide">' +
+      '<div class="modal-card modal-card-wide update-data-modal">' +
       '<div class="modal-header"><strong>' +
       escapeHtml(title) +
       '</strong><button class="notification-close" data-ui-action="close-manual-update">' +
       options.renderIcon("close", "notification-close-icon") +
       "</button></div>" +
       '<div class="modal-body">' +
-      '<div class="modal-label">更新方式</div>' +
+      '<div class="form-field form-field-inline"><div class="modal-label">更新方式</div><div class="modal-field-control">' +
       '<div class="radio-group">' +
       '<label class="radio-item"><input type="radio" name="updateMode" value="upload" ' +
       (options.mode === "upload" ? "checked" : "") +
@@ -46,7 +46,7 @@
       '<label class="radio-item"><input type="radio" name="updateMode" value="pull" ' +
       (options.mode === "pull" ? "checked" : "") +
       ' data-update-mode="pull" /><span>系统拉取</span></label>' +
-      "</div>" +
+      "</div></div></div>" +
       bodyFields +
       (options.error ? '<div class="form-error">' + escapeHtml(options.error) + "</div>" : "") +
       "</div>" +

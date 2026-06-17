@@ -2,7 +2,6 @@
   global.BOSS_COMPONENTS = global.BOSS_COMPONENTS || {};
   global.BOSS_COMPONENTS.renderDataUpdateBar = function renderDataUpdateBar(options) {
     var escapeHtml = options.escapeHtml;
-    var renderIcon = options.renderIcon;
     var actions = options.actions || [];
     var updatedAt = options.updatedAt || "-";
 
@@ -22,22 +21,58 @@
       actions
         .map(function mapAction(action) {
           var className = action.variant === "primary" ? "primary-btn" : "ghost-btn";
+          if (action.asMenu) {
+            return (
+              '<div class="action-more-dropdown">' +
+              '<button class="' +
+              className +
+              '" data-ui-menu-trigger="' +
+              escapeHtml(action.action || "more") +
+              '">' +
+              "<span>" +
+              escapeHtml(action.label) +
+              "</span></button>" +
+              '<div class="action-more-menu">' +
+              (action.menuItems || [])
+                .map(function mapMenuItem(item) {
+                  return '<button type="button" class="action-more-menu-item" data-ui-action="' + escapeHtml(item.action) + '">' + escapeHtml(item.label) + "</button>";
+                })
+                .join("") +
+              "</div></div>"
+            );
+          }
+          if (action.downloadMenu) {
+            return (
+              '<div class="action-more-dropdown action-download-dropdown">' +
+              '<button class="' +
+              className +
+              '" data-ui-menu-trigger="' +
+              escapeHtml(action.action || "download") +
+              '">' +
+              "<span>" +
+              escapeHtml(action.label) +
+              "</span></button>" +
+              '<div class="action-more-menu action-download-menu">' +
+              (action.menuItems || [])
+                .map(function mapDownloadMenuItem(item) {
+                  return '<button type="button" class="action-more-menu-item" data-ui-action="' + escapeHtml(item.action) + '">' + escapeHtml(item.label) + "</button>";
+                })
+                .join("") +
+              "</div></div>"
+            );
+          }
           return (
             '<button class="' +
             className +
             '" data-ui-action="' +
             escapeHtml(action.action) +
             '">' +
-            renderIcon(action.icon, "button-icon") +
             "<span>" +
             escapeHtml(action.label) +
             "</span></button>"
           );
         })
         .join("") +
-      (options.showTaskEntry
-        ? '<button class="task-entry-button" data-ui-action="open-download-tasks">下载列表</button>'
-        : "") +
       "</div>" +
       "</section>"
     );

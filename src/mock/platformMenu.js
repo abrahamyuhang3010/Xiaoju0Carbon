@@ -69,6 +69,7 @@
             children: [
               { label: "信息披露", pageKey: "gd-info-disclosure" },
               { label: "日清月结", pageKey: "gd-settlement" },
+              { label: "数据监控", pageKey: "data-monitor" },
               { label: "零售关系", pageKey: "gd-retail-relation" },
               { label: "滚搓数据", pageKey: "rolling-data" },
             ],

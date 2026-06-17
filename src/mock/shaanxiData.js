@@ -28,9 +28,9 @@
     });
   }
 
-  function buildTimeLabels(stepMinutes, count) {
+  function buildTimeLabels(stepMinutes, count, startOffsetMinutes) {
     return Array.from({ length: count }, function createLabel(_, index) {
-      var totalMinutes = index * stepMinutes;
+      var totalMinutes = index * stepMinutes + (startOffsetMinutes || 0);
       var hour = Math.floor(totalMinutes / 60);
       var minute = totalMinutes % 60;
       return pad(hour) + ":" + pad(minute);
@@ -101,7 +101,7 @@
   }
 
   function buildQuarterlySalesRow(date, dayIndex) {
-    var quarterValues = buildTimeLabels(15, 96).map(function createValue(_, index) {
+    var quarterValues = quarterHours.map(function createValue(_, index) {
       var hour = Math.floor(index / 4);
       var daytime = Math.max(0, Math.sin(((hour - 7) / 24) * Math.PI * 2)) * 46;
       var evening = Math.max(0, Math.sin(((hour - 14) / 24) * Math.PI * 2)) * 66;
@@ -144,17 +144,23 @@
   }
 
   function buildTrendRows(dates, options) {
+    var stepMinutes = options.stepMinutes || 15;
+    var pointCount = options.pointCount || (stepMinutes === 15 ? 96 : 24);
+    var labels = options.labels || buildTimeLabels(stepMinutes, pointCount, stepMinutes === 15 ? stepMinutes : 0);
+
     return dates.reduce(function accumulateRows(result, date, dayIndex) {
       return result.concat(
-        buildTimeLabels(60, 24).map(function createRow(time, hour) {
+        labels.map(function createRow(time, pointIndex) {
+          var hour = stepMinutes === 15 ? (pointIndex + 1) / 4 : pointIndex;
           var dayWave = Math.sin(((hour - options.dayShift) / 24) * Math.PI * 2) * options.dayAmplitude;
           var peakWave = Math.max(0, Math.sin(((hour - options.peakShift) / 24) * Math.PI * 2)) * options.peakAmplitude;
+          var noiseIndex = stepMinutes === 15 ? pointIndex : hour;
           var trendValue =
             options.base +
             dayIndex * options.dayIncrement +
             dayWave +
             peakWave +
-            ((hour % options.modBase) - options.modOffset) * options.noise;
+            ((noiseIndex % options.modBase) - options.modOffset) * options.noise;
           return {
             date: date,
             time: time,
@@ -321,7 +327,8 @@
     });
   }
 
-  var quarterHours = buildTimeLabels(15, 96);
+  // 陕西原始 96 点数据按周期结束时刻标记，首点为 00:15，末点为 24:00。
+  var quarterHours = buildTimeLabels(15, 96, 15);
   var hours = buildTimeLabels(60, 24);
   var availableDates = buildDateRange("2026-04-26", 14);
   var defaultRange = {
@@ -1397,7 +1404,7 @@
   var shaanxiUnifiedPriceRows = availableDates.reduce(function buildWeightedPriceRows(result, date, dayIndex) {
     return result.concat(
       quarterHours.map(function mapWeightedPriceRow(_, index) {
-        var timeSlot = buildTimeSlotLabel(15, index);
+        var timeSlot = quarterHours[index];
         var dayAheadValue = round(shaanxiUnifiedDayAheadWeightedValues[index] + dayIndex * 1.8 + ((dayIndex % 3) - 1) * 1.2);
         var realTimeValue = round(dayAheadValue + [5.6, -3.4, 2.8, 6.4][index % 4] + (dayIndex % 2 === 0 ? 1.1 : -1.3));
         var spread = round(realTimeValue - dayAheadValue);
@@ -1894,10 +1901,13 @@
       }),
     },
   ];
-  var shaanxiUnifiedUnitStatusRows = shaanxiUnifiedUnitRows.map(function mapUnitStatusRow(row) {
+  function buildShaanxiUnifiedUnitStatusRows(rows, runDate, valueOffset) {
+    var resolvedRunDate = runDate || standardDefaultDate;
+    return rows.map(function mapUnitStatusRow(row, index) {
     var formattedRow = {
-      date: row.date,
-      runDate: row.runDate,
+      sequence: index + 1,
+      date: resolvedRunDate,
+      runDate: resolvedRunDate,
       disclosureType: row.disclosureType,
       unitId: row.unitId,
       unitName: row.unitName,
@@ -1905,10 +1915,15 @@
       updatedAt: buildUpdatedAt(dataUpdatedAt, -7),
     };
     quarterHours.forEach(function eachTime(time, index) {
-      formattedRow[time] = row.values[index];
+      formattedRow[time] = row.values[(index + (valueOffset || 0)) % row.values.length];
     });
     return formattedRow;
-  });
+    });
+  }
+
+  var shaanxiUnifiedUnitStatusRows = buildShaanxiUnifiedUnitStatusRows(shaanxiUnifiedUnitRows, standardDefaultDate, 0).concat(
+    buildShaanxiUnifiedUnitStatusRows(shaanxiUnifiedUnitRows, "2026-05-08", 4),
+  );
   var shaanxiUnifiedOnlineCapacityValues = quarterHours.map(function mapAggregateValue(_, index) {
     return shaanxiUnifiedUnitRows.reduce(function accumulate(total, row) {
       return total + row.values[index];
@@ -2087,6 +2102,9 @@
     dataUpdatedAt: dataUpdatedAt,
     dataPublishTime: "2026-05-09 10:08:00",
     dataSource: dataSource,
+    infoDisclosure: {
+      quarterHours: quarterHours,
+    },
     emptyExample: {
       range: {
         start: "2026-04-08",

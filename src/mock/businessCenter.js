@@ -67,6 +67,7 @@
               { label: "信息披露", pageKey: "gd-info-disclosure" },
               { label: "用电侧交易结果", pageKey: "gd-trade-result" },
               { label: "日清月结", pageKey: "gd-settlement" },
+              { label: "数据监控", pageKey: "data-monitor" },
               { label: "零售关系", pageKey: "gd-retail-relation" },
               { label: "日前申报", pageKey: "gd-day-ahead-declaration" },
               { label: "现货交易仿真", pageKey: "spot-trading-simulation" },

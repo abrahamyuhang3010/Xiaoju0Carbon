@@ -11,6 +11,7 @@
   var shaanxiMock = appMocks.shaanxi || {};
   var infoDisclosureConfig = global.BOSS_INFO_DISCLOSURE_CONFIG || {};
   var fetchMonitorMock = appMocks.fetchMonitor || {};
+  var dataMonitorMock = appMocks.dataMonitor || {};
   var simulationMock = appMocks.simulation || {};
   var algorithmMock = appMocks.algorithm || {};
   var dataDisclosureTimeConfig = global.BOSS_DATA_DISCLOSURE_TIME_CONFIG || {};
@@ -70,6 +71,7 @@
     "湖南电力交易中心",
     "陕西电力交易中心",
   ];
+  var DATA_MONITOR_TRADE_CENTER_OPTIONS = ["广东交易中心", "湖南交易中心", "陕西交易中心"];
   var INFO_DISCLOSURE_PRIMARY_TABS = infoDisclosureConfig.primaryTabs || [
     "负荷信息",
     "全省统一出清价",
@@ -254,6 +256,7 @@
       "信息披露": "file-text",
       "用电侧交易结果": "chart-line",
       "日清月结": "calendar",
+      "数据监控": "monitor",
       "日前申报": "edit",
       "滚捷数据": "refresh",
       "滚搓数据": "refresh",
@@ -289,6 +292,7 @@
       "信息披露": "file-text",
       "用电侧交易结果": "chart-line",
       "日清月结": "calendar",
+      "数据监控": "monitor",
       "日前申报": "edit",
       "零售关系": "share-2",
       "现货交易仿真": "chart-line",
@@ -881,7 +885,15 @@
     );
   }
 
+  function isDayAheadDeclarationTab(tab) {
+    return (tab || getActiveInfoTab()) === "日前申报";
+  }
+
   function getVisibleInfoDisclosureBusinessFilterFields(pageData) {
+    if (isDayAheadDeclarationTab()) {
+      return [];
+    }
+
     return (pageData && pageData.filterFields ? pageData.filterFields : []).filter(function filterField(field) {
       return field && !isRunDateFilterField(field);
     });
@@ -2042,6 +2054,10 @@
     return isTimeSharingManualUpdateContext() && isSellerTimeSharingTargetTab(state.ui.manualUpdateTab);
   }
 
+  function isInfoDisclosureManualUpdateModalContext() {
+    return isInfoDisclosurePage(state.currentPageKey);
+  }
+
   function isManualUpdateSubmitReady() {
     if (!isTimeSharingManualUpdateContext()) {
       return true;
@@ -2055,9 +2071,19 @@
     return isRangeValid(state.ui.manualPullRangeDraft);
   }
 
+  function isInfoDisclosureUpdateSubmitReady() {
+    if (!isInfoDisclosureManualUpdateModalContext()) {
+      return true;
+    }
+    if (state.ui.manualUpdateMode === "upload") {
+      return Boolean(state.ui.manualUploadFileName);
+    }
+    return isRangeValid(state.ui.manualPullRangeDraft);
+  }
+
   function syncManualUpdateDraftToCurrentContext() {
     var activeInfoTab = getActiveInfoTab();
-    state.ui.manualUpdateContext = "time-sharing-update";
+    state.ui.manualUpdateContext = isTimeSharingUpdateTargetTab(activeInfoTab) ? "time-sharing-update" : "";
     state.ui.manualUpdateTab = activeInfoTab;
     state.ui.manualUpdateMode = "upload";
     state.ui.manualUploadFileName = "";
@@ -2544,12 +2570,12 @@
   function renderSaleCompanyUpdateBar(updateInfo) {
     var compareSupported = isSellerTimeSharingCompareEnabled("售电公司分时电量");
     var status = applyInfoUpdateOverride(updateInfo, "售电公司分时电量");
-    var actions = [{ label: "更新数据", variant: "ghost", icon: "refresh", action: "open-seller-time-sharing-update" }];
+    var actions = [createMoreUpdateAction("open-seller-time-sharing-update")];
 
     if (compareSupported) {
       actions.push({ label: "对比", variant: "ghost", icon: "compare", action: "open-compare" });
     }
-    actions.push({ label: "下载", variant: "primary", icon: "download", action: "open-download" });
+    actions.push(createDownloadMenuAction());
 
     return renderDataUpdateBar({
       updatedAt: status.time || "-",
@@ -3121,8 +3147,8 @@
       hasCompare: false,
       showTaskEntry: false,
       actions: [
-        { label: "更新数据", variant: "ghost", icon: "refresh", action: "open-time-sharing-update" },
-        { label: "下载", variant: "primary", icon: "download", action: "open-download" },
+        createMoreUpdateAction("open-time-sharing-update"),
+        createDownloadMenuAction(),
       ],
       escapeHtml: escapeHtml,
       renderIcon: renderIcon,
@@ -3132,9 +3158,9 @@
   function renderSellerHistoryUpdateBar(updateInfo) {
     var status = applyInfoUpdateOverride(updateInfo, INFO_DISCLOSURE_SELLER_HISTORY_TAB);
     var actions = [
-      { label: "更新数据", variant: "ghost", icon: "refresh", action: "open-seller-time-sharing-update" },
+      createMoreUpdateAction("open-seller-time-sharing-update"),
       { label: "对比", variant: "ghost", icon: "compare", action: "open-compare" },
-      { label: "下载", variant: "primary", icon: "download", action: "open-download" },
+      createDownloadMenuAction(),
     ];
 
     return renderDataUpdateBar({
@@ -3158,8 +3184,8 @@
       hasCompare: false,
       showTaskEntry: false,
       actions: [
-        { label: "更新数据", variant: "ghost", icon: "refresh", action: "open-time-sharing-update" },
-        { label: "下载", variant: "primary", icon: "download", action: "open-download" },
+        createMoreUpdateAction("open-time-sharing-update"),
+        createDownloadMenuAction(),
       ],
       escapeHtml: escapeHtml,
       renderIcon: renderIcon,
@@ -3675,6 +3701,28 @@
       .join("");
   }
 
+  function createMoreUpdateAction(action) {
+    return {
+      label: "更多",
+      variant: "ghost",
+      icon: "ellipsis",
+      action: "more",
+      asMenu: true,
+      menuItems: [{ label: "更新数据", action: action || "open-manual-update" }],
+    };
+  }
+
+  function createDownloadMenuAction() {
+    return {
+      label: "下载",
+      variant: "primary",
+      icon: "download",
+      action: "download",
+      downloadMenu: true,
+      menuItems: [{ label: "自定义日期", action: "open-download" }],
+    };
+  }
+
   function renderDownloadOnlyBar(status, withCompare, options) {
     var actions = [];
     var resolvedOptions = options || {};
@@ -3759,11 +3807,11 @@
   }
 
   function renderInfoDataUpdateBar(status) {
-    var actions = [{ label: "更多", variant: "ghost", icon: "ellipsis", action: "open-manual-update" }];
+    var actions = [createMoreUpdateAction("open-manual-update")];
     if (getActiveInfoTab() === "负荷信息") {
       actions.push({ label: "对比", variant: "ghost", icon: "compare", action: "open-compare" });
     }
-    actions.push({ label: "下载", variant: "primary", icon: "download", action: "open-download" });
+    actions.push(createDownloadMenuAction());
 
     return renderDataUpdateBar({
       updatedAt: status.time,
@@ -4276,15 +4324,14 @@
   }
 
   function renderInfoUnifiedDataUpdateBar(status, compareSupported) {
-    var actions = [{ label: "更多", variant: "ghost", icon: "ellipsis", action: "open-manual-update" }];
+    var actions = [createMoreUpdateAction("open-manual-update")];
     var canCompare = compareSupported && isInfoDisclosureCompareEnabledByConfig(getActiveInfoTab());
 
     if (canCompare) {
       actions.push({ label: "对比", variant: "ghost", icon: "compare", action: "open-compare" });
     }
 
-    actions.push({ label: "更新数据", variant: "ghost", icon: "refresh", action: "open-manual-update" });
-    actions.push({ label: "下载", variant: "primary", icon: "download", action: "open-download" });
+    actions.push(createDownloadMenuAction());
 
     return renderDataUpdateBar({
       updatedAt: status.time,
@@ -4422,7 +4469,84 @@
     });
   }
 
-  function renderSingleMetricLoadSidebar(groups, selectedMetricId) {
+  function getSingleMetricLoadSidebarItemById(pageData, itemId) {
+    var groups = (pageData && pageData.sidebarGroups) || [];
+    var groupIndex;
+
+    for (groupIndex = 0; groupIndex < groups.length; groupIndex += 1) {
+      var item = findSingleMetricLoadSidebarItem(groups[groupIndex].items || [], itemId);
+      if (item) {
+        return item;
+      }
+    }
+
+    return null;
+  }
+
+  function renderSingleMetricLoadSidebar(groups, selectedMetricId, options) {
+    var settings = options || {};
+    if (!settings.useLoadInfoTreeNav) {
+      function renderDefaultItems(items, level) {
+        return (items || [])
+          .map(function mapItem(item) {
+            var childItems = item.children || [];
+            var hasChildren = childItems.length > 0;
+            var isActive = item.id === selectedMetricId;
+            var hasActiveChild = singleMetricLoadHasSelectedDescendant(item, selectedMetricId);
+            var isExpanded = hasChildren && (state.info.expandedMetrics.has(item.id) || hasActiveChild);
+            return (
+              '<div class="metric-node level-' +
+              level +
+              '">' +
+              '<button class="metric-row ' +
+              (level > 0 ? "metric-row-child " : "") +
+              (isActive ? "active " : "") +
+              (hasActiveChild ? "active-parent" : "") +
+              '" data-info-metric="' +
+              escapeHtml(item.id) +
+              '">' +
+              (hasChildren
+                ? '<span class="tree-caret ' +
+                  (isExpanded ? "open" : "") +
+                  '" data-info-metric-toggle="' +
+                  escapeHtml(item.id) +
+                  '">' +
+                  renderIcon(isExpanded ? "chevron-down" : "chevron-right", "tree-caret-icon") +
+                  "</span>"
+                : '<span class="tree-caret spacer"></span>') +
+              '<span class="tree-checkbox ' +
+              (isActive ? "checked" : hasActiveChild ? "indeterminate" : "") +
+              '"></span><span class="metric-text">' +
+              escapeHtml(item.label) +
+              "</span></button>" +
+              (hasChildren && isExpanded ? renderDefaultItems(childItems, level + 1) : "") +
+              "</div>"
+            );
+          })
+          .join("");
+      }
+
+      return (
+        '<aside class="chart-tree"><div class="tree-header">指标列表</div>' +
+        (groups || [])
+          .map(function mapGroup(group) {
+            return (
+              '<div class="market-metric-group"><div class="market-metric-group-title">' +
+              escapeHtml(group.label) +
+              "</div>" +
+              renderDefaultItems(group.items || [], 0) +
+              "</div>"
+            );
+          })
+          .join("") +
+        "</aside>"
+      );
+    }
+
+    var flatItems = (groups || []).reduce(function flattenGroups(result, group) {
+      return result.concat(group.items || []);
+    }, []);
+
     function renderItems(items, level) {
       return (items || [])
         .map(function mapItem(item) {
@@ -4431,29 +4555,27 @@
           var isActive = item.id === selectedMetricId;
           var hasActiveChild = singleMetricLoadHasSelectedDescendant(item, selectedMetricId);
           var isExpanded = hasChildren && (state.info.expandedMetrics.has(item.id) || hasActiveChild);
+          var iconHtml = hasChildren
+            ? '<span class="load-info-tree-nav__toggle ' +
+              (isExpanded ? "is-open" : "is-closed") +
+              '" data-info-metric-toggle="' +
+              escapeHtml(item.id) +
+              '" aria-hidden="true"></span>'
+            : '<span class="load-info-tree-nav__leaf-icon" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><rect x="1.5" y="2.5" width="13" height="11"></rect><polyline points="3.5,10.5 6.2,8.3 8.4,9.2 12.5,5.8"></polyline></svg></span>';
           return (
-            '<div class="metric-node level-' +
+            '<div class="load-info-tree-nav__node metric-node level-' +
             level +
             '">' +
-            '<button class="metric-row ' +
-            (level > 0 ? "metric-row-child " : "") +
-            (isActive ? "active " : "") +
-            (hasActiveChild ? "active-parent" : "") +
+            '<button class="load-info-tree-nav__item metric-row ' +
+            (level > 0 ? "load-info-tree-nav__item--child metric-row-child " : "") +
+            (hasChildren ? "load-info-tree-nav__item--parent " : "load-info-tree-nav__item--leaf ") +
+            (isActive ? "load-info-tree-nav__item--active active " : "") +
+            (hasActiveChild ? "load-info-tree-nav__item--active-parent active-parent" : "") +
             '" data-info-metric="' +
             escapeHtml(item.id) +
             '">' +
-            (hasChildren
-              ? '<span class="tree-caret ' +
-                (isExpanded ? "open" : "") +
-                '" data-info-metric-toggle="' +
-                escapeHtml(item.id) +
-                '">' +
-                renderIcon(isExpanded ? "chevron-down" : "chevron-right", "tree-caret-icon") +
-                "</span>"
-              : '<span class="tree-caret spacer"></span>') +
-            '<span class="tree-checkbox ' +
-            (isActive ? "checked" : hasActiveChild ? "indeterminate" : "") +
-            '"></span><span class="metric-text">' +
+            iconHtml +
+            '<span class="load-info-tree-nav__text metric-text">' +
             escapeHtml(item.label) +
             "</span></button>" +
             (hasChildren && isExpanded ? renderItems(childItems, level + 1) : "") +
@@ -4464,18 +4586,8 @@
     }
 
     return (
-      '<aside class="chart-tree"><div class="tree-header">指标列表</div>' +
-      (groups || [])
-        .map(function mapGroup(group) {
-          return (
-            '<div class="market-metric-group"><div class="market-metric-group-title">' +
-            escapeHtml(group.label) +
-            "</div>" +
-            renderItems(group.items || [], 0) +
-            "</div>"
-          );
-        })
-        .join("") +
+      '<aside class="chart-tree single-metric-tree load-info-tree-nav">' +
+      renderItems(flatItems, 0) +
       "</aside>"
     );
   }
@@ -4599,7 +4711,7 @@
     return lines.join("\n");
   }
 
-  function renderThermalBiddingSpaceMetricContent(pageData, sidebarHtml, selectedItem, metricConfig) {
+  function renderThermalBiddingSpaceMetricContent(pageData, selectedItem, metricConfig) {
     var rows = filterInfoDisclosurePageRows(metricConfig.rows || [], pageData);
     var hasCurrentValues = rows.some(function someRow(row) {
       return isSingleMetricNumericValue(row.thermalBiddingSpace);
@@ -4607,15 +4719,13 @@
 
     if (!rows.length || !hasCurrentValues) {
       return (
-        '<section class="panel chart-panel"><div class="chart-layout">' +
-        sidebarHtml +
-        '<div class="chart-main chart-main-empty">' +
+        '<section class="panel chart-panel chart-panel-plain"><div class="chart-main chart-main-plain chart-main-empty">' +
         renderEmptyState({
           message: metricConfig.emptyText || "当前日期缺少竞价空间计算所需数据。",
           escapeHtml: escapeHtml,
           renderIcon: renderIcon,
         }) +
-        "</div></div></section>"
+        "</div></section>"
       );
     }
 
@@ -4667,9 +4777,7 @@
     }
 
     return (
-      '<section class="panel chart-panel"><div class="chart-layout">' +
-      sidebarHtml +
-      '<div class="chart-main">' +
+      '<section class="panel chart-panel chart-panel-plain"><div class="chart-main chart-main-plain">' +
       renderChartWithMarks({
         chartId: chartId,
         title: "火电竞价空间趋势图",
@@ -4705,6 +4813,7 @@
             renewableTotalOutput: createThermalBiddingSpaceNumberCell(row.renewableTotalOutput),
             hydroTotalOutput: createThermalBiddingSpaceNumberCell(row.hydroTotalOutput),
             tieLineTransmission: createThermalBiddingSpaceNumberCell(row.tieLineTransmission),
+            nonMarketOutput: createThermalBiddingSpaceNumberCell(row.nonMarketOutput),
             thermalBiddingSpace: createThermalBiddingSpaceNumberCell(row.thermalBiddingSpace),
           };
           if (state.ui.hasCompare) {
@@ -4721,7 +4830,7 @@
         renderIcon: renderIcon,
         renderEmptyState: renderEmptyState,
       }) +
-      "</div></div></section>"
+      "</div></section>"
     );
   }
 
@@ -4755,14 +4864,27 @@
 
   function renderInfoDisclosureSingleMetricLoadContent(pageData) {
     var selectedItem = getSingleMetricLoadSelectedItem(pageData);
-    var sidebarHtml = renderSingleMetricLoadSidebar((pageData && pageData.sidebarGroups) || [], selectedItem && selectedItem.id);
+    var useLoadInfoTreeNav =
+      getActiveInfoPrimaryTab() === "负荷信息";
+    var sidebarHtml = renderSingleMetricLoadSidebar((pageData && pageData.sidebarGroups) || [], selectedItem && selectedItem.id, {
+      useLoadInfoTreeNav: useLoadInfoTreeNav,
+    });
     var metricConfig = selectedItem && pageData && pageData.metrics ? pageData.metrics[selectedItem.id] : null;
 
     if (!metricConfig) {
       return renderInfoEmptyWithSidebar(sidebarHtml, (pageData && pageData.emptyText) || INFO_DISCLOSURE_EMPTY_MESSAGE);
     }
 
+    var isThermalMetric = isThermalBiddingSpaceMetric(metricConfig);
+
     if (state.ui.singleMetricLoadLoading) {
+      if (isThermalMetric) {
+        return (
+          '<section class="panel chart-panel chart-panel-plain"><div class="chart-main chart-main-plain chart-main-loading">' +
+          renderSingleMetricLoadLoading(metricConfig.metricName || metricConfig.title || "") +
+          "</div></section>"
+        );
+      }
       return (
         '<section class="panel chart-panel"><div class="chart-layout">' +
         sidebarHtml +
@@ -4772,8 +4894,8 @@
       );
     }
 
-    if (isThermalBiddingSpaceMetric(metricConfig)) {
-      return renderThermalBiddingSpaceMetricContent(pageData, sidebarHtml, selectedItem, metricConfig);
+    if (isThermalMetric) {
+      return renderThermalBiddingSpaceMetricContent(pageData, selectedItem, metricConfig);
     }
 
     var rows = filterInfoDisclosurePageRows(metricConfig.rows || [], pageData);
@@ -4868,6 +4990,10 @@
 
   function filterInfoDisclosurePageRows(rows, pageData, range) {
     var filteredRows = filterInfoDisclosureRowsByRange(rows, pageData, range);
+
+    if (isDayAheadDeclarationTab()) {
+      return filteredRows;
+    }
 
     return filteredRows.filter(function filterByField(row) {
       return (pageData && pageData.filterFields ? pageData.filterFields : []).every(function everyField(field) {
@@ -5275,56 +5401,40 @@
     return String((item && (item.label || item.id)) || "");
   }
 
-  function renderMarketNodeName(label, metaText) {
+  function getMarketNodeDisplayLabel(label) {
     var text = String(label || "");
     var dividerIndex = text.indexOf("/");
 
     if (dividerIndex > 0) {
-      return (
-        '<span class="market-node-label"><span class="market-node-name-main">' +
-        escapeHtml(text.slice(0, dividerIndex)) +
-        '</span><span class="market-node-name-meta">' +
-        escapeHtml(text.slice(dividerIndex + 1)) +
-        "</span></span>"
-      );
+      return text.slice(0, dividerIndex);
     }
 
-    return (
-      '<span class="market-node-label"><span class="market-node-name-main">' +
-      escapeHtml(text) +
-      "</span>" +
-      (metaText ? '<span class="market-node-name-meta">' + escapeHtml(metaText) + "</span>" : "") +
-      "</span>"
-    );
+    return text;
   }
 
-  function findMarketNodeLabel(selectedNode, groups) {
-    var selectedId = String(selectedNode || "");
-    var allItems = [];
-
-    (groups || []).forEach(function eachGroup(group) {
-      allItems = allItems.concat(group.items || []);
-    });
-
-    var matchedItem = allItems.find(function findItem(item) {
-      return getMarketNodeItemId(item) === selectedId;
-    });
-
-    return matchedItem ? getMarketNodeItemLabel(matchedItem) : selectedId;
+  function renderMarketNodeIcon() {
+    return (
+      '<svg class="node-price-node-icon" viewBox="0 0 14 14" fill="none" aria-hidden="true">' +
+      '<path d="M1.4 4.5h3.4l1 1h6.8v6.2H1.4V4.5Z" stroke="currentColor" stroke-width="1.05" />' +
+      '<path d="M1.4 4.5V2.6h3.3l1 1h6.9v1.9" stroke="currentColor" stroke-width="1.05" />' +
+      "</svg>"
+    );
   }
 
   function renderMarketNodeItem(item, selectedNode, options) {
     var resolvedOptions = options || {};
     var itemId = getMarketNodeItemId(item);
     var itemLabel = getMarketNodeItemLabel(item);
+    var itemDisplayLabel = getMarketNodeDisplayLabel(itemLabel);
     var isActive = itemId === selectedNode;
-    var classNames = ["market-node-item"];
+    var classNames = ["market-node-item", "node-price-tree-item"];
 
     if (resolvedOptions.variant) {
       classNames.push("market-node-item-" + resolvedOptions.variant);
     }
     if (isActive) {
       classNames.push("active");
+      classNames.push("node-price-tree-item--active");
     }
 
     return (
@@ -5338,25 +5448,24 @@
       escapeHtml(itemLabel) +
       '"' +
       (isActive ? ' aria-current="true" aria-pressed="true"' : ' aria-pressed="false"') +
-      '><span class="market-node-state" aria-hidden="true"></span>' +
-      renderMarketNodeName(itemLabel, resolvedOptions.metaText) +
+      ' role="treeitem">' +
+      renderMarketNodeIcon() +
+      '<span class="node-price-tree-text">' +
+      escapeHtml(itemDisplayLabel) +
+      "</span>" +
       "</button>"
     );
   }
 
-  function renderMarketNodeGroup(title, hint, bodyHtml, extraClassName) {
+  function renderMarketNodeSearch(keyword) {
     return (
-      '<div class="market-node-group ' +
-      (extraClassName || "") +
-      '" role="group" aria-label="' +
-      escapeHtml(title) +
-      '"><div class="market-node-group-title"><span>' +
-      escapeHtml(title) +
-      "</span>" +
-      (hint ? '<span class="market-node-group-title-meta">' + escapeHtml(hint) + "</span>" : "") +
-      '</div><div class="market-node-group-list">' +
-      bodyHtml +
-      "</div></div>"
+      '<label class="node-price-search" aria-label="检索关键字">' +
+      '<input type="text" value="' +
+      escapeHtml(keyword || "") +
+      '" placeholder="检索关键字" data-filter-scope="tradeResult" data-filter-key="nodeKeyword" />' +
+      '<span class="node-price-search-icon" aria-hidden="true">' +
+      renderIcon("search", "node-price-search-icon-svg") +
+      "</span></label>"
     );
   }
 
@@ -5364,53 +5473,31 @@
     var resolvedConfig = config || {};
     var provinceItems = resolvedConfig.provinceItems || [];
     var otherItems = resolvedConfig.otherItems || [];
-    var groups = [
-      { items: provinceItems },
-      { items: otherItems },
-    ];
     var selectedNode = resolvedConfig.selectedNode || "";
-    var selectedLabel = findMarketNodeLabel(selectedNode, groups);
     var keyword = String(resolvedConfig.keyword || "").trim();
-    var selectedInVisibleList = groups.some(function hasSelectedGroup(group) {
-      return (group.items || []).some(function hasSelectedItem(item) {
-        return getMarketNodeItemId(item) === selectedNode;
-      });
-    });
-    var currentScopeLabel = selectedNode === "全省" ? "当前范围" : "当前节点";
-    var hiddenSelectedHint = keyword && selectedNode && !selectedInVisibleList
-      ? '<div class="market-node-filter-note">当前节点未匹配搜索，右侧仍保持所选节点。</div>'
-      : "";
     var provinceHtml = provinceItems
       .map(function mapProvince(item) {
-        return renderMarketNodeItem(item, selectedNode, {
-          variant: "special",
-          metaText: "全省范围",
-        });
+        return renderMarketNodeItem(item, selectedNode, { variant: "special" });
       })
       .join("");
     var otherEmptyText = keyword ? "暂无匹配节点" : "暂无其他节点";
+    var hasVisibleItems = provinceItems.length || otherItems.length;
     var otherHtml = otherItems.length
       ? otherItems
           .map(function mapNode(item) {
             return renderMarketNodeItem(item, selectedNode);
           })
           .join("")
-      : '<div class="placeholder-note trade-node-empty">' + escapeHtml(otherEmptyText) + "</div>";
+      : hasVisibleItems
+        ? ""
+        : '<div class="placeholder-note trade-node-empty">' + escapeHtml(otherEmptyText) + "</div>";
 
     return (
-      '<aside class="market-node-sidebar" aria-label="节点列表"><div class="market-node-header"><div class="tree-header">节点列表</div>' +
-      '<div class="market-node-current" title="' +
-      escapeHtml(selectedLabel || "全省") +
-      '"><span>' +
-      currentScopeLabel +
-      "</span><strong>" +
-      escapeHtml(selectedLabel || "全省") +
-      "</strong></div>" +
-      hiddenSelectedHint +
-      "</div>" +
-      '<div class="market-node-list">' +
-      renderMarketNodeGroup("范围选择", "全部", provinceHtml, "market-node-group-scope") +
-      renderMarketNodeGroup("其他节点", otherItems.length + "项", otherHtml, "market-node-group-other") +
+      '<aside class="market-node-sidebar node-price-sidebar" aria-label="节点列表">' +
+      renderMarketNodeSearch(keyword) +
+      '<div class="market-node-list node-price-tree" role="tree">' +
+      provinceHtml +
+      otherHtml +
       "</div></aside>"
     );
   }
@@ -5427,7 +5514,10 @@
           return;
         }
         if (item.id === "全省" || group.label === "全省") {
-          if (!provinceItems.some(function hasProvince(provinceItem) { return provinceItem.id === "全省"; })) {
+          if (
+            (!keyword || "全省".indexOf(keyword) >= 0) &&
+            !provinceItems.some(function hasProvince(provinceItem) { return provinceItem.id === "全省"; })
+          ) {
             provinceItems.push({ id: "全省", label: "全省" });
           }
           return;
@@ -5438,7 +5528,7 @@
       });
     });
 
-    if (!provinceItems.length) {
+    if (!provinceItems.length && (!keyword || "全省".indexOf(keyword) >= 0)) {
       provinceItems.push({ id: "全省", label: "全省" });
     }
 
@@ -5455,23 +5545,16 @@
   }
 
   function renderUnifiedInfoDisclosureFilterBar(pageData) {
+    if (isDayAheadDeclarationTab()) {
+      return "";
+    }
+
     if (isScopedLoadInfoTab() && isSingleMetricLoadPage(pageData)) {
       return renderSingleMetricLoadFilterBar();
     }
 
     if (pageData && pageData.viewType === "nodePrice") {
-      return renderInfoFilterPanel(
-        renderBoundTextFilter(
-          "节点搜索",
-          state.tradeResult.filters.nodeKeyword,
-          "请输入节点名称",
-          "nodeKeyword",
-          "tradeResult",
-          "filter-input-wide"
-        ),
-        renderUiActionButton("重置", "ghost", "reset-info-disclosure-filters") +
-          renderUiActionButton("查询", "primary", "query-info-disclosure-filters")
-      );
+      return "";
     }
 
     var filterFieldsHtml = renderUnifiedInfoDisclosureBusinessFilterFields(pageData);
@@ -5532,9 +5615,20 @@
       if (isChecked || isIndeterminate) {
         rowClassNames.push("active");
       }
+      rowClassNames.push("load-info-tree-nav__item");
+      rowClassNames.push(childNodes.length ? "load-info-tree-nav__item--parent" : "load-info-tree-nav__item--leaf");
+      if (level > 0) {
+        rowClassNames.push("load-info-tree-nav__item--child");
+      }
+      if (isChecked || isIndeterminate) {
+        rowClassNames.push("load-info-tree-nav__item--active");
+      }
+      var iconHtml = childNodes.length
+        ? '<span class="load-info-tree-nav__toggle is-open" aria-hidden="true"></span>'
+        : '<span class="load-info-tree-nav__leaf-icon" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><rect x="1.5" y="2.5" width="13" height="11"></rect><polyline points="3.5,10.5 6.2,8.3 8.4,9.2 12.5,5.8"></polyline></svg></span>';
 
       return (
-        '<div class="metric-node level-' +
+        '<div class="load-info-tree-nav__node metric-node level-' +
         level +
         '">' +
         '<button class="' +
@@ -5544,10 +5638,8 @@
           ? 'data-info-tree-group="' + escapeHtml(seriesIds.join(",")) + '"'
           : 'data-info-tree-series="' + escapeHtml(node.seriesId) + '"') +
         ">" +
-        '<span class="tree-caret spacer"></span>' +
-        '<span class="tree-checkbox ' +
-        (isChecked ? "checked" : isIndeterminate ? "indeterminate" : "") +
-        '"></span><span class="metric-text">' +
+        iconHtml +
+        '<span class="load-info-tree-nav__text metric-text">' +
         escapeHtml(node.label) +
         "</span></button>" +
         childNodes.map(function mapChild(child) {
@@ -5558,7 +5650,7 @@
     }
 
     return (
-      '<aside class="chart-tree"><div class="tree-header">指标列表</div>' +
+      '<aside class="chart-tree single-metric-tree load-info-tree-nav">' +
       (pageData.metricTree || []).map(function mapNode(node) {
         return renderNode(node, 0);
       }).join("") +
@@ -6380,10 +6472,7 @@
     var actionsHtml = "";
 
     if (activeTab === "节点电价") {
-      fieldsHtml = renderBoundTextFilter("节点搜索", state.tradeResult.filters.nodeKeyword, "请输入节点名称", "nodeKeyword", "tradeResult", "filter-input-wide");
-      actionsHtml =
-        renderUiActionButton("重置", "ghost", "reset-info-disclosure-filters") +
-        renderUiActionButton("查询", "primary", "query-info-disclosure-filters");
+      return "";
     }
 
     return renderInfoFilterPanel(fieldsHtml, actionsHtml);
@@ -6830,8 +6919,8 @@
     if (isUnifiedMockInfoTradeTab(activeTab)) {
       return renderTradeResultFilterBarByTab(activeTab);
     }
-    if (activePrimaryTab === "日前申报") {
-      return renderDeclarationFilterBar();
+    if (isDayAheadDeclarationTab(activeTab)) {
+      return "";
     }
     return renderInfoFilterBar(pageData);
   }
@@ -8420,7 +8509,7 @@
         return;
       }
       if (label === "全省" || node.nodeType === "全省" || node.category === "全省") {
-        if (provinceLabels.indexOf("全省") < 0) {
+        if ((!keyword || "全省".indexOf(keyword) >= 0) && provinceLabels.indexOf("全省") < 0) {
           provinceLabels.push("全省");
         }
         return;
@@ -8430,7 +8519,7 @@
       }
     });
 
-    if (provinceLabels.indexOf("全省") < 0) {
+    if (provinceLabels.indexOf("全省") < 0 && (!keyword || "全省".indexOf(keyword) >= 0)) {
       provinceLabels.push("全省");
     }
 
@@ -8851,8 +8940,7 @@
       fieldsHtml =
         '<div class="info-filter-field"><span class="filter-label">运行日期：</span>' +
         renderInfoDatePicker("trade-node-runtime", "single") +
-        "</div>" +
-        renderBoundTextFilter("节点搜索", state.tradeResult.filters.nodeKeyword, "请输入节点名称", "nodeKeyword", "tradeResult", "filter-input-wide");
+        "</div>";
     } else {
       fieldsHtml =
         '<div class="info-filter-field"><span class="filter-label">运行日期：</span>' +
@@ -10994,14 +11082,11 @@
       '<div class="status-actions monthly-settlement-actions">' +
       '<div class="monthly-more-dropdown">' +
       '<button class="ghost-btn monthly-more-trigger" type="button">' +
-      renderIcon("ellipsis", "button-icon") +
       "<span>更多</span></button>" +
       '<div class="monthly-more-menu">' +
       '<button type="button" class="monthly-more-menu-item" data-ui-action="open-manual-update">更新数据</button>' +
-      '<button type="button" class="monthly-more-menu-item" data-ui-action="open-download-tasks">下载列表</button>' +
       "</div></div>" +
       '<button class="primary-btn" data-ui-action="open-download">' +
-      renderIcon("download", "button-icon") +
       "<span>下载</span></button>" +
       "</div></section>"
     );
@@ -11499,6 +11584,639 @@
       renderSectionHeading("监控指标概览", "展示当前筛选范围内的任务成功率、异常中心与最近更新时间") +
       renderSummaryCards(getFetchMonitorSummaryCards(getFetchMonitorRecords()), "summary-card-grid-5") +
       renderSectionTable("fetch-monitor-table", getFetchMonitorTable()) +
+      "</div>"
+    );
+  }
+
+  function ensureDataMonitorState() {
+    state.dataMonitor = state.dataMonitor || {};
+    state.dataMonitor.filters = state.dataMonitor.filters || {};
+    state.dataMonitor.filters.categoryPath = state.dataMonitor.filters.categoryPath || [];
+    state.dataMonitor.ignoredIds = state.dataMonitor.ignoredIds || [];
+    state.dataMonitor.rollbackIgnoredIds = state.dataMonitor.rollbackIgnoredIds || [];
+    return state.dataMonitor;
+  }
+
+  function getDataMonitorTradeCenterOptions() {
+    return DATA_MONITOR_TRADE_CENTER_OPTIONS;
+  }
+
+  function normalizeDataMonitorTradeCenterName(centerName) {
+    if (centerName === "湖南交易中心" || centerName === "湖南电力交易中心") {
+      return "湖南交易中心";
+    }
+    if (centerName === "陕西交易中心" || centerName === "陕西电力交易中心") {
+      return "陕西交易中心";
+    }
+    return "广东交易中心";
+  }
+
+  function getDataMonitorSelectedTradeCenterName() {
+    return normalizeDataMonitorTradeCenterName(state.ui.selectedTradeCenter);
+  }
+
+  function getDataMonitorSelectedTradeCenterKey() {
+    var selectedName = getDataMonitorSelectedTradeCenterName();
+    if (selectedName === "湖南交易中心") {
+      return "湖南";
+    }
+    if (selectedName === "陕西交易中心") {
+      return "陕西";
+    }
+    return "广东";
+  }
+
+  function isDataMonitorFetchMissing(record) {
+    return record && (record.fetchStatus === "数据未取回" || record.fetchStatus === "取数失败");
+  }
+
+  function isDataMonitorFrontendAbnormal(record) {
+    return record && (record.fetchStatus === "前端展示异常" || record.fetchStatus === "展示异常");
+  }
+
+  function isDataMonitorFetchAbnormal(record) {
+    return isDataMonitorFetchMissing(record) || isDataMonitorFrontendAbnormal(record);
+  }
+
+  function isDataMonitorQualityAbnormal(record) {
+    var qualityAbnormalStatuses = ["数据为空", "数据不完整", "数据未更新", "数值越界", "异常"];
+    return record && qualityAbnormalStatuses.indexOf(record.qualityStatus) >= 0;
+  }
+
+  function isDataMonitorRecordAbnormal(record) {
+    return isDataMonitorFetchAbnormal(record) || isDataMonitorQualityAbnormal(record);
+  }
+
+  function getDataMonitorCenterRecords() {
+    var selectedTradeCenter = getDataMonitorSelectedTradeCenterKey();
+    return getDataMonitorRecordsRaw().filter(function filterCenter(record) {
+      return record.tradeCenter === selectedTradeCenter;
+    });
+  }
+
+  function getDataMonitorCategoryTree() {
+    var trees = dataMonitorMock.categoryTrees || {};
+    return trees[getDataMonitorSelectedTradeCenterKey()] || [{ label: "全部", path: [] }];
+  }
+
+  function normalizeDataMonitorPath(path) {
+    return Array.isArray(path) ? path : [];
+  }
+
+  function serializeDataMonitorPath(path) {
+    return normalizeDataMonitorPath(path).join("/");
+  }
+
+  function parseDataMonitorPath(value) {
+    return String(value || "").split("/").filter(Boolean);
+  }
+
+  function isDataMonitorPathActive(path) {
+    return serializeDataMonitorPath(path) === serializeDataMonitorPath(ensureDataMonitorState().filters.categoryPath || []);
+  }
+
+  function isDataMonitorRecordInCategory(record, path) {
+    var selectedPath = normalizeDataMonitorPath(path);
+    var recordPath = normalizeDataMonitorPath(record.categoryPath);
+    if (!selectedPath.length) {
+      return true;
+    }
+    return selectedPath.every(function matchPart(part, index) {
+      return recordPath[index] === part;
+    });
+  }
+
+  function flattenDataMonitorCategoryTree(nodes, result) {
+    var output = result || [];
+    (nodes || []).forEach(function eachNode(node) {
+      output.push(node);
+      flattenDataMonitorCategoryTree(node.children || [], output);
+    });
+    return output;
+  }
+
+  function getDataMonitorCategorySortWeight(record) {
+    var recordPath = serializeDataMonitorPath(record.categoryPath || []);
+    var flatNodes = flattenDataMonitorCategoryTree(getDataMonitorCategoryTree()).filter(function filterNode(node) {
+      return node.path && node.path.length;
+    });
+    var bestIndex = flatNodes.length + 1;
+    flatNodes.forEach(function matchNode(node, index) {
+      var nodePath = serializeDataMonitorPath(node.path);
+      if (nodePath && recordPath.indexOf(nodePath) === 0) {
+        bestIndex = Math.min(bestIndex, index);
+      }
+    });
+    return bestIndex;
+  }
+
+  function getDataMonitorCategoryAbnormalCount(path) {
+    return getDataMonitorCenterRecords().filter(function filterRecord(record) {
+      return isDataMonitorRecordInCategory(record, path) && isDataMonitorRecordAbnormal(record);
+    }).length;
+  }
+
+  function renderDataMonitorCategoryNode(node, level) {
+    var path = normalizeDataMonitorPath(node.path);
+    var abnormalCount = getDataMonitorCategoryAbnormalCount(path);
+    var isActive = isDataMonitorPathActive(path);
+    var children = node.children || [];
+    return (
+      '<div class="data-monitor-category-node">' +
+      '<button class="data-monitor-category-item ' +
+      (isActive ? "active " : "") +
+      'level-' +
+      escapeHtml(String(level || 0)) +
+      '" data-data-monitor-category="' +
+      escapeHtml(serializeDataMonitorPath(path)) +
+      '">' +
+      '<span class="data-monitor-category-name">' +
+      escapeHtml(node.label || "-") +
+      "</span>" +
+      (abnormalCount ? '<span class="data-monitor-category-count">' + escapeHtml(abnormalCount) + "</span>" : "") +
+      "</button>" +
+      (children.length
+        ? '<div class="data-monitor-category-children">' +
+          children.map(function mapChild(child) {
+            return renderDataMonitorCategoryNode(child, (level || 0) + 1);
+          }).join("") +
+          "</div>"
+        : "") +
+      "</div>"
+    );
+  }
+
+  function renderDataMonitorCategoryNav() {
+    return (
+      '<aside class="data-monitor-category-nav">' +
+      '<div class="data-monitor-category-title">业务模块</div>' +
+      '<div class="data-monitor-category-list">' +
+      getDataMonitorCategoryTree().map(function mapNode(node) {
+        return renderDataMonitorCategoryNode(node, 0);
+      }).join("") +
+      "</div></aside>"
+    );
+  }
+
+  function getDataMonitorSummary(records) {
+    var scopedRecords = records || [];
+    var fetchAbnormalCount = scopedRecords.filter(isDataMonitorFetchAbnormal).length;
+    var qualityAbnormalCount = scopedRecords.filter(isDataMonitorQualityAbnormal).length;
+    var abnormalRecords = scopedRecords.filter(isDataMonitorRecordAbnormal);
+    return {
+      expectedCount: scopedRecords.length,
+      normalCount: scopedRecords.length - abnormalRecords.length,
+      fetchAbnormalCount: fetchAbnormalCount,
+      qualityAbnormalCount: qualityAbnormalCount,
+      p0Count: abnormalRecords.filter(function countP0(record) {
+        return getDataMonitorPriority(record) === "P0";
+      }).length,
+      p1Count: abnormalRecords.filter(function countP1(record) {
+        return getDataMonitorPriority(record) === "P1";
+      }).length,
+      abnormalCount: abnormalRecords.length,
+    };
+  }
+
+  function isDataMonitorIgnored(record) {
+    ensureDataMonitorState();
+    if (isDataMonitorIgnoreRolledBack(record)) {
+      return false;
+    }
+    return state.dataMonitor.ignoredIds.indexOf(record.id) >= 0 || record.processStatus === "已忽略";
+  }
+
+  function isDataMonitorIgnoreRolledBack(record) {
+    ensureDataMonitorState();
+    return Boolean(record && state.dataMonitor.rollbackIgnoredIds.indexOf(record.id) >= 0);
+  }
+
+  function canRollbackDataMonitorIgnore(record) {
+    return record.processStatus === "已忽略" || record.fetchStatus === "已忽略" || record.qualityStatus === "已忽略";
+  }
+
+  function isDataMonitorFetchIgnored(record) {
+    return isDataMonitorIgnored(record) && isDataMonitorFetchAbnormal(record);
+  }
+
+  function isDataMonitorQualityIgnored(record) {
+    return isDataMonitorIgnored(record) && isDataMonitorQualityAbnormal(record);
+  }
+
+  function getDataMonitorDisplayRecord(record) {
+    var nextRecord = {};
+    Object.keys(record || {}).forEach(function copyKey(key) {
+      nextRecord[key] = record[key];
+    });
+    if (isDataMonitorIgnoreRolledBack(record)) {
+      if (nextRecord.processStatus === "已忽略") {
+        nextRecord.processStatus = "待处理";
+      }
+      if (nextRecord.fetchProcessStatus === "已忽略") {
+        nextRecord.fetchProcessStatus = "待处理";
+      }
+      if (nextRecord.qualityProcessStatus === "已忽略") {
+        nextRecord.qualityProcessStatus = "待处理";
+      }
+      return nextRecord;
+    }
+    if (isDataMonitorIgnored(record)) {
+      nextRecord.processStatus = "已忽略";
+      if (isDataMonitorFetchAbnormal(record)) {
+        nextRecord.fetchStatus = "已忽略";
+        nextRecord.fetchProcessStatus = "已忽略";
+      }
+      if (isDataMonitorQualityAbnormal(record)) {
+        nextRecord.qualityStatus = "已忽略";
+        nextRecord.qualityProcessStatus = "已忽略";
+      }
+    }
+    return nextRecord;
+  }
+
+  function getDataMonitorRecordsRaw() {
+    return (dataMonitorMock.records || []).map(getDataMonitorDisplayRecord);
+  }
+
+  function getDataMonitorRecordById(recordId) {
+    return getDataMonitorRecordsRaw().find(function findRecord(record) {
+      return record.id === recordId;
+    });
+  }
+
+  function getDataMonitorPriority(record) {
+    return record.priority || "";
+  }
+
+  function getDataMonitorSortWeight(record) {
+    var priority = getDataMonitorPriority(record);
+    if (record.fetchStatus === "已忽略" || record.qualityStatus === "已忽略") {
+      return 9;
+    }
+    if (isDataMonitorFetchMissing(record) && priority === "P0") {
+      return 1;
+    }
+    if (isDataMonitorFrontendAbnormal(record) && priority === "P0") {
+      return 2;
+    }
+    if (isDataMonitorQualityAbnormal(record) && priority === "P0") {
+      return 3;
+    }
+    if (isDataMonitorFetchMissing(record) && priority === "P1") {
+      return 4;
+    }
+    if (isDataMonitorFrontendAbnormal(record) && priority === "P1") {
+      return 5;
+    }
+    if (isDataMonitorQualityAbnormal(record) && priority === "P1") {
+      return 6;
+    }
+    if (record.fetchStatus === "待取数" || record.qualityStatus === "待校验") {
+      return 7;
+    }
+    return 8;
+  }
+
+  function getDataMonitorFilteredRecords() {
+    var selectedTradeCenter = getDataMonitorSelectedTradeCenterKey();
+    var selectedPath = ensureDataMonitorState().filters.categoryPath || [];
+    return getDataMonitorRecordsRaw()
+      .filter(function filterRecord(record) {
+        return record.tradeCenter === selectedTradeCenter && isDataMonitorRecordInCategory(record, selectedPath);
+      })
+      .sort(function sortRecord(a, b) {
+        var categoryDiff = getDataMonitorCategorySortWeight(a) - getDataMonitorCategorySortWeight(b);
+        var weightDiff = categoryDiff || getDataMonitorSortWeight(a) - getDataMonitorSortWeight(b);
+        if (weightDiff !== 0) {
+          return weightDiff;
+        }
+        return String(a.nextFetchAt || "").localeCompare(String(b.nextFetchAt || ""), "zh-CN");
+      });
+  }
+
+  function getDataMonitorStatusText(record, statusType) {
+    if (
+      record.processStatus === "已忽略" &&
+      ((statusType === "fetch" && isDataMonitorFetchAbnormal(record)) ||
+        (statusType === "quality" && isDataMonitorQualityAbnormal(record)))
+    ) {
+      return "已忽略";
+    }
+    if (statusType === "fetch") {
+      if (record.fetchStatus === "已忽略") {
+        return "已忽略";
+      }
+      if (record.fetchStatus === "正常") {
+        return "正常";
+      }
+      if (record.fetchStatus === "待取数") {
+        return "待取数";
+      }
+      if (isDataMonitorFetchMissing(record)) {
+        return "取数失败";
+      }
+      if (isDataMonitorFrontendAbnormal(record)) {
+        return "展示异常";
+      }
+      return record.fetchStatus || "-";
+    }
+    if (record.qualityStatus === "已忽略") {
+      return "已忽略";
+    }
+    if (record.qualityStatus === "正常") {
+      return "正常";
+    }
+    if (isDataMonitorQualityAbnormal(record)) {
+      return record.qualityStatus === "异常" ? record.qualityExceptionType : record.qualityStatus;
+    }
+    return record.qualityStatus || "-";
+  }
+
+  function getDataMonitorStatusClass(record, statusType) {
+    if (
+      record.processStatus === "已忽略" &&
+      ((statusType === "fetch" && isDataMonitorFetchAbnormal(record)) ||
+        (statusType === "quality" && isDataMonitorQualityAbnormal(record)))
+    ) {
+      return "data-monitor-status-ignored";
+    }
+    if (statusType === "fetch") {
+      if (record.fetchStatus === "已忽略") {
+        return "data-monitor-status-ignored";
+      }
+      if (record.fetchStatus === "正常") {
+        return "data-monitor-status-success";
+      }
+      if (record.fetchStatus === "待取数") {
+        return "data-monitor-status-default";
+      }
+      if (isDataMonitorFrontendAbnormal(record)) {
+        return "data-monitor-status-warning";
+      }
+      if (isDataMonitorFetchMissing(record)) {
+        return "data-monitor-status-danger";
+      }
+      return "data-monitor-status-default";
+    }
+    if (record.qualityStatus === "正常") {
+      return "data-monitor-status-success";
+    }
+    if (record.qualityStatus === "已忽略") {
+      return "data-monitor-status-ignored";
+    }
+    if (isDataMonitorQualityAbnormal(record)) {
+      return record.priority === "P0" ? "data-monitor-status-danger" : "data-monitor-status-warning";
+    }
+    return "data-monitor-status-default";
+  }
+
+  function getDataMonitorStatusIcon(record, statusType) {
+    if (
+      record.processStatus === "已忽略" &&
+      ((statusType === "fetch" && isDataMonitorFetchAbnormal(record)) ||
+        (statusType === "quality" && isDataMonitorQualityAbnormal(record)))
+    ) {
+      return "⚫";
+    }
+    if (statusType === "fetch") {
+      if (record.fetchStatus === "已忽略") {
+        return "⚫";
+      }
+      if (record.fetchStatus === "正常") {
+        return "✅";
+      }
+      if (record.fetchStatus === "待取数") {
+        return "⚪";
+      }
+      if (isDataMonitorFrontendAbnormal(record)) {
+        return "🟠";
+      }
+      if (isDataMonitorFetchMissing(record)) {
+        return "🔴";
+      }
+      return "⚪";
+    }
+    if (record.qualityStatus === "正常") {
+      return "✅";
+    }
+    if (record.qualityStatus === "已忽略") {
+      return "⚫";
+    }
+    if (isDataMonitorQualityAbnormal(record)) {
+      return record.priority === "P0" ? "🔴" : "🟠";
+    }
+    if (record.qualityStatus === "待校验") {
+      return "⏳";
+    }
+    return "⚪";
+  }
+
+  function createDataMonitorStatusCell(record, statusType) {
+    return createStyledCell(
+      getDataMonitorStatusIcon(record, statusType) + " " + getDataMonitorStatusText(record, statusType),
+      "data-monitor-status-cell " + getDataMonitorStatusClass(record, statusType),
+      getDataMonitorSortWeight(record),
+    );
+  }
+
+  function canIgnoreDataMonitorRecord(record) {
+    if (record.processStatus === "已忽略") {
+      return false;
+    }
+    if (record.fetchStatus === "已忽略" || record.qualityStatus === "已忽略") {
+      return false;
+    }
+    return isDataMonitorRecordAbnormal(record);
+  }
+
+  function getDataMonitorTable() {
+    var columns = [
+      { key: "dataItem", label: "数据项", width: 230 },
+      { key: "fetchStatus", label: "取数状态", width: 190 },
+      { key: "qualityStatus", label: "质量状态", width: 178 },
+      { key: "timePoint", label: "时间点位", width: 100 },
+      { key: "outputTime", label: "产出时间", width: 128 },
+      { key: "warningTime", label: "预警时间", width: 120 },
+      { key: "valueRange", label: "取值范围", width: 126 },
+      { key: "lastSuccessAt", label: "最近成功入库时间", width: 176 },
+      { key: "nextFetchAt", label: "下次取数时间", width: 164 },
+      { key: "actions", label: "操作", sortable: false, width: 150 },
+    ];
+
+    return {
+      columns: columns,
+      rows: getDataMonitorFilteredRecords().map(function mapRecord(record) {
+        var actions = [{ label: "详情", action: "open-data-monitor-detail" }];
+        if (canIgnoreDataMonitorRecord(record)) {
+          actions.push({ label: "忽略", action: "open-data-monitor-ignore" });
+        } else if (canRollbackDataMonitorIgnore(record)) {
+          actions.push({ label: "取消忽略", action: "open-data-monitor-rollback" });
+        }
+
+        return {
+          dataItem: record.dataItem,
+          fetchStatus: createDataMonitorStatusCell(record, "fetch"),
+          qualityStatus: createDataMonitorStatusCell(record, "quality"),
+          timePoint: record.timePoint,
+          outputTime: record.outputTime,
+          warningTime: record.warningTime,
+          valueRange: record.valueRange,
+          lastSuccessAt: record.lastSuccessAt,
+          nextFetchAt: record.nextFetchAt,
+          actions: createTableActionCell(record.id, actions),
+        };
+      }),
+      minWidth: 1428,
+    };
+  }
+
+  function renderDataMonitorTableMeta() {
+    var visibleCount = getDataMonitorFilteredRecords().length;
+    var selectedName = getDataMonitorSelectedTradeCenterName();
+    return (
+      '<div class="data-monitor-table-meta">' +
+      '<span class="data-monitor-table-count">' +
+      escapeHtml(selectedName) +
+      "展示 " +
+      escapeHtml(visibleCount) +
+      " 项</span></div>"
+    );
+  }
+
+  function renderDataMonitorTable(tableId, table) {
+    return (
+      '<section class="panel chart-panel chart-panel-plain data-monitor-table-panel"><div class="chart-main chart-main-plain">' +
+      '<div class="data-monitor-status-layout">' +
+      renderDataMonitorCategoryNav() +
+      '<div class="data-monitor-table-region">' +
+      renderDataMonitorTableMeta() +
+      renderDataTablePro({
+        tableId: tableId,
+        columns: table.columns,
+        rows: table.rows,
+        minWidth: table.minWidth,
+        sortState: getTableSortState(tableId),
+        escapeHtml: escapeHtml,
+        renderIcon: renderIcon,
+        renderEmptyState: renderEmptyState,
+      }) +
+      "</div></div>" +
+      "</div></section>"
+    );
+  }
+
+  function renderDataMonitorAlert() {
+    var summary = getDataMonitorSummary(getDataMonitorCenterRecords());
+    if (!summary.abnormalCount) {
+      return (
+        '<section class="panel data-monitor-alert-panel data-monitor-alert-panel-ok"><div class="data-monitor-alert-icon">' +
+        renderIcon("check", "data-monitor-alert-ok-icon") +
+        '</div><div class="data-monitor-alert-copy">' +
+        '<div class="data-monitor-alert-title">当前所有数据运行正常</div>' +
+        '<div class="data-monitor-alert-meta">应取数据 ' +
+        escapeHtml(summary.expectedCount || 0) +
+        " 项，暂无取数异常与质量异常。</div></div></section>"
+      );
+    }
+    return (
+      '<section class="panel data-monitor-alert-panel"><div class="data-monitor-alert-icon">!</div><div class="data-monitor-alert-copy">' +
+      '<div class="data-monitor-alert-title">当前存在 ' +
+      escapeHtml(summary.abnormalCount || 0) +
+      " 项数据异常</div>" +
+      '<div class="data-monitor-alert-meta">应取数据 ' +
+      escapeHtml(summary.expectedCount || 0) +
+      " ｜正常 " +
+      escapeHtml(summary.normalCount || 0) +
+      " ｜取数通道异常 " +
+      escapeHtml(summary.fetchAbnormalCount || 0) +
+      " 项 ｜数据质量异常 " +
+      escapeHtml(summary.qualityAbnormalCount || 0) +
+      " 项</div></div></section>"
+    );
+  }
+
+  function renderDataMonitorEmptyPanel(title, text) {
+    return (
+      '<section class="panel chart-panel chart-panel-plain data-monitor-empty-panel"><div class="chart-main chart-main-plain">' +
+      '<div class="empty-state data-monitor-empty-state"><div class="empty-state-graphic">' +
+      renderIcon("database", "empty-state-icon") +
+      '</div><div class="empty-state-title">' +
+      escapeHtml(title || "暂无监控数据") +
+      '</div><div class="empty-state-text">' +
+      escapeHtml(text || "当前筛选条件下暂无纳入数据监控的数据项。") +
+      "</div></div></div></section>"
+    );
+  }
+
+  function renderDataMonitorFailurePanel(title, text) {
+    return (
+      '<section class="panel chart-panel chart-panel-plain data-monitor-empty-panel"><div class="chart-main chart-main-plain">' +
+      '<div class="empty-state data-monitor-empty-state"><div class="empty-state-graphic">' +
+      renderIcon("alert", "empty-state-icon") +
+      '</div><div class="empty-state-title">' +
+      escapeHtml(title || "数据加载失败") +
+      '</div><div class="empty-state-text">' +
+      escapeHtml(text || "数据加载失败，请稍后重试。") +
+      '</div><div class="empty-state-actions"><button class="primary-btn" data-ui-action="reload-data-monitor"><span>重新加载</span></button></div></div></div></section>'
+    );
+  }
+
+  function renderDataMonitorTableSection() {
+    var emptyConfig = dataMonitorMock.emptyState || {};
+    var rawRecords = getDataMonitorRecordsRaw();
+    var selectedTradeCenter = getDataMonitorSelectedTradeCenterKey();
+    var hasCenterConfig = rawRecords.some(function hasCenterRecord(record) {
+      return record.tradeCenter === selectedTradeCenter;
+    });
+
+    if (dataMonitorMock.loadState === "loading") {
+      return renderDataMonitorEmptyPanel("数据加载中...", emptyConfig.loadingText || "数据加载中...");
+    }
+    if (dataMonitorMock.loadState === "failed") {
+      return renderDataMonitorFailurePanel("数据加载失败", emptyConfig.failureText || "数据加载失败，请稍后重试。");
+    }
+    if (!hasCenterConfig) {
+      return renderDataMonitorEmptyPanel(emptyConfig.noConfigTitle, emptyConfig.noConfigText);
+    }
+    if (!getDataMonitorFilteredRecords().length) {
+      return (
+        '<section class="panel chart-panel chart-panel-plain data-monitor-table-panel"><div class="chart-main chart-main-plain">' +
+        '<div class="data-monitor-status-layout">' +
+        renderDataMonitorCategoryNav() +
+        '<div class="data-monitor-table-region">' +
+        renderDataMonitorTableMeta() +
+        renderEmptyState({
+          message: "当前分类下暂无数据",
+          escapeHtml: escapeHtml,
+          renderIcon: renderIcon,
+        }) +
+        "</div></div></div></section>"
+      );
+    }
+    return renderDataMonitorTable("data-monitor-table", getDataMonitorTable());
+  }
+
+  function renderDataMonitorPage() {
+    var page = dataMonitorMock || {};
+    var tradeCenterName = getDataMonitorSelectedTradeCenterName();
+    return (
+      '<div class="page-stack data-monitor-page">' +
+      '<section class="page-header page-header-market-disclosure"><div class="page-title-block"><h1>' +
+      escapeHtml(page.title || "数据监控") +
+      '</h1><div class="page-description">' +
+      escapeHtml(page.subtitle || "展示各项市场数据的实时取数通道状态与数据质量状态。") +
+      "</div></div>" +
+      renderTradeCenterSelector({
+        selected: tradeCenterName,
+        options: getDataMonitorTradeCenterOptions(),
+        isOpen: state.ui.tradeCenterOpen,
+        escapeHtml: escapeHtml,
+        renderIcon: renderIcon,
+      }) +
+      "</section>" +
+      renderDataMonitorAlert() +
+      renderSectionHeading("实时状态列表", "展示当前交易中心各项市场数据的实时取数通道状态与质量状态") +
+      renderDataMonitorTableSection() +
       "</div>"
     );
   }
@@ -12876,7 +13594,12 @@
   }
 
   function buildQuarterHourColumns(volumeKeyPrefix, priceKeyPrefix) {
-    return (getInfoMock().quarterHours || mock.quarterHours || []).reduce(function reduceColumns(result, label, index) {
+    var quarterLabels =
+      (getMarketDisclosureMock().infoDisclosure && getMarketDisclosureMock().infoDisclosure.quarterHours) ||
+      getInfoMock().quarterHours ||
+      mock.quarterHours ||
+      [];
+    return quarterLabels.reduce(function reduceColumns(result, label, index) {
       result.push({ key: volumeKeyPrefix + index, label: label + " 电量" });
       result.push({ key: priceKeyPrefix + index, label: label + " 价格" });
       return result;
@@ -13361,16 +14084,6 @@
 
     return (
       renderMarketPageHeader(declarationMock.title || "日前申报", "") +
-      '<section class="panel info-filter-panel"><div class="info-filter-fields">' +
-      '<div class="info-filter-field"><span class="filter-label">申报日期：</span>' +
-      renderInfoDatePicker("declaration-date", "single") +
-      "</div>" +
-      renderBoundSelectFilter("交易单元", state.declaration.filters.unit, declarationMock.unitOptions || [], "unit", "declaration", "filter-select-native") +
-      renderBoundSelectFilter("申报状态", state.declaration.filters.status, declarationMock.statusOptions || [], "status", "declaration", "filter-select-native") +
-      '</div><div class="info-filter-actions">' +
-      renderUiActionButton("重置", "ghost", "reset-declaration") +
-      renderUiActionButton("查询", "primary", "query-declaration") +
-      "</div></section>" +
       renderDownloadOnlyBar(status, false) +
       renderSectionTable("declaration-table", getDeclarationTable()) +
       "</div>"
@@ -13420,23 +14133,24 @@
 
   function renderManualUpdateModalOverlay() {
     var isTimeSharingTarget = isTimeSharingManualUpdateContext();
+    var isInfoDisclosureContext = isInfoDisclosureManualUpdateModalContext();
     if (!state.ui.manualUpdateModalVisible) {
       return "";
     }
 
     return renderManualUpdateModal({
-      title: isTimeSharingTarget ? "更新数据" : "手动更新",
-      confirmText: isTimeSharingTarget ? "更新" : "确认",
+      title: isInfoDisclosureContext ? "更新数据" : "手动更新",
+      confirmText: isInfoDisclosureContext ? "更新" : "确认",
       mode: state.ui.manualUpdateMode,
       fileName: state.ui.manualUploadFileName,
       agentMonth: state.ui.manualUpdateAgentMonth,
       showAgentMonth: isTimeSharingTarget && isTimeSharingHistoryUpdateTargetTab(state.ui.manualUpdateTab),
-      uploadLabel: isTimeSharingTarget ? "上传文件" : "原始文件",
-      uploadPlaceholder: isTimeSharingTarget ? "上传文件" : "选择文件（仅模拟，不真实上传）",
-      uploadHint: isTimeSharingTarget ? "请上传交易中心下载的数据源文件" : "",
-      pullLabel: isTimeSharingTarget ? "运行日期" : "拉取日期",
-      pullHint: isTimeSharingTarget ? "为保证性能及合规风险，单次支持更新7天" : "",
-      canSubmit: isTimeSharingTarget ? isManualUpdateSubmitReady() : true,
+      uploadLabel: isInfoDisclosureContext ? "上传文件" : "原始文件",
+      uploadPlaceholder: isInfoDisclosureContext ? "上传" : "选择文件（仅模拟，不真实上传）",
+      uploadHint: isInfoDisclosureContext ? "请上传交易中心下载的数据源文件" : "",
+      pullLabel: isInfoDisclosureContext ? "运行日期" : "拉取日期",
+      pullHint: isInfoDisclosureContext ? "为保证性能及合规风险，单次支持更新7天" : "",
+      canSubmit: isTimeSharingTarget ? isManualUpdateSubmitReady() : isInfoDisclosureUpdateSubmitReady(),
       error: state.ui.manualUpdateError,
       datePickerHtml: renderStandardDatePicker({
         id: "manual-pull-range",
@@ -13490,6 +14204,128 @@
       escapeHtml: escapeHtml,
       renderIcon: renderIcon,
     });
+  }
+
+  function renderDataMonitorDetailItem(label, value) {
+    return (
+      '<div class="data-monitor-detail-item"><span class="data-monitor-detail-label">' +
+      escapeHtml(label) +
+      '</span><span class="data-monitor-detail-value">' +
+      escapeHtml(value || "-") +
+      "</span></div>"
+    );
+  }
+
+  function renderDataMonitorDetailSection(title, items) {
+    return (
+      '<section class="data-monitor-detail-section"><div class="data-monitor-detail-section-title">' +
+      escapeHtml(title) +
+      '</div><div class="data-monitor-detail-grid">' +
+      (items || []).map(function mapItem(item) {
+        return renderDataMonitorDetailItem(item.label, item.value);
+      }).join("") +
+      "</div></section>"
+    );
+  }
+
+  function renderDataMonitorStatusReadonlyCard(title, items) {
+    return (
+      '<section class="data-monitor-status-card"><div class="data-monitor-status-card-title">' +
+      escapeHtml(title) +
+      '</div><div class="data-monitor-status-card-grid">' +
+      (items || []).map(function mapItem(item) {
+        return renderDataMonitorDetailItem(item.label, item.value);
+      }).join("") +
+      "</div></section>"
+    );
+  }
+
+  function renderDataMonitorDetailDrawerOverlay() {
+    var record;
+
+    if (!state.ui.dataMonitorDetailDrawerVisible) {
+      return "";
+    }
+
+    record = getDataMonitorRecordById(state.ui.dataMonitorSelectedRecordId);
+    if (!record) {
+      return "";
+    }
+
+    return (
+      '<div class="drawer-overlay data-monitor-drawer-overlay">' +
+      '<aside class="drawer-panel data-monitor-drawer-panel" role="dialog" aria-modal="true" aria-labelledby="data-monitor-detail-title">' +
+      '<div class="drawer-header"><strong id="data-monitor-detail-title">数据监控详情</strong><button class="notification-close" data-ui-action="close-data-monitor-detail">' +
+      renderIcon("close", "notification-close-icon") +
+      "</button></div>" +
+      '<div class="drawer-body data-monitor-drawer-body">' +
+      renderDataMonitorDetailSection("基础信息", [
+        { label: "交易中心", value: record.tradeCenterName },
+        { label: "业务模块", value: (record.categoryPath || []).join(" / ") || record.businessModule },
+        { label: "数据项", value: record.dataItem },
+      ]) +
+      renderDataMonitorDetailSection("取数配置", [
+        { label: "时间点位", value: record.timePoint },
+        { label: "产出时间", value: record.outputTime },
+        { label: "预警时间", value: record.warningTime },
+        { label: "取值范围", value: record.valueRange },
+        { label: "取数工具时效", value: record.fetchToolTimeliness },
+        { label: "最近成功入库时间", value: record.lastSuccessAt },
+        { label: "页面地址", value: record.pageAddress },
+      ]) +
+      '<section class="data-monitor-detail-section"><div class="data-monitor-detail-section-title">当前状态</div><div class="data-monitor-current-status-grid">' +
+      renderDataMonitorStatusReadonlyCard("取数通道状态", [
+        { label: "取数状态", value: getDataMonitorStatusText(record, "fetch") },
+        { label: "取数异常类型", value: record.fetchExceptionType },
+        { label: "取数异常时间", value: record.fetchExceptionAt },
+        { label: "取数是否已通知", value: record.fetchNotified },
+        { label: "取数处理状态", value: record.fetchProcessStatus },
+      ]) +
+      renderDataMonitorStatusReadonlyCard("数据质量监控结果", [
+        { label: "质量状态", value: getDataMonitorStatusText(record, "quality") },
+        { label: "校验时间", value: record.checkAt },
+        { label: "校验规则", value: record.checkRules },
+        { label: "质量异常类型", value: record.qualityExceptionType },
+        { label: "告警阈值", value: record.warningThreshold },
+        { label: "质量是否已通知", value: record.qualityNotified },
+        { label: "质量处理状态", value: record.qualityProcessStatus },
+      ]) +
+      "</div></section>" +
+      "</div></aside></div>"
+    );
+  }
+
+  function renderDataMonitorIgnoreConfirmOverlay() {
+    if (!state.ui.dataMonitorIgnoreConfirmVisible) {
+      return "";
+    }
+    var confirmMode = state.ui.dataMonitorIgnoreConfirmMode || "ignore";
+    var isRollback = confirmMode === "rollback";
+    var title = isRollback ? "确认取消忽略该异常？" : "确认忽略该异常？";
+    var text = isRollback
+      ? "取消忽略后，本次异常将恢复为待处理状态，并重新进入异常告警统计。后续如仍满足告警条件，将继续触发当前批次告警通知。"
+      : "忽略后，本次异常将不再触发告警通知，但仍会保留异常记录。后续新批次如再次异常，仍会重新生成异常记录。";
+    var confirmAction = isRollback ? "confirm-data-monitor-rollback" : "confirm-data-monitor-ignore";
+    var confirmText = isRollback ? "确认取消忽略" : "确认忽略";
+
+    return (
+      '<div class="overlay-backdrop data-monitor-ignore-backdrop">' +
+      '<section class="modal-card data-monitor-ignore-modal" role="dialog" aria-modal="true" aria-labelledby="data-monitor-ignore-title">' +
+      '<div class="modal-header"><strong id="data-monitor-ignore-title">' +
+      escapeHtml(title) +
+      '</strong><button class="notification-close" data-ui-action="cancel-data-monitor-ignore">' +
+      renderIcon("close", "notification-close-icon") +
+      "</button></div>" +
+      '<div class="modal-body"><p class="data-monitor-ignore-text">' +
+      escapeHtml(text) +
+      "</p></div>" +
+      '<div class="modal-footer"><button class="ghost-btn" data-ui-action="cancel-data-monitor-ignore"><span>取消</span></button><button class="primary-btn" data-ui-action="' +
+      confirmAction +
+      '"><span>' +
+      escapeHtml(confirmText) +
+      "</span></button></div>" +
+      "</section></div>"
+    );
   }
 
   function ensureDisclosureTimeState() {
@@ -13698,6 +14534,8 @@
       renderManualUpdateModalOverlay() +
       renderDownloadModalOverlay() +
       renderDownloadTaskDrawerOverlay() +
+      renderDataMonitorDetailDrawerOverlay() +
+      renderDataMonitorIgnoreConfirmOverlay() +
       renderDisclosureTimeDrawerOverlay() +
       renderFlashMessage()
     );
@@ -13731,6 +14569,9 @@
     }
     if (currentPage.viewType === "fetch-monitor") {
       return renderFetchMonitorPage();
+    }
+    if (currentPage.viewType === "data-monitor") {
+      return renderDataMonitorPage();
     }
     if (currentPage.viewType === "spot-trading-simulation") {
       return renderSpotTradingSimulationPage();
@@ -13889,9 +14730,9 @@
       return;
     }
 
-    if (state.ui.manualUpdateMode === "upload" && !isUnifiedMockInfoTradeTab(activeInfoTab)) {
+    if (state.ui.manualUpdateMode === "upload") {
       if (!state.ui.manualUploadFileName) {
-        state.ui.manualUpdateError = "请选择原始文件。";
+        state.ui.manualUpdateError = isInfoDisclosureManualUpdateModalContext() ? "请上传交易中心下载的数据源文件。" : "请选择原始文件。";
         return;
       }
     } else {
@@ -13967,8 +14808,12 @@
       return true;
     }
     if (action === "open-manual-update") {
-      state.ui.manualUpdateContext = "";
-      state.ui.manualUpdateTab = "";
+      if (isInfoDisclosurePage(state.currentPageKey)) {
+        syncManualUpdateDraftToCurrentContext();
+      } else {
+        state.ui.manualUpdateContext = "";
+        state.ui.manualUpdateTab = "";
+      }
       state.ui.manualUpdateModalVisible = true;
       state.ui.manualUpdateError = "";
       return true;
@@ -14367,6 +15212,82 @@
       setFlashMessage("取数监控筛选已重置。", "info");
       return true;
     }
+    if (action === "reload-data-monitor") {
+      setFlashMessage("数据监控已重新加载。", "success");
+      return true;
+    }
+    if (action === "open-data-monitor-detail") {
+      state.ui.dataMonitorSelectedRecordId = target.getAttribute("data-record-id") || "";
+      state.ui.dataMonitorDetailDrawerVisible = true;
+      state.ui.dataMonitorIgnoreConfirmVisible = false;
+      state.ui.dataMonitorPendingIgnoreId = "";
+      state.ui.dataMonitorIgnoreConfirmMode = "ignore";
+      closeAllPanels();
+      return true;
+    }
+    if (action === "close-data-monitor-detail") {
+      state.ui.dataMonitorDetailDrawerVisible = false;
+      state.ui.dataMonitorSelectedRecordId = "";
+      return true;
+    }
+    if (action === "open-data-monitor-ignore") {
+      state.ui.dataMonitorPendingIgnoreId = target.getAttribute("data-record-id") || "";
+      state.ui.dataMonitorIgnoreConfirmVisible = true;
+      state.ui.dataMonitorIgnoreConfirmMode = "ignore";
+      return true;
+    }
+    if (action === "open-data-monitor-rollback") {
+      state.ui.dataMonitorPendingIgnoreId = target.getAttribute("data-record-id") || "";
+      state.ui.dataMonitorIgnoreConfirmVisible = true;
+      state.ui.dataMonitorIgnoreConfirmMode = "rollback";
+      return true;
+    }
+    if (action === "cancel-data-monitor-ignore") {
+      state.ui.dataMonitorIgnoreConfirmVisible = false;
+      state.ui.dataMonitorPendingIgnoreId = "";
+      state.ui.dataMonitorIgnoreConfirmMode = "ignore";
+      return true;
+    }
+    if (action === "confirm-data-monitor-ignore") {
+      var ignoreId = state.ui.dataMonitorPendingIgnoreId;
+      ensureDataMonitorState();
+      if (ignoreId && state.dataMonitor.ignoredIds.indexOf(ignoreId) < 0) {
+        state.dataMonitor.ignoredIds.push(ignoreId);
+      }
+      state.dataMonitor.ignoredMeta = state.dataMonitor.ignoredMeta || {};
+      if (ignoreId) {
+        state.dataMonitor.ignoredMeta[ignoreId] = {
+          ignoredAt: formatDateTime(new Date()).slice(0, 16),
+          ignoredBy: "张三",
+          reason: "源端维护，等待下一批次",
+        };
+      }
+      state.ui.dataMonitorIgnoreConfirmVisible = false;
+      state.ui.dataMonitorPendingIgnoreId = "";
+      state.ui.dataMonitorIgnoreConfirmMode = "ignore";
+      setFlashMessage("已忽略当前异常。", "success");
+      return true;
+    }
+    if (action === "confirm-data-monitor-rollback") {
+      var rollbackId = state.ui.dataMonitorPendingIgnoreId;
+      ensureDataMonitorState();
+      if (rollbackId) {
+        state.dataMonitor.ignoredIds = state.dataMonitor.ignoredIds.filter(function filterIgnoredId(recordId) {
+          return recordId !== rollbackId;
+        });
+        if (state.dataMonitor.rollbackIgnoredIds.indexOf(rollbackId) < 0) {
+          state.dataMonitor.rollbackIgnoredIds.push(rollbackId);
+        }
+        if (state.dataMonitor.ignoredMeta) {
+          delete state.dataMonitor.ignoredMeta[rollbackId];
+        }
+      }
+      state.ui.dataMonitorIgnoreConfirmVisible = false;
+      state.ui.dataMonitorPendingIgnoreId = "";
+      state.ui.dataMonitorIgnoreConfirmMode = "ignore";
+      setFlashMessage("已取消忽略，异常已恢复待处理。", "success");
+      return true;
+    }
     if (action === "query-spot-trading-simulation") {
       if (!isRangeValid(state.spotTradingSimulation.filters.backtestRange)) {
         setFlashMessage("请选择有效的回测周期。", "info");
@@ -14560,6 +15481,9 @@
       state.ui.manualUpdateModalVisible = false;
       state.ui.downloadModalVisible = false;
       state.ui.disclosureTimeDrawerVisible = false;
+      state.ui.dataMonitorDetailDrawerVisible = false;
+      state.ui.dataMonitorIgnoreConfirmVisible = false;
+      state.ui.dataMonitorIgnoreConfirmMode = "ignore";
       var shouldRenderImmediately = pageState.navigate(state, pageButton.getAttribute("data-page-key"), registry, global.location);
       if (shouldRenderImmediately) {
         renderApp();
@@ -14589,6 +15513,15 @@
     var tradeCenterSelect = event.target.closest("[data-trade-center-select]");
     if (tradeCenterSelect) {
       var selectedTradeCenter = tradeCenterSelect.getAttribute("data-trade-center-select");
+      if (state.currentPageKey === "data-monitor") {
+        state.ui.selectedTradeCenter = selectedTradeCenter;
+        state.ui.tradeCenterOpen = false;
+        state.ui.activeDatePickerId = null;
+        state.ui.datePickerDrafts = {};
+        ensureDataMonitorState().filters.categoryPath = [];
+        renderApp();
+        return;
+      }
       var nextTradeCenterKey = getTradeCenterDataPageKey(selectedTradeCenter);
       var nextMarketState = state.marketDisclosure.pages && state.marketDisclosure.pages[nextTradeCenterKey];
       var selectedCenterKey = getTradeCenterKeyByName(selectedTradeCenter);
@@ -14728,9 +15661,15 @@
     var infoMetricButton = event.target.closest("[data-info-metric]");
     if (infoMetricButton) {
       var nextInfoMetric = infoMetricButton.getAttribute("data-info-metric");
-      if (state.info.selectedMetric === nextInfoMetric) {
-        renderApp();
-        return;
+      var nextInfoMetricItem = getSingleMetricLoadSidebarItemById(getInfoDisclosurePageData(), nextInfoMetric);
+      var hasInfoMetricChildren =
+        nextInfoMetricItem && Array.isArray(nextInfoMetricItem.children) && nextInfoMetricItem.children.length > 0;
+      if (hasInfoMetricChildren) {
+        if (state.info.expandedMetrics.has(nextInfoMetric)) {
+          state.info.expandedMetrics.delete(nextInfoMetric);
+        } else {
+          state.info.expandedMetrics.add(nextInfoMetric);
+        }
       }
       state.info.selectedMetric = nextInfoMetric;
       triggerSingleMetricLoadRefresh();
@@ -14756,6 +15695,13 @@
     var infoTreeGroup = event.target.closest("[data-info-tree-group]");
     if (infoTreeGroup) {
       toggleChartLegendGroup(getInfoDisclosureTreeChartId(getInfoDisclosurePageData()), infoTreeGroup.getAttribute("data-info-tree-group").split(","));
+      renderApp();
+      return;
+    }
+
+    var dataMonitorCategory = event.target.closest("[data-data-monitor-category]");
+    if (dataMonitorCategory) {
+      ensureDataMonitorState().filters.categoryPath = parseDataMonitorPath(dataMonitorCategory.getAttribute("data-data-monitor-category"));
       renderApp();
       return;
     }
@@ -14835,6 +15781,8 @@
       state.ui.compareModalVisible = false;
       state.ui.manualUpdateModalVisible = false;
       state.ui.downloadModalVisible = false;
+      state.ui.dataMonitorIgnoreConfirmVisible = false;
+      state.ui.dataMonitorIgnoreConfirmMode = "ignore";
       closeAllPanels();
       renderApp();
       return;
@@ -14843,6 +15791,7 @@
     if (event.target.classList.contains("drawer-overlay")) {
       state.ui.downloadTaskDrawerVisible = false;
       state.ui.disclosureTimeDrawerVisible = false;
+      state.ui.dataMonitorDetailDrawerVisible = false;
       renderApp();
       return;
     }
@@ -14876,6 +15825,11 @@
       state.declaration.filters[key] = target.value;
     } else if (scope === "fetchMonitor") {
       state.fetchMonitor.filters[key] = target.value;
+    } else if (scope === "dataMonitor") {
+      ensureDataMonitorState().filters[key] = target.value;
+      if (key !== "summaryFilter") {
+        ensureDataMonitorState().filters.summaryFilter = "全部";
+      }
     } else if (scope === "spotTradingSimulation") {
       state.spotTradingSimulation.filters[key] = target.value;
     } else if (scope === "spotMockTrading") {
