@@ -14279,7 +14279,6 @@
         { label: "取数异常类型", value: record.fetchExceptionType },
         { label: "取数异常时间", value: record.fetchExceptionAt },
         { label: "取数是否已通知", value: record.fetchNotified },
-        { label: "取数处理状态", value: record.fetchProcessStatus },
       ]) +
       renderDataMonitorStatusReadonlyCard("数据质量监控结果", [
         { label: "质量状态", value: getDataMonitorStatusText(record, "quality") },
@@ -14288,7 +14287,6 @@
         { label: "质量异常类型", value: record.qualityExceptionType },
         { label: "告警阈值", value: record.warningThreshold },
         { label: "质量是否已通知", value: record.qualityNotified },
-        { label: "质量处理状态", value: record.qualityProcessStatus },
       ]) +
       "</div></section>" +
       "</div></aside></div>"
