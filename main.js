@@ -14284,7 +14284,6 @@
         { label: "质量状态", value: getDataMonitorStatusText(record, "quality") },
         { label: "校验时间", value: record.checkAt },
         { label: "校验规则", value: record.checkRules },
-        { label: "质量异常类型", value: record.qualityExceptionType },
         { label: "告警阈值", value: record.warningThreshold },
         { label: "质量是否已通知", value: record.qualityNotified },
       ]) +
