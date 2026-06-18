@@ -12047,11 +12047,6 @@
       columns: columns,
       rows: getDataMonitorFilteredRecords().map(function mapRecord(record) {
         var actions = [{ label: "详情", action: "open-data-monitor-detail" }];
-        if (canIgnoreDataMonitorRecord(record)) {
-          actions.push({ label: "忽略", action: "open-data-monitor-ignore" });
-        } else if (canRollbackDataMonitorIgnore(record)) {
-          actions.push({ label: "取消忽略", action: "open-data-monitor-rollback" });
-        }
 
         return {
           dataItem: record.dataItem,
