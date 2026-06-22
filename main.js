@@ -4767,13 +4767,16 @@
     var compareDate = (compareRow && compareRow.date) || (state.ui.compareRangeDraft && state.ui.compareRangeDraft.start) || "";
     var lines = [
       "日期时间：" + [row.date, row.time].filter(Boolean).join(" "),
-      "火电竞价空间：" + formatThermalBiddingSpaceTooltipValue(row.thermalBiddingSpace, unit),
+      "日前火电竞价空间：" + formatThermalBiddingSpaceTooltipValue(row.dayAheadThermalBiddingSpace, unit),
+      "实时火电竞价空间：" + formatThermalBiddingSpaceTooltipValue(row.realTimeThermalBiddingSpace, unit),
     ];
 
     if (state.ui.hasCompare) {
       lines.push("对比日：" + [compareDate, row.time].filter(Boolean).join(" "));
-      lines.push("对比日火电竞价空间：" + formatThermalBiddingSpaceTooltipValue(compareRow && compareRow.thermalBiddingSpace, unit));
-      lines.push("变化幅度：" + formatThermalBiddingSpaceChangeText(row.thermalBiddingSpace, compareRow && compareRow.thermalBiddingSpace));
+      lines.push("对比日前火电竞价空间：" + formatThermalBiddingSpaceTooltipValue(compareRow && compareRow.dayAheadThermalBiddingSpace, unit));
+      lines.push("对比实时火电竞价空间：" + formatThermalBiddingSpaceTooltipValue(compareRow && compareRow.realTimeThermalBiddingSpace, unit));
+      lines.push("日前变化幅度：" + formatThermalBiddingSpaceChangeText(row.dayAheadThermalBiddingSpace, compareRow && compareRow.dayAheadThermalBiddingSpace));
+      lines.push("实时变化幅度：" + formatThermalBiddingSpaceChangeText(row.realTimeThermalBiddingSpace, compareRow && compareRow.realTimeThermalBiddingSpace));
     }
 
     return lines.join("\n");
@@ -4782,7 +4785,7 @@
   function renderThermalBiddingSpaceMetricContent(pageData, selectedItem, metricConfig) {
     var rows = filterInfoDisclosurePageRows(metricConfig.rows || [], pageData);
     var hasCurrentValues = rows.some(function someRow(row) {
-      return isSingleMetricNumericValue(row.thermalBiddingSpace);
+      return isSingleMetricNumericValue(row.dayAheadThermalBiddingSpace) || isSingleMetricNumericValue(row.realTimeThermalBiddingSpace);
     });
 
     if (!rows.length || !hasCurrentValues) {
@@ -4806,24 +4809,42 @@
     var compareRowsByTime = buildSingleMetricRowsByTime(compareRows);
     var chartSeries = [
       {
-        id: chartId + "-thermal-bidding-space",
-        label: "火电竞价空间",
+        id: chartId + "-dayahead-thermal-bidding-space",
+        label: "日前火电竞价空间",
         color: "#F56C42",
         values: rows.map(function mapRow(row) {
-          return row.thermalBiddingSpace;
+          return row.dayAheadThermalBiddingSpace;
+        }),
+      },
+      {
+        id: chartId + "-realtime-thermal-bidding-space",
+        label: "实时火电竞价空间",
+        color: "#2FCB8F",
+        values: rows.map(function mapRow(row) {
+          return row.realTimeThermalBiddingSpace;
         }),
       },
     ];
 
     if (state.ui.hasCompare) {
       chartSeries.push({
-        id: chartId + "-thermal-bidding-space-compare",
-        label: "对比日火电竞价空间",
+        id: chartId + "-dayahead-thermal-bidding-space-compare",
+        label: "对比日前火电竞价空间",
         color: "#8C6A4A",
         dasharray: "6 4",
         values: rows.map(function mapRow(row) {
           var compareRow = compareRowsByTime[row.time] || null;
-          return compareRow ? compareRow.thermalBiddingSpace : null;
+          return compareRow ? compareRow.dayAheadThermalBiddingSpace : null;
+        }),
+      });
+      chartSeries.push({
+        id: chartId + "-realtime-thermal-bidding-space-compare",
+        label: "对比实时火电竞价空间",
+        color: "#5E6C84",
+        dasharray: "6 4",
+        values: rows.map(function mapRow(row) {
+          var compareRow = compareRowsByTime[row.time] || null;
+          return compareRow ? compareRow.realTimeThermalBiddingSpace : null;
         }),
       });
     }
@@ -4837,10 +4858,15 @@
     if (state.ui.hasCompare) {
       tableColumns = tableColumns.concat([
         {
-          key: "compareThermalBiddingSpace",
-          label: formatTradeDisclosureDate(state.ui.compareRangeDraft.start) + " 火电竞价空间（MW）",
+          key: "compareDayAheadThermalBiddingSpace",
+          label: formatTradeDisclosureDate(state.ui.compareRangeDraft.start) + " 火电竞价空间（日前）（MW）",
         },
-        { key: "thermalBiddingSpaceChange", label: "变化幅度" },
+        {
+          key: "compareRealTimeThermalBiddingSpace",
+          label: formatTradeDisclosureDate(state.ui.compareRangeDraft.start) + " 火电竞价空间（实时）（MW）",
+        },
+        { key: "dayAheadThermalBiddingSpaceChange", label: "日前变化幅度" },
+        { key: "realTimeThermalBiddingSpaceChange", label: "实时变化幅度" },
       ]);
     }
 
@@ -4875,22 +4901,23 @@
         columns: tableColumns,
         rows: rows.map(function mapRow(row) {
           var compareRow = compareRowsByTime[row.time] || null;
-          var result = {
-            time: row.time,
-            systemLoad: createThermalBiddingSpaceNumberCell(row.systemLoad),
-            renewableTotalOutput: createThermalBiddingSpaceNumberCell(row.renewableTotalOutput),
-            hydroTotalOutput: createThermalBiddingSpaceNumberCell(row.hydroTotalOutput),
-            tieLineTransmission: createThermalBiddingSpaceNumberCell(row.tieLineTransmission),
-            nonMarketOutput: createThermalBiddingSpaceNumberCell(row.nonMarketOutput),
-            thermalBiddingSpace: createThermalBiddingSpaceNumberCell(row.thermalBiddingSpace),
-          };
+          var result = {};
+          (metricConfig.tableColumns || []).forEach(function eachColumn(column) {
+            if (!column || column.key === "time") {
+              return;
+            }
+            result[column.key] = createThermalBiddingSpaceNumberCell(row[column.key]);
+          });
+          result.time = row.time;
           if (state.ui.hasCompare) {
-            result.compareThermalBiddingSpace = createThermalBiddingSpaceNumberCell(compareRow && compareRow.thermalBiddingSpace);
-            result.thermalBiddingSpaceChange = createThermalBiddingSpaceChangeCell(row.thermalBiddingSpace, compareRow && compareRow.thermalBiddingSpace);
+            result.compareDayAheadThermalBiddingSpace = createThermalBiddingSpaceNumberCell(compareRow && compareRow.dayAheadThermalBiddingSpace);
+            result.compareRealTimeThermalBiddingSpace = createThermalBiddingSpaceNumberCell(compareRow && compareRow.realTimeThermalBiddingSpace);
+            result.dayAheadThermalBiddingSpaceChange = createThermalBiddingSpaceChangeCell(row.dayAheadThermalBiddingSpace, compareRow && compareRow.dayAheadThermalBiddingSpace);
+            result.realTimeThermalBiddingSpaceChange = createThermalBiddingSpaceChangeCell(row.realTimeThermalBiddingSpace, compareRow && compareRow.realTimeThermalBiddingSpace);
           }
           return result;
         }),
-        minWidth: state.ui.hasCompare ? 1420 : Math.max((pageData && pageData.tableMinWidth) || 900, 1120),
+        minWidth: state.ui.hasCompare ? 3200 : Math.max((pageData && pageData.tableMinWidth) || 900, 2300),
         sortState: getTableSortState(tableId),
         enableColumnDrag: true,
         columnOrder: getTableColumnOrder(tableId),
@@ -5495,14 +5522,19 @@
     return cell;
   }
 
-  function isPageBackedUnifiedClearingPrice(pageData, tabName) {
+  function isPageBackedUnifiedTradeTab(pageData, tabName) {
     var activeTab = tabName || getActiveInfoPrimaryTab();
     return Boolean(
-      activeTab === "全省统一出清价" &&
+      (activeTab === "全省统一出清价" || activeTab === "交易结果") &&
       !isGuangdongInfoDisclosureCenter() &&
       pageData &&
-      pageData.isUnifiedClearingPrice === true
+      (pageData.isUnifiedClearingPrice === true || pageData.isUnifiedTradingResult === true)
     );
+  }
+
+  function isPageBackedUnifiedClearingPrice(pageData, tabName) {
+    var activeTab = tabName || getActiveInfoPrimaryTab();
+    return Boolean(activeTab === "全省统一出清价" && isPageBackedUnifiedTradeTab(pageData, activeTab));
   }
 
   function getInfoClearingPriceValue(row, pageData, side) {
@@ -6548,7 +6580,7 @@
     var activeTab = getActiveInfoTab();
     var activeMockDate = getInfoTradeMockDate(activeTab);
 
-    if ((activeTab === "全省统一出清价" || activeTab === "交易结果") && !isPageBackedUnifiedClearingPrice(pageData, activeTab)) {
+    if ((activeTab === "全省统一出清价" || activeTab === "交易结果") && !isPageBackedUnifiedTradeTab(pageData, activeTab)) {
       if (activeMockDate && state.tradeResult.filters.marketRunRange.start !== activeMockDate) {
         return renderInfoUnsupportedEmptyState("当前日期暂无交易中心披露数据，请切换日期或手动更新数据");
       }
@@ -7363,7 +7395,7 @@
     var pageData = getInfoDisclosurePageData();
     var activeMockDate = getInfoTradeMockDate(activeTab);
 
-    if ((activeTab === "全省统一出清价" || activeTab === "交易结果") && !isPageBackedUnifiedClearingPrice(pageData, activeTab)) {
+    if ((activeTab === "全省统一出清价" || activeTab === "交易结果") && !isPageBackedUnifiedTradeTab(pageData, activeTab)) {
       if (activeMockDate && state.tradeResult.filters.marketRunRange.start !== activeMockDate) {
         return renderInfoUnsupportedEmptyState("当前日期暂无交易中心披露数据，请切换日期或手动更新数据");
       }

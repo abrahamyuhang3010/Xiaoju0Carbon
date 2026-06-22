@@ -836,19 +836,28 @@
 
   function buildThermalBiddingSpaceRows(options) {
     var settings = options || {};
-    var systemLoadRows = settings.systemLoadRows || [];
-    var renewableRows = settings.renewableRows || [];
-    var hydroRows = settings.hydroRows || [];
-    var tieLineRows = settings.tieLineRows || [];
-    var nonMarketRows = settings.nonMarketRows || [];
+    var systemLoadForecastRows = settings.systemLoadForecastRows || settings.systemLoadRows || [];
+    var systemLoadActualRows = settings.systemLoadActualRows || settings.systemLoadRows || [];
+    var renewableForecastRows = settings.renewableForecastRows || settings.renewableRows || [];
+    var renewableActualRows = settings.renewableActualRows || settings.renewableRows || [];
+    var hydroForecastRows = settings.hydroForecastRows || settings.hydroRows || [];
+    var hydroActualRows = settings.hydroActualRows || settings.hydroRows || [];
+    var tieLineForecastRows = settings.tieLineForecastRows || settings.tieLineRows || [];
+    var tieLineActualRows = settings.tieLineActualRows || settings.tieLineRows || [];
+    var nonMarketForecastRows = settings.nonMarketForecastRows || settings.nonMarketRows || [];
+    var nonMarketActualRows = settings.nonMarketActualRows || settings.nonMarketRows || [];
     var requiresNonMarketRows = Boolean(settings.includeNonMarketOutput);
 
     if (
-      !systemLoadRows.length ||
-      !renewableRows.length ||
-      !hydroRows.length ||
-      !tieLineRows.length ||
-      (requiresNonMarketRows && !nonMarketRows.length)
+      !systemLoadForecastRows.length ||
+      !systemLoadActualRows.length ||
+      !renewableForecastRows.length ||
+      !renewableActualRows.length ||
+      !hydroForecastRows.length ||
+      !hydroActualRows.length ||
+      !tieLineForecastRows.length ||
+      !tieLineActualRows.length ||
+      (requiresNonMarketRows && (!nonMarketForecastRows.length || !nonMarketActualRows.length))
     ) {
       return {
         hasRequiredData: false,
@@ -856,53 +865,93 @@
       };
     }
 
-    var renewableRowsByTime = buildRowsByDateTime(renewableRows);
-    var hydroRowsByTime = buildRowsByDateTime(hydroRows);
-    var tieLineRowsByTime = buildRowsByDateTime(tieLineRows);
-    var nonMarketRowsByTime = buildRowsByDateTime(nonMarketRows);
+    var systemLoadActualRowsByTime = buildRowsByDateTime(systemLoadActualRows);
+    var renewableForecastRowsByTime = buildRowsByDateTime(renewableForecastRows);
+    var renewableActualRowsByTime = buildRowsByDateTime(renewableActualRows);
+    var hydroForecastRowsByTime = buildRowsByDateTime(hydroForecastRows);
+    var hydroActualRowsByTime = buildRowsByDateTime(hydroActualRows);
+    var tieLineForecastRowsByTime = buildRowsByDateTime(tieLineForecastRows);
+    var tieLineActualRowsByTime = buildRowsByDateTime(tieLineActualRows);
+    var nonMarketForecastRowsByTime = buildRowsByDateTime(nonMarketForecastRows);
+    var nonMarketActualRowsByTime = buildRowsByDateTime(nonMarketActualRows);
 
     return {
       hasRequiredData: true,
-      rows: systemLoadRows.map(function mapSystemLoadRow(systemRow) {
-        var key = systemRow.date + " " + systemRow.time;
-        var renewableRow = renewableRowsByTime[key] || null;
-        var hydroRow = hydroRowsByTime[key] || null;
-        var tieLineRow = tieLineRowsByTime[key] || null;
-        var nonMarketRow = nonMarketRowsByTime[key] || null;
-        var systemLoad = parseThermalBiddingSpaceNumber(systemRow.value);
-        var renewableOutput = renewableRow ? parseThermalBiddingSpaceNumber(renewableRow.value) : null;
-        var hydroOutput = hydroRow ? parseThermalBiddingSpaceNumber(hydroRow.value) : null;
-        var tieLineTransmission = tieLineRow ? parseThermalBiddingSpaceNumber(tieLineRow.value) : null;
-        var nonMarketOutput = nonMarketRow ? parseThermalBiddingSpaceNumber(nonMarketRow.value) : null;
+      rows: systemLoadForecastRows.map(function mapSystemLoadRow(systemForecastRow) {
+        var key = systemForecastRow.date + " " + systemForecastRow.time;
+        var systemActualRow = systemLoadActualRowsByTime[key] || null;
+        var renewableForecastRow = renewableForecastRowsByTime[key] || null;
+        var renewableActualRow = renewableActualRowsByTime[key] || null;
+        var hydroForecastRow = hydroForecastRowsByTime[key] || null;
+        var hydroActualRow = hydroActualRowsByTime[key] || null;
+        var tieLineForecastRow = tieLineForecastRowsByTime[key] || null;
+        var tieLineActualRow = tieLineActualRowsByTime[key] || null;
+        var nonMarketForecastRow = nonMarketForecastRowsByTime[key] || null;
+        var nonMarketActualRow = nonMarketActualRowsByTime[key] || null;
+        var systemLoadForecast = parseThermalBiddingSpaceNumber(systemForecastRow.value);
+        var systemLoadActual = systemActualRow ? parseThermalBiddingSpaceNumber(systemActualRow.value) : null;
+        var renewableOutputForecast = renewableForecastRow ? parseThermalBiddingSpaceNumber(renewableForecastRow.value) : null;
+        var renewableOutputActual = renewableActualRow ? parseThermalBiddingSpaceNumber(renewableActualRow.value) : null;
+        var hydroOutputForecast = hydroForecastRow ? parseThermalBiddingSpaceNumber(hydroForecastRow.value) : null;
+        var hydroOutputActual = hydroActualRow ? parseThermalBiddingSpaceNumber(hydroActualRow.value) : null;
+        var tieLineTransmissionForecast = tieLineForecastRow ? parseThermalBiddingSpaceNumber(tieLineForecastRow.value) : null;
+        var tieLineTransmissionActual = tieLineActualRow ? parseThermalBiddingSpaceNumber(tieLineActualRow.value) : null;
+        var nonMarketOutputForecast = nonMarketForecastRow ? parseThermalBiddingSpaceNumber(nonMarketForecastRow.value) : null;
+        var nonMarketOutputActual = nonMarketActualRow ? parseThermalBiddingSpaceNumber(nonMarketActualRow.value) : null;
+        var dayAheadThermalBiddingSpace = calculateThermalBiddingSpace(
+          systemLoadForecast,
+          renewableOutputForecast,
+          hydroOutputForecast,
+          tieLineTransmissionForecast,
+          requiresNonMarketRows ? nonMarketOutputForecast : undefined,
+        );
+        var realTimeThermalBiddingSpace = calculateThermalBiddingSpace(
+          systemLoadActual,
+          renewableOutputActual,
+          hydroOutputActual,
+          tieLineTransmissionActual,
+          requiresNonMarketRows ? nonMarketOutputActual : undefined,
+        );
 
         return {
-          date: systemRow.date,
-          time: systemRow.time,
-          systemLoad: systemLoad,
-          renewableTotalOutput: renewableOutput,
-          hydroTotalOutput: hydroOutput,
-          tieLineTransmission: tieLineTransmission,
-          nonMarketOutput: requiresNonMarketRows ? nonMarketOutput : null,
-          thermalBiddingSpace: calculateThermalBiddingSpace(
-            systemLoad,
-            renewableOutput,
-            hydroOutput,
-            tieLineTransmission,
-            requiresNonMarketRows ? nonMarketOutput : undefined,
-          ),
+          date: systemForecastRow.date,
+          time: systemForecastRow.time,
+          systemLoadForecast: systemLoadForecast,
+          systemLoadActual: systemLoadActual,
+          renewableTotalOutputForecast: renewableOutputForecast,
+          renewableTotalOutputActual: renewableOutputActual,
+          hydroTotalOutputForecast: hydroOutputForecast,
+          hydroTotalOutputActual: hydroOutputActual,
+          tieLineTransmissionForecast: tieLineTransmissionForecast,
+          tieLineTransmissionActual: tieLineTransmissionActual,
+          nonMarketOutputForecast: requiresNonMarketRows ? nonMarketOutputForecast : null,
+          nonMarketOutputActual: requiresNonMarketRows ? nonMarketOutputActual : null,
+          dayAheadThermalBiddingSpace: dayAheadThermalBiddingSpace,
+          realTimeThermalBiddingSpace: realTimeThermalBiddingSpace,
+          thermalBiddingSpace: dayAheadThermalBiddingSpace,
           source: uniqueStrings([
-            systemRow.source,
-            renewableRow && renewableRow.source,
-            hydroRow && hydroRow.source,
-            tieLineRow && tieLineRow.source,
-            requiresNonMarketRows && nonMarketRow && nonMarketRow.source,
+            systemForecastRow.source,
+            systemActualRow && systemActualRow.source,
+            renewableForecastRow && renewableForecastRow.source,
+            renewableActualRow && renewableActualRow.source,
+            hydroForecastRow && hydroForecastRow.source,
+            hydroActualRow && hydroActualRow.source,
+            tieLineForecastRow && tieLineForecastRow.source,
+            tieLineActualRow && tieLineActualRow.source,
+            requiresNonMarketRows && nonMarketForecastRow && nonMarketForecastRow.source,
+            requiresNonMarketRows && nonMarketActualRow && nonMarketActualRow.source,
           ]).join(" / "),
           updatedAt: getLatestTextValue([
-            systemRow.updatedAt,
-            renewableRow && renewableRow.updatedAt,
-            hydroRow && hydroRow.updatedAt,
-            tieLineRow && tieLineRow.updatedAt,
-            requiresNonMarketRows && nonMarketRow && nonMarketRow.updatedAt,
+            systemForecastRow.updatedAt,
+            systemActualRow && systemActualRow.updatedAt,
+            renewableForecastRow && renewableForecastRow.updatedAt,
+            renewableActualRow && renewableActualRow.updatedAt,
+            hydroForecastRow && hydroForecastRow.updatedAt,
+            hydroActualRow && hydroActualRow.updatedAt,
+            tieLineForecastRow && tieLineForecastRow.updatedAt,
+            tieLineActualRow && tieLineActualRow.updatedAt,
+            requiresNonMarketRows && nonMarketForecastRow && nonMarketForecastRow.updatedAt,
+            requiresNonMarketRows && nonMarketActualRow && nonMarketActualRow.updatedAt,
           ]),
         };
       }),
@@ -917,21 +966,31 @@
       title: "竞价空间",
       unit: "MW",
       viewMode: "thermalBiddingSpace",
-      valueKey: "thermalBiddingSpace",
+      valueKey: "dayAheadThermalBiddingSpace",
       rows: result.rows,
       hasRequiredData: result.hasRequiredData,
       emptyText: "当前日期缺少竞价空间计算所需数据。",
       tableColumns: [
         { key: "time", title: "时刻" },
-        { key: "systemLoad", title: "系统负荷（MW）" },
-        { key: "renewableTotalOutput", title: "新能源总出力（MW）" },
-        { key: "hydroTotalOutput", title: "水电(含抽蓄)总出力（MW）" },
-        { key: "tieLineTransmission", title: "省间联络线输电（MW）" },
+        { key: "systemLoadForecast", title: "系统负荷（预测）（MW）" },
+        { key: "systemLoadActual", title: "系统负荷（实际）（MW）" },
+        { key: "renewableTotalOutputForecast", title: "新能源总出力（预测）（MW）" },
+        { key: "renewableTotalOutputActual", title: "新能源总出力（实际）（MW）" },
+        { key: "hydroTotalOutputForecast", title: "水电(含抽蓄)总出力（预测）（MW）" },
+        { key: "hydroTotalOutputActual", title: "水电(含抽蓄)总出力（实际）（MW）" },
+        { key: "tieLineTransmissionForecast", title: "省间联络线输电（预测）（MW）" },
+        { key: "tieLineTransmissionActual", title: "省间联络线输电（实际）（MW）" },
       ].concat(
         rowsConfig && rowsConfig.includeNonMarketOutput
-          ? [{ key: "nonMarketOutput", title: "非市场机组总出力（MW）" }]
+          ? [
+              { key: "nonMarketOutputForecast", title: "非市场机组总出力（预测）（MW）" },
+              { key: "nonMarketOutputActual", title: "非市场机组总出力（实际）（MW）" },
+            ]
           : [],
-      ).concat([{ key: "thermalBiddingSpace", title: "火电竞价空间（MW）" }]),
+      ).concat([
+        { key: "dayAheadThermalBiddingSpace", title: "火电竞价空间（日前）（MW）" },
+        { key: "realTimeThermalBiddingSpace", title: "火电竞价空间（实时）（MW）" },
+      ]),
     };
   }
 
@@ -2137,12 +2196,81 @@
     return ["dayAheadVolume", "realTimeVolume", "dayAheadSettlementPrice", "realTimeSettlementPrice"];
   }
 
+  function getTradingResultMockDates(bundle, request, tradingResultData) {
+    var requestedDate =
+      (request && request.date) ||
+      (request && request.runDate) ||
+      (request && request.dateRange && request.dateRange.start) ||
+      "";
+    var rangeStart = (bundle && bundle.availableRange && bundle.availableRange.start) || (bundle && bundle.defaultRange && bundle.defaultRange.start) || requestedDate;
+    var rangeEnd = (bundle && bundle.availableRange && bundle.availableRange.end) || (bundle && bundle.defaultRange && bundle.defaultRange.end) || requestedDate;
+    var availableDates = rangeStart && rangeEnd
+      ? buildDateRangeInclusive(rangeStart, rangeEnd)
+      : getBundleAvailableDates(bundle, { start: rangeStart, end: rangeEnd });
+
+    if (requestedDate && availableDates.indexOf(requestedDate) < 0) {
+      availableDates.push(requestedDate);
+    }
+
+    if (!availableDates.length && tradingResultData && tradingResultData.date) {
+      availableDates.push(tradingResultData.date);
+    }
+
+    return uniqueStrings(availableDates).sort();
+  }
+
+  function getDateSeed(dateValue) {
+    var text = String(dateValue || "");
+    return text.split("").reduce(function accumulate(total, char, index) {
+      return total + char.charCodeAt(0) * (index + 1);
+    }, 0);
+  }
+
+  function buildDatedTradingResultRows(rows, dateValue, tradeCenterKey) {
+    var seed = getDateSeed(dateValue);
+    var centerOffset = tradeCenterKey === "shaanxi" ? 3 : tradeCenterKey === "hunan" ? 1 : 0;
+    var volumeFactor = 1 + (((seed + centerOffset) % 9) - 4) * 0.008;
+    var priceShift = (((seed + centerOffset * 7) % 11) - 5) * 0.42;
+
+    return (rows || []).map(function mapRow(row, index) {
+      var waveShift = (((seed + index * 3 + centerOffset) % 7) - 3) * 0.18;
+      return {
+        date: dateValue,
+        time: tradeCenterKey === "hunan" && index === 23 ? "24:00" : tradeCenterKey === "hunan" ? padNumber(index + 1) + ":00" : row.time,
+        dayAheadVolume: roundNumber(row.dayAheadVolume * volumeFactor),
+        realTimeVolume: roundNumber(row.realTimeVolume * (volumeFactor + 0.006)),
+        dayAheadSettlementPrice: roundNumber(row.dayAheadSettlementPrice + priceShift + waveShift),
+        realTimeSettlementPrice: roundNumber(row.realTimeSettlementPrice + priceShift - waveShift),
+      };
+    });
+  }
+
+  function expandTradingResultRowsToQuarterHours(rows) {
+    return (rows || []).reduce(function accumulateRows(result, row, hourIndex) {
+      return result.concat(
+        Array.from({ length: 4 }, function createQuarterRow(_, quarterIndex) {
+          var pointIndex = hourIndex * 4 + quarterIndex;
+          var waveShift = (quarterIndex - 1.5) * 0.12;
+          return {
+            date: row.date,
+            time: QUARTER_HOUR_END_LABELS[pointIndex],
+            dayAheadVolume: roundNumber(row.dayAheadVolume / 4 + waveShift),
+            realTimeVolume: roundNumber(row.realTimeVolume / 4 - waveShift),
+            dayAheadSettlementPrice: roundNumber(row.dayAheadSettlementPrice + waveShift),
+            realTimeSettlementPrice: roundNumber(row.realTimeSettlementPrice - waveShift),
+          };
+        }),
+      );
+    }, []);
+  }
+
   function hasTradingResultMetric(metricKeys, metricKey) {
     return metricKeys.indexOf(metricKey) >= 0;
   }
 
   function pickTradingResultRowMetrics(row, metricKeys) {
     var nextRow = {
+      date: row.date,
       time: row.time,
     };
 
@@ -2153,9 +2281,14 @@
     return nextRow;
   }
 
-  function buildUnifiedTradingResultPage(tradeCenterKey, bundle) {
+  function buildUnifiedTradingResultPage(tradeCenterKey, bundle, request) {
     var tradingResultData = getUnifiedTradingResultMock(tradeCenterKey) || getLegacyTradingResultData(bundle);
-    var rows = (tradingResultData && tradingResultData.points) || [];
+    var mockDates = getTradingResultMockDates(bundle, request, tradingResultData);
+    var displayDate = (request && (request.date || request.runDate)) || (tradingResultData && tradingResultData.date) || mockDates[0] || "";
+    var rows = mockDates.reduce(function accumulateRows(result, date) {
+      var datedRows = buildDatedTradingResultRows((tradingResultData && tradingResultData.points) || [], date, tradeCenterKey);
+      return result.concat(tradeCenterKey === "shaanxi" ? expandTradingResultRowsToQuarterHours(datedRows) : datedRows);
+    }, []);
     var centerName = (tradingResultData && tradingResultData.centerName) || TRADE_CENTER_NAMES[tradeCenterKey] || "";
     var metricKeys = getTradingResultMetricKeys(tradeCenterKey);
     var chartSeries = [];
@@ -2251,12 +2384,13 @@
         pageType: "infoDisclosure",
         primaryTab: "交易结果",
         secondaryTab: "",
-        date: (tradingResultData && tradingResultData.date) || "",
+        date: displayDate,
       },
+      isUnifiedTradingResult: true,
       viewType: "mixedTrendTable",
       leftUnit: barSeriesDefinitions.length ? "MWh" : "",
       rightUnit: lineSeriesDefinitions.length ? "元/MWh" : "",
-      timeGranularity: "1h",
+      timeGranularity: tradeCenterKey === "shaanxi" ? "15m" : "1h",
       volumeSource: (tradingResultData && tradingResultData.volumeSource) || "stable-placeholder",
       summaryCards: [
         { label: "日前结算峰值", value: dayAheadSeries.max, unit: "元/MWh" },
@@ -2273,7 +2407,7 @@
       tableData: rows.map(function mapRow(row) {
         return pickTradingResultRowMetrics(row, metricKeys);
       }),
-      fileList: createMockFileList(tradeCenterKey + "-trade-result", (tradingResultData && tradingResultData.date) || "2026-05-07", 3),
+      fileList: createMockFileList(tradeCenterKey + "-trade-result", displayDate || "2026-05-07", 3),
       emptyText: "当前日期暂无" + centerName + "交易结果 mock 数据。",
     };
   }
@@ -2764,12 +2898,16 @@
       tradeCenter: "hunan",
       secondaryTab: "火电竞价空间",
       metric: createThermalBiddingSpaceMetric("hn-thermal-bidding-space", {
-        systemLoadRows: buildQuarterRowsFromModule(bundle, "实际负荷"),
-        renewableRows: buildQuarterRowsFromModule(bundle, "新能源总出力"),
-        hydroRows: buildQuarterRowsFromModule(bundle, "水电（含抽蓄）总出力"),
-        tieLineRows: buildQuarterRowsFromModule(bundle, "省间联络线输电情况"),
+        systemLoadForecastRows: buildQuarterRowsFromModule(bundle, "系统负荷预测（日）"),
+        systemLoadActualRows: buildQuarterRowsFromModule(bundle, "实际负荷"),
+        renewableForecastRows: buildQuarterRowsFromModule(bundle, "新能源总出力预测（日）"),
+        renewableActualRows: buildQuarterRowsFromModule(bundle, "新能源总出力"),
+        hydroForecastRows: buildQuarterRowsFromModule(bundle, "水电（含抽蓄）总出力预测（日）"),
+        hydroActualRows: buildQuarterRowsFromModule(bundle, "水电（含抽蓄）总出力"),
+        tieLineForecastRows: buildQuarterRowsFromModule(bundle, "省间联络线输电曲线预测"),
+        tieLineActualRows: buildQuarterRowsFromModule(bundle, "省间联络线输电情况"),
       }),
-      tableMinWidth: 1120,
+      tableMinWidth: 2300,
       emptyText: "当前日期暂无湖南火电竞价空间 mock 数据。",
     });
   }
@@ -3302,14 +3440,19 @@
       tradeCenter: "shaanxi",
       secondaryTab: "火电竞价空间",
       metric: createThermalBiddingSpaceMetric("sx-thermal-bidding-space", {
-        systemLoadRows: buildQuarterRowsFromModule(bundle, "实际负荷"),
-        renewableRows: buildQuarterRowsFromModule(bundle, "新能源总出力"),
-        hydroRows: buildQuarterRowsFromModule(bundle, "水电（含抽蓄）出力"),
-        tieLineRows: buildQuarterRowsFromModule(bundle, "省间联络线输电情况"),
-        nonMarketRows: buildQuarterRowsFromModule(bundle, "非市场机组总出力"),
+        systemLoadForecastRows: buildQuarterRowsFromModule(bundle, "系统负荷预测（日）"),
+        systemLoadActualRows: buildQuarterRowsFromModule(bundle, "实际负荷"),
+        renewableForecastRows: buildQuarterRowsFromModule(bundle, "新能源总出力预测（日）"),
+        renewableActualRows: buildQuarterRowsFromModule(bundle, "新能源总出力"),
+        hydroForecastRows: buildQuarterRowsFromModule(bundle, "水电（含抽蓄）总出力预测（日）"),
+        hydroActualRows: buildQuarterRowsFromModule(bundle, "水电（含抽蓄）出力"),
+        tieLineForecastRows: buildQuarterRowsFromModule(bundle, "省间联络线输电曲线预测"),
+        tieLineActualRows: buildQuarterRowsFromModule(bundle, "省间联络线输电情况"),
+        nonMarketForecastRows: buildQuarterRowsFromModule(bundle, "非市场机组总出力预测"),
+        nonMarketActualRows: buildQuarterRowsFromModule(bundle, "非市场机组总出力"),
         includeNonMarketOutput: true,
       }),
-      tableMinWidth: 1120,
+      tableMinWidth: 2700,
       emptyText: "当前日期暂无陕西火电竞价空间 mock 数据。",
     });
   }
@@ -3716,7 +3859,11 @@
     }
 
     if (!resolvedData && request.pageType === "infoDisclosure" && request.primaryTab === "交易结果") {
-      resolvedData = buildUnifiedTradingResultPage(tradeCenterKey, bundle);
+      resolvedData = buildUnifiedTradingResultPage(tradeCenterKey, bundle, request);
+    }
+
+    if (!resolvedData && request.pageType === "infoDisclosure" && request.primaryTab === "交易结果") {
+      resolvedData = resolveCatalogEntry(catalog, request.pageType, request.primaryTab, request.secondaryTab);
     }
 
     if (!resolvedData && request.pageType === "infoDisclosure" && request.primaryTab === "出清电量" && tradeCenterKey !== "guangdong") {
