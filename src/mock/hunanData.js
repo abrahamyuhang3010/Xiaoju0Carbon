@@ -305,6 +305,7 @@
   }
 
   var hours = buildTimeLabels(60, 24);
+  var hunanEnterpriseHours = buildTimeLabels(60, 24, 60);
   var quarterHours = buildTimeLabels(15, 96, 15);
   var availableDates = buildDateRange("2026-04-26", 56);
   var defaultRange = {
@@ -1506,7 +1507,7 @@
       updatedAt: buildUpdatedAt(dataUpdatedAt, -8),
     };
 
-    hours.forEach(function eachHourLabel(hourLabel, hourIndex) {
+    hunanEnterpriseHours.forEach(function eachHourLabel(hourLabel, hourIndex) {
       row[hourLabel] = hourlyValues[hourIndex];
     });
 
@@ -1661,6 +1662,7 @@
       secondaryTab: "",
     },
     viewType: "profileTable",
+    tableOnly: true,
     chartTitle: "用电企业分时电量趋势图",
     chartUnit: "MWh",
     datePickerMode: "range",
@@ -1686,7 +1688,7 @@
     profileModes: {
       "24": {
         label: "24点视图",
-        labels: hours.slice(),
+        labels: hunanEnterpriseHours.slice(),
         unit: "MWh",
         valueKey: "hourlyValues",
         latestLabel: "所选周期最新日电量",
@@ -1701,7 +1703,7 @@
       { key: "userName", title: "用户名称" },
       { key: "totalValue", title: "总用电量" },
     ]
-      .concat(hours.map(function mapHourLabel(hourLabel) {
+      .concat(hunanEnterpriseHours.map(function mapHourLabel(hourLabel) {
         return { key: hourLabel, title: hourLabel };
       })),
     tableData: hunanUnifiedEnterpriseRows,

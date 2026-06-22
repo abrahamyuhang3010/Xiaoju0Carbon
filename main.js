@@ -6358,6 +6358,27 @@
     var compareRows = state.ui.hasCompare ? filterInfoDisclosurePageRows(pageData.tableData || [], pageData, state.ui.compareRangeDraft) : [];
     var tableConfig = buildInfoDisclosureTableConfig(pageData.tableColumns, rows, pageData.tableMinWidth);
 
+    if (pageData.tableOnly) {
+      if (!rows.length) {
+        return renderInfoUnsupportedEmptyState(pageData.emptyText || INFO_DISCLOSURE_EMPTY_MESSAGE);
+      }
+
+      return (
+        '<section class="panel chart-panel chart-panel-plain"><div class="chart-main chart-main-plain">' +
+        renderDataTablePro({
+          tableId: "info-profile-table-" + getSelectedTradeCenterKey() + "-" + getActiveInfoPrimaryTab(),
+          columns: tableConfig.columns,
+          rows: tableConfig.rows,
+          minWidth: tableConfig.minWidth,
+          sortState: getTableSortState("info-profile-table-" + getSelectedTradeCenterKey() + "-" + getActiveInfoPrimaryTab()),
+          escapeHtml: escapeHtml,
+          renderIcon: renderIcon,
+          renderEmptyState: renderEmptyState,
+        }) +
+        "</div></section>"
+      );
+    }
+
     if (!modeConfig || !rows.length) {
       return renderInfoUnsupportedEmptyState(pageData.emptyText || INFO_DISCLOSURE_EMPTY_MESSAGE);
     }

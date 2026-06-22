@@ -1587,6 +1587,7 @@
       secondaryTab: "",
     },
     viewType: "profileTable",
+    tableOnly: true,
     chartTitle: "用电企业分时电量趋势图",
     chartUnit: "MWh",
     datePickerMode: "range",
