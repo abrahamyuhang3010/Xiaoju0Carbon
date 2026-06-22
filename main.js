@@ -4392,8 +4392,16 @@
   }
 
   function renderInfoUnifiedDataUpdateBar(status, compareSupported) {
-    var actions = [createMoreUpdateAction("open-manual-update")];
-    var canCompare = compareSupported && isInfoDisclosureCompareEnabledByConfig(getActiveInfoTab());
+    var activeTab = getActiveInfoTab();
+    var actions = [];
+    var canCompare =
+      activeTab !== "交易结果" &&
+      compareSupported &&
+      isInfoDisclosureCompareEnabledByConfig(activeTab);
+
+    if (activeTab !== "备用信息" && activeTab !== "全省统一出清价") {
+      actions.push(createMoreUpdateAction("open-manual-update"));
+    }
 
     if (canCompare) {
       actions.push({ label: "对比", variant: "ghost", icon: "compare", action: "open-compare" });
@@ -4865,8 +4873,6 @@
           key: "compareRealTimeThermalBiddingSpace",
           label: formatTradeDisclosureDate(state.ui.compareRangeDraft.start) + " 火电竞价空间（实时）（MW）",
         },
-        { key: "dayAheadThermalBiddingSpaceChange", label: "日前变化幅度" },
-        { key: "realTimeThermalBiddingSpaceChange", label: "实时变化幅度" },
       ]);
     }
 
@@ -4912,12 +4918,10 @@
           if (state.ui.hasCompare) {
             result.compareDayAheadThermalBiddingSpace = createThermalBiddingSpaceNumberCell(compareRow && compareRow.dayAheadThermalBiddingSpace);
             result.compareRealTimeThermalBiddingSpace = createThermalBiddingSpaceNumberCell(compareRow && compareRow.realTimeThermalBiddingSpace);
-            result.dayAheadThermalBiddingSpaceChange = createThermalBiddingSpaceChangeCell(row.dayAheadThermalBiddingSpace, compareRow && compareRow.dayAheadThermalBiddingSpace);
-            result.realTimeThermalBiddingSpaceChange = createThermalBiddingSpaceChangeCell(row.realTimeThermalBiddingSpace, compareRow && compareRow.realTimeThermalBiddingSpace);
           }
           return result;
         }),
-        minWidth: state.ui.hasCompare ? 3200 : Math.max((pageData && pageData.tableMinWidth) || 900, 2300),
+        minWidth: state.ui.hasCompare ? 2800 : Math.max((pageData && pageData.tableMinWidth) || 900, 2300),
         sortState: getTableSortState(tableId),
         enableColumnDrag: true,
         columnOrder: getTableColumnOrder(tableId),
@@ -4929,12 +4933,14 @@
     );
   }
 
-  function buildSingleMetricLoadTooltip(metricConfig, rows, index) {
+  function buildSingleMetricLoadTooltip(metricConfig, rows, index, compareRowsByTime) {
     var row = rows[index] || {};
     var forecastValue = row.forecastValue;
     var actualValue = row.actualValue;
     var unit = (metricConfig && metricConfig.unit) || "MW";
-    return [
+    var compareRow = compareRowsByTime && row.time ? compareRowsByTime[row.time] : null;
+    var compareDate = (compareRow && compareRow.date) || (state.ui.compareRangeDraft && state.ui.compareRangeDraft.start) || "";
+    var lines = [
       "日期时间：" + [row.date, row.time].filter(Boolean).join(" "),
       "当前指标名称：" + ((metricConfig && metricConfig.metricName) || "--"),
       "当日预测：" + (typeof forecastValue === "number" ? formatInteger(forecastValue) + " " + unit : "--"),
@@ -4942,7 +4948,22 @@
       typeof forecastValue === "number" && typeof actualValue === "number"
         ? "差值：" + formatSignedNumber(actualValue - forecastValue) + " " + unit
         : "差值：--",
-    ].join("\n");
+    ];
+
+    if (state.ui.hasCompare) {
+      var compareForecastValue = compareRow && compareRow.forecastValue;
+      var compareActualValue = compareRow && compareRow.actualValue;
+      lines.push("对比日：" + [compareDate, row.time].filter(Boolean).join(" "));
+      lines.push("对比日预测：" + (typeof compareForecastValue === "number" ? formatInteger(compareForecastValue) + " " + unit : "--"));
+      lines.push("对比日实际：" + (typeof compareActualValue === "number" ? formatInteger(compareActualValue) + " " + unit : "--"));
+      lines.push(
+        typeof compareForecastValue === "number" && typeof compareActualValue === "number"
+          ? "对比日差值：" + formatSignedNumber(compareActualValue - compareForecastValue) + " " + unit
+          : "对比日差值：--",
+      );
+    }
+
+    return lines.join("\n");
   }
 
   function renderSingleMetricLoadLoading(metricName) {
@@ -5003,6 +5024,8 @@
     });
     var chartId = "info-single-metric-chart-" + getSelectedTradeCenterKey() + "-" + selectedItem.id;
     var tableId = "info-single-metric-table-" + getSelectedTradeCenterKey() + "-" + selectedItem.id;
+    var compareRows = state.ui.hasCompare ? filterInfoDisclosurePageRows(metricConfig.rows || [], pageData, state.ui.compareRangeDraft) : [];
+    var compareRowsByTime = buildSingleMetricRowsByTime(compareRows);
     var hasForecastValues = rows.some(function someRow(row) {
       return typeof row.forecastValue === "number";
     });
@@ -5028,6 +5051,40 @@
         }),
       },
     ];
+    var tableColumns = [
+      { key: "time", label: "时刻" },
+      { key: "forecastValue", label: "当日预测（MW）" },
+      { key: "actualValue", label: "当日实际（MW）" },
+      { key: "diffValue", label: "差值（MW）" },
+    ];
+
+    if (state.ui.hasCompare) {
+      var compareDateLabel = formatTradeDisclosureDate(state.ui.compareRangeDraft.start);
+      chartSeries.push({
+        id: chartId + "-forecast-compare",
+        label: "对比日预测",
+        color: "#FF7A45",
+        dasharray: "6 4",
+        values: rows.map(function mapRow(row) {
+          var compareRow = compareRowsByTime[row.time] || null;
+          return compareRow ? compareRow.forecastValue : null;
+        }),
+      });
+      chartSeries.push({
+        id: chartId + "-actual-compare",
+        label: "对比日实际",
+        color: "#8C6A4A",
+        values: rows.map(function mapRow(row) {
+          var compareRow = compareRowsByTime[row.time] || null;
+          return compareRow ? compareRow.actualValue : null;
+        }),
+      });
+      tableColumns = tableColumns.concat([
+        { key: "compareForecastValue", label: compareDateLabel + " 预测（MW）" },
+        { key: "compareActualValue", label: compareDateLabel + " 实际（MW）" },
+        { key: "compareDiffValue", label: compareDateLabel + " 差值（MW）" },
+      ]);
+    }
 
     return (
       '<section class="panel chart-panel"><div class="chart-layout">' +
@@ -5050,7 +5107,7 @@
           }),
         hiddenSeries: getChartHiddenState(chartId),
         tooltipFormatter: function tooltipFormatter(_, index) {
-          return buildSingleMetricLoadTooltip(metricConfig, rows, index);
+          return buildSingleMetricLoadTooltip(metricConfig, rows, index, compareRowsByTime);
         },
         escapeHtml: escapeHtml,
         renderIcon: renderIcon,
@@ -5059,21 +5116,23 @@
       }) +
       renderDataTablePro({
         tableId: tableId,
-        columns: [
-          { key: "time", label: "时刻" },
-          { key: "forecastValue", label: "当日预测（MW）" },
-          { key: "actualValue", label: "当日实际（MW）" },
-          { key: "diffValue", label: "差值（MW）" },
-        ],
+        columns: tableColumns,
         rows: rows.map(function mapRow(row) {
-          return {
+          var compareRow = compareRowsByTime[row.time] || null;
+          var result = {
             time: row.time,
             forecastValue: createSingleMetricLoadNumberCell(row.forecastValue, false),
             actualValue: createSingleMetricLoadNumberCell(row.actualValue, false),
             diffValue: createSingleMetricLoadNumberCell(row.diffValue, true),
           };
+          if (state.ui.hasCompare) {
+            result.compareForecastValue = createSingleMetricLoadNumberCell(compareRow && compareRow.forecastValue, false);
+            result.compareActualValue = createSingleMetricLoadNumberCell(compareRow && compareRow.actualValue, false);
+            result.compareDiffValue = createSingleMetricLoadNumberCell(compareRow && compareRow.diffValue, true);
+          }
+          return result;
         }),
-        minWidth: (pageData && pageData.tableMinWidth) || 900,
+        minWidth: state.ui.hasCompare ? Math.max((pageData && pageData.tableMinWidth) || 900, 1320) : (pageData && pageData.tableMinWidth) || 900,
         sortState: getTableSortState(tableId),
         escapeHtml: escapeHtml,
         renderIcon: renderIcon,
@@ -5383,6 +5442,12 @@
     });
   }
 
+  function getInfoDisclosureComparableColumns(columns) {
+    return (columns || []).filter(function filterColumn(column) {
+      return column && ["date", "time", "source", "updatedAt"].indexOf(column.key) < 0;
+    });
+  }
+
   function getInfoDisclosureMetricFormatter(metricKey) {
     return metricKey === "dayAheadVolume" || metricKey === "realTimeVolume" ? formatInteger : formatDecimal;
   }
@@ -5440,7 +5505,7 @@
   }
 
   function buildInfoDisclosureCompareTableColumns(columns, currentDateLabel, compareDateLabel) {
-    var metricColumns = getInfoDisclosureMetricColumns(columns);
+    var metricColumns = getInfoDisclosureComparableColumns(columns);
     return [{ key: "time", label: "时刻" }]
       .concat(
         metricColumns.map(function mapColumn(column) {
@@ -5461,7 +5526,7 @@
   }
 
   function buildInfoDisclosureCompareTableRows(rows, compareRows, columns) {
-    var metricColumns = getInfoDisclosureMetricColumns(columns);
+    var metricColumns = getInfoDisclosureComparableColumns(columns);
     return rows.map(function mapRow(row, index) {
       var compareRow = compareRows[index] || {};
       var result = {
@@ -6123,13 +6188,14 @@
   function renderInfoDisclosureMixedTrendContent(pageData) {
     var rows = filterInfoDisclosurePageRows(pageData.tableData || [], pageData);
     var isTradeResultPage = getActiveInfoPrimaryTab() === "交易结果";
-    var compareRows = state.ui.hasCompare && isTradeResultPage ? getTradeResultCompareRowsByTab("交易结果") : [];
+    var hasTradeResultCompare = false;
+    var compareRows = [];
     var tableConfig = buildInfoDisclosureTableConfig(pageData.tableColumns, rows, pageData.tableMinWidth);
     var tableColumns = tableConfig.columns;
     var tableRows = tableConfig.rows;
     var tableMinWidth = tableConfig.minWidth;
 
-    if (isTradeResultPage && state.ui.hasCompare) {
+    if (isTradeResultPage && hasTradeResultCompare) {
       var currentDateLabel = formatTradeDisclosureDate(state.tradeResult.filters.marketRunRange.start);
       var compareDateLabel = formatTradeDisclosureDate(state.ui.compareRangeDraft.start);
       tableColumns = buildInfoDisclosureCompareTableColumns(pageData.tableColumns, currentDateLabel, compareDateLabel);
@@ -6208,14 +6274,25 @@
 
   function renderInfoDisclosureLineTableContent(pageData) {
     var rows = filterInfoDisclosurePageRows(pageData.tableData || [], pageData);
-    var currentDateLabel = formatTradeDisclosureDate(state.tradeResult.filters.marketRunRange.start);
-    var compareDateLabel = formatTradeDisclosureDate(state.ui.compareRangeDraft.start);
     var tableConfig = buildInfoDisclosureTableConfig(pageData.tableColumns, rows, pageData.tableMinWidth);
     var isProvinceClearingPage = getActiveInfoPrimaryTab() === "全省统一出清价";
-    var compareRows = isProvinceClearingPage ? getInfoClearingCompareRows(pageData) : [];
+    var isReservePage = getActiveInfoTab() === "备用信息";
+    var activeRange = getInfoDisclosureActiveRange(pageData);
+    var currentDateLabel = formatTradeDisclosureDate(
+      (isProvinceClearingPage ? state.tradeResult.filters.marketRunRange : activeRange).start,
+    );
+    var compareDateLabel = formatTradeDisclosureDate(state.ui.compareRangeDraft.start);
+    var compareRows = isProvinceClearingPage
+      ? getInfoClearingCompareRows(pageData)
+      : isReservePage && state.ui.hasCompare
+        ? filterInfoDisclosurePageRows(pageData.tableData || [], pageData, state.ui.compareRangeDraft)
+        : [];
     var dayAheadLabel = getInfoClearingDayAheadLabel(pageData);
     var realTimeLabel = getInfoClearingRealTimeLabel(pageData);
     var timeColumnLabel = isPageBackedUnifiedClearingPrice(pageData, "全省统一出清价") ? "时段" : "时刻";
+    var lineTableColumns = tableConfig.columns;
+    var lineTableRows = tableConfig.rows;
+    var lineTableMinWidth = tableConfig.minWidth;
     var tradeTableRows = isProvinceClearingPage
       ? rows.map(function mapRow(row) {
           var dayAheadPrice = getInfoClearingPriceValue(row, pageData, "dayAhead");
@@ -6263,6 +6340,12 @@
       });
     }
 
+    if (isReservePage && state.ui.hasCompare) {
+      lineTableColumns = buildInfoDisclosureCompareTableColumns(pageData.tableColumns, currentDateLabel, compareDateLabel);
+      lineTableRows = buildInfoDisclosureCompareTableRows(rows, compareRows, pageData.tableColumns);
+      lineTableMinWidth = Math.max(tableConfig.minWidth, lineTableColumns.length * 180);
+    }
+
     if (!rows.length) {
       return renderInfoUnsupportedEmptyState(pageData.emptyText || INFO_DISCLOSURE_EMPTY_MESSAGE);
     }
@@ -6297,6 +6380,10 @@
                   }),
                 },
               ]
+            : [],
+        ).concat(
+          isReservePage && state.ui.hasCompare
+            ? buildInfoDisclosureCompareSeries(compareRows, pageData.seriesDefinitions)
             : [],
         ),
         hiddenSeries: getChartHiddenState("info-unified-line-chart-" + getSelectedTradeCenterKey() + "-" + getActiveInfoTab()),
@@ -6369,9 +6456,9 @@
       }) +
       renderDataTablePro({
         tableId: "info-unified-line-table-" + getSelectedTradeCenterKey() + "-" + getActiveInfoTab(),
-        columns: isProvinceClearingPage ? tradeTableColumns : tableConfig.columns,
-        rows: tradeTableRows || tableConfig.rows,
-        minWidth: isProvinceClearingPage && state.ui.hasCompare ? 1680 : isProvinceClearingPage ? pageData.tableMinWidth || 1120 : tableConfig.minWidth,
+        columns: isProvinceClearingPage ? tradeTableColumns : lineTableColumns,
+        rows: tradeTableRows || lineTableRows,
+        minWidth: isProvinceClearingPage && state.ui.hasCompare ? 1680 : isProvinceClearingPage ? pageData.tableMinWidth || 1120 : lineTableMinWidth,
         enableColumnDrag: true,
         columnOrder: getTableColumnOrder("info-unified-line-table-" + getSelectedTradeCenterKey() + "-" + getActiveInfoTab()),
         sortState: getTableSortState("info-unified-line-table-" + getSelectedTradeCenterKey() + "-" + getActiveInfoTab()),
@@ -6898,6 +6985,10 @@
   function isInfoDisclosureCompareSupported() {
     var activeTab = getActiveInfoTab();
 
+    if (activeTab === "交易结果") {
+      return false;
+    }
+
     if (isSellerTimeSharingCompareEnabled(activeTab)) {
       return true;
     }
@@ -7416,7 +7507,7 @@
 
     if (activeTab === "用电企业分时电量") {
       if (isPageBackedTimeSharingTab(activeTab, pageData)) {
-        return renderUnifiedInfoDisclosureContent(pageData);
+        return renderEnterpriseUpdateBar(getInfoDisclosureStatus()) + renderUnifiedInfoDisclosureContent(pageData);
       }
       return renderEnterpriseContent();
     }
@@ -8728,6 +8819,9 @@
   }
 
   function getTradeResultNoCompareHint(activeTab) {
+    if (activeTab === "交易结果") {
+      return "";
+    }
     if (!state.ui.hasCompare || hasTradeResultCompareData(activeTab)) {
       return "";
     }
