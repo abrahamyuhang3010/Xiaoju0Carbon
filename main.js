@@ -775,6 +775,13 @@
       return state.ui.runtimeRange;
     }
 
+    if (pageData && pageData.filters && pageData.filters.date && pageData.datePickerMode === "range") {
+      return {
+        start: pageData.filters.date,
+        end: pageData.filters.date,
+      };
+    }
+
     return getMarketDisclosureState().appliedRange;
   }
 

@@ -1771,6 +1771,8 @@
   var hunanInfoMockSource = "取数工具";
   var hunanInfoMockPublishTime = "2026-05-09 09:58:00";
   var hunanInfoMockUpdateTime = buildUpdatedAt(dataUpdatedAt, -2);
+  var hunanInfoUnitStatusDate = "2026-06-20";
+  var hunanInfoUnitStatusUpdatedAt = "2026-06-21 23:00:17";
   var hunanInfoUnitStatusSourceDate = "2026-05-06";
   var hunanInfoDisclosureTimeLabels = [
     "00:15", "00:30", "00:45", "01:00", "01:15", "01:30", "01:45", "02:00", "02:15", "02:30", "02:45", "03:00",
@@ -1847,7 +1849,7 @@
   }
 
   function buildHunanInfoUnitStatusRows(rawRows, runDate, statusOffset) {
-    var resolvedRunDate = runDate || standardDefaultDate;
+    var resolvedRunDate = runDate || hunanInfoUnitStatusDate;
     return rawRows.map(function mapRawUnit(row) {
       var statusText = shiftStatusText(row[3], statusOffset || 0);
       var formattedRow = {
@@ -1859,7 +1861,7 @@
         unitName: row[1],
         installedCapacityMw: row[2],
         operatingStatus: getHunanInfoOperatingStatus(statusText),
-        updatedAt: hunanInfoMockUpdateTime,
+        updatedAt: hunanInfoUnitStatusUpdatedAt,
       };
 
       hunanInfoDisclosureTimeLabels.forEach(function eachTime(time, index) {
@@ -1870,9 +1872,7 @@
     });
   }
 
-  var hunanUnifiedUnitStatusRows = buildHunanInfoUnitStatusRows(hunanInfoUnitStatusRawRows, standardDefaultDate, 0).concat(
-    buildHunanInfoUnitStatusRows(hunanInfoUnitStatusRawRows, "2026-05-08", 4),
-  );
+  var hunanUnifiedUnitStatusRows = buildHunanInfoUnitStatusRows(hunanInfoUnitStatusRawRows, hunanInfoUnitStatusDate, 0);
   var hunanInfoMaintenanceCapacityValues = hunanInfoDisclosureTimeLabels.map(function mapMaintenanceCapacity(_, index) {
     return hunanInfoUnitStatusRawRows.reduce(function sumCapacity(total, row) {
       return total + (row[3].charAt(index) === "0" ? row[2] : 0);
@@ -1968,15 +1968,15 @@
     hasDataSource: true,
     title: "机组检修容量",
     description: "湖南交易中心信息披露页按样例文件转换的机组检修容量与检修计划 mock 数据。",
-    updateTime: hunanInfoMockUpdateTime,
-    dataUpdateTime: hunanInfoMockUpdateTime,
+    updateTime: hunanInfoUnitStatusUpdatedAt,
+    dataUpdateTime: hunanInfoUnitStatusUpdatedAt,
     publishTime: hunanInfoMockPublishTime,
     dataPublishTime: hunanInfoMockPublishTime,
-    dataSource: hunanInfoMockSource,
-    source: hunanInfoMockSource,
+    dataSource: "数据披露数据",
+    source: "数据披露数据",
     unit: "MW",
     filters: {
-      date: standardDefaultDate,
+      date: hunanInfoUnitStatusDate,
       granularity: "15min",
       primaryTab: "负荷信息",
       secondaryTab: "机组检修容量",

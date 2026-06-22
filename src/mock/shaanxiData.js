@@ -336,6 +336,8 @@
     end: "2026-05-09",
   };
   var dataUpdatedAt = "2026-05-09 10:41:06";
+  var shaanxiInfoUnitStatusDate = "2026-06-20";
+  var shaanxiInfoUnitStatusUpdatedAt = "2026-06-21 23:00:17";
   var dataSource = "陕西电力交易中心信息披露";
   var weightedPriceRows = buildPriceRows(availableDates, 328, "陕西用户侧加权电价口径", buildUpdatedAt(dataUpdatedAt, -16));
   var saleCompanyRows = availableDates.map(buildQuarterlySalesRow);
@@ -1812,97 +1814,30 @@
     tableMinWidth: 1240,
     emptyText: "当前日期暂无陕西日前申报 mock 数据。",
   });
+  var shaanxiInfoUnitStatusRunningPattern = quarterHours.map(function mapRunningStatus() { return 1; });
+  var shaanxiInfoUnitStatusStoppedPattern = quarterHours.map(function mapStoppedStatus() { return 0; });
   var shaanxiUnifiedUnitRows = [
-    {
-      date: standardDefaultDate,
-      runDate: standardDefaultDate,
+    ["SX-GEN-001", "西北.直罗电厂/27kV.#1机", "运行", shaanxiInfoUnitStatusRunningPattern],
+    ["SX-GEN-002", "陕西.渭河二厂/20kV.#5机", "停机", shaanxiInfoUnitStatusStoppedPattern],
+    ["SX-GEN-003", "陕西.乐天电厂/22kV.2号发电机", "运行", shaanxiInfoUnitStatusRunningPattern],
+    ["SX-GEN-004", "陕西.乐天电厂/22kV.1号发电机", "停机", shaanxiInfoUnitStatusStoppedPattern],
+    ["SX-GEN-005", "陕西.麟游电厂/20kV.2号发电机", "停机", shaanxiInfoUnitStatusStoppedPattern],
+    ["SX-GEN-006", "陕西.宝鸡二厂/20kV.#1机", "停机", shaanxiInfoUnitStatusStoppedPattern],
+    ["SX-GEN-007", "陕西.麟游电厂/20kV.1号发电机", "停机", shaanxiInfoUnitStatusStoppedPattern],
+    ["SX-GEN-008", "陕西.怀德电厂/20kV.2号机", "停机", shaanxiInfoUnitStatusStoppedPattern],
+  ].map(function mapUnit(row) {
+    return {
+      date: shaanxiInfoUnitStatusDate,
+      runDate: shaanxiInfoUnitStatusDate,
       disclosureType: "机组运行状态",
-      unitId: "SX-GEN-001",
-      unitName: "西安燃机 1 号机",
-      operatingStatus: "运行",
-      values: buildWaveValues(15, 96, {
-        base: 546,
-        dayAmplitude: 22,
-        peakAmplitude: 34,
-        dayShift: 6,
-        peakShift: 15,
-        pattern: [-6, 4, 8, -2],
-        integer: true,
-      }),
-    },
-    {
-      date: standardDefaultDate,
-      runDate: standardDefaultDate,
-      disclosureType: "机组运行状态",
-      unitId: "SX-GEN-002",
-      unitName: "咸阳煤机 2 号机",
-      operatingStatus: "运行",
-      values: buildWaveValues(15, 96, {
-        base: 842,
-        dayAmplitude: 20,
-        peakAmplitude: 30,
-        dayShift: 6,
-        peakShift: 14,
-        pattern: [-8, 6, 10, -4],
-        integer: true,
-      }),
-    },
-    {
-      date: standardDefaultDate,
-      runDate: standardDefaultDate,
-      disclosureType: "机组运行状态",
-      unitId: "SX-GEN-004",
-      unitName: "渭南风场集群",
-      operatingStatus: "受限运行",
-      values: quarterHours.map(function mapWindValue(_, index) {
-        var hour = index / 4;
-        var baseValue = 186 + Math.round(Math.max(0, Math.sin(((hour - 5) / 24) * Math.PI * 2)) * 128) + [-18, 10, 16, -6][index % 4];
-        return index >= 28 && index <= 76 ? Math.max(baseValue - 54, 88) : baseValue;
-      }),
-    },
-    {
-      date: standardDefaultDate,
-      runDate: standardDefaultDate,
-      disclosureType: "机组运行状态",
-      unitId: "SX-GEN-005",
-      unitName: "榆林光伏 5 号机",
-      operatingStatus: "运行",
-      values: quarterHours.map(function mapSolarValue(_, index) {
-        var hour = index / 4;
-        if (hour < 6 || hour > 18.5) {
-          return 0;
-        }
-        return Math.round(Math.max(0, Math.sin(((hour - 6) / 12.5) * Math.PI) * 212) + [0, 6, -4, 10][index % 4]);
-      }),
-    },
-    {
-      date: standardDefaultDate,
-      runDate: standardDefaultDate,
-      disclosureType: "机组运行状态",
-      unitId: "SX-GEN-006",
-      unitName: "延安抽蓄 1 号机",
-      operatingStatus: "检修",
-      values: quarterHours.map(function mapOutageValue() {
-        return 0;
-      }),
-    },
-    {
-      date: standardDefaultDate,
-      runDate: standardDefaultDate,
-      disclosureType: "机组运行状态",
-      unitId: "SX-GEN-008",
-      unitName: "铜川燃机 2 号机",
-      operatingStatus: "备用",
-      values: quarterHours.map(function mapStandbyValue(_, index) {
-        if (index < 52) {
-          return 0;
-        }
-        return 154 + [0, 4, -4, 8][index % 4];
-      }),
-    },
-  ];
+      unitId: row[0],
+      unitName: row[1],
+      operatingStatus: row[2],
+      values: row[3],
+    };
+  });
   function buildShaanxiUnifiedUnitStatusRows(rows, runDate, valueOffset) {
-    var resolvedRunDate = runDate || standardDefaultDate;
+    var resolvedRunDate = runDate || shaanxiInfoUnitStatusDate;
     return rows.map(function mapUnitStatusRow(row, index) {
     var formattedRow = {
       sequence: index + 1,
@@ -1912,7 +1847,7 @@
       unitId: row.unitId,
       unitName: row.unitName,
       operatingStatus: row.operatingStatus,
-      updatedAt: buildUpdatedAt(dataUpdatedAt, -7),
+      updatedAt: shaanxiInfoUnitStatusUpdatedAt,
     };
     quarterHours.forEach(function eachTime(time, index) {
       formattedRow[time] = row.values[(index + (valueOffset || 0)) % row.values.length];
@@ -1921,9 +1856,7 @@
     });
   }
 
-  var shaanxiUnifiedUnitStatusRows = buildShaanxiUnifiedUnitStatusRows(shaanxiUnifiedUnitRows, standardDefaultDate, 0).concat(
-    buildShaanxiUnifiedUnitStatusRows(shaanxiUnifiedUnitRows, "2026-05-08", 4),
-  );
+  var shaanxiUnifiedUnitStatusRows = buildShaanxiUnifiedUnitStatusRows(shaanxiUnifiedUnitRows, shaanxiInfoUnitStatusDate, 0);
   var shaanxiUnifiedOnlineCapacityValues = quarterHours.map(function mapAggregateValue(_, index) {
     return shaanxiUnifiedUnitRows.reduce(function accumulate(total, row) {
       return total + row.values[index];
@@ -1932,10 +1865,10 @@
   var shaanxiUnifiedUnitStatusPage = createPageData({
     title: "机组检修容量",
     description: "陕西交易中心信息披露页统一结构下的机组状态 mock 数据。",
-    updateTime: buildUpdatedAt(dataUpdatedAt, -7),
-    dataSource: "陕西电力交易中心机组状态 mock",
+    updateTime: shaanxiInfoUnitStatusUpdatedAt,
+    dataSource: "数据披露数据",
     filters: {
-      date: standardDefaultDate,
+      date: shaanxiInfoUnitStatusDate,
       granularity: "15min",
       primaryTab: "负荷信息",
       secondaryTab: "机组检修容量",

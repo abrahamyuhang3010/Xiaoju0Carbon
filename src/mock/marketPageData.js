@@ -302,7 +302,7 @@
       minute %= 60;
     }
 
-    return String(hour) + ":" + String(minute).padStart(2, "0");
+    return String(hour).padStart(2, "0") + ":" + String(minute).padStart(2, "0");
   }
 
   function ensurePageData(data, fallback) {
@@ -2470,6 +2470,9 @@
     if (text === "运行") {
       return "success";
     }
+    if (text === "停机") {
+      return "danger";
+    }
     if (text === "检修") {
       return "danger";
     }
@@ -2483,6 +2486,41 @@
       return "processing";
     }
     return "default";
+  }
+
+  function getUnitStatusCellText(value) {
+    if (value && typeof value === "object" && value.text !== undefined) {
+      return String(value.text || "");
+    }
+    if (value === "运行" || value === "停机") {
+      return value;
+    }
+    return Number(value || 0) > 0 ? "运行" : "停机";
+  }
+
+  function getUnitStatusSummaryText(row, quarterColumns) {
+    var hasRunning = (quarterColumns || []).some(function hasRunningStatus(column) {
+      return getUnitStatusCellText(row[column.key]) === "运行";
+    });
+    return hasRunning ? "运行" : "停机";
+  }
+
+  function buildUnitStatusDisplayRows(unitRows, quarterColumns) {
+    return (unitRows || []).map(function mapRow(row) {
+      var summaryText = getUnitStatusSummaryText(row, quarterColumns);
+      var nextRow = {
+        runDate: row.runDate || row.date || "",
+        unitName: row.unitName,
+        operatingStatus: createBadgeCell(summaryText, getUnitStatusTone(summaryText), summaryText),
+      };
+
+      (quarterColumns || []).forEach(function eachColumn(column) {
+        var statusText = getUnitStatusCellText(row[column.key]);
+        nextRow[column.key] = createBadgeCell(statusText, getUnitStatusTone(statusText), statusText);
+      });
+
+      return nextRow;
+    });
   }
 
   function getPlanStatusTone(text) {
@@ -2846,19 +2884,7 @@
     });
     var shiftUnitStatusTimeTitle = Boolean(quarterColumns[0] && quarterColumns[0].key === "00:00");
 
-    var unitRows = (unitTable.data || []).map(function mapRow(row, index) {
-      var nextRow = {
-        sequence: row.sequence || index + 1,
-        runDate: row.runDate || row.date || "",
-        unitName: row.unitName,
-      };
-
-      quarterColumns.forEach(function eachColumn(column) {
-        nextRow[column.key] = row[column.key];
-      });
-
-      return nextRow;
-    });
+    var unitRows = buildUnitStatusDisplayRows(unitTable.data || [], quarterColumns);
 
     return buildDisclosureTablePage({
       provinceCode: "hn",
@@ -2880,9 +2906,9 @@
         date: (dataset.filters && dataset.filters.date) || "",
       },
       columns: [
-        { key: "sequence", title: "序号" },
         { key: "runDate", title: "日期" },
         { key: "unitName", title: "机组名称" },
+        { key: "operatingStatus", title: "运行状态" },
       ]
         .concat(quarterColumns.map(function mapColumn(column) {
           return { key: column.key, title: formatUnitStatusTimeColumnTitle(column.key, shiftUnitStatusTimeTitle) };
@@ -3376,19 +3402,7 @@
       return /^\d{2}:\d{2}$/.test(column.key);
     });
     var shiftUnitStatusTimeTitle = Boolean(quarterColumns[0] && quarterColumns[0].key === "00:00");
-    var unitRows = (unitTable.data || []).map(function mapRow(row, index) {
-      var nextRow = {
-        sequence: row.sequence || index + 1,
-        runDate: row.runDate,
-        unitName: row.unitName,
-      };
-
-      quarterColumns.forEach(function eachColumn(column) {
-        nextRow[column.key] = row[column.key];
-      });
-
-      return nextRow;
-    });
+    var unitRows = buildUnitStatusDisplayRows(unitTable.data || [], quarterColumns);
 
     return buildDisclosureTablePage({
       provinceCode: "sx",
@@ -3410,9 +3424,9 @@
         date: (dataset.filters && dataset.filters.date) || "",
       },
       columns: [
-        { key: "sequence", title: "序号" },
         { key: "runDate", title: "日期" },
         { key: "unitName", title: "机组名称" },
+        { key: "operatingStatus", title: "运行状态" },
       ]
         .concat(quarterColumns.map(function mapColumn(column) {
           return { key: column.key, title: formatUnitStatusTimeColumnTitle(column.key, shiftUnitStatusTimeTitle) };
