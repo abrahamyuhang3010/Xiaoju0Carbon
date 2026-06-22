@@ -330,7 +330,7 @@
   // 陕西原始 96 点数据按周期结束时刻标记，首点为 00:15，末点为 24:00。
   var quarterHours = buildTimeLabels(15, 96, 15);
   var hours = buildTimeLabels(60, 24);
-  var availableDates = buildDateRange("2026-04-26", 14);
+  var availableDates = buildDateRange("2026-04-26", 56);
   var defaultRange = {
     start: "2026-05-03",
     end: "2026-05-09",
@@ -338,12 +338,24 @@
   var dataUpdatedAt = "2026-05-09 10:41:06";
   var shaanxiInfoUnitStatusDate = "2026-06-20";
   var shaanxiInfoUnitStatusUpdatedAt = "2026-06-21 23:00:17";
+  var shaanxiInfoDailyMockDates = buildDateRange("2026-05-09", 43);
   var dataSource = "陕西电力交易中心信息披露";
   var weightedPriceRows = buildPriceRows(availableDates, 328, "陕西用户侧加权电价口径", buildUpdatedAt(dataUpdatedAt, -16));
   var saleCompanyRows = availableDates.map(buildQuarterlySalesRow);
   var average96Values = averageBySlot(saleCompanyRows, "quarterValues");
   var average24Values = averageBySlot(saleCompanyRows, "converted24Values");
-  var settlementDates = buildDateRange("2026-05-03", 7);
+  var settlementDates = buildDateRange("2026-05-03", 49);
+  function expandRowsByShaanxiInfoDates(rows, dateKeys) {
+    return shaanxiInfoDailyMockDates.reduce(function accumulateRows(result, date) {
+      return result.concat((rows || []).map(function mapRow(row) {
+        var nextRow = Object.assign({}, row);
+        (dateKeys || ["date"]).forEach(function eachDateKey(dateKey) {
+          nextRow[dateKey] = date;
+        });
+        return nextRow;
+      }));
+    }, []);
+  }
   var settlementDailyTemplates = [
     { enterpriseCode: "SXQY001", enterpriseName: "西安高新补能中心", accountNo: "SX0001" },
     { enterpriseCode: "SXQY002", enterpriseName: "咸阳物流港充电站", accountNo: "SX0002" },
@@ -1675,7 +1687,7 @@
     nodeData.realTimeValues = nodeData.dayAheadValues.map(function mapRealTimeNodePrice(value, index) {
       return round(value + [6.4, -3.8, 2.9, 7.1][index % 4]);
     });
-    nodeData.rows = quarterHours.map(function mapNodeRow(time, index) {
+    nodeData.rows = expandRowsByShaanxiInfoDates(quarterHours.map(function mapNodeRow(time, index) {
       var dayAheadValue = nodeData.dayAheadValues[index];
       var realTimeValue = nodeData.realTimeValues[index];
       return {
@@ -1687,7 +1699,7 @@
         diffValue: round(realTimeValue - dayAheadValue),
         updatedAt: buildUpdatedAt(dataUpdatedAt, -8),
       };
-    });
+    }), ["date"]);
   });
   var shaanxiUnifiedNodePricePage = createPageData({
     title: "节点电价",
@@ -1755,7 +1767,7 @@
     peakShift: 15,
     pattern: [-1.1, 0.7, 1.3, -0.5],
   });
-  var shaanxiUnifiedDeclarationRows = quarterHours.map(function mapDeclarationRow(time, index) {
+  var shaanxiUnifiedDeclarationRows = expandRowsByShaanxiInfoDates(quarterHours.map(function mapDeclarationRow(time, index) {
     return {
       date: standardDefaultDate,
       operationDate: standardDefaultDate,
@@ -1766,7 +1778,7 @@
       declarationStatus: index % 12 === 0 ? "待校验" : index % 3 === 0 ? "已回传" : "已提交",
       updatedAt: buildUpdatedAt(dataUpdatedAt, -9),
     };
-  });
+  }), ["date", "operationDate"]);
   var shaanxiUnifiedDeclarationPage = createPageData({
     title: "日前申报",
     description: "陕西交易中心信息披露页统一结构下的日前申报 mock 数据。",
@@ -1856,7 +1868,9 @@
     });
   }
 
-  var shaanxiUnifiedUnitStatusRows = buildShaanxiUnifiedUnitStatusRows(shaanxiUnifiedUnitRows, shaanxiInfoUnitStatusDate, 0);
+  var shaanxiUnifiedUnitStatusRows = shaanxiInfoDailyMockDates.reduce(function accumulateUnitStatusRows(result, runDate, dateIndex) {
+    return result.concat(buildShaanxiUnifiedUnitStatusRows(shaanxiUnifiedUnitRows, runDate, dateIndex % 4));
+  }, []);
   var shaanxiUnifiedOnlineCapacityValues = quarterHours.map(function mapAggregateValue(_, index) {
     return shaanxiUnifiedUnitRows.reduce(function accumulate(total, row) {
       return total + row.values[index];
@@ -1906,7 +1920,7 @@
     extraTables: [],
     emptyText: "当前日期暂无陕西机组状态 mock 数据。",
   });
-  var shaanxiUnifiedReserveRows = quarterHours.map(function mapReserveRow(time, index) {
+  var shaanxiUnifiedReserveRows = expandRowsByShaanxiInfoDates(quarterHours.map(function mapReserveRow(time, index) {
     return {
       date: standardDefaultDate,
       time: time,
@@ -1916,7 +1930,7 @@
       source: "陕西系统备用统一口径",
       updatedAt: buildUpdatedAt(dataUpdatedAt, -3),
     };
-  });
+  }), ["date"]);
   var shaanxiUnifiedReservePage = createPageData({
     title: "系统备用信息",
     description: "陕西交易中心信息披露页统一结构下的系统备用信息 mock 数据。",

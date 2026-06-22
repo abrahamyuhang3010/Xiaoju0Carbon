@@ -523,6 +523,23 @@
     var minute = totalMinutes % 60;
     return padNumber(hour) + ":" + padNumber(minute);
   });
+  var QUARTER_HOUR_END_LABELS = Array.from({ length: 96 }, function createEndLabel(_, index) {
+    var totalMinutes = (index + 1) * 15;
+    var hour = Math.floor(totalMinutes / 60);
+    var minute = totalMinutes % 60;
+    if (totalMinutes === 24 * 60) {
+      return "24:00";
+    }
+    return padNumber(hour) + ":" + padNumber(minute);
+  });
+
+  function shouldUseQuarterHourEndLabels(bundle) {
+    return Boolean(bundle && (bundle.pageKey === "hn-data-disclosure" || bundle.pageKey === "sx-data-disclosure"));
+  }
+
+  function getQuarterHourLabels(fallbackMeta) {
+    return fallbackMeta && fallbackMeta.useQuarterHourEndLabels ? QUARTER_HOUR_END_LABELS : QUARTER_HOUR_LABELS;
+  }
 
   function extractStatusTime(text) {
     var match = String(text || "").match(/(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/);
@@ -627,6 +644,7 @@
 
         if (dayRows.length === 24) {
           var dayRowsByTime = {};
+          var useQuarterHourEndLabels = Boolean(fallbackMeta && fallbackMeta.useQuarterHourEndLabels);
           dayRows.forEach(function indexRow(row) {
             dayRowsByTime[row.time] = row;
           });
@@ -639,13 +657,17 @@
               var nextRow = dayRowsByTime[nextHourLabel] || dayRows[hourIndex + 1] || startRow;
 
               return [0, 1, 2, 3].map(function mapQuarter(quarterIndex) {
+                var quarterMinutes = hourIndex * 60 + (quarterIndex + (useQuarterHourEndLabels ? 1 : 0)) * 15;
+                var quarterLabel = quarterMinutes === 24 * 60
+                  ? "24:00"
+                  : padNumber(Math.floor(quarterMinutes / 60)) + ":" + padNumber(quarterMinutes % 60);
                 return {
                   date: date,
-                  time: padNumber(hourIndex) + ":" + padNumber(quarterIndex * 15),
+                  time: quarterLabel,
                   value: interpolateQuarterValue(
                     startRow ? startRow.value : null,
                     nextRow ? nextRow.value : startRow ? startRow.value : null,
-                    quarterIndex / 4,
+                    (quarterIndex + (useQuarterHourEndLabels ? 1 : 0)) / 4,
                   ),
                   source: (startRow && startRow.source) || fallbackMeta.source || "",
                   updatedAt: (startRow && startRow.updatedAt) || fallbackMeta.updatedAt || "",
@@ -658,7 +680,7 @@
         }
 
         return result.concat(
-          QUARTER_HOUR_LABELS.map(function mapQuarterLabel(label, index) {
+          getQuarterHourLabels(fallbackMeta).map(function mapQuarterLabel(label, index) {
             var row = dayRows[index] || null;
             return {
               date: date,
@@ -674,6 +696,9 @@
 
   function buildQuarterRowsFromModule(bundle, moduleName) {
     var meta = getBundleSourceMeta(bundle, { moduleName: moduleName });
+    if (shouldUseQuarterHourEndLabels(bundle)) {
+      meta = Object.assign({}, meta, { useQuarterHourEndLabels: true });
+    }
     var rows = getBundleTrendRows(bundle, { moduleName: moduleName }).map(function mapRow(row) {
       return {
         date: getRowDate(row),

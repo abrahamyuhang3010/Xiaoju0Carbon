@@ -28,11 +28,14 @@
     });
   }
 
-  function buildTimeLabels(stepMinutes, count) {
+  function buildTimeLabels(stepMinutes, count, startOffsetMinutes) {
     return Array.from({ length: count }, function createLabel(_, index) {
-      var totalMinutes = index * stepMinutes;
+      var totalMinutes = index * stepMinutes + (startOffsetMinutes || 0);
       var hour = Math.floor(totalMinutes / 60);
       var minute = totalMinutes % 60;
+      if (totalMinutes === 24 * 60) {
+        return "24:00";
+      }
       return pad(hour) + ":" + pad(minute);
     });
   }
@@ -302,18 +305,30 @@
   }
 
   var hours = buildTimeLabels(60, 24);
-  var quarterHours = buildTimeLabels(15, 96);
-  var availableDates = buildDateRange("2026-04-26", 14);
+  var quarterHours = buildTimeLabels(15, 96, 15);
+  var availableDates = buildDateRange("2026-04-26", 56);
   var defaultRange = {
     start: "2026-05-03",
     end: "2026-05-09",
   };
+  var hunanInfoDailyMockDates = buildDateRange("2026-05-09", 43);
   var dataUpdatedAt = "2026-05-09 10:32:18";
   var dataSource = "湖南电力交易中心信息披露";
   var loadRows = availableDates.map(buildHunanDailyLoadRow);
   var loadAverageValues = averageBySlot(loadRows, "hourlyValues");
   var settlementPriceRows = buildPriceRows(availableDates, 362, "湖南现货统一结算口径", buildUpdatedAt(dataUpdatedAt, -18));
-  var settlementDates = buildDateRange("2026-05-03", 7);
+  var settlementDates = buildDateRange("2026-05-03", 49);
+  function expandRowsByHunanInfoDates(rows, dateKeys) {
+    return hunanInfoDailyMockDates.reduce(function accumulateRows(result, date) {
+      return result.concat((rows || []).map(function mapRow(row) {
+        var nextRow = Object.assign({}, row);
+        (dateKeys || ["date"]).forEach(function eachDateKey(dateKey) {
+          nextRow[dateKey] = date;
+        });
+        return nextRow;
+      }));
+    }, []);
+  }
   var settlementDailyTemplates = [
     { enterpriseCode: "HNQY001", enterpriseName: "长沙高铁南站补能中心", accountNo: "HN0001" },
     { enterpriseCode: "HNQY002", enterpriseName: "株洲公交充电站群", accountNo: "HN0002" },
@@ -1709,7 +1724,7 @@
   };
   Object.keys(hunanUnifiedNodePriceMap).forEach(function eachNodeName(nodeName) {
     var nodeData = hunanUnifiedNodePriceMap[nodeName];
-    nodeData.rows = quarterHours.map(function mapNodeRow(time, index) {
+    nodeData.rows = expandRowsByHunanInfoDates(quarterHours.map(function mapNodeRow(time, index) {
       var dayAheadValue = nodeData.dayAheadValues[index];
       var realTimeValue = nodeData.realTimeValues[index];
       return {
@@ -1721,7 +1736,7 @@
         diffValue: round(realTimeValue - dayAheadValue),
         updatedAt: buildUpdatedAt(dataUpdatedAt, -10),
       };
-    });
+    }), ["date"]);
   });
   var hunanUnifiedNodePricePage = createPageData({
     title: "节点电价",
@@ -1872,7 +1887,9 @@
     });
   }
 
-  var hunanUnifiedUnitStatusRows = buildHunanInfoUnitStatusRows(hunanInfoUnitStatusRawRows, hunanInfoUnitStatusDate, 0);
+  var hunanUnifiedUnitStatusRows = hunanInfoDailyMockDates.reduce(function accumulateUnitRows(result, runDate, dateIndex) {
+    return result.concat(buildHunanInfoUnitStatusRows(hunanInfoUnitStatusRawRows, runDate, dateIndex % 4));
+  }, []);
   var hunanInfoMaintenanceCapacityValues = hunanInfoDisclosureTimeLabels.map(function mapMaintenanceCapacity(_, index) {
     return hunanInfoUnitStatusRawRows.reduce(function sumCapacity(total, row) {
       return total + (row[3].charAt(index) === "0" ? row[2] : 0);
@@ -1951,16 +1968,20 @@
   var hunanUnifiedMaintenanceCurrentIndexes = [0, 1, 2, 3, 4, 5, 9, 12, 18, 33];
   var hunanUnifiedMaintenanceCompareIndexes = [0, 1, 2, 3, 6, 8, 12, 18, 22, 30];
 
-  hunanUnifiedMaintenanceCurrentIndexes.forEach(function eachCurrentPlan(rawIndex, index) {
-    hunanUnifiedMaintenanceScheduleRows.push(
-      createHunanUnifiedMaintenanceScheduleRow(hunanInfoMaintenanceScheduleRawRows[rawIndex], standardDefaultDate, index + 1, index % 2),
-    );
-  });
-
-  hunanUnifiedMaintenanceCompareIndexes.forEach(function eachComparePlan(rawIndex, index) {
-    hunanUnifiedMaintenanceScheduleRows.push(
-      createHunanUnifiedMaintenanceScheduleRow(hunanInfoMaintenanceScheduleRawRows[rawIndex], "2026-05-08", index + 1, -((index % 2) + 1)),
-    );
+  ["2026-05-08"].concat(hunanInfoDailyMockDates).forEach(function eachMaintenanceDate(planDate, dateIndex) {
+    var planIndexes = dateIndex === 0 || dateIndex % 2 === 0
+      ? hunanUnifiedMaintenanceCompareIndexes
+      : hunanUnifiedMaintenanceCurrentIndexes;
+    planIndexes.forEach(function eachPlan(rawIndex, index) {
+      hunanUnifiedMaintenanceScheduleRows.push(
+        createHunanUnifiedMaintenanceScheduleRow(
+          hunanInfoMaintenanceScheduleRawRows[rawIndex],
+          planDate,
+          index + 1,
+          ((dateIndex + index) % 3) - 1,
+        ),
+      );
+    });
   });
   var hunanUnifiedMaintenancePage = createPageData({
     center: "hunan",
@@ -2036,7 +2057,7 @@
     },
     extraTables: [
       {
-        title: "表1 2026年05月09日发电设备检修计划",
+        title: "表1 发输变电设备检修计划",
         columns: [
           { key: "sequence", title: "序号" },
           { key: "plantName", title: "电厂名称" },
@@ -2056,7 +2077,7 @@
     ],
     tableData: hunanInfoDisclosureTimeLabels.map(function mapMaintenancePoint(time, index) {
       return {
-        date: standardDefaultDate,
+        date: hunanInfoUnitStatusDate,
         time: time,
         maintenanceCapacityMw: hunanInfoMaintenanceCapacityValues[index],
         maintenanceUnitCount: hunanInfoMaintenanceUnitCountValues[index],
@@ -2084,7 +2105,7 @@
     450.7, 849.6, 446.0, 708.6, 787.1, 798.3, 961.6, 1261.8, 896.5, 979.7, 1408.6, 1301.4,
     1310.6, 992.8, 579.9, 315.2, 391.2, 0.0, 0.0, 472.4, 241.9, 114.1, 0.0, 0.0
   ];
-  var hunanUnifiedReserveRows = hunanInfoDisclosureTimeLabels.map(function mapReserveRow(time, index) {
+  var hunanUnifiedReserveRows = expandRowsByHunanInfoDates(hunanInfoDisclosureTimeLabels.map(function mapReserveRow(time, index) {
     return {
       date: standardDefaultDate,
       time: time,
@@ -2093,7 +2114,7 @@
       source: hunanInfoMockSource,
       updatedAt: buildUpdatedAt(dataUpdatedAt, -3),
     };
-  });
+  }), ["date"]);
   var hunanUnifiedReservePage = createPageData({
     center: "hunan",
     tabKey: "备用信息",

@@ -775,7 +775,13 @@
       return state.ui.runtimeRange;
     }
 
-    if (pageData && pageData.filters && pageData.filters.date && pageData.datePickerMode === "range") {
+    if (
+      pageData &&
+      pageData.filters &&
+      pageData.filters.date &&
+      pageData.datePickerMode === "range" &&
+      getMarketDisclosureState().queryCount === 0
+    ) {
       return {
         start: pageData.filters.date,
         end: pageData.filters.date,
@@ -950,7 +956,10 @@
   }
 
   function syncUnifiedInfoDisclosureRange(pageData) {
-    if (!isUnifiedInfoDisclosureSingleDateMode(pageData) || isUnifiedMockInfoTradeTab(getActiveInfoTab())) {
+    if (
+      (!isUnifiedInfoDisclosureSingleDateMode(pageData) && !(pageData && pageData.filters && pageData.filters.date)) ||
+      isUnifiedMockInfoTradeTab(getActiveInfoTab())
+    ) {
       return;
     }
 
@@ -984,6 +993,27 @@
 
     if (
       disclosureState.queryCount === 0 &&
+      pageData &&
+      pageData.filters &&
+      pageData.filters.date &&
+      (disclosureState.appliedRange.start !== defaultDate ||
+        disclosureState.appliedRange.end !== defaultDate ||
+        disclosureState.filterRange.start !== defaultDate ||
+        disclosureState.filterRange.end !== defaultDate)
+    ) {
+      disclosureState.filterRange = {
+        start: defaultDate,
+        end: defaultDate,
+      };
+      disclosureState.appliedRange = {
+        start: defaultDate,
+        end: defaultDate,
+      };
+      return;
+    }
+
+    if (
+      disclosureState.queryCount === 0 &&
       disclosureState.appliedRange.start === disclosureState.appliedRange.end &&
       disclosureState.appliedRange.start !== defaultDate
     ) {
@@ -998,17 +1028,19 @@
       return;
     }
 
-    if (disclosureState.filterRange.start !== disclosureState.filterRange.end) {
-      disclosureState.filterRange = {
-        start: defaultDate,
-        end: defaultDate,
-      };
-    }
-    if (disclosureState.appliedRange.start !== disclosureState.appliedRange.end) {
-      disclosureState.appliedRange = {
-        start: defaultDate,
-        end: defaultDate,
-      };
+    if (isUnifiedInfoDisclosureSingleDateMode(pageData)) {
+      if (disclosureState.filterRange.start !== disclosureState.filterRange.end) {
+        disclosureState.filterRange = {
+          start: defaultDate,
+          end: defaultDate,
+        };
+      }
+      if (disclosureState.appliedRange.start !== disclosureState.appliedRange.end) {
+        disclosureState.appliedRange = {
+          start: defaultDate,
+          end: defaultDate,
+        };
+      }
     }
   }
 
@@ -1673,6 +1705,7 @@
     if (id === "market-disclosure-range" && isInfoDisclosurePage(state.currentPageKey)) {
       getMarketDisclosureState().appliedRange = cloneRange(getMarketDisclosureState().filterRange);
       getMarketDisclosureState().lastUpdatedAt = formatDateTime(new Date());
+      getMarketDisclosureState().queryCount += 1;
     }
 
     if (id === "time-sharing-range") {
@@ -14962,7 +14995,7 @@
       var pageStateValue = getMarketDisclosureState();
       var unifiedPageData = getInfoDisclosurePageData();
       resetUnifiedInfoDisclosureFieldFilters(unifiedPageData);
-      if (isUnifiedInfoDisclosureSingleDateMode(unifiedPageData)) {
+      if (isUnifiedInfoDisclosureSingleDateMode(unifiedPageData) || (unifiedPageData.filters && unifiedPageData.filters.date)) {
         var defaultDate = (unifiedPageData.filters && unifiedPageData.filters.date) || (pageMock.defaultRange && pageMock.defaultRange.end) || "";
         pageStateValue.filterRange = {
           start: defaultDate,
