@@ -5282,6 +5282,125 @@
     });
   }
 
+  function getInfoDisclosureMetricColumns(columns) {
+    return (columns || []).filter(function filterColumn(column) {
+      return column && column.key !== "time";
+    });
+  }
+
+  function getInfoDisclosureMetricFormatter(metricKey) {
+    return metricKey === "dayAheadVolume" || metricKey === "realTimeVolume" ? formatInteger : formatDecimal;
+  }
+
+  function getInfoDisclosureMetricLabel(column) {
+    return String((column && (column.title || column.label)) || "")
+      .replace(/（[^）]*）$/, "")
+      .trim();
+  }
+
+  function getInfoDisclosureScopedMetricKey(scope, metricKey) {
+    return scope + metricKey.charAt(0).toUpperCase() + metricKey.slice(1);
+  }
+
+  function getInfoDisclosureCompareSeriesId(series) {
+    var idsByKey = {
+      dayAheadVolume: "info-trade-dayahead-volume-compare",
+      realTimeVolume: "info-trade-realtime-volume-compare",
+      dayAheadSettlementPrice: "info-trade-dayahead-price-compare",
+      realTimeSettlementPrice: "info-trade-realtime-price-compare",
+    };
+    return idsByKey[series.valueKey] || series.id + "-compare";
+  }
+
+  function getInfoDisclosureCompareSeriesColor(series) {
+    var colorsByKey = {
+      dayAheadVolume: "#D6E6FF",
+      realTimeVolume: "#B8DBFF",
+      dayAheadSettlementPrice: "#FFC39E",
+      realTimeSettlementPrice: "#A7E7CC",
+    };
+    return colorsByKey[series.valueKey] || series.color;
+  }
+
+  function getInfoDisclosureCompareSeriesOpacity(series) {
+    var opacityByKey = {
+      dayAheadVolume: 0.55,
+      realTimeVolume: 0.45,
+    };
+    return opacityByKey[series.valueKey] || series.opacity;
+  }
+
+  function buildInfoDisclosureCompareSeries(rows, seriesDefinitions) {
+    return (seriesDefinitions || []).map(function mapSeries(series) {
+      return {
+        id: getInfoDisclosureCompareSeriesId(series),
+        label: "对比" + series.label,
+        color: getInfoDisclosureCompareSeriesColor(series),
+        values: (rows || []).map(function mapRow(row) {
+          return row[series.valueKey];
+        }),
+        opacity: getInfoDisclosureCompareSeriesOpacity(series),
+      };
+    });
+  }
+
+  function buildInfoDisclosureCompareTableColumns(columns, currentDateLabel, compareDateLabel) {
+    var metricColumns = getInfoDisclosureMetricColumns(columns);
+    return [{ key: "time", label: "时刻" }]
+      .concat(
+        metricColumns.map(function mapColumn(column) {
+          return {
+            key: getInfoDisclosureScopedMetricKey("current", column.key),
+            label: currentDateLabel + " " + column.title,
+          };
+        }),
+      )
+      .concat(
+        metricColumns.map(function mapColumn(column) {
+          return {
+            key: getInfoDisclosureScopedMetricKey("compare", column.key),
+            label: compareDateLabel + " " + column.title,
+          };
+        }),
+      );
+  }
+
+  function buildInfoDisclosureCompareTableRows(rows, compareRows, columns) {
+    var metricColumns = getInfoDisclosureMetricColumns(columns);
+    return rows.map(function mapRow(row, index) {
+      var compareRow = compareRows[index] || {};
+      var result = {
+        time: row.time,
+      };
+
+      metricColumns.forEach(function eachColumn(column) {
+        result[getInfoDisclosureScopedMetricKey("current", column.key)] = createInfoDisclosureTableCell(
+          row[column.key],
+          getInfoDisclosureMetricFormatter(column.key),
+        );
+        result[getInfoDisclosureScopedMetricKey("compare", column.key)] = createInfoDisclosureTableCell(
+          compareRow[column.key],
+          getInfoDisclosureMetricFormatter(column.key),
+        );
+      });
+
+      return result;
+    });
+  }
+
+  function buildInfoDisclosureTradeTooltipLines(row, columns, prefix) {
+    return getInfoDisclosureMetricColumns(columns).map(function mapColumn(column) {
+      var value = row[column.key];
+      var formatter = getInfoDisclosureMetricFormatter(column.key);
+      return (
+        (prefix || "") +
+        getInfoDisclosureMetricLabel(column) +
+        " " +
+        (typeof value === "number" ? formatter(value) : "--")
+      );
+    });
+  }
+
   function createInfoDisclosureTableCell(value, formatter, emptyText) {
     if (typeof value !== "number" || Number.isNaN(value)) {
       return {
@@ -5913,32 +6032,9 @@
     if (isTradeResultPage && state.ui.hasCompare) {
       var currentDateLabel = formatTradeDisclosureDate(state.tradeResult.filters.marketRunRange.start);
       var compareDateLabel = formatTradeDisclosureDate(state.ui.compareRangeDraft.start);
-      tableColumns = [
-        { key: "time", label: "时刻" },
-        { key: "currentDayAheadVolume", label: currentDateLabel + " 日前成交电量（MWh）" },
-        { key: "currentRealTimeVolume", label: currentDateLabel + " 实时成交电量（MWh）" },
-        { key: "currentDayAheadSettlementPrice", label: currentDateLabel + " 日前用户侧统一结算价格（元/MWh）" },
-        { key: "currentRealTimeSettlementPrice", label: currentDateLabel + " 实时用户侧统一结算价格（元/MWh）" },
-        { key: "compareDayAheadVolume", label: compareDateLabel + " 日前成交电量（MWh）" },
-        { key: "compareRealTimeVolume", label: compareDateLabel + " 实时成交电量（MWh）" },
-        { key: "compareDayAheadSettlementPrice", label: compareDateLabel + " 日前用户侧统一结算价格（元/MWh）" },
-        { key: "compareRealTimeSettlementPrice", label: compareDateLabel + " 实时用户侧统一结算价格（元/MWh）" },
-      ];
-      tableRows = rows.map(function mapRow(row, index) {
-        var compareRow = compareRows[index] || {};
-        return {
-          time: row.time,
-          currentDayAheadVolume: createInfoDisclosureTableCell(row.dayAheadVolume, formatInteger),
-          currentRealTimeVolume: createInfoDisclosureTableCell(row.realTimeVolume, formatInteger),
-          currentDayAheadSettlementPrice: createInfoDisclosureTableCell(row.dayAheadSettlementPrice, formatDecimal),
-          currentRealTimeSettlementPrice: createInfoDisclosureTableCell(row.realTimeSettlementPrice, formatDecimal),
-          compareDayAheadVolume: createInfoDisclosureTableCell(compareRow.dayAheadVolume, formatInteger),
-          compareRealTimeVolume: createInfoDisclosureTableCell(compareRow.realTimeVolume, formatInteger),
-          compareDayAheadSettlementPrice: createInfoDisclosureTableCell(compareRow.dayAheadSettlementPrice, formatDecimal),
-          compareRealTimeSettlementPrice: createInfoDisclosureTableCell(compareRow.realTimeSettlementPrice, formatDecimal),
-        };
-      });
-      tableMinWidth = 2200;
+      tableColumns = buildInfoDisclosureCompareTableColumns(pageData.tableColumns, currentDateLabel, compareDateLabel);
+      tableRows = buildInfoDisclosureCompareTableRows(rows, compareRows, pageData.tableColumns);
+      tableMinWidth = Math.max(920, tableColumns.length * 245);
     }
 
     if (!rows.length) {
@@ -5955,48 +6051,12 @@
         }),
         barSeries: buildInfoDisclosureSeries(rows, pageData.barSeriesDefinitions).concat(
           compareRows.length
-            ? [
-                {
-                  id: "info-trade-dayahead-volume-compare",
-                  label: "对比日前成交电量",
-                  color: "#D6E6FF",
-                  values: compareRows.map(function mapRow(row) {
-                    return row.dayAheadVolume;
-                  }),
-                  opacity: 0.55,
-                },
-                {
-                  id: "info-trade-realtime-volume-compare",
-                  label: "对比实时成交电量",
-                  color: "#B8DBFF",
-                  values: compareRows.map(function mapRow(row) {
-                    return row.realTimeVolume;
-                  }),
-                  opacity: 0.45,
-                },
-              ]
+            ? buildInfoDisclosureCompareSeries(compareRows, pageData.barSeriesDefinitions)
             : [],
         ),
         lineSeries: buildInfoDisclosureSeries(rows, pageData.lineSeriesDefinitions).concat(
           compareRows.length
-            ? [
-                {
-                  id: "info-trade-dayahead-price-compare",
-                  label: "对比日前用户侧统一结算价格",
-                  color: "#FFC39E",
-                  values: compareRows.map(function mapRow(row) {
-                    return row.dayAheadSettlementPrice;
-                  }),
-                },
-                {
-                  id: "info-trade-realtime-price-compare",
-                  label: "对比实时用户侧统一结算价格",
-                  color: "#A7E7CC",
-                  values: compareRows.map(function mapRow(row) {
-                    return row.realTimeSettlementPrice;
-                  }),
-                },
-              ]
+            ? buildInfoDisclosureCompareSeries(compareRows, pageData.lineSeriesDefinitions)
             : [],
         ),
         hiddenSeries: getChartHiddenState("info-unified-mixed-chart-" + getSelectedTradeCenterKey() + "-" + getActiveInfoPrimaryTab()),
@@ -6005,32 +6065,11 @@
         tooltipFormatter: isTradeResultPage
           ? function tradeResultTooltip(_, index) {
               var row = rows[index] || {};
-              var lines = [
-                "时刻 " + (row.time || "--"),
-                "日前成交电量 " + (typeof row.dayAheadVolume === "number" ? formatInteger(row.dayAheadVolume) : "--"),
-                "实时成交电量 " + (typeof row.realTimeVolume === "number" ? formatInteger(row.realTimeVolume) : "--"),
-                "日前用户侧统一结算价格 " +
-                  (typeof row.dayAheadSettlementPrice === "number" ? formatDecimal(row.dayAheadSettlementPrice) : "--"),
-                "实时用户侧统一结算价格 " +
-                  (typeof row.realTimeSettlementPrice === "number" ? formatDecimal(row.realTimeSettlementPrice) : "--"),
-              ];
+              var lines = ["时刻 " + (row.time || "--")].concat(buildInfoDisclosureTradeTooltipLines(row, pageData.tableColumns));
 
               if (compareRows.length) {
                 var compareRow = compareRows[index] || {};
-                lines.push("对比日前成交电量 " + (typeof compareRow.dayAheadVolume === "number" ? formatInteger(compareRow.dayAheadVolume) : "--"));
-                lines.push("对比实时成交电量 " + (typeof compareRow.realTimeVolume === "number" ? formatInteger(compareRow.realTimeVolume) : "--"));
-                lines.push(
-                  "对比日前用户侧统一结算价格 " +
-                    (typeof compareRow.dayAheadSettlementPrice === "number"
-                      ? formatDecimal(compareRow.dayAheadSettlementPrice)
-                      : "--"),
-                );
-                lines.push(
-                  "对比实时用户侧统一结算价格 " +
-                    (typeof compareRow.realTimeSettlementPrice === "number"
-                      ? formatDecimal(compareRow.realTimeSettlementPrice)
-                      : "--"),
-                );
+                lines = lines.concat(buildInfoDisclosureTradeTooltipLines(compareRow, pageData.tableColumns, "对比"));
               }
 
               return lines.join("\n");

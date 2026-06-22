@@ -2102,10 +2102,41 @@
     };
   }
 
+  function getTradingResultMetricKeys(tradeCenterKey) {
+    if (tradeCenterKey === "hunan") {
+      return ["dayAheadVolume", "dayAheadSettlementPrice", "realTimeSettlementPrice"];
+    }
+    if (tradeCenterKey === "shaanxi") {
+      return ["dayAheadSettlementPrice", "realTimeSettlementPrice"];
+    }
+    return ["dayAheadVolume", "realTimeVolume", "dayAheadSettlementPrice", "realTimeSettlementPrice"];
+  }
+
+  function hasTradingResultMetric(metricKeys, metricKey) {
+    return metricKeys.indexOf(metricKey) >= 0;
+  }
+
+  function pickTradingResultRowMetrics(row, metricKeys) {
+    var nextRow = {
+      time: row.time,
+    };
+
+    metricKeys.forEach(function eachMetric(metricKey) {
+      nextRow[metricKey] = row[metricKey];
+    });
+
+    return nextRow;
+  }
+
   function buildUnifiedTradingResultPage(tradeCenterKey, bundle) {
     var tradingResultData = getUnifiedTradingResultMock(tradeCenterKey) || getLegacyTradingResultData(bundle);
     var rows = (tradingResultData && tradingResultData.points) || [];
     var centerName = (tradingResultData && tradingResultData.centerName) || TRADE_CENTER_NAMES[tradeCenterKey] || "";
+    var metricKeys = getTradingResultMetricKeys(tradeCenterKey);
+    var chartSeries = [];
+    var barSeriesDefinitions = [];
+    var lineSeriesDefinitions = [];
+    var tableColumns = [{ key: "time", title: "时刻" }];
 
     if (!rows.length) {
       return null;
@@ -2142,6 +2173,49 @@
       "bar",
     );
 
+    if (hasTradingResultMetric(metricKeys, "dayAheadVolume")) {
+      chartSeries.push(dayAheadVolumeSeries);
+      barSeriesDefinitions.push({
+        id: tradeCenterKey + "-info-trade-dayahead-volume",
+        label: "日前成交电量",
+        color: "#9DC4FF",
+        valueKey: "dayAheadVolume",
+        opacity: 0.92,
+      });
+      tableColumns.push({ key: "dayAheadVolume", title: "日前成交电量（MWh）" });
+    }
+    if (hasTradingResultMetric(metricKeys, "realTimeVolume")) {
+      chartSeries.push(realTimeVolumeSeries);
+      barSeriesDefinitions.push({
+        id: tradeCenterKey + "-info-trade-realtime-volume",
+        label: "实时成交电量",
+        color: "#6CB7FF",
+        valueKey: "realTimeVolume",
+        opacity: 0.78,
+      });
+      tableColumns.push({ key: "realTimeVolume", title: "实时成交电量（MWh）" });
+    }
+    if (hasTradingResultMetric(metricKeys, "dayAheadSettlementPrice")) {
+      chartSeries.push(dayAheadSeries);
+      lineSeriesDefinitions.push({
+        id: tradeCenterKey + "-info-trade-dayahead-price",
+        label: "日前用户侧统一结算价格",
+        color: "#FF7A45",
+        valueKey: "dayAheadSettlementPrice",
+      });
+      tableColumns.push({ key: "dayAheadSettlementPrice", title: "日前用户侧统一结算价格（元/MWh）" });
+    }
+    if (hasTradingResultMetric(metricKeys, "realTimeSettlementPrice")) {
+      chartSeries.push(realTimeSeries);
+      lineSeriesDefinitions.push({
+        id: tradeCenterKey + "-info-trade-realtime-price",
+        label: "实时用户侧统一结算价格",
+        color: "#2FCB8F",
+        valueKey: "realTimeSettlementPrice",
+      });
+      tableColumns.push({ key: "realTimeSettlementPrice", title: "实时用户侧统一结算价格（元/MWh）" });
+    }
+
     return {
       title: "交易结果",
       description: centerName + "交易结果统一 mock 结构。",
@@ -2155,8 +2229,8 @@
         date: (tradingResultData && tradingResultData.date) || "",
       },
       viewType: "mixedTrendTable",
-      leftUnit: "MWh",
-      rightUnit: "元/MWh",
+      leftUnit: barSeriesDefinitions.length ? "MWh" : "",
+      rightUnit: lineSeriesDefinitions.length ? "元/MWh" : "",
       timeGranularity: "1h",
       volumeSource: (tradingResultData && tradingResultData.volumeSource) || "stable-placeholder",
       summaryCards: [
@@ -2167,23 +2241,13 @@
       ],
       chartType: "line",
       chartUnit: "MWh / 元/MWh",
-      chartSeries: [dayAheadVolumeSeries, realTimeVolumeSeries, dayAheadSeries, realTimeSeries],
-      barSeriesDefinitions: [
-        { id: tradeCenterKey + "-info-trade-dayahead-volume", label: "日前成交电量", color: "#9DC4FF", valueKey: "dayAheadVolume", opacity: 0.92 },
-        { id: tradeCenterKey + "-info-trade-realtime-volume", label: "实时成交电量", color: "#6CB7FF", valueKey: "realTimeVolume", opacity: 0.78 },
-      ],
-      lineSeriesDefinitions: [
-        { id: tradeCenterKey + "-info-trade-dayahead-price", label: "日前用户侧统一结算价格", color: "#FF7A45", valueKey: "dayAheadSettlementPrice" },
-        { id: tradeCenterKey + "-info-trade-realtime-price", label: "实时用户侧统一结算价格", color: "#2FCB8F", valueKey: "realTimeSettlementPrice" },
-      ],
-      tableColumns: [
-        { key: "time", title: "时刻" },
-        { key: "dayAheadVolume", title: "日前成交电量（MWh）" },
-        { key: "realTimeVolume", title: "实时成交电量（MWh）" },
-        { key: "dayAheadSettlementPrice", title: "日前用户侧统一结算价格（元/MWh）" },
-        { key: "realTimeSettlementPrice", title: "实时用户侧统一结算价格（元/MWh）" },
-      ],
-      tableData: cloneValue(rows),
+      chartSeries: chartSeries,
+      barSeriesDefinitions: barSeriesDefinitions,
+      lineSeriesDefinitions: lineSeriesDefinitions,
+      tableColumns: tableColumns,
+      tableData: rows.map(function mapRow(row) {
+        return pickTradingResultRowMetrics(row, metricKeys);
+      }),
       fileList: createMockFileList(tradeCenterKey + "-trade-result", (tradingResultData && tradingResultData.date) || "2026-05-07", 3),
       emptyText: "当前日期暂无" + centerName + "交易结果 mock 数据。",
     };
