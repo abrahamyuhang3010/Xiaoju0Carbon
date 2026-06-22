@@ -1485,6 +1485,34 @@
     return row;
   }
 
+  function buildHunanEnterpriseHourlyProfileRow(date, template, enterpriseIndex, dayIndex) {
+    var hourlyValues = buildWaveValues(60, 24, {
+      base: 684 + dayIndex * 10 + enterpriseIndex * 36,
+      dayAmplitude: 96 + enterpriseIndex * 5,
+      peakAmplitude: 158 + enterpriseIndex * 8,
+      dayShift: 6,
+      peakShift: 13,
+      valleyEndHour: 6,
+      valleyOffset: -44 + enterpriseIndex * 3,
+      pattern: [-9, 6, 11, -5],
+      integer: true,
+    });
+    var row = {
+      date: date,
+      accountNo: template.accountNo,
+      userName: template.enterpriseName,
+      hourlyValues: hourlyValues,
+      totalValue: sum(hourlyValues),
+      updatedAt: buildUpdatedAt(dataUpdatedAt, -8),
+    };
+
+    hours.forEach(function eachHourLabel(hourLabel, hourIndex) {
+      row[hourLabel] = hourlyValues[hourIndex];
+    });
+
+    return row;
+  }
+
   var hunanUnifiedPriceRows = settlementPriceRows.map(function mapPriceRow(row) {
     var hourIndex = Number(String(row.time || "").slice(0, 2)) || 0;
     var timeSlot = buildTimeSlotLabel(60, hourIndex);
@@ -1505,9 +1533,9 @@
   });
   var hunanUnifiedPricePage = createPageData({
     title: "全省统一出清价",
-    description: "湖南交易中心信息披露页统一结构下的用户侧统一结算价格 mock 数据。",
+    description: "湖南交易中心信息披露页统一结构下的节点电价 mock 数据。",
     updateTime: buildUpdatedAt(dataUpdatedAt, -18),
-    dataSource: "湖南电力交易中心用户侧统一结算价格 mock",
+    dataSource: "湖南电力交易中心节点电价 mock",
     filters: {
       date: standardDefaultDate,
       granularity: "1h",
@@ -1525,25 +1553,25 @@
     labelKey: "timeSlot",
     datePickerMode: "single",
     dateLabel: "运行日期",
-    dayAheadSeriesLabel: "日前统一结算价格",
-    realTimeSeriesLabel: "实时统一结算价格",
+    dayAheadSeriesLabel: "日前节点电价",
+    realTimeSeriesLabel: "实时节点电价",
     tooltipMode: "priceSpread",
     seriesDefinitions: [
-      { id: "hn-info-price-dayahead", label: "日前统一结算价格", color: "#1677FF", valueKey: "dayAheadPrice" },
-      { id: "hn-info-price-realtime", label: "实时统一结算价格", color: "#2FCB8F", valueKey: "realTimePrice" },
+      { id: "hn-info-price-dayahead", label: "日前节点电价", color: "#1677FF", valueKey: "dayAheadPrice" },
+      { id: "hn-info-price-realtime", label: "实时节点电价", color: "#2FCB8F", valueKey: "realTimePrice" },
     ],
     tableColumns: [
       { key: "date", title: "日期" },
       { key: "timeSlot", title: "时段" },
-      { key: "dayAheadPrice", title: "日前统一结算价格（元/MWh）" },
-      { key: "realTimePrice", title: "实时统一结算价格（元/MWh）" },
+      { key: "dayAheadPrice", title: "日前节点电价（元/MWh）" },
+      { key: "realTimePrice", title: "实时节点电价（元/MWh）" },
       { key: "priceDiff", title: "价差（元/MWh）" },
       { key: "updatedAt", title: "更新时间" },
     ],
     tableData: hunanUnifiedPriceRows,
     tableMinWidth: 1340,
     fileList: buildMockFileList("hn", "unified-clearing-price", standardDefaultDate, 3),
-    emptyText: "当前日期暂无湖南用户侧统一结算价格 mock 数据。",
+    emptyText: "当前日期暂无湖南节点电价 mock 数据。",
   });
   var hunanSaleCompanyNames = [
     "滴滴电力（湖南）有限公司",
@@ -1607,6 +1635,79 @@
     tableMinWidth: 3880,
     fileList: buildMockFileList("hn", "sale-company-load", standardDefaultDate, 3),
     emptyText: "当前日期暂无湖南售电公司分时电量 mock 数据。",
+  });
+  var hunanUnifiedEnterpriseRows = settlementDates.reduce(function accumulateRows(result, date, dayIndex) {
+    return result.concat(
+      settlementDailyTemplates.map(function mapEnterprise(template, enterpriseIndex) {
+        return buildHunanEnterpriseHourlyProfileRow(date, template, enterpriseIndex, dayIndex);
+      }),
+    );
+  }, []);
+  var hunanEnterpriseUserNames = settlementDailyTemplates.map(function mapEnterpriseName(template) {
+    return template.enterpriseName;
+  });
+  var hunanEnterpriseAccountNos = settlementDailyTemplates.map(function mapAccountNo(template) {
+    return template.accountNo;
+  });
+  var hunanUnifiedEnterprisePage = createPageData({
+    title: "用电企业分时电量",
+    description: "湖南交易中心信息披露页统一结构下的用电企业分时电量 mock 数据。",
+    updateTime: buildUpdatedAt(dataUpdatedAt, -8),
+    dataSource: "湖南电力交易中心用电企业分时电量 mock",
+    filters: {
+      date: standardDefaultDate,
+      granularity: "24h",
+      primaryTab: "用电企业分时电量",
+      secondaryTab: "",
+    },
+    viewType: "profileTable",
+    chartTitle: "用电企业分时电量趋势图",
+    chartUnit: "MWh",
+    datePickerMode: "range",
+    dateLabel: "用电日期",
+    filterFields: [
+      {
+        type: "select",
+        label: "用电用户名称",
+        fieldKey: "enterpriseUserName",
+        rowKey: "userName",
+        options: ["全部"].concat(hunanEnterpriseUserNames),
+        defaultValue: "全部",
+      },
+      {
+        type: "select",
+        label: "用户户号",
+        fieldKey: "enterpriseAccountNo",
+        rowKey: "accountNo",
+        options: ["全部"].concat(hunanEnterpriseAccountNos),
+        defaultValue: "全部",
+      },
+    ],
+    profileModes: {
+      "24": {
+        label: "24点视图",
+        labels: hours.slice(),
+        unit: "MWh",
+        valueKey: "hourlyValues",
+        latestLabel: "所选周期最新日电量",
+        averageLabel: "所选周期均值电量",
+        compareLatestLabel: "对比周期最新日电量",
+        compareAverageLabel: "对比周期均值电量",
+      },
+    },
+    defaultProfileMode: "24",
+    tableColumns: [
+      { key: "accountNo", title: "户号" },
+      { key: "userName", title: "用户名称" },
+      { key: "totalValue", title: "总用电量" },
+    ]
+      .concat(hours.map(function mapHourLabel(hourLabel) {
+        return { key: hourLabel, title: hourLabel };
+      })),
+    tableData: hunanUnifiedEnterpriseRows,
+    tableMinWidth: 3040,
+    fileList: buildMockFileList("hn", "enterprise-load", standardDefaultDate, 3),
+    emptyText: "当前日期暂无湖南用电企业分时电量 mock 数据。",
   });
 
   var hunanUnifiedGenerationForecastValues = buildWaveValues(15, 96, {
@@ -2260,6 +2361,7 @@
       infoGenerationOutput: hunanUnifiedGenerationPage,
       infoUnifiedPrice: hunanUnifiedPricePage,
       infoSaleCompanyProfile: hunanUnifiedSaleCompanyPage,
+      infoEnterpriseProfile: hunanUnifiedEnterprisePage,
       infoNodePrice: hunanUnifiedNodePricePage,
       infoDayAheadDeclaration: hunanUnifiedDeclarationPage,
       infoMaintenanceComposite: hunanUnifiedMaintenancePage,
@@ -2276,11 +2378,11 @@
         "",
         "湖南交易中心当前暂未接入现货交易结果类披露数据，请切换其他披露类型或手动更新数据。",
       ),
-      infoEmptyEnterprise: createHunanInfoEmptyPage(
-        "用电企业分时电量",
-        "用电企业分时电量",
+      infoEmptySaleCompany: createHunanInfoEmptyPage(
+        "售电公司分时电量",
+        "售电公司分时电量",
         "",
-        "湖南交易中心当前暂未接入用电企业分时电量披露数据。",
+        "湖南交易中心当前暂未接入售电公司分时电量披露数据。",
       ),
     },
     pageMap: {
@@ -2300,8 +2402,8 @@
           "全省统一出清价": "infoUnifiedPrice",
           "出清电量": "infoEmptyVolume",
           "交易结果": "infoEmptyTradeResult",
-          "售电公司分时电量": "infoSaleCompanyProfile",
-          "用电企业分时电量": "infoEmptyEnterprise",
+          "售电公司分时电量": "infoEmptySaleCompany",
+          "用电企业分时电量": "infoEnterpriseProfile",
           "节点电价": "infoNodePrice",
           "日前申报": "infoDayAheadDeclaration",
         },

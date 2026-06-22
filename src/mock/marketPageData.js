@@ -2962,11 +2962,19 @@
             { key: "updatedAt", title: "更新时间" },
           ];
     scheduleColumns = scheduleColumns.filter(function filterColumn(column) {
-      return column.key !== "planStatus" && column.key !== "sequence" && column.key !== "updatedAt";
+      return (
+        column.key !== "planStatus" &&
+        column.key !== "sequence" &&
+        column.key !== "startTime" &&
+        column.key !== "endTime" &&
+        column.key !== "updatedAt"
+      );
     });
     var scheduleRows = (scheduleTable.data || []).map(function mapRow(row) {
       var nextRow = cloneValue(row);
       delete nextRow.planStatus;
+      delete nextRow.startTime;
+      delete nextRow.endTime;
       return nextRow;
     });
 
@@ -2991,9 +2999,7 @@
       columns: scheduleColumns,
       rows: scheduleRows,
       tableMinWidth: 1420,
-      baseTableMinWidth: 1040,
-      compareMode: "dateMerge",
-      compareMergeKeys: ["plantName", "equipmentName", "voltageLevel"],
+      datePickerMode: "range",
       fileList: dataset.fileList || [],
       emptyText: "当前日期暂无湖南发输变电设备检修计划 mock 数据。",
     });

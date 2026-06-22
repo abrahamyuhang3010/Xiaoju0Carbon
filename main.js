@@ -3826,17 +3826,34 @@
     var actionsHtml = "";
 
     if (activeTab === "售电公司分时电量") {
-      fieldsHtml = renderUnifiedInfoDisclosureBusinessFilterFields(pageData);
-      actionsHtml = fieldsHtml
-        ? renderUiActionButton("重置", "ghost", "reset-sale-company") + renderUiActionButton("查询", "primary", "query-sale-company")
-        : "";
+      if (isPageBackedTimeSharingTab(activeTab, pageData)) {
+        fieldsHtml = renderUnifiedInfoDisclosureBusinessFilterFields(pageData);
+        actionsHtml = fieldsHtml
+          ? renderUiActionButton("重置", "ghost", "reset-info-disclosure-filters") +
+            renderUiActionButton("查询", "primary", "query-info-disclosure-filters")
+          : "";
+      } else {
+        fieldsHtml = renderUnifiedInfoDisclosureBusinessFilterFields(pageData);
+        actionsHtml = fieldsHtml
+          ? renderUiActionButton("重置", "ghost", "reset-sale-company") +
+            renderUiActionButton("查询", "primary", "query-sale-company")
+          : "";
+      }
     } else if (activeTab === "用电企业分时电量") {
-      fieldsHtml =
-        renderTextFilter("电力用户编码", "enterpriseUserCode", "请输入电力用户编码") +
-        renderTextFilter("电力用户名称", "enterpriseUserName", "请输入电力用户名称") +
-        renderTextFilter("用户户号", "enterpriseAccountNo", "请输入用户户号") +
-        renderTextFilter("微电网ID", "enterpriseMicrogridId", "请输入微电网ID");
-      actionsHtml = renderUiActionButton("重置", "ghost", "reset-enterprise") + renderUiActionButton("查询", "primary", "query-enterprise");
+      if (isPageBackedTimeSharingTab(activeTab, pageData)) {
+        fieldsHtml = renderUnifiedInfoDisclosureBusinessFilterFields(pageData);
+        actionsHtml = fieldsHtml
+          ? renderUiActionButton("重置", "ghost", "reset-info-disclosure-filters") +
+            renderUiActionButton("查询", "primary", "query-info-disclosure-filters")
+          : "";
+      } else {
+        fieldsHtml =
+          renderTextFilter("电力用户编码", "enterpriseUserCode", "请输入电力用户编码") +
+          renderTextFilter("电力用户名称", "enterpriseUserName", "请输入电力用户名称") +
+          renderTextFilter("用户户号", "enterpriseAccountNo", "请输入用户户号") +
+          renderTextFilter("微电网ID", "enterpriseMicrogridId", "请输入微电网ID");
+        actionsHtml = renderUiActionButton("重置", "ghost", "reset-enterprise") + renderUiActionButton("查询", "primary", "query-enterprise");
+      }
     } else if (activeTab === INFO_DISCLOSURE_SELLER_HISTORY_TAB) {
       return renderSellerHistoryFilterBar();
     } else if (activeTab === INFO_DISCLOSURE_USER_HISTORY_TAB) {
@@ -4361,6 +4378,17 @@
 
   function isUnifiedMockInfoTradeTab(tab) {
     return tab === "全省统一出清价" || tab === "交易结果" || tab === "节点电价";
+  }
+
+  function isPageBackedTimeSharingTab(tab, pageData) {
+    var activeTab = tab || getActiveInfoTab();
+    var activePageData = pageData || getInfoDisclosurePageData();
+    return (
+      !isGuangdongInfoDisclosureCenter() &&
+      (activeTab === "售电公司分时电量" || activeTab === "用电企业分时电量") &&
+      activePageData &&
+      activePageData.viewType
+    );
   }
 
   function renderInfoUnifiedDataUpdateBar(status, compareSupported) {
@@ -7327,10 +7355,16 @@
     }
 
     if (activeTab === "售电公司分时电量") {
+      if (isPageBackedTimeSharingTab(activeTab, pageData)) {
+        return renderUnifiedInfoDisclosureContent(pageData);
+      }
       return renderSaleCompanyContent();
     }
 
     if (activeTab === "用电企业分时电量") {
+      if (isPageBackedTimeSharingTab(activeTab, pageData)) {
+        return renderUnifiedInfoDisclosureContent(pageData);
+      }
       return renderEnterpriseContent();
     }
 
