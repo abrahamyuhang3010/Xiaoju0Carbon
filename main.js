@@ -3766,13 +3766,17 @@
   function renderDownloadOnlyBar(status, withCompare, options) {
     var actions = [];
     var resolvedOptions = options || {};
-    if (resolvedOptions.withMore) {
+    if (resolvedOptions.updateAsMore) {
+      actions.push(createMoreUpdateAction("open-manual-update"));
+    } else if (resolvedOptions.withMore) {
       actions.push({ label: "更多", variant: "ghost", icon: "ellipsis", action: "open-manual-update" });
     }
     if (withCompare) {
       actions.push({ label: "对比", variant: "ghost", icon: "compare", action: "open-compare" });
     }
-    actions.push({ label: "更新数据", variant: "ghost", icon: "refresh", action: "open-manual-update" });
+    if (!resolvedOptions.updateAsMore) {
+      actions.push({ label: "更新数据", variant: "ghost", icon: "refresh", action: "open-manual-update" });
+    }
     actions.push({ label: "下载", variant: "primary", icon: "download", action: "open-download" });
 
     return renderDataUpdateBar({
@@ -4399,7 +4403,7 @@
       compareSupported &&
       isInfoDisclosureCompareEnabledByConfig(activeTab);
 
-    if (activeTab !== "备用信息" && activeTab !== "全省统一出清价") {
+    if (activeTab !== "备用信息" && activeTab !== "全省统一出清价" && activeTab !== "火电竞价空间") {
       actions.push(createMoreUpdateAction("open-manual-update"));
     }
 
@@ -7500,7 +7504,7 @@
 
     if (activeTab === "售电公司分时电量") {
       if (isPageBackedTimeSharingTab(activeTab, pageData)) {
-        return renderUnifiedInfoDisclosureContent(pageData);
+        return renderSaleCompanyUpdateBar(getInfoDisclosureStatus()) + renderUnifiedInfoDisclosureContent(pageData);
       }
       return renderSaleCompanyContent();
     }
@@ -13376,7 +13380,7 @@
         tradeCenterOptions: SETTLEMENT_TRADE_CENTER_OPTIONS,
       }) +
       renderSettlementFilterBar() +
-      renderDownloadOnlyBar(status, false) +
+      renderDownloadOnlyBar(status, false, { updateAsMore: getSelectedTradeCenterKey() === "hunan" || getSelectedTradeCenterKey() === "shaanxi" }) +
       renderUnifiedSettlementContent() +
       "</div>"
     );
