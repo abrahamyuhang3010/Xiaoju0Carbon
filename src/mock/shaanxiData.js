@@ -924,6 +924,83 @@
       downloadUrl: "#",
     },
   ];
+  var settlementDailyHourColumns = Array.from({ length: 24 }, function createHourColumn(_, index) {
+    return String(index + 1) + "时";
+  });
+  var settlementDailyColumns = [
+    { key: "日期", title: "日期" },
+    { key: "结算类型名称", title: "结算类型名称" },
+    { key: "数据类型", title: "数据类型" },
+    { key: "企业编码", title: "企业编码" },
+    { key: "企业名称", title: "企业名称" },
+    { key: "合计值", title: "合计值" },
+  ].concat(
+    settlementDailyHourColumns.map(function mapHourColumn(hourLabel) {
+      return { key: hourLabel, title: hourLabel };
+    }),
+  );
+
+  function aggregateShaanxiQuarterRowsByHour(sourceKey, digits) {
+    return Array.from({ length: 24 }, function aggregateHour(_, hourIndex) {
+      var total = shaanxiDailySettlementRows
+        .slice(hourIndex * 4, hourIndex * 4 + 4)
+        .reduce(function accumulate(sumValue, row) {
+          return sumValue + Number(row[sourceKey] || 0);
+        }, 0);
+      return Number(total.toFixed(digits));
+    });
+  }
+
+  function createShaanxiDailySettlementWideRow(settlementTypeName, dataType, sourceKey, digits, enterpriseCode, enterpriseName) {
+    var values = aggregateShaanxiQuarterRowsByHour(sourceKey, digits);
+    var totalValue = Number(
+      values
+        .reduce(function accumulate(total, value) {
+          return total + Number(value || 0);
+        }, 0)
+        .toFixed(digits),
+    );
+    var row = {
+      date: shaanxiDailySettlementDate,
+      settlementDate: shaanxiDailySettlementDate,
+      settlementTypeName: settlementTypeName,
+      dataType: dataType,
+      enterpriseCode: enterpriseCode,
+      enterpriseName: enterpriseName,
+      "日期": shaanxiDailySettlementDate,
+      "结算类型名称": settlementTypeName,
+      "数据类型": dataType,
+      "企业编码": enterpriseCode,
+      "企业名称": enterpriseName,
+      "合计值": totalValue,
+    };
+
+    settlementDailyHourColumns.forEach(function eachHour(hourLabel, index) {
+      row[hourLabel] = values[index] || 0;
+    });
+
+    if (sourceKey === "actualUsage") {
+      row.actualUsage = totalValue;
+      row.monthlyActualUsage = totalValue;
+    }
+    if (sourceKey === "intraProvinceNetContractVolume") {
+      row.mediumLongTermTradingPower = totalValue;
+    }
+    if (sourceKey === "dayAheadUnifiedPrice") {
+      row.tradingCostPrice = totalValue / Math.max(values.length, 1);
+    }
+
+    return row;
+  }
+
+  var shaanxiDailySettlementWideRows = [
+    createShaanxiDailySettlementWideRow("实际用电量", "电量", "actualUsage", 3, "ab8ec71b764f43fd8a760daa99c26b7a", "北京小桔新能源汽车科技有限公司"),
+    createShaanxiDailySettlementWideRow("省内净合同", "电量", "intraProvinceNetContractVolume", 3, "ab8ec71b764f43fd8a760daa99c26b7a", "北京小桔新能源汽车科技有限公司"),
+    createShaanxiDailySettlementWideRow("省内净合同", "电费", "intraProvinceNetContractFee", 2, "ab8ec71b764f43fd8a760daa99c26b7a", "北京小桔新能源汽车科技有限公司"),
+    createShaanxiDailySettlementWideRow("省内合约", "电费", "intraProvinceContractFee", 2, "ab8ec71b764f43fd8a760daa99c26b7a", "北京小桔新能源汽车科技有限公司"),
+    createShaanxiDailySettlementWideRow("日前交易", "电量", "dayAheadVolume", 3, "ab8ec71b764f43fd8a760daa99c26b7a", "北京小桔新能源汽车科技有限公司"),
+    createShaanxiDailySettlementWideRow("实时交易", "电量", "realTimeVolume", 3, "ab8ec71b764f43fd8a760daa99c26b7a", "北京小桔新能源汽车科技有限公司"),
+  ];
   var shaanxiDailySettlementPage = createPageData({
     title: "日清算",
     description: "陕西交易中心日清算按 96 个 15 分钟时段展示的用户侧日清分账单 mock 数据。",
@@ -943,26 +1020,8 @@
     chartType: "",
     chartUnit: "",
     chartSeries: [],
-    tableColumns: [
-      { key: "settlementDate", title: "结算日期" },
-      { key: "settlementUnitName", title: "结算单元名称" },
-      { key: "period", title: "时段" },
-      { key: "actualUsage", title: "实际用电量（MWh）" },
-      { key: "intraProvinceNetContractVolume", title: "省内净合同电量（MWh）" },
-      { key: "intraProvinceNetContractFee", title: "省内净合同电费（元）" },
-      { key: "mediumLongTermReferencePrice", title: "中长期结算参考点电价（元/MWh）" },
-      { key: "intraProvinceContractFee", title: "省内合约电费（元）" },
-      { key: "interProvinceNetContractVolume", title: "省间净合同电量（MWh）" },
-      { key: "interProvinceNetContractFee", title: "省间净合同电费（元）" },
-      { key: "dayAheadVolume", title: "日前电量（MWh）" },
-      { key: "dayAheadUnifiedPrice", title: "日前统一结算点电价（元/MWh）" },
-      { key: "dayAheadFee", title: "日前电费（元）" },
-      { key: "realTimeVolume", title: "实时电量（MWh）" },
-      { key: "realTimeUnifiedPrice", title: "实时统一结算点电价（元/MWh）" },
-      { key: "realTimeFee", title: "实时电费（元）" },
-      { key: "remark", title: "备注" },
-    ],
-    tableData: shaanxiDailySettlementRows,
+    tableColumns: settlementDailyColumns,
+    tableData: shaanxiDailySettlementWideRows,
     summaryTable: {
       columns: [],
       data: [],
@@ -1123,31 +1182,50 @@
     },
   ];
   var shaanxiMonthlySettlementColumns = [
-    { key: "subjectCode", label: "结算科目编码", fixed: true, width: 150 },
-    { key: "subjectName", label: "结算科目", fixed: true, width: 220 },
-    { key: "monthlyTradePlanPower", label: "分月交易计划电量", type: "energy", width: 160 },
-    { key: "settlementPower", label: "结算电量", type: "energy", width: 140 },
-    { key: "settlementPriceOrAverage", label: "结算电价/均价", type: "price", width: 150 },
-    { key: "settlementFee", label: "结算电费", type: "money", width: 150 },
-    { key: "remark", label: "备注", width: 220 },
+    { key: "monthLabel", label: "年月", fixed: true, width: 120 },
+    { key: "electricityLabel", label: "电量", width: 96 },
+    {
+      label: "省内绿色电力交易(电能量)",
+      children: [
+        { key: "monthlyTradePlanPower", label: "电量", type: "energy", width: 138 },
+        { key: "settlementPriceOrAverage", label: "电价", type: "price", width: 138 },
+        { key: "settlementFee", label: "电费", type: "money", width: 138 },
+      ],
+    },
+    {
+      label: "省内绿色电力交易(电能量-尖)",
+      children: [
+        { key: "greenPeakEnergy", label: "电量", type: "energy", width: 138 },
+        { key: "greenPeakPrice", label: "电价", type: "price", width: 138 },
+        { key: "greenPeakFee", label: "电费", type: "money", width: 138 },
+      ],
+    },
+    {
+      label: "省内绿色电力交易(电能量-峰)",
+      children: [
+        { key: "greenHighEnergy", label: "电量", type: "energy", width: 138 },
+        { key: "greenHighPrice", label: "电价", type: "price", width: 138 },
+        { key: "greenHighFee", label: "电费", type: "money", width: 138 },
+      ],
+    },
   ];
   var shaanxiMonthlyPurchaseRows = [
-    { subjectCode: "01", subjectName: "电量清分", monthlyTradePlanPower: 6025.925, settlementPower: 6025.925, settlementPriceOrAverage: 190.633, settlementFee: 1148739.45, remark: "" },
-    { subjectCode: "0101", subjectName: "中长期交易", monthlyTradePlanPower: 3193.288, settlementPower: 3193.288, settlementPriceOrAverage: 259.275, settlementFee: 827939.23, remark: "" },
-    { subjectCode: "0101020311", subjectName: "双边协商", monthlyTradePlanPower: 2389.006, settlementPower: 2389.006, settlementPriceOrAverage: 315.000, settlementFee: 752536.89, remark: "" },
-    { subjectCode: "0101020312", subjectName: "集中竞价", monthlyTradePlanPower: 1098.585, settlementPower: 1098.585, settlementPriceOrAverage: 166.040, settlementFee: 182409.13, remark: "" },
-    { subjectCode: "010110", subjectName: "其他中长期交易", monthlyTradePlanPower: -294.303, settlementPower: -294.303, settlementPriceOrAverage: 363.594, settlementFee: -107006.79, remark: "" },
-    { subjectCode: "01020201", subjectName: "日前交易", monthlyTradePlanPower: 0.000, settlementPower: 2821.989, settlementPriceOrAverage: 105.991, settlementFee: 299106.52, remark: "" },
-    { subjectCode: "01020203", subjectName: "实时交易", monthlyTradePlanPower: 0.000, settlementPower: 10.648, settlementPriceOrAverage: 2037.350, settlementFee: 21693.70, remark: "" },
-    { subjectCode: "0202030013", subjectName: "日前申报偏差获益回收", monthlyTradePlanPower: 0.000, settlementPower: 14.260, settlementPriceOrAverage: 647.667, settlementFee: 9235.73, remark: "" },
-    { subjectCode: "其中（国网）", subjectName: "其中（国网）", monthlyTradePlanPower: 6025.925, settlementPower: 6025.925, settlementPriceOrAverage: 190.633, settlementFee: 1148739.45, remark: "" },
-    { subjectCode: "合计", subjectName: "购电侧合计", monthlyTradePlanPower: 6025.925, settlementPower: 6025.925, settlementPriceOrAverage: 192.166, settlementFee: 1157975.18, remark: "" },
+    { monthLabel: "202604", electricityLabel: "电量", monthlyTradePlanPower: 6025.925, settlementPriceOrAverage: 190.633, settlementFee: 1148739.45, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00 },
+    { monthLabel: "202604", electricityLabel: "电量", monthlyTradePlanPower: 3193.288, settlementPriceOrAverage: 259.275, settlementFee: 827939.23, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00 },
+    { monthLabel: "202604", electricityLabel: "电量", monthlyTradePlanPower: 2389.006, settlementPriceOrAverage: 315.000, settlementFee: 752536.89, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00 },
+    { monthLabel: "202604", electricityLabel: "电量", monthlyTradePlanPower: 1098.585, settlementPriceOrAverage: 166.040, settlementFee: 182409.13, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00 },
+    { monthLabel: "202604", electricityLabel: "电量", monthlyTradePlanPower: -294.303, settlementPriceOrAverage: 363.594, settlementFee: -107006.79, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00 },
+    { monthLabel: "202604", electricityLabel: "电量", monthlyTradePlanPower: 0.000, settlementPriceOrAverage: 105.991, settlementFee: 299106.52, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00 },
+    { monthLabel: "202604", electricityLabel: "电量", monthlyTradePlanPower: 0.000, settlementPriceOrAverage: 2037.350, settlementFee: 21693.70, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00 },
+    { monthLabel: "202604", electricityLabel: "电量", monthlyTradePlanPower: 0.000, settlementPriceOrAverage: 647.667, settlementFee: 9235.73, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00 },
+    { monthLabel: "202604", electricityLabel: "电量", monthlyTradePlanPower: 6025.925, settlementPriceOrAverage: 190.633, settlementFee: 1148739.45, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00 },
+    { monthLabel: "202604", electricityLabel: "电量", monthlyTradePlanPower: 6025.925, settlementPriceOrAverage: 192.166, settlementFee: 1157975.18, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00, subjectCode: "合计", subjectName: "购电侧合计" },
   ];
   var shaanxiMonthlySaleRows = [
-    { subjectCode: "0101020315", subjectName: "零售交易", monthlyTradePlanPower: 6025.925, settlementPower: 6025.925, settlementPriceOrAverage: 202.995, settlementFee: 1223232.87, remark: "" },
-    { subjectCode: "0202030018", subjectName: "封顶价差返还", monthlyTradePlanPower: 0.000, settlementPower: 0.000, settlementPriceOrAverage: null, settlementFee: -65257.69, remark: "封顶价差返还费用" },
-    { subjectCode: "其中（国网）", subjectName: "其中（国网）", monthlyTradePlanPower: 6025.925, settlementPower: 6025.925, settlementPriceOrAverage: 202.995, settlementFee: 1223232.87, remark: "" },
-    { subjectCode: "合计", subjectName: "售电公司月结算合计", monthlyTradePlanPower: 6025.925, settlementPower: 6025.925, settlementPriceOrAverage: 192.166, settlementFee: 1157975.18, remark: "" },
+    { monthLabel: "202604", electricityLabel: "电量", monthlyTradePlanPower: 6025.925, settlementPriceOrAverage: 202.995, settlementFee: 1223232.87, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00 },
+    { monthLabel: "202604", electricityLabel: "电费", monthlyTradePlanPower: 0.000, settlementPriceOrAverage: null, settlementFee: -65257.69, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00 },
+    { monthLabel: "202604", electricityLabel: "电量", monthlyTradePlanPower: 6025.925, settlementPriceOrAverage: 202.995, settlementFee: 1223232.87, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00 },
+    { monthLabel: "202604", electricityLabel: "电量", monthlyTradePlanPower: 6025.925, settlementPriceOrAverage: 192.166, settlementFee: 1157975.18, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00, subjectCode: "合计", subjectName: "售电公司月结算合计" },
   ];
   var shaanxiMonthlySettlementData = {
     provinceCode: "sx",
@@ -1201,20 +1279,8 @@
     chartType: "",
     chartUnit: "",
     chartSeries: [],
-    tableColumns: [
-      { key: "subjectCode", title: "结算科目编码" },
-      { key: "subjectName", title: "结算科目" },
-      { key: "retailUserName", title: "零售用户名称" },
-      { key: "accountOrMeterNo", title: "户号 / 电源编号 / 计量点编号" },
-      { key: "contractPeriod", title: "合同时段" },
-      { key: "actualUsage", title: "实际用电量" },
-      { key: "contractPower", title: "合同电量" },
-      { key: "settlementPowerOrCapacity", title: "结算电量 / 容量" },
-      { key: "settlementPrice", title: "结算电价" },
-      { key: "settlementFee", title: "结算电费" },
-      { key: "remark", title: "备注" },
-    ],
-    tableData: shaanxiMonthlySettlementDetails,
+    tableColumns: shaanxiMonthlySettlementColumns,
+    tableData: shaanxiMonthlySaleRows,
     settlementSummary: shaanxiMonthlySettlementSummary,
     fileList: shaanxiMonthlySettlementFiles,
     documentTitle: "售电公司交易结算单",
@@ -1259,18 +1325,8 @@
     chartType: "bar",
     chartUnit: "元",
     chartSeries: [shaanxiMonthlyConsumerSeries],
-    tableColumns: [
-      { key: "month", title: "结算月份" },
-      { key: "companyCode", title: "用电企业编码" },
-      { key: "companyName", title: "用电企业名称" },
-      { key: "accountNo", title: "结算户号" },
-      { key: "settlementEnergy", title: "结算电量（MWh）" },
-      { key: "totalFee", title: "结算电费（元）" },
-      { key: "serviceFee", title: "服务费（元）" },
-      { key: "deviationFee", title: "偏差费用（元）" },
-      { key: "invoiceStatus", title: "出账状态" },
-    ],
-    tableData: shaanxiMonthlyConsumerRows,
+    tableColumns: shaanxiMonthlySettlementColumns,
+    tableData: shaanxiMonthlyPurchaseRows,
     fileList: buildMockFileList("sx", "monthly-settlement-consumer", standardDefaultDate, 3),
     emptyText: "当前月份暂无陕西用电企业月结算 mock 数据。",
   });
@@ -1561,13 +1617,27 @@
     "陕西九电新能源有限责任公司",
     "陕西众成智慧能源有限公司",
   ];
+  var shaanxiEnterpriseProfiles = [
+    { enterpriseCode: "SXQY001", userName: "碧辟小桔新能源(深圳)有限责任公司", accountNo: "610390000001", microgridName: "西安经开充电站微电网", microgridId: "SXMG_1001", meteringPointNo: "610390000001_1" },
+    { enterpriseCode: "SXQY002", userName: "西安碧辟小桔新能源有限责任公司", accountNo: "610390000002", microgridName: "西咸新区补能微电网", microgridId: "SXMG_1002", meteringPointNo: "610390000002_1" },
+    { enterpriseCode: "SXQY003", userName: "陕西九电新能源有限责任公司", accountNo: "610390000003", microgridName: "渭南智慧充电微电网", microgridId: "SXMG_1003", meteringPointNo: "610390000003_1" },
+    { enterpriseCode: "SXQY004", userName: "陕西众成智慧能源有限公司", accountNo: "610390000004", microgridName: "榆林综合能源微电网", microgridId: "SXMG_1004", meteringPointNo: "610390000004_1" },
+  ];
+  var shaanxiEnterpriseHourLabels = buildTimeLabels(60, 24, 60);
   var shaanxiUnifiedEnterpriseRows = settlementDates.reduce(function accumulateRows(result, date, dayIndex) {
     return result.concat(
-      shaanxiEnterpriseNames.map(function mapEnterprise(enterpriseName, enterpriseIndex) {
-        var row = buildShaanxiQuarterProfileRow(date, enterpriseName, enterpriseIndex, dayIndex);
-        row.userName = enterpriseName;
-        row.accountNo = "61039" + String(enterpriseIndex + 1).padStart(7, "0");
+      shaanxiEnterpriseProfiles.map(function mapEnterprise(profile, enterpriseIndex) {
+        var row = buildShaanxiQuarterProfileRow(date, profile.userName, enterpriseIndex, dayIndex);
+        row.userCode = profile.enterpriseCode;
+        row.userName = profile.userName;
+        row.accountNo = profile.accountNo;
+        row.microgridName = profile.microgridName;
+        row.microgridId = profile.microgridId;
+        row.meteringPointNo = profile.meteringPointNo;
         row.totalValue = row.total96;
+        shaanxiEnterpriseHourLabels.forEach(function eachHourLabel(hourLabel, hourIndex) {
+          row[hourLabel] = row.converted24Values[hourIndex];
+        });
         return row;
       }),
     );
@@ -1594,42 +1664,58 @@
     dateLabel: "用电日期",
     filterFields: [
       {
-        type: "select",
-        label: "用电用户名称",
-        fieldKey: "enterpriseUserName",
-        rowKey: "userName",
-        options: ["全部"].concat(shaanxiEnterpriseNames),
-        defaultValue: "全部",
+        type: "text",
+        label: "电力用户编码",
+        fieldKey: "enterpriseUserCode",
+        rowKey: "userCode",
+        placeholder: "",
       },
       {
-        type: "select",
+        type: "text",
+        label: "电力用户名称",
+        fieldKey: "enterpriseUserName",
+        rowKey: "userName",
+        placeholder: "",
+      },
+      {
+        type: "text",
         label: "用户户号",
         fieldKey: "enterpriseAccountNo",
         rowKey: "accountNo",
-        options: ["全部"].concat(shaanxiEnterpriseAccountNos),
-        defaultValue: "全部",
+        placeholder: "",
+      },
+      {
+        type: "text",
+        label: "微电网ID",
+        fieldKey: "enterpriseMicrogridId",
+        rowKey: "microgridId",
+        placeholder: "",
       },
     ],
     profileModes: {
-      "96": {
-        label: "96点视图",
-        labels: quarterHours.slice(),
+      "24": {
+        label: "24点视图",
+        labels: shaanxiEnterpriseHourLabels.slice(),
         unit: "MWh",
-        valueKey: "quarterValues",
-        latestLabel: "所选周期最新日 96 点电量",
-        averageLabel: "所选周期均值 96 点电量",
-        compareLatestLabel: "对比周期最新日 96 点电量",
-        compareAverageLabel: "对比周期均值 96 点电量",
+        valueKey: "converted24Values",
+        latestLabel: "所选周期最新日电量",
+        averageLabel: "所选周期均值电量",
+        compareLatestLabel: "对比周期最新日电量",
+        compareAverageLabel: "对比周期均值电量",
       },
     },
-    defaultProfileMode: "96",
+    defaultProfileMode: "24",
     tableColumns: [
+      { key: "date", title: "日期" },
+      { key: "userCode", title: "电力用户编码" },
+      { key: "userName", title: "电力用户名称" },
+      { key: "microgridName", title: "微电网名称" },
+      { key: "microgridId", title: "微电网ID" },
       { key: "accountNo", title: "户号" },
-      { key: "userName", title: "用户名称" },
-      { key: "totalValue", title: "总用电量" },
+      { key: "meteringPointNo", title: "计量点编号" },
     ]
-      .concat(quarterHours.map(function mapQuarterLabel(quarterLabel) {
-        return { key: quarterLabel, title: quarterLabel };
+      .concat(shaanxiEnterpriseHourLabels.map(function mapHourLabel(hourLabel) {
+        return { key: hourLabel, title: hourLabel };
       })),
     tableData: shaanxiUnifiedEnterpriseRows,
     tableMinWidth: 9040,
@@ -2005,6 +2091,10 @@
           "日清算": "dailySettlement",
           "月结算": {
             defaultDatasetKey: "monthlySettlementSeller",
+            secondaryTabs: {
+              "售电公司": "monthlySettlementSeller",
+              "用电企业": "monthlySettlementConsumer",
+            },
           },
         },
       },

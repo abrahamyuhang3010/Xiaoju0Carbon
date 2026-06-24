@@ -1002,7 +1002,7 @@
   }
 
   var settlementDailyHourColumns = Array.from({ length: 24 }, function createHourColumn(_, index) {
-    return String(index) + "时";
+    return String(index + 1) + "时";
   });
   var settlementDailyColumns = [
     { key: "日期", title: "日期" },
@@ -1100,14 +1100,13 @@
   ];
 
   var guangdongMonthlySettlementGroups = [
-    { label: "合计（含追补）", children: ["电量", "电价", "电费"] },
     { label: "追补电费", children: ["电量", "电价", "电费"] },
-    { label: "售电公司批零差价分享电费", children: ["电费"] },
-    { label: "售电公司批零差价回收电费", children: ["电费"] },
-    { label: "零售合同退补补充协议", children: ["电费"] },
     { label: "合计（当期）", children: ["电量", "电价", "电费"] },
     { label: "跨省点对点中长期合约", children: ["电量", "电价", "电费"] },
     { label: "跨省点对点中长期合约阻塞电费", children: ["电费"] },
+    { label: "售电公司批零差价分享电费", children: ["电费"] },
+    { label: "售电公司批零差价回收电费", children: ["电费"] },
+    { label: "零售合同退补补充协议", children: ["电费"] },
     { label: "中长期市场化", children: ["电量", "电价", "电费"] },
     { label: "年度", children: ["电量", "电价", "电费"] },
     { label: "多月", children: ["电量", "电价", "电费"] },
@@ -1177,9 +1176,7 @@
 
   function buildGuangdongMonthlySettlementColumns() {
     return [
-      { key: "seq", label: "序号", fixed: true, width: 76 },
-      { key: "enterpriseCode", label: "企业编码", fixed: true, width: 126 },
-      { key: "enterpriseName", label: "企业名称", fixed: true, width: 240 },
+      { key: "monthLabel", label: "年月", fixed: true, width: 120 },
     ].concat(
       guangdongMonthlySettlementGroups.map(function mapGroup(group, groupIndex) {
         return {
@@ -1215,9 +1212,7 @@
 
   function buildGuangdongMonthlySettlementRows() {
     var row = {
-      seq: 1,
-      enterpriseCode: "SD508",
-      enterpriseName: "广州汇桔新能源科技有限公司",
+      monthLabel: "202605",
     };
 
     guangdongMonthlySettlementGroups.forEach(function eachGroup(group, groupIndex) {

@@ -100,6 +100,15 @@
     });
   }
 
+  function cloneNodePriceRowsWithoutSpread(rows) {
+    return (rows || []).map(function mapRow(row) {
+      var nextRow = cloneValue(row || {});
+      delete nextRow.spread;
+      delete nextRow.priceDiff;
+      return nextRow;
+    });
+  }
+
   function getUnifiedNodePriceMock(tradeCenterKey) {
     var mocks = global.nodePriceMockByCenter || global.BOSS_NODE_PRICE_MOCK_BY_CENTER || {};
     return mocks[tradeCenterKey] || null;
@@ -2236,7 +2245,12 @@
       var waveShift = (((seed + index * 3 + centerOffset) % 7) - 3) * 0.18;
       return {
         date: dateValue,
-        time: tradeCenterKey === "hunan" && index === 23 ? "24:00" : tradeCenterKey === "hunan" ? padNumber(index + 1) + ":00" : row.time,
+        time:
+          (tradeCenterKey === "hunan" || tradeCenterKey === "shaanxi") && index === 23
+            ? "24:00"
+            : tradeCenterKey === "hunan" || tradeCenterKey === "shaanxi"
+              ? padNumber(index + 1) + ":00"
+              : row.time,
         dayAheadVolume: roundNumber(row.dayAheadVolume * volumeFactor),
         realTimeVolume: roundNumber(row.realTimeVolume * (volumeFactor + 0.006)),
         dayAheadSettlementPrice: roundNumber(row.dayAheadSettlementPrice + priceShift + waveShift),
@@ -2287,7 +2301,7 @@
     var displayDate = (request && (request.date || request.runDate)) || (tradingResultData && tradingResultData.date) || mockDates[0] || "";
     var rows = mockDates.reduce(function accumulateRows(result, date) {
       var datedRows = buildDatedTradingResultRows((tradingResultData && tradingResultData.points) || [], date, tradeCenterKey);
-      return result.concat(tradeCenterKey === "shaanxi" ? expandTradingResultRowsToQuarterHours(datedRows) : datedRows);
+      return result.concat(datedRows);
     }, []);
     var centerName = (tradingResultData && tradingResultData.centerName) || TRADE_CENTER_NAMES[tradeCenterKey] || "";
     var metricKeys = getTradingResultMetricKeys(tradeCenterKey);
@@ -2390,7 +2404,7 @@
       viewType: "mixedTrendTable",
       leftUnit: barSeriesDefinitions.length ? "MWh" : "",
       rightUnit: lineSeriesDefinitions.length ? "元/MWh" : "",
-      timeGranularity: tradeCenterKey === "shaanxi" ? "15m" : "1h",
+      timeGranularity: "1h",
       volumeSource: (tradingResultData && tradingResultData.volumeSource) || "stable-placeholder",
       summaryCards: [
         { label: "日前结算峰值", value: dayAheadSeries.max, unit: "元/MWh" },
@@ -2444,7 +2458,7 @@
     var nodeSeries = {};
     nodes.forEach(function eachNode(node) {
       nodeSeries[node.nodeName] = {
-        rows: withComputedNodeSpread(node.points || []),
+        rows: cloneNodePriceRowsWithoutSpread(node.points || []),
       };
     });
 
@@ -2484,9 +2498,8 @@
         { key: "time", title: "时刻" },
         { key: "dayAheadNodePrice", title: "日前节点电价（元/MWh）" },
         { key: "realTimeNodePrice", title: "实时节点电价（元/MWh）" },
-        { key: "spread", title: "价差（元/MWh）" },
       ],
-      tableData: withComputedNodeSpread(provinceNode.points),
+      tableData: cloneNodePriceRowsWithoutSpread(provinceNode.points),
       fileList: createMockFileList(tradeCenterKey + "-node-price", (nodePriceData && nodePriceData.date) || "2026-05-07", 3),
       emptyText: "当前日期暂无" + centerName + "节点电价 mock 数据。",
     };
@@ -3100,19 +3113,11 @@
             { key: "updatedAt", title: "更新时间" },
           ];
     scheduleColumns = scheduleColumns.filter(function filterColumn(column) {
-      return (
-        column.key !== "planStatus" &&
-        column.key !== "sequence" &&
-        column.key !== "startTime" &&
-        column.key !== "endTime" &&
-        column.key !== "updatedAt"
-      );
+      return column.key !== "planStatus" && column.key !== "sequence" && column.key !== "updatedAt";
     });
     var scheduleRows = (scheduleTable.data || []).map(function mapRow(row) {
       var nextRow = cloneValue(row);
       delete nextRow.planStatus;
-      delete nextRow.startTime;
-      delete nextRow.endTime;
       return nextRow;
     });
 

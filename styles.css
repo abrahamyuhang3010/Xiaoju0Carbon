@@ -3707,23 +3707,11 @@ a {
 }
 
 .upload-icon {
-  position: relative;
-  width: 16px;
-  height: 14px;
-  border: 2px solid currentColor;
-  border-top: 0;
-}
-
-.upload-icon::before {
-  content: "";
-  position: absolute;
-  left: 5px;
-  top: -8px;
-  width: 6px;
-  height: 10px;
-  border-left: 2px solid currentColor;
-  border-top: 2px solid currentColor;
-  transform: rotate(45deg);
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  color: currentColor;
+  fill: currentColor;
 }
 
 .update-data-modal .form-hint,

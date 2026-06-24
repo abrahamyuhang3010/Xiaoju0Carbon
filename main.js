@@ -5162,6 +5162,9 @@
         if (!selectedValue || selectedValue === "全部") {
           return true;
         }
+        if (field.type === "text") {
+          return includesKeyword(row[field.rowKey || field.fieldKey], selectedValue);
+        }
         return String(row[field.rowKey || field.fieldKey] || "") === String(selectedValue);
       });
     });
@@ -6125,7 +6128,6 @@
         time: row.time,
         dayAheadNodePrice: createInfoDisclosureTableCell(dayAheadPrice, formatDecimal),
         realTimeNodePrice: createInfoDisclosureTableCell(realTimePrice, formatDecimal),
-        spread: createInfoDisclosureSpreadCell(dayAheadPrice, realTimePrice),
       };
     });
 
@@ -6174,7 +6176,6 @@
           { key: "time", label: "时刻" },
           { key: "dayAheadNodePrice", label: "日前节点电价（元/MWh）" },
           { key: "realTimeNodePrice", label: "实时节点电价（元/MWh）" },
-          { key: "spread", label: "价差（元/MWh）" },
         ],
         rows: tableRows,
         minWidth: pageData.tableMinWidth || 1120,
@@ -9159,14 +9160,12 @@
         { key: "time", label: "时刻" },
         { key: "dayAheadNodePrice", label: "日前节点电价（元/MWh）" },
         { key: "realTimeNodePrice", label: "实时节点电价（元/MWh）" },
-        { key: "spread", label: "价差（元/MWh）" },
       ],
       rows: (nodeSeries.points || []).map(function mapPoint(point) {
         return {
           time: point.time,
           dayAheadNodePrice: createTradeTableCell(point.dayAheadNodePrice, formatDecimal),
           realTimeNodePrice: createTradeTableCell(point.realTimeNodePrice, formatDecimal),
-          spread: createTradeSpreadCell(calculateTradeSpread(point.dayAheadNodePrice, point.realTimeNodePrice)),
         };
       }),
       minWidth: 1120,
