@@ -116,7 +116,11 @@
       {
         label: "操作记录",
         toggleKey: "recordExpanded",
-        children: [{ label: "操作日志", pageKey: "operation-log" }],
+        children: [
+          { label: "下载记录", pageKey: "download-record" },
+          { label: "操作日志", pageKey: "operation-log" },
+          { label: "审核记录", pageKey: "audit-record" },
+        ],
       },
     ],
   };

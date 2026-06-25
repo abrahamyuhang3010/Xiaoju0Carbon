@@ -11,6 +11,7 @@
   var shaanxiMock = appMocks.shaanxi || {};
   var infoDisclosureConfig = global.BOSS_INFO_DISCLOSURE_CONFIG || {};
   var fetchMonitorMock = appMocks.fetchMonitor || {};
+  var operationRecordMock = appMocks.operationRecord || {};
   var dataMonitorMock = appMocks.dataMonitor || {};
   var simulationMock = appMocks.simulation || {};
   var algorithmMock = appMocks.algorithm || {};
@@ -34,7 +35,7 @@
   var renderDownloadModal = components.renderDownloadModal || function renderEmpty() {
     return "";
   };
-  var renderDownloadTaskDrawer = components.renderDownloadTaskDrawer || function renderEmpty() {
+  var renderDownloadListModal = components.renderDownloadListModal || function renderEmpty() {
     return "";
   };
   var renderEmptyState = components.renderEmptyState || function renderEmpty() {
@@ -127,6 +128,8 @@
   var DISCLOSURE_TIME_PAGE_SIZE = 12;
 
   var flashTimer = null;
+  var downloadSubmitTimer = null;
+  var downloadListLoadingTimer = null;
   var singleMetricLoadTimer = null;
   var singleMetricLoadToken = 0;
   var marketPageViewDataCache = {};
@@ -156,6 +159,7 @@
     cpu: '<rect x="5" y="5" width="14" height="14" rx="2"></rect><rect x="9" y="9" width="6" height="6" rx="1"></rect><path d="M9 2v3"></path><path d="M15 2v3"></path><path d="M9 19v3"></path><path d="M15 19v3"></path><path d="M2 9h3"></path><path d="M2 15h3"></path><path d="M19 9h3"></path><path d="M19 15h3"></path>',
     coins: '<ellipse cx="12" cy="7" rx="5" ry="2.5"></ellipse><path d="M7 7v7c0 1.4 2.2 2.5 5 2.5s5-1.1 5-2.5V7"></path><path d="M10.5 11h3"></path>',
     message: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"></path>',
+    info: '<circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><path d="M12 8h.01"></path>',
     download: '<path d="M12 4v10"></path><path d="m8 10 4 4 4-4"></path><path d="M4 20h16"></path>',
     ellipsis: '<circle cx="6" cy="12" r="1.5"></circle><circle cx="12" cy="12" r="1.5"></circle><circle cx="18" cy="12" r="1.5"></circle>',
     compare: '<path d="M10 6H5a2 2 0 0 0-2 2v8"></path><path d="m7 3-3 3 3 3"></path><path d="M14 18h5a2 2 0 0 0 2-2V8"></path><path d="m17 21 3-3-3-3"></path>',
@@ -244,7 +248,9 @@
       "低碳家园": "leaf",
       "低碳服务": "leaf",
       "操作记录": "history",
+      "下载记录": "download",
       "操作日志": "history",
+      "审核记录": "file-text",
       "仿真平台": "monitor",
       "现货交易仿真": "chart-line",
       "现货模拟交易": "play-circle",
@@ -1155,6 +1161,142 @@
     return String(value || "").replace(/-/g, "");
   }
 
+  function formatDateTimeCompact(value) {
+    return String(value || "").replace(/[-:\s]/g, "").slice(0, 14);
+  }
+
+  function normalizeDownloadStatus(status) {
+    if (status === "成功" || status === "success") {
+      return "success";
+    }
+    if (status === "失败" || status === "failed") {
+      return "failed";
+    }
+    return "creating";
+  }
+
+  function getDownloadStatusText(status) {
+    var normalizedStatus = normalizeDownloadStatus(status);
+    if (normalizedStatus === "success") {
+      return "成功";
+    }
+    if (normalizedStatus === "failed") {
+      return "失败";
+    }
+    return "生成中";
+  }
+
+  function getDownloadBusinessMeta(type) {
+    var dataType = type || getCurrentDownloadType() || "负荷信息";
+
+    if (state.currentPageKey === "gd-settlement") {
+      return {
+        businessModule: "日清月结",
+        dataType: state.settlement.activeTab === "月结算" ? "月结算结果" : "日清算结果",
+      };
+    }
+    if (state.currentPageKey === "gd-trade-result") {
+      return {
+        businessModule: "用电侧交易结果",
+        dataType: dataType,
+      };
+    }
+    if (state.currentPageKey === "gd-day-ahead-declaration") {
+      return {
+        businessModule: "用电侧交易结果",
+        dataType: "日前申报",
+      };
+    }
+    if (state.currentPageKey === "rolling-data") {
+      return {
+        businessModule: "滚搓数据",
+        dataType: "交易结果",
+      };
+    }
+    if (state.currentPageKey === "gd-retail-relation") {
+      return {
+        businessModule: "零售关系",
+        dataType: "零售关系",
+      };
+    }
+    if (dataType === "交易结果" || dataType === "节点电价" || dataType === "日前申报") {
+      return {
+        businessModule: "用电侧交易结果",
+        dataType: dataType,
+      };
+    }
+    if (dataType === "备用信息") {
+      return {
+        businessModule: "",
+        dataType: "备用信息",
+      };
+    }
+    return {
+      businessModule: "信息披露",
+      dataType: dataType,
+    };
+  }
+
+  function buildDownloadFileName(meta, createdAt) {
+    var stamp = formatDateTimeCompact(createdAt || formatDateTime(new Date()));
+    if (!meta.businessModule || meta.businessModule === meta.dataType) {
+      return meta.dataType + "_" + stamp;
+    }
+    return meta.businessModule + "_" + meta.dataType + "_" + stamp;
+  }
+
+  function getDownloadTaskCreatedAt(task) {
+    return String(task && task.createdAt ? task.createdAt : "");
+  }
+
+  function sortDownloadTasksDesc(a, b) {
+    return new Date(getDownloadTaskCreatedAt(b).replace(" ", "T")) - new Date(getDownloadTaskCreatedAt(a).replace(" ", "T"));
+  }
+
+  function getAllDownloadRecords() {
+    return (state.downloadTasks || []).slice().sort(sortDownloadTasksDesc);
+  }
+
+  function csvEscape(value) {
+    return '"' + String(value === null || value === undefined ? "" : value).replace(/"/g, '""') + '"';
+  }
+
+  function buildDownloadCsv(task) {
+    var headers = ["文件名称", "业务模块", "数据类型", "开始日期", "结束日期", "创建时间", "状态"];
+    var row = [
+      task.fileName,
+      task.businessModule || "",
+      task.dataType || "",
+      task.startDate || "",
+      task.endDate || "",
+      task.createdAt || "",
+      getDownloadStatusText(task.status),
+    ];
+    return "\uFEFF" + headers.map(csvEscape).join(",") + "\n" + row.map(csvEscape).join(",") + "\n";
+  }
+
+  function triggerDownloadTaskFile(task) {
+    if (!task || normalizeDownloadStatus(task.status) !== "success") {
+      return false;
+    }
+    var csvContent = task.fileContent || buildDownloadCsv(task);
+    var blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8",
+    });
+    var url = global.URL.createObjectURL(blob);
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = (task.downloadFileName || task.fileName || "下载文件") + ".csv";
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    global.setTimeout(function revokeUrl() {
+      global.URL.revokeObjectURL(url);
+    }, 1000);
+    return true;
+  }
+
   function getTimeSharingHourLabels() {
     return TIME_SHARING_HOUR_LABELS.slice();
   }
@@ -1584,6 +1726,12 @@
     if (id === "fetch-monitor-range") {
       return state.fetchMonitor.filters.dateRange;
     }
+    if (id === "operation-log-range") {
+      return state.operationRecord.filters.logRange;
+    }
+    if (id === "audit-record-range") {
+      return state.operationRecord.filters.auditRange;
+    }
     if (id === "spot-trading-simulation-range") {
       return state.spotTradingSimulation.filters.backtestRange;
     }
@@ -1647,6 +1795,10 @@
       state.declaration.filters.declarationRange = cloneRange(range);
     } else if (id === "fetch-monitor-range") {
       state.fetchMonitor.filters.dateRange = cloneRange(range);
+    } else if (id === "operation-log-range") {
+      state.operationRecord.filters.logRange = cloneRange(range);
+    } else if (id === "audit-record-range") {
+      state.operationRecord.filters.auditRange = cloneRange(range);
     } else if (id === "spot-trading-simulation-range") {
       state.spotTradingSimulation.filters.backtestRange = cloneRange(range);
     } else if (id === "spot-mock-trading-range") {
@@ -3393,52 +3545,29 @@
       .filter(function filterTask(task) {
         return new Date(task.createdAt.replace(" ", "T")) >= cutoff;
       })
-      .sort(function sortTask(a, b) {
-        return new Date(b.createdAt.replace(" ", "T")) - new Date(a.createdAt.replace(" ", "T"));
-      })
+      .sort(sortDownloadTasksDesc)
       .slice(0, DOWNLOAD_SUMMARY.maxVisibleRecords);
   }
 
   function addDownloadTask() {
     var range = state.ui.downloadRangeDraft;
     var type = state.ui.downloadDataType || "负荷信息";
-    var currentPage = registry.getPage(state.currentPageKey);
-    var fileName;
-
-    if (type === INFO_DISCLOSURE_SELLER_HISTORY_TAB || type === INFO_DISCLOSURE_USER_HISTORY_TAB) {
-      var agentMonth =
-        type === INFO_DISCLOSURE_SELLER_HISTORY_TAB
-          ? state.info.filters.sellerHistoryAgentMonth || getDefaultHistoryAgentMonth("seller")
-          : state.info.filters.userHistoryAgentMonth || getDefaultHistoryAgentMonth("user");
-      fileName =
-        "信息披露_" +
-        type +
-        "_代理月份" +
-        String(agentMonth || "").replace(/-/g, "") +
-        "_" +
-        formatDateCompact(range.start) +
-        "至" +
-        formatDateCompact(range.end) +
-        ".xlsx";
-    } else {
-      fileName =
-        currentPage.title.replace(/\s+/g, "") +
-        "_" +
-        type +
-        "_" +
-        formatDateCompact(range.start) +
-        "至" +
-        formatDateCompact(range.end) +
-        ".xls";
-    }
-
-    state.downloadTasks.unshift({
+    var createdAt = formatDateTime(new Date());
+    var meta = getDownloadBusinessMeta(type);
+    var task = {
       id: "dl-" + Date.now(),
-      fileName: fileName,
-      createdAt: formatDateTime(new Date()),
-      status: "排队中",
+      businessModule: meta.businessModule,
+      dataType: meta.dataType,
+      startDate: range.start,
+      endDate: range.end,
+      fileName: buildDownloadFileName(meta, createdAt),
+      createdAt: createdAt,
+      status: "creating",
       source: state.ui.selectedTradeCenter,
-    });
+    };
+    task.fileContent = buildDownloadCsv(task);
+    state.downloadTasks.unshift(task);
+    return task;
   }
 
   function renderNavItems() {
@@ -3757,9 +3886,7 @@
       label: "下载",
       variant: "primary",
       icon: "download",
-      action: "download",
-      downloadMenu: true,
-      menuItems: [{ label: "自定义日期", action: "open-download" }],
+      action: "open-download",
     };
   }
 
@@ -11851,6 +11978,429 @@
     );
   }
 
+  function ensureOperationRecordState() {
+    state.operationRecord = state.operationRecord || {};
+    state.operationRecord.filters = state.operationRecord.filters || {};
+    state.operationRecord.filters.operatorKeyword = state.operationRecord.filters.operatorKeyword || "";
+    state.operationRecord.filters.operationLogId = state.operationRecord.filters.operationLogId || "";
+    state.operationRecord.filters.module = state.operationRecord.filters.module || "全部";
+    state.operationRecord.filters.action = state.operationRecord.filters.action || "全部";
+    state.operationRecord.filters.operationType = state.operationRecord.filters.operationType || "";
+    state.operationRecord.filters.logRange = state.operationRecord.filters.logRange || cloneRange(getOperationLogDefaultRange());
+    state.operationRecord.filters.expandedOperationLogIds = state.operationRecord.filters.expandedOperationLogIds || new Set();
+    state.operationRecord.filters.operationLogPage = state.operationRecord.filters.operationLogPage || 1;
+    state.operationRecord.filters.applicantKeyword = state.operationRecord.filters.applicantKeyword || "";
+    state.operationRecord.filters.auditType = state.operationRecord.filters.auditType || "全部";
+    state.operationRecord.filters.auditStatus = state.operationRecord.filters.auditStatus || "全部";
+    state.operationRecord.filters.auditRange = state.operationRecord.filters.auditRange || cloneRange(getAuditRecordDefaultRange());
+    return state.operationRecord;
+  }
+
+  function getOperationLogDefaultRange() {
+    return (
+      (operationRecordMock.operationLog &&
+        operationRecordMock.operationLog.filters &&
+        operationRecordMock.operationLog.filters.defaultRange) || {
+        start: "",
+        end: "",
+      }
+    );
+  }
+
+  function getAuditRecordDefaultRange() {
+    return (
+      (operationRecordMock.auditRecords &&
+        operationRecordMock.auditRecords.filters &&
+        operationRecordMock.auditRecords.filters.defaultRange) || {
+        start: "2026-06-01",
+        end: "2026-06-24",
+      }
+    );
+  }
+
+  function isDateTimeWithinRange(dateTime, range) {
+    var datePart = String(dateTime || "").slice(0, 10);
+    if (!range || (!range.start && !range.end) || !datePart) {
+      return true;
+    }
+    if (range.start && datePart < range.start) {
+      return false;
+    }
+    if (range.end && datePart > range.end) {
+      return false;
+    }
+    return true;
+  }
+
+  function matchesKeyword(record, keyword, fields) {
+    var normalizedKeyword = String(keyword || "").trim().toLowerCase();
+    if (!normalizedKeyword) {
+      return true;
+    }
+    return fields.some(function someField(field) {
+      return String(record[field] || "").toLowerCase().indexOf(normalizedKeyword) >= 0;
+    });
+  }
+
+  function getOperationStatusTone(status) {
+    if (status === "成功" || status === "已通过") {
+      return "success";
+    }
+    if (status === "失败" || status === "已驳回") {
+      return "danger";
+    }
+    if (status === "待审核") {
+      return "warning";
+    }
+    return "default";
+  }
+
+  function renderOperationRecordHeader(title) {
+    return (
+      '<section class="page-header operation-record-header"><h1>' +
+      escapeHtml(title) +
+      "</h1></section>"
+    );
+  }
+
+  function renderDownloadRecordStatus(status) {
+    return '<span class="operation-status-dot success"></span><span>' + escapeHtml(getDownloadStatusText(status)) + "</span>";
+  }
+
+  function renderDownloadRecordPage() {
+    var pageSize = 10;
+    var rows = getAllDownloadRecords();
+    var totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+    var currentPage = Math.min(Math.max(Number(state.ui.downloadRecordPage) || 1, 1), totalPages);
+    var pageRows = rows.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+    state.ui.downloadRecordPage = currentPage;
+
+    return (
+      '<div class="page-stack operation-record-page operation-download-record-page">' +
+      renderOperationRecordHeader("下载记录") +
+      '<section class="panel operation-download-panel">' +
+      '<table class="operation-download-table"><thead><tr><th>文件名称</th><th>创建时间</th><th>状态</th><th>操作</th></tr></thead><tbody>' +
+      pageRows
+        .map(function mapRecord(record) {
+          return (
+            "<tr>" +
+            '<td><span class="operation-file-name">' +
+            escapeHtml(record.fileName) +
+            "</span></td>" +
+            "<td>" +
+            escapeHtml(record.createdAt) +
+            "</td>" +
+            '<td><span class="operation-download-status">' +
+            renderDownloadRecordStatus(record.status) +
+            "</span></td>" +
+            '<td><button class="operation-download-link" data-ui-action="download-operation-record" data-record-id="' +
+            escapeHtml(record.id) +
+            '">下载</button></td>' +
+            "</tr>"
+          );
+        })
+        .join("") +
+      "</tbody></table>" +
+      '<div class="operation-pagination"><button class="operation-page-btn" data-ui-action="download-record-prev-page"' +
+      (currentPage <= 1 ? " disabled" : "") +
+      ">" +
+      renderIcon("chevron-right", "operation-page-prev-icon") +
+      '</button><button class="operation-page-number ' +
+      (currentPage === 1 ? "active" : "") +
+      '" data-ui-action="download-record-page" data-page="1">1</button><button class="operation-page-number ' +
+      (currentPage === 2 ? "active" : "") +
+      '" data-ui-action="download-record-page" data-page="2">2</button><button class="operation-page-btn" data-ui-action="download-record-next-page"' +
+      (currentPage >= totalPages ? " disabled" : "") +
+      ">" +
+      renderIcon("chevron-right", "operation-page-next-icon") +
+      '</button><span class="operation-page-size">10条/页 ' +
+      renderIcon("chevron-down", "operation-page-caret") +
+      '</span><label class="operation-page-jump">跳至 <input type="number" min="1" max="' +
+      escapeHtml(totalPages) +
+      '" value="' +
+      escapeHtml(currentPage) +
+      '" data-download-record-page-input /> 页</label></div>' +
+      "</section>" +
+      "</div>"
+    );
+  }
+
+  function getFilteredOperationLogRows() {
+    var opState = ensureOperationRecordState();
+    var filters = opState.filters;
+    return ((operationRecordMock.operationLog && operationRecordMock.operationLog.records) || []).filter(function filterRecord(record) {
+      return (
+        matchesKeyword(record, filters.operationLogId, ["id"]) &&
+        matchesKeyword(record, filters.operatorKeyword, ["operator"]) &&
+        (!filters.operationType || record.operationType === filters.operationType) &&
+        isDateTimeWithinRange(record.operatedAt, filters.logRange) &&
+        true
+      );
+    });
+  }
+
+  function renderProductionOperationRange(range) {
+    return (
+      '<div class="operation-log-range-control">' +
+      '<input class="operation-log-date-input" type="text" placeholder="开始日期" value="' +
+      escapeHtml(range.start || "") +
+      '" data-operation-log-range="start" />' +
+      '<span class="operation-log-range-sep">~</span>' +
+      '<input class="operation-log-date-input" type="text" placeholder="结束日期" value="' +
+      escapeHtml(range.end || "") +
+      '" data-operation-log-range="end" />' +
+      '<span class="operation-log-calendar-icon">' +
+      renderIcon("calendar", "calendar-icon-svg") +
+      "</span></div>"
+    );
+  }
+
+  function renderProductionOperationSelect(value, options) {
+    var optionHtml = ['<option value=""></option>']
+      .concat(
+        (options || []).filter(Boolean).map(function mapOption(option) {
+          return (
+            '<option value="' +
+            escapeHtml(option) +
+            '"' +
+            (value === option ? " selected" : "") +
+            ">" +
+            escapeHtml(option) +
+            "</option>"
+          );
+        }),
+      )
+      .join("");
+    return '<select class="operation-log-native-select" data-filter-scope="operationRecord" data-filter-key="operationType">' + optionHtml + "</select>";
+  }
+
+  function renderOperationLogExpandDetail(record) {
+    return (
+      '<tr class="operation-log-detail-row"><td colspan="8"><div class="operation-log-detail-panel">' +
+      '<div class="operation-log-detail-label">操作入参：</div>' +
+      '<pre class="operation-log-detail-pre">' +
+      escapeHtml(record.input || "") +
+      "</pre>" +
+      '<div class="operation-log-detail-label">操作出参：</div>' +
+      '<pre class="operation-log-detail-pre">' +
+      escapeHtml(record.output || "") +
+      "</pre>" +
+      "</div></td></tr>"
+    );
+  }
+
+  function renderOperationLogTable() {
+    var opState = ensureOperationRecordState();
+    var expandedIds = opState.filters.expandedOperationLogIds || new Set();
+    var rows = getFilteredOperationLogRows();
+    var bodyHtml = rows
+      .map(function mapRecord(record) {
+        var expanded = expandedIds.has(record.id);
+        return (
+          '<tr class="operation-log-row">' +
+          '<td><button type="button" class="operation-log-expand-btn ' +
+          (expanded ? "expanded" : "") +
+          '" data-ui-action="toggle-operation-log-detail" data-record-id="' +
+          escapeHtml(record.id) +
+          '">' +
+          (expanded ? "-" : "+") +
+          "</button></td>" +
+          "<td>" +
+          escapeHtml(record.id) +
+          "</td>" +
+          "<td>" +
+          escapeHtml(record.operator || "") +
+          "</td>" +
+          "<td>" +
+          escapeHtml(record.operationType || "") +
+          "</td>" +
+          "<td>" +
+          escapeHtml(record.objectName || "") +
+          "</td>" +
+          "<td>" +
+          escapeHtml(record.objectId || "") +
+          "</td>" +
+          "<td>" +
+          escapeHtml(record.operatedAt || "") +
+          "</td>" +
+          "<td>" +
+          escapeHtml(record.environment || "") +
+          "</td></tr>" +
+          (expanded ? renderOperationLogExpandDetail(record) : "")
+        );
+      })
+      .join("");
+
+    return (
+      '<section class="operation-log-table-panel">' +
+      '<table class="operation-log-table"><thead><tr>' +
+      '<th class="operation-log-expand-col"></th><th>ID</th><th>操作人</th><th>操作类型</th><th>操作对象</th><th>操作对象 ID</th><th>操作时间</th><th>环境</th>' +
+      "</tr></thead><tbody>" +
+      bodyHtml +
+      "</tbody></table>" +
+      renderOperationLogPagination() +
+      "</section>"
+    );
+  }
+
+  function renderOperationLogPagination() {
+    var logMock = operationRecordMock.operationLog || {};
+    var filters = (logMock && logMock.filters) || {};
+    var totalCount = filters.totalCount || 190297;
+    var pageSize = filters.pageSize || 10;
+    var lastPage = filters.lastPage || Math.ceil(totalCount / pageSize);
+    var currentPage = ensureOperationRecordState().filters.operationLogPage || 1;
+    var pageItems = [1, 2, 3, 4, 5];
+
+    return (
+      '<div class="operation-log-pagination"><span class="operation-log-total">总共 ' +
+      escapeHtml(totalCount) +
+      " 条</span>" +
+      '<button class="operation-log-page-btn" data-ui-action="operation-log-prev-page"' +
+      (currentPage <= 1 ? " disabled" : "") +
+      ">" +
+      renderIcon("chevron-right", "operation-page-prev-icon") +
+      "</button>" +
+      pageItems
+        .map(function mapPageItem(page) {
+          return (
+            '<button class="operation-log-page-number ' +
+            (currentPage === page ? "active" : "") +
+            '" data-ui-action="operation-log-page" data-page="' +
+            page +
+            '">' +
+            page +
+            "</button>"
+          );
+        })
+        .join("") +
+      '<span class="operation-log-ellipsis">...</span>' +
+      '<button class="operation-log-page-number" data-ui-action="operation-log-page" data-page="' +
+      escapeHtml(lastPage) +
+      '">' +
+      escapeHtml(lastPage) +
+      "</button>" +
+      '<button class="operation-log-page-btn" data-ui-action="operation-log-next-page">' +
+      renderIcon("chevron-right", "operation-page-next-icon") +
+      "</button>" +
+      '<span class="operation-log-page-size">10 条/页 ' +
+      renderIcon("chevron-down", "operation-page-caret") +
+      "</span>" +
+      '<label class="operation-log-jump">跳至 <input type="number" min="1" max="' +
+      escapeHtml(lastPage) +
+      '" data-operation-log-page-input /> 页</label></div>'
+    );
+  }
+
+  function renderOperationLogPage() {
+    var opState = ensureOperationRecordState();
+    var logMock = operationRecordMock.operationLog || {};
+    var filters = logMock.filters || {};
+
+    return (
+      '<div class="page-stack operation-record-page operation-log-page">' +
+      renderOperationRecordHeader("操作日志") +
+      '<section class="operation-log-filter-panel"><div class="operation-log-filter-grid">' +
+      '<label class="operation-log-filter-field operation-log-filter-id"><span>ID：</span><input class="operation-log-input" type="text" value="' +
+      escapeHtml(opState.filters.operationLogId || "") +
+      '" data-filter-scope="operationRecord" data-filter-key="operationLogId" /></label>' +
+      '<label class="operation-log-filter-field operation-log-filter-operator"><span>操作者：</span><input class="operation-log-input" type="text" value="' +
+      escapeHtml(opState.filters.operatorKeyword || "") +
+      '" data-filter-scope="operationRecord" data-filter-key="operatorKeyword" /></label>' +
+      '<label class="operation-log-filter-field operation-log-filter-type"><span>操作类型：</span>' +
+      renderProductionOperationSelect(opState.filters.operationType || "", filters.operationTypeOptions || []) +
+      "</label>" +
+      '<label class="operation-log-filter-field operation-log-filter-time"><span>操作时段：</span>' +
+      renderProductionOperationRange(opState.filters.logRange || {}) +
+      "</label>" +
+      '<div class="operation-log-filter-actions">' +
+      renderUiActionButton("重置", "ghost", "reset-operation-log") +
+      renderUiActionButton("查询", "primary", "query-operation-log") +
+      "</div></div></section>" +
+      renderOperationLogTable() +
+      "</div>"
+    );
+  }
+
+  function getFilteredAuditRecordRows() {
+    var opState = ensureOperationRecordState();
+    var filters = opState.filters;
+    return ((operationRecordMock.auditRecords && operationRecordMock.auditRecords.records) || []).filter(function filterRecord(record) {
+      return (
+        (filters.auditType === "全部" || record.type === filters.auditType) &&
+        (filters.auditStatus === "全部" || record.status === filters.auditStatus) &&
+        isDateTimeWithinRange(record.submittedAt, filters.auditRange) &&
+        matchesKeyword(record, filters.applicantKeyword, ["title", "applicant", "reviewer", "comment"])
+      );
+    });
+  }
+
+  function getAuditRecordTable() {
+    return {
+      columns: [
+        { key: "title", label: "审核事项", width: 220 },
+        { key: "type", label: "类型", width: 110 },
+        { key: "applicant", label: "申请人", width: 100 },
+        { key: "submittedAt", label: "提交时间", width: 168 },
+        { key: "reviewer", label: "审核人", width: 100 },
+        { key: "reviewedAt", label: "审核时间", width: 168 },
+        { key: "status", label: "状态", width: 100, sortable: false },
+        { key: "comment", label: "审核意见", width: 220 },
+      ],
+      rows: getFilteredAuditRecordRows().map(function mapRecord(record) {
+        return {
+          title: record.title,
+          type: record.type,
+          applicant: record.applicant,
+          submittedAt: record.submittedAt,
+          reviewer: record.reviewer,
+          reviewedAt: record.reviewedAt,
+          status: {
+            text: record.status,
+            badge: true,
+            tone: getOperationStatusTone(record.status),
+            copyable: false,
+          },
+          comment: record.comment,
+        };
+      }),
+      minWidth: 1180,
+    };
+  }
+
+  function renderAuditRecordPage() {
+    var opState = ensureOperationRecordState();
+    var auditMock = operationRecordMock.auditRecords || {};
+    var filters = auditMock.filters || {};
+
+    return (
+      '<div class="page-stack operation-record-page">' +
+      renderOperationRecordHeader("审核记录") +
+      '<section class="panel info-filter-panel operation-record-filter-panel"><div class="info-filter-fields">' +
+      renderBoundTextFilter("关键词", opState.filters.applicantKeyword, "请输入申请人、事项或意见", "applicantKeyword", "operationRecord", "operation-keyword-field") +
+      renderBoundSelectFilter("审核类型", opState.filters.auditType, filters.typeOptions || ["全部"], "auditType", "operationRecord", "filter-select-native") +
+      renderBoundSelectFilter("审核状态", opState.filters.auditStatus, filters.statusOptions || ["全部"], "auditStatus", "operationRecord", "filter-select-native") +
+      '<div class="info-filter-field"><span class="filter-label">提交时间：</span>' +
+      renderInfoDatePicker("audit-record-range", "range") +
+      '</div></div><div class="info-filter-actions">' +
+      renderUiActionButton("重置", "ghost", "reset-audit-record") +
+      renderUiActionButton("查询", "primary", "query-audit-record") +
+      "</div></section>" +
+      renderSectionTable("audit-record-table", getAuditRecordTable()) +
+      "</div>"
+    );
+  }
+
+  function renderOperationRecordPage() {
+    if (state.currentPageKey === "download-record") {
+      return renderDownloadRecordPage();
+    }
+    if (state.currentPageKey === "audit-record") {
+      return renderAuditRecordPage();
+    }
+    return renderOperationLogPage();
+  }
+
   function ensureDataMonitorState() {
     state.dataMonitor = state.dataMonitor || {};
     state.dataMonitor.filters = state.dataMonitor.filters || {};
@@ -14432,28 +14982,26 @@
     return renderDownloadModal({
       dataTypes: DOWNLOAD_DATA_TYPES,
       selectedType: state.ui.downloadDataType,
+      range: state.ui.downloadRangeDraft,
+      calendarOpen: state.ui.downloadCalendarOpen,
+      calendarMonth: state.ui.downloadCalendarMonth,
+      selectingPart: state.ui.downloadSelectingPart,
+      canSubmit: isRangeValid(state.ui.downloadRangeDraft) && getRangeDays(state.ui.downloadRangeDraft) <= 90,
+      submitting: state.ui.downloadSubmitting,
       error: state.ui.downloadError,
-      datePickerHtml: renderStandardDatePicker({
-        id: "download-range",
-        mode: "range",
-        range: getPickerDisplayRange("download-range"),
-        isOpen: state.ui.activeDatePickerId === "download-range",
-        holidays: state.ui.holidays,
-        escapeHtml: escapeHtml,
-        renderIcon: renderIcon,
-      }),
       escapeHtml: escapeHtml,
       renderIcon: renderIcon,
     });
   }
 
-  function renderDownloadTaskDrawerOverlay() {
-    if (!state.ui.downloadTaskDrawerVisible) {
+  function renderDownloadListModalOverlay() {
+    if (!state.ui.downloadListModalVisible) {
       return "";
     }
 
-    return renderDownloadTaskDrawer({
+    return renderDownloadListModal({
       tasks: getVisibleDownloadTasks(),
+      loading: state.ui.downloadListLoading,
       emptyStateHtml: renderEmptyState({
         message: "当前暂无下载任务记录，请先创建下载任务。",
         escapeHtml: escapeHtml,
@@ -14788,7 +15336,7 @@
       renderCompareModalOverlay() +
       renderManualUpdateModalOverlay() +
       renderDownloadModalOverlay() +
-      renderDownloadTaskDrawerOverlay() +
+      renderDownloadListModalOverlay() +
       renderDataMonitorDetailDrawerOverlay() +
       renderDataMonitorIgnoreConfirmOverlay() +
       renderDisclosureTimeDrawerOverlay() +
@@ -14824,6 +15372,9 @@
     }
     if (currentPage.viewType === "fetch-monitor") {
       return renderFetchMonitorPage();
+    }
+    if (currentPage.viewType === "operation-record") {
+      return renderOperationRecordPage();
     }
     if (currentPage.viewType === "data-monitor") {
       return renderDataMonitorPage();
@@ -15009,6 +15560,9 @@
 
   function confirmDownload() {
     state.ui.downloadError = "";
+    if (state.ui.downloadSubmitting) {
+      return;
+    }
     if (!isRangeValid(state.ui.downloadRangeDraft)) {
       state.ui.downloadError = "请选择有效的下载日期范围。";
       return;
@@ -15017,11 +15571,37 @@
       state.ui.downloadError = "下载日期范围上限为 90 天。";
       return;
     }
-    addDownloadTask();
-    state.ui.downloadModalVisible = false;
-    state.ui.downloadTaskDrawerVisible = true;
-    closeDatePicker("download-range", false);
+    var task = addDownloadTask();
+    state.ui.downloadSubmitting = true;
+    state.ui.downloadCalendarOpen = false;
     setFlashMessage("下载任务正在创建中，请稍后...", "info");
+    if (downloadSubmitTimer) {
+      global.clearTimeout(downloadSubmitTimer);
+    }
+    downloadSubmitTimer = global.setTimeout(function finishDownloadTask() {
+      state.downloadTasks = state.downloadTasks.map(function mapTask(item) {
+        if (item.id === task.id) {
+          return Object.assign({}, item, {
+            status: "success",
+            fileContent: item.fileContent || buildDownloadCsv(Object.assign({}, item, { status: "success" })),
+          });
+        }
+        return item;
+      });
+      state.ui.downloadSubmitting = false;
+      state.ui.downloadModalVisible = false;
+      state.ui.downloadListModalVisible = true;
+      state.ui.downloadListLoading = true;
+      setFlashMessage("下载任务已成功提交，请稍后在下载任务列表中，查看任务状态和下载文件", "success");
+      renderApp();
+      if (downloadListLoadingTimer) {
+        global.clearTimeout(downloadListLoadingTimer);
+      }
+      downloadListLoadingTimer = global.setTimeout(function finishDownloadListLoading() {
+        state.ui.downloadListLoading = false;
+        renderApp();
+      }, 500);
+    }, 900);
   }
 
   function handleUiAction(action, target) {
@@ -15086,28 +15666,66 @@
       return true;
     }
     if (action === "open-download") {
-      syncDownloadRangeToCurrentPage();
       state.ui.downloadDataType = getCurrentDownloadType();
+      state.ui.downloadRangeDraft = { start: "", end: "" };
+      state.ui.downloadCalendarOpen = false;
+      state.ui.downloadCalendarMonth = "2026-06";
+      state.ui.downloadSelectingPart = "start";
       state.ui.downloadModalVisible = true;
       state.ui.downloadError = "";
+      state.ui.downloadSubmitting = false;
       return true;
     }
     if (action === "close-download") {
       state.ui.downloadModalVisible = false;
       state.ui.downloadError = "";
-      closeDatePicker("download-range", false);
+      state.ui.downloadCalendarOpen = false;
+      state.ui.downloadSubmitting = false;
       return true;
     }
     if (action === "confirm-download") {
       confirmDownload();
       return true;
     }
-    if (action === "open-download-tasks") {
-      state.ui.downloadTaskDrawerVisible = true;
+    if (action === "toggle-download-calendar") {
+      state.ui.downloadCalendarOpen = !state.ui.downloadCalendarOpen;
+      state.ui.downloadError = "";
       return true;
     }
-    if (action === "close-download-tasks") {
-      state.ui.downloadTaskDrawerVisible = false;
+    if (action === "download-calendar-prev" || action === "download-calendar-next") {
+      var calendarMonth = parseDate((state.ui.downloadCalendarMonth || "2026-06") + "-01");
+      var monthOffset = action === "download-calendar-prev" ? -1 : 1;
+      var nextMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + monthOffset, 1);
+      state.ui.downloadCalendarMonth = nextMonth.getFullYear() + "-" + String(nextMonth.getMonth() + 1).padStart(2, "0");
+      state.ui.downloadCalendarOpen = true;
+      return true;
+    }
+    if (action === "open-download-tasks") {
+      state.ui.downloadListModalVisible = true;
+      state.ui.downloadListLoading = true;
+      if (downloadListLoadingTimer) {
+        global.clearTimeout(downloadListLoadingTimer);
+      }
+      downloadListLoadingTimer = global.setTimeout(function finishOpenDownloadList() {
+        state.ui.downloadListLoading = false;
+        renderApp();
+      }, 400);
+      return true;
+    }
+    if (action === "close-download-list") {
+      state.ui.downloadListModalVisible = false;
+      state.ui.downloadListLoading = false;
+      return true;
+    }
+    if (action === "refresh-download-list") {
+      state.ui.downloadListLoading = true;
+      if (downloadListLoadingTimer) {
+        global.clearTimeout(downloadListLoadingTimer);
+      }
+      downloadListLoadingTimer = global.setTimeout(function finishRefreshDownloadList() {
+        state.ui.downloadListLoading = false;
+        renderApp();
+      }, 450);
       return true;
     }
     if (action === "open-data-disclosure-time") {
@@ -15467,6 +16085,92 @@
       setFlashMessage("取数监控筛选已重置。", "info");
       return true;
     }
+    if (action === "download-operation-record") {
+      var recordTask = getAllDownloadRecords().find(function findRecordTask(task) {
+        return task.id === (target.getAttribute("data-record-id") || "");
+      });
+      if (triggerDownloadTaskFile(recordTask)) {
+        return true;
+      }
+      setFlashMessage("文件暂不可下载。", "info");
+      return true;
+    }
+    if (action === "download-record-prev-page") {
+      state.ui.downloadRecordPage = Math.max(1, (Number(state.ui.downloadRecordPage) || 1) - 1);
+      return true;
+    }
+    if (action === "download-record-next-page") {
+      var recordTotalPages = Math.max(1, Math.ceil(getAllDownloadRecords().length / 10));
+      state.ui.downloadRecordPage = Math.min(recordTotalPages, (Number(state.ui.downloadRecordPage) || 1) + 1);
+      return true;
+    }
+    if (action === "download-record-page") {
+      state.ui.downloadRecordPage = Math.max(1, Number(target.getAttribute("data-page")) || 1);
+      return true;
+    }
+    if (action === "query-operation-log") {
+      if (!isRangeValid(ensureOperationRecordState().filters.logRange)) {
+        var logRange = ensureOperationRecordState().filters.logRange;
+        if (logRange.start || logRange.end) {
+          setFlashMessage("请选择有效的操作时间范围。", "info");
+          return true;
+        }
+      }
+      setFlashMessage("已按当前条件刷新操作日志。", "success");
+      return true;
+    }
+    if (action === "reset-operation-log") {
+      var operationLogFilters = operationRecordMock.operationLog && operationRecordMock.operationLog.filters;
+      ensureOperationRecordState().filters.operationLogId = "";
+      ensureOperationRecordState().filters.operatorKeyword = "";
+      ensureOperationRecordState().filters.operationType = "";
+      ensureOperationRecordState().filters.logRange = cloneRange((operationLogFilters && operationLogFilters.defaultRange) || getOperationLogDefaultRange());
+      ensureOperationRecordState().filters.expandedOperationLogIds = new Set();
+      ensureOperationRecordState().filters.operationLogPage = 1;
+      setFlashMessage("操作日志筛选已重置。", "info");
+      return true;
+    }
+    if (action === "toggle-operation-log-detail") {
+      var operationRecordId = target.getAttribute("data-record-id") || "";
+      var expandedOperationIds = ensureOperationRecordState().filters.expandedOperationLogIds || new Set();
+      if (expandedOperationIds.has(operationRecordId)) {
+        expandedOperationIds.delete(operationRecordId);
+      } else {
+        expandedOperationIds.add(operationRecordId);
+      }
+      ensureOperationRecordState().filters.expandedOperationLogIds = expandedOperationIds;
+      return true;
+    }
+    if (action === "operation-log-prev-page") {
+      ensureOperationRecordState().filters.operationLogPage = Math.max(1, (ensureOperationRecordState().filters.operationLogPage || 1) - 1);
+      return true;
+    }
+    if (action === "operation-log-next-page") {
+      var opLogLastPage = ((operationRecordMock.operationLog && operationRecordMock.operationLog.filters && operationRecordMock.operationLog.filters.lastPage) || 19030);
+      ensureOperationRecordState().filters.operationLogPage = Math.min(opLogLastPage, (ensureOperationRecordState().filters.operationLogPage || 1) + 1);
+      return true;
+    }
+    if (action === "operation-log-page") {
+      ensureOperationRecordState().filters.operationLogPage = Math.max(1, Number(target.getAttribute("data-page")) || 1);
+      return true;
+    }
+    if (action === "query-audit-record") {
+      if (!isRangeValid(ensureOperationRecordState().filters.auditRange)) {
+        setFlashMessage("请选择有效的提交时间范围。", "info");
+        return true;
+      }
+      setFlashMessage("已按当前条件刷新审核记录。", "success");
+      return true;
+    }
+    if (action === "reset-audit-record") {
+      var auditRecordFilters = operationRecordMock.auditRecords && operationRecordMock.auditRecords.filters;
+      ensureOperationRecordState().filters.applicantKeyword = "";
+      ensureOperationRecordState().filters.auditType = "全部";
+      ensureOperationRecordState().filters.auditStatus = "全部";
+      ensureOperationRecordState().filters.auditRange = cloneRange((auditRecordFilters && auditRecordFilters.defaultRange) || getAuditRecordDefaultRange());
+      setFlashMessage("审核记录筛选已重置。", "info");
+      return true;
+    }
     if (action === "reload-data-monitor") {
       setFlashMessage("数据监控已重新加载。", "success");
       return true;
@@ -15703,20 +16407,23 @@
       return true;
     }
     if (action === "download-task-file") {
-      setFlashMessage("已准备下载文件。", "success");
+      var downloadTaskId = target.getAttribute("data-task-id") || "";
+      var downloadTask = (state.downloadTasks || []).find(function findTask(task) {
+        return task.id === downloadTaskId;
+      });
+      if (!triggerDownloadTaskFile(downloadTask)) {
+        setFlashMessage("文件暂不可下载。", "info");
+      }
       return true;
     }
     if (action === "retry-download-task") {
       var taskId = target.getAttribute("data-task-id");
       state.downloadTasks = state.downloadTasks.map(function mapTask(task) {
         if (task.id === taskId) {
-          return {
-            id: task.id,
-            fileName: task.fileName,
+          return Object.assign({}, task, {
             createdAt: formatDateTime(new Date()),
-            status: "排队中",
-            source: task.source,
-          };
+            status: "creating",
+          });
         }
         return task;
       });
@@ -15735,6 +16442,8 @@
       state.ui.compareModalVisible = false;
       state.ui.manualUpdateModalVisible = false;
       state.ui.downloadModalVisible = false;
+      state.ui.downloadListModalVisible = false;
+      state.ui.downloadCalendarOpen = false;
       state.ui.disclosureTimeDrawerVisible = false;
       state.ui.dataMonitorDetailDrawerVisible = false;
       state.ui.dataMonitorIgnoreConfirmVisible = false;
@@ -15753,6 +16462,40 @@
         renderApp();
         return;
       }
+    }
+
+    var downloadDateButton = event.target.closest("[data-download-date]");
+    if (downloadDateButton) {
+      event.preventDefault();
+      var selectedDownloadDate = downloadDateButton.getAttribute("data-download-date") || "";
+      var currentDownloadRange = state.ui.downloadRangeDraft || { start: "", end: "" };
+      if (state.ui.downloadSelectingPart !== "end" || !currentDownloadRange.start) {
+        state.ui.downloadRangeDraft = {
+          start: selectedDownloadDate,
+          end: "",
+        };
+        state.ui.downloadSelectingPart = "end";
+      } else if (selectedDownloadDate < currentDownloadRange.start) {
+        state.ui.downloadRangeDraft = {
+          start: selectedDownloadDate,
+          end: "",
+        };
+        state.ui.downloadSelectingPart = "end";
+      } else {
+        state.ui.downloadRangeDraft = {
+          start: currentDownloadRange.start,
+          end: selectedDownloadDate,
+        };
+        state.ui.downloadSelectingPart = "start";
+        state.ui.downloadCalendarOpen = false;
+      }
+      state.ui.downloadCalendarMonth = selectedDownloadDate.slice(0, 7);
+      state.ui.downloadError =
+        isRangeValid(state.ui.downloadRangeDraft) && getRangeDays(state.ui.downloadRangeDraft) > 90
+          ? "下载日期范围上限为 90 天。"
+          : "";
+      renderApp();
+      return;
     }
 
     var tradeCenterToggle = event.target.closest("[data-trade-center-toggle]");
@@ -16036,6 +16779,8 @@
       state.ui.compareModalVisible = false;
       state.ui.manualUpdateModalVisible = false;
       state.ui.downloadModalVisible = false;
+      state.ui.downloadListModalVisible = false;
+      state.ui.downloadCalendarOpen = false;
       state.ui.dataMonitorIgnoreConfirmVisible = false;
       state.ui.dataMonitorIgnoreConfirmMode = "ignore";
       closeAllPanels();
@@ -16044,7 +16789,6 @@
     }
 
     if (event.target.classList.contains("drawer-overlay")) {
-      state.ui.downloadTaskDrawerVisible = false;
       state.ui.disclosureTimeDrawerVisible = false;
       state.ui.dataMonitorDetailDrawerVisible = false;
       renderApp();
@@ -16080,6 +16824,8 @@
       state.declaration.filters[key] = target.value;
     } else if (scope === "fetchMonitor") {
       state.fetchMonitor.filters[key] = target.value;
+    } else if (scope === "operationRecord") {
+      ensureOperationRecordState().filters[key] = target.value;
     } else if (scope === "dataMonitor") {
       ensureDataMonitorState().filters[key] = target.value;
       if (key !== "summaryFilter") {
@@ -16099,6 +16845,29 @@
   document.addEventListener("input", function handleInput(event) {
     if (event.target.matches('[data-disclosure-time-filter][type="text"]')) {
       updateDisclosureTimeFilter(event.target);
+      renderApp();
+      return;
+    }
+
+    if (event.target.matches("[data-download-record-page-input]")) {
+      var totalDownloadRecordPages = Math.max(1, Math.ceil(getAllDownloadRecords().length / 10));
+      var nextDownloadRecordPage = Math.min(Math.max(Number(event.target.value) || 1, 1), totalDownloadRecordPages);
+      state.ui.downloadRecordPage = nextDownloadRecordPage;
+      renderApp();
+      return;
+    }
+
+    if (event.target.matches("[data-operation-log-range]")) {
+      var operationRangeKey = event.target.getAttribute("data-operation-log-range");
+      ensureOperationRecordState().filters.logRange = ensureOperationRecordState().filters.logRange || { start: "", end: "" };
+      ensureOperationRecordState().filters.logRange[operationRangeKey] = event.target.value;
+      renderApp();
+      return;
+    }
+
+    if (event.target.matches("[data-operation-log-page-input]")) {
+      var operationLogLastPage = ((operationRecordMock.operationLog && operationRecordMock.operationLog.filters && operationRecordMock.operationLog.filters.lastPage) || 19030);
+      ensureOperationRecordState().filters.operationLogPage = Math.min(Math.max(Number(event.target.value) || 1, 1), operationLogLastPage);
       renderApp();
       return;
     }
@@ -16174,15 +16943,12 @@
   global.setInterval(function refreshDownloadTasks() {
     var changed = false;
     state.downloadTasks = state.downloadTasks.map(function mapTask(task) {
-      if (task.status === "排队中") {
+      if (task.status === "排队中" || task.status === "creating") {
         changed = true;
-        return {
-          id: task.id,
-          fileName: task.fileName,
-          createdAt: task.createdAt,
-          status: "成功",
-          source: task.source,
-        };
+        return Object.assign({}, task, {
+          status: "success",
+          fileContent: task.fileContent || buildDownloadCsv(Object.assign({}, task, { status: "success" })),
+        });
       }
       return task;
     });

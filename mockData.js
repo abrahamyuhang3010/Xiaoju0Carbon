@@ -11,6 +11,7 @@
     tradingResultByCenter: global.BOSS_TRADING_RESULT_MOCK_BY_CENTER,
     marketPageData: global.BOSS_MARKET_PAGE_DATA,
     downloadTasks: global.BOSS_DOWNLOAD_TASKS_MOCK,
+    operationRecord: global.BOSS_OPERATION_RECORD_MOCK,
     fetchMonitor: global.BOSS_FETCH_MONITOR_MOCK,
     dataMonitor: global.BOSS_DATA_MONITOR_MOCK,
     simulation: global.BOSS_SIMULATION_DATA_MOCK,

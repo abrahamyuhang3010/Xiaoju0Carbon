@@ -149,7 +149,9 @@
     ["fetch-tasks", "fetch-tasks", "调度中心 / 取数任务", ["dispatchExpanded"]],
     ["fetch-alerts", "fetch-alerts", "调度中心 / 异常告警", ["dispatchExpanded"]],
     ["low-carbon-service", "low-carbon-service", "低碳家园 / 低碳服务", ["lowCarbonExpanded"]],
+    ["download-record", "download-record", "操作记录 / 下载记录", ["recordExpanded"]],
     ["operation-log", "operation-log", "操作记录 / 操作日志", ["recordExpanded"]],
+    ["audit-record", "audit-record", "操作记录 / 审核记录", ["recordExpanded"]],
     ["intramonth-rolling-trading", "intramonth-rolling-trading", "电力交易驾驶舱 / 月内滚撮交易", []],
     ["power-data-import", "power-data-import", "电力交易驾驶舱 / 电量数据导入", []],
     ["placeholder", "placeholder", "功能建设中", []],
@@ -166,6 +168,9 @@
   pages.forEach(function applyCompatAliases(page) {
     if (page.key === "rolling-data") {
       page.viewType = "rolling-data";
+    }
+    if (page.key === "download-record" || page.key === "operation-log" || page.key === "audit-record") {
+      page.viewType = "operation-record";
     }
     if (page.key === "charging-pricing-tool") {
       page.aliases = ["charging-price-tool"];

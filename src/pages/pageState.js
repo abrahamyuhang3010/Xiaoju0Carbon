@@ -164,6 +164,7 @@
       var hunanRollingMock = (hunanMock && hunanMock.rollingData) || {};
       var shaanxiRollingMock = (shaanxiMock && shaanxiMock.rollingData) || {};
       var fetchMonitorMock = appMocks.fetchMonitor || {};
+      var operationRecordMock = appMocks.operationRecord || {};
       var simulationMock = appMocks.simulation || {};
       var algorithmMock = appMocks.algorithm || {};
       var tabs = infoDisclosureConfig.primaryTabs || infoMock.primaryTabs || infoMock.tabs || mock.primaryTabs || ["负荷信息"];
@@ -216,13 +217,18 @@
             end: "2026-05-08",
           },
           downloadRangeDraft: {
-            start: "2026-05-08",
-            end: "2026-05-08",
+            start: "",
+            end: "",
           },
+          downloadCalendarOpen: false,
+          downloadCalendarMonth: "2026-06",
+          downloadSelectingPart: "start",
+          downloadSubmitting: false,
+          downloadListModalVisible: false,
+          downloadListLoading: false,
           compareModalVisible: false,
           manualUpdateModalVisible: false,
           downloadModalVisible: false,
-          downloadTaskDrawerVisible: false,
           disclosureTimeDrawerVisible: false,
           disclosureTimeFilters: {
             tradeCenter: getTradeCenterByPageKey(pageKey) === "湖南电力交易中心"
@@ -250,6 +256,7 @@
           dataMonitorIgnoreConfirmVisible: false,
           dataMonitorPendingIgnoreId: "",
           dataMonitorIgnoreConfirmMode: "ignore",
+          downloadRecordPage: 1,
           flashMessage: "",
           flashType: "info",
           copiedCellValue: "",
@@ -457,6 +464,28 @@
             dateRange: cloneRange((fetchMonitorMock.filters && fetchMonitorMock.filters.defaultRange) || {
               start: "2026-05-03",
               end: "2026-05-09",
+            }),
+          },
+        },
+        operationRecord: {
+          filters: {
+            operatorKeyword: "",
+            operationLogId: "",
+            module: "全部",
+            action: "全部",
+            operationType: "",
+            logRange: cloneRange((operationRecordMock.operationLog && operationRecordMock.operationLog.filters && operationRecordMock.operationLog.filters.defaultRange) || {
+              start: "",
+              end: "",
+            }),
+            expandedOperationLogIds: new Set(),
+            operationLogPage: 1,
+            applicantKeyword: "",
+            auditType: "全部",
+            auditStatus: "全部",
+            auditRange: cloneRange((operationRecordMock.auditRecords && operationRecordMock.auditRecords.filters && operationRecordMock.auditRecords.filters.defaultRange) || {
+              start: "2026-06-01",
+              end: "2026-06-24",
             }),
           },
         },
