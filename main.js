@@ -1073,7 +1073,11 @@
   }
 
   function parseDate(value) {
-    return new Date(value + "T00:00:00");
+    var normalized = String(value || "");
+    if (!normalized) {
+      return new Date(NaN);
+    }
+    return new Date(normalized.indexOf(" ") >= 0 ? normalized.replace(" ", "T") : normalized + "T00:00:00");
   }
 
   function formatDateTime(date) {
@@ -11990,8 +11994,15 @@
     state.operationRecord.filters.expandedOperationLogIds = state.operationRecord.filters.expandedOperationLogIds || new Set();
     state.operationRecord.filters.operationLogPage = state.operationRecord.filters.operationLogPage || 1;
     state.operationRecord.filters.applicantKeyword = state.operationRecord.filters.applicantKeyword || "";
-    state.operationRecord.filters.auditType = state.operationRecord.filters.auditType || "全部";
-    state.operationRecord.filters.auditStatus = state.operationRecord.filters.auditStatus || "全部";
+    state.operationRecord.filters.auditApplicantKeyword = state.operationRecord.filters.auditApplicantKeyword || "";
+    state.operationRecord.filters.auditRecordId = state.operationRecord.filters.auditRecordId || "";
+    state.operationRecord.filters.auditType = state.operationRecord.filters.auditType || "";
+    state.operationRecord.filters.auditTypeOpen = Boolean(state.operationRecord.filters.auditTypeOpen);
+    state.operationRecord.filters.auditRangePickerOpen = Boolean(state.operationRecord.filters.auditRangePickerOpen);
+    state.operationRecord.filters.auditRangeCalendarMonth = state.operationRecord.filters.auditRangeCalendarMonth || "2026-06";
+    state.operationRecord.filters.auditRangeSelectingPart = state.operationRecord.filters.auditRangeSelectingPart || "start";
+    state.operationRecord.filters.expandedAuditRecordIds = state.operationRecord.filters.expandedAuditRecordIds || new Set();
+    state.operationRecord.filters.auditRecordPage = state.operationRecord.filters.auditRecordPage || 1;
     state.operationRecord.filters.auditRange = state.operationRecord.filters.auditRange || cloneRange(getAuditRecordDefaultRange());
     return state.operationRecord;
   }
@@ -12012,21 +12023,27 @@
       (operationRecordMock.auditRecords &&
         operationRecordMock.auditRecords.filters &&
         operationRecordMock.auditRecords.filters.defaultRange) || {
-        start: "2026-06-01",
-        end: "2026-06-24",
+        start: "2026-06-15 16:55:22",
+        end: "2026-06-25 16:55:22",
       }
     );
   }
 
   function isDateTimeWithinRange(dateTime, range) {
-    var datePart = String(dateTime || "").slice(0, 10);
-    if (!range || (!range.start && !range.end) || !datePart) {
+    var value = String(dateTime || "");
+    if (!range || (!range.start && !range.end) || !value) {
       return true;
     }
-    if (range.start && datePart < range.start) {
+    var startValue = String(range.start || "");
+    var endValue = String(range.end || "");
+    var compareLength = value.length > 10 || startValue.length > 10 || endValue.length > 10 ? 19 : 10;
+    var comparableValue = value.slice(0, compareLength);
+    var comparableStart = startValue.slice(0, compareLength);
+    var comparableEnd = endValue.slice(0, compareLength);
+    if (comparableStart && comparableValue < comparableStart) {
       return false;
     }
-    if (range.end && datePart > range.end) {
+    if (comparableEnd && comparableValue > comparableEnd) {
       return false;
     }
     return true;
@@ -12327,45 +12344,305 @@
     var filters = opState.filters;
     return ((operationRecordMock.auditRecords && operationRecordMock.auditRecords.records) || []).filter(function filterRecord(record) {
       return (
-        (filters.auditType === "全部" || record.type === filters.auditType) &&
-        (filters.auditStatus === "全部" || record.status === filters.auditStatus) &&
-        isDateTimeWithinRange(record.submittedAt, filters.auditRange) &&
-        matchesKeyword(record, filters.applicantKeyword, ["title", "applicant", "reviewer", "comment"])
+        matchesKeyword(record, filters.auditRecordId, ["id"]) &&
+        matchesKeyword(record, filters.auditApplicantKeyword, ["applicant"]) &&
+        (!filters.auditType || record.applyType === filters.auditType) &&
+        isDateTimeWithinRange(record.appliedAt, filters.auditRange)
       );
     });
   }
 
-  function getAuditRecordTable() {
-    return {
-      columns: [
-        { key: "title", label: "审核事项", width: 220 },
-        { key: "type", label: "类型", width: 110 },
-        { key: "applicant", label: "申请人", width: 100 },
-        { key: "submittedAt", label: "提交时间", width: 168 },
-        { key: "reviewer", label: "审核人", width: 100 },
-        { key: "reviewedAt", label: "审核时间", width: 168 },
-        { key: "status", label: "状态", width: 100, sortable: false },
-        { key: "comment", label: "审核意见", width: 220 },
-      ],
-      rows: getFilteredAuditRecordRows().map(function mapRecord(record) {
-        return {
-          title: record.title,
-          type: record.type,
-          applicant: record.applicant,
-          submittedAt: record.submittedAt,
-          reviewer: record.reviewer,
-          reviewedAt: record.reviewedAt,
-          status: {
-            text: record.status,
-            badge: true,
-            tone: getOperationStatusTone(record.status),
-            copyable: false,
-          },
-          comment: record.comment,
-        };
-      }),
-      minWidth: 1180,
-    };
+  function getAuditRangeDisplay(range) {
+    if (!range || (!range.start && !range.end)) {
+      return "";
+    }
+    return (range.start || "开始日期") + " ~ " + (range.end || "结束日期");
+  }
+
+  function getDateOnly(value) {
+    return String(value || "").slice(0, 10);
+  }
+
+  function parseAuditDate(value) {
+    var dateOnly = getDateOnly(value);
+    var match = dateOnly.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match) {
+      return null;
+    }
+    return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  }
+
+  function formatAuditDateValue(year, month, day) {
+    return year + "-" + String(month).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+  }
+
+  function isSameAuditDate(a, b) {
+    return Boolean(a && b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate());
+  }
+
+  function getAuditMonthTitle(date) {
+    return date.getFullYear() + "年 " + String(date.getMonth() + 1).padStart(2, "0") + "月";
+  }
+
+  function getAuditCalendarBaseDate(range, calendarMonth) {
+    var calendarDate = parseAuditDate((calendarMonth || "") + "-01");
+    return calendarDate || parseAuditDate(range && range.start) || new Date(2026, 5, 1);
+  }
+
+  function renderAuditCalendarMonth(monthDate, range) {
+    var startDate = parseAuditDate(range && range.start);
+    var endDate = parseAuditDate(range && range.end);
+    var year = monthDate.getFullYear();
+    var month = monthDate.getMonth();
+    var firstDay = new Date(year, month, 1);
+    var startOffset = firstDay.getDay();
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+    var daysInPrevMonth = new Date(year, month, 0).getDate();
+    var cells = [];
+    var index;
+
+    for (index = 0; index < 42; index += 1) {
+      var dayNumber = index - startOffset + 1;
+      var cellDate;
+      var muted = false;
+      if (dayNumber < 1) {
+        cellDate = new Date(year, month - 1, daysInPrevMonth + dayNumber);
+        muted = true;
+      } else if (dayNumber > daysInMonth) {
+        cellDate = new Date(year, month + 1, dayNumber - daysInMonth);
+        muted = true;
+      } else {
+        cellDate = new Date(year, month, dayNumber);
+      }
+
+      var isStart = isSameAuditDate(cellDate, startDate);
+      var isEnd = isSameAuditDate(cellDate, endDate);
+      var inRange = startDate && endDate && cellDate > startDate && cellDate < endDate;
+      var classes = ["audit-calendar-day"];
+      if (muted) {
+        classes.push("muted");
+      }
+      if (inRange) {
+        classes.push("in-range");
+      }
+      if (isStart || isEnd) {
+        classes.push("selected");
+      }
+
+      cells.push(
+        '<button type="button" class="' +
+          classes.join(" ") +
+          '" data-audit-date="' +
+          escapeHtml(formatAuditDateValue(cellDate.getFullYear(), cellDate.getMonth() + 1, cellDate.getDate())) +
+          '">' +
+          escapeHtml(String(cellDate.getDate())) +
+          "</button>"
+      );
+    }
+
+    return (
+      '<div class="audit-calendar-month">' +
+      '<div class="audit-calendar-month-title">' +
+      escapeHtml(getAuditMonthTitle(monthDate)) +
+      "</div>" +
+      '<div class="audit-calendar-weekdays"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>' +
+      '<div class="audit-calendar-grid">' +
+      cells.join("") +
+      "</div></div>"
+    );
+  }
+
+  function renderAuditRangePickerPanel(range) {
+    var filters = ensureOperationRecordState().filters;
+    var baseDate = getAuditCalendarBaseDate(range, filters.auditRangeCalendarMonth);
+    var rightMonth = new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, 1);
+    return (
+      '<div class="audit-calendar-panel">' +
+      '<div class="audit-calendar-input-row"><span>' +
+      escapeHtml(getDateOnly(range && range.start) || "开始日期") +
+      '</span><span class="audit-calendar-input-sep">~</span><span>' +
+      escapeHtml(getDateOnly(range && range.end) || "结束日期") +
+      "</span></div>" +
+      '<div class="audit-calendar-months">' +
+      '<button type="button" class="audit-calendar-nav audit-calendar-nav-prev" data-ui-action="audit-calendar-prev">' +
+      renderIcon("chevron-right", "operation-page-prev-icon") +
+      "</button>" +
+      renderAuditCalendarMonth(baseDate, range) +
+      renderAuditCalendarMonth(rightMonth, range) +
+      '<button type="button" class="audit-calendar-nav audit-calendar-nav-next" data-ui-action="audit-calendar-next">' +
+      renderIcon("chevron-right", "operation-page-next-icon") +
+      "</button>" +
+      "</div>" +
+      '<div class="audit-calendar-footer"><button type="button" class="audit-calendar-text-btn">选择时间</button><button type="button" class="audit-calendar-confirm" data-ui-action="confirm-audit-range">确定</button></div>' +
+      "</div>"
+    );
+  }
+
+  function renderAuditRangeControl(range) {
+    return (
+      '<div class="audit-range-picker"><button type="button" class="audit-range-control" data-ui-action="toggle-audit-range-picker">' +
+      '<span class="audit-range-text ' +
+      (range && (range.start || range.end) ? "filled" : "") +
+      '">' +
+      escapeHtml(getAuditRangeDisplay(range) || "开始日期  ~  结束日期") +
+      "</span>" +
+      renderIcon("calendar", "calendar-icon-svg audit-calendar-icon") +
+      "</button>" +
+      (ensureOperationRecordState().filters.auditRangePickerOpen ? renderAuditRangePickerPanel(range || {}) : "") +
+      "</div>"
+    );
+  }
+
+  function renderAuditTypeSelect(value, options, isOpen) {
+    var selectedLabel = value || "";
+    var optionHtml = (options || [])
+      .filter(Boolean)
+      .map(function mapOption(option) {
+        return (
+          '<button type="button" class="audit-type-option ' +
+          (value === option ? "active" : "") +
+          '" data-audit-type-option="' +
+          escapeHtml(option) +
+          '">' +
+          escapeHtml(option) +
+          "</button>"
+        );
+      })
+      .join("");
+    return (
+      '<div class="audit-type-select">' +
+      '<button type="button" class="audit-type-trigger ' +
+      (isOpen ? "open" : "") +
+      '" data-ui-action="toggle-audit-type">' +
+      '<span>' +
+      escapeHtml(selectedLabel) +
+      "</span>" +
+      renderIcon("chevron-down", "audit-type-caret") +
+      "</button>" +
+      (isOpen ? '<div class="audit-type-dropdown">' + optionHtml + "</div>" : "") +
+      "</div>"
+    );
+  }
+
+  function renderAuditRecordDetail(record) {
+    return (
+      '<tr class="audit-record-detail-row"><td colspan="8"><div class="audit-record-detail-panel">' +
+      '<pre class="audit-record-detail-pre">' +
+      escapeHtml(record.detail || "") +
+      "</pre>" +
+      "</div></td></tr>"
+    );
+  }
+
+  function renderAuditRecordTable() {
+    var opState = ensureOperationRecordState();
+    var expandedIds = opState.filters.expandedAuditRecordIds || new Set();
+    var rows = getFilteredAuditRecordRows();
+    var bodyHtml = rows
+      .map(function mapRecord(record) {
+        var expanded = expandedIds.has(record.id);
+        return (
+          '<tr class="audit-record-row">' +
+          '<td><button type="button" class="audit-record-expand-btn ' +
+          (expanded ? "expanded" : "") +
+          '" data-ui-action="toggle-audit-record-detail" data-record-id="' +
+          escapeHtml(record.id) +
+          '">' +
+          (expanded ? "-" : "+") +
+          "</button></td>" +
+          "<td>" +
+          escapeHtml(record.id) +
+          "</td>" +
+          "<td>" +
+          escapeHtml(record.applicant || "") +
+          "</td>" +
+          "<td>" +
+          escapeHtml(record.applyType || "") +
+          "</td>" +
+          "<td>" +
+          escapeHtml(record.targetName || "") +
+          "</td>" +
+          "<td>" +
+          escapeHtml(record.targetId || "") +
+          "</td>" +
+          "<td>" +
+          escapeHtml(record.appliedAt || "") +
+          "</td>" +
+          "<td>" +
+          escapeHtml(record.status || "") +
+          "</td></tr>" +
+          (expanded ? renderAuditRecordDetail(record) : "")
+        );
+      })
+      .join("");
+
+    return (
+      '<section class="audit-record-table-panel">' +
+      '<div class="audit-record-alert">' +
+      renderIcon("info", "audit-record-alert-icon") +
+      "<span>仅可在dChat或倚天平台审批中心审批，本页面仅做统一记录与查看</span></div>" +
+      '<table class="audit-record-table"><thead><tr>' +
+      '<th></th><th>ID</th><th>申请人</th><th>申请类型</th><th>申请对象</th><th>申请对象 ID</th><th>申请时间</th><th>申请状态</th>' +
+      "</tr></thead><tbody>" +
+      bodyHtml +
+      "</tbody></table>" +
+      renderAuditRecordPagination() +
+      "</section>"
+    );
+  }
+
+  function renderAuditRecordPagination() {
+    var auditMock = operationRecordMock.auditRecords || {};
+    var filters = auditMock.filters || {};
+    var totalCount = filters.totalCount || 409;
+    var pageSize = filters.pageSize || 10;
+    var lastPage = filters.lastPage || Math.ceil(totalCount / pageSize);
+    var currentPage = ensureOperationRecordState().filters.auditRecordPage || 1;
+    var pageItems = [1, 2, 3, 4, 5].filter(function filterPage(page) {
+      return page <= lastPage;
+    });
+    return (
+      '<div class="audit-record-pagination"><span class="audit-record-total">总共 ' +
+      escapeHtml(totalCount) +
+      " 条</span>" +
+      '<button class="audit-record-page-btn" data-ui-action="audit-record-prev-page"' +
+      (currentPage <= 1 ? " disabled" : "") +
+      ">" +
+      renderIcon("chevron-right", "operation-page-prev-icon") +
+      "</button>" +
+      pageItems
+        .map(function mapPageItem(page) {
+          return (
+            '<button class="audit-record-page-number ' +
+            (currentPage === page ? "active" : "") +
+            '" data-ui-action="audit-record-page" data-page="' +
+            page +
+            '">' +
+            page +
+            "</button>"
+          );
+        })
+        .join("") +
+      (lastPage > 5 ? '<span class="audit-record-ellipsis">...</span>' : "") +
+      (lastPage > 5
+        ? '<button class="audit-record-page-number" data-ui-action="audit-record-page" data-page="' +
+          escapeHtml(lastPage) +
+          '">' +
+          escapeHtml(lastPage) +
+          "</button>"
+        : "") +
+      '<button class="audit-record-page-btn" data-ui-action="audit-record-next-page"' +
+      (currentPage >= lastPage ? " disabled" : "") +
+      ">" +
+      renderIcon("chevron-right", "operation-page-next-icon") +
+      "</button>" +
+      '<span class="audit-record-page-size">10 条/页 ' +
+      renderIcon("chevron-down", "operation-page-caret") +
+      "</span>" +
+      '<label class="audit-record-jump">跳至 <input type="number" min="1" max="' +
+      escapeHtml(lastPage) +
+      '" data-audit-record-page-input /> 页</label></div>'
+    );
   }
 
   function renderAuditRecordPage() {
@@ -12374,19 +12651,26 @@
     var filters = auditMock.filters || {};
 
     return (
-      '<div class="page-stack operation-record-page">' +
-      renderOperationRecordHeader("审核记录") +
-      '<section class="panel info-filter-panel operation-record-filter-panel"><div class="info-filter-fields">' +
-      renderBoundTextFilter("关键词", opState.filters.applicantKeyword, "请输入申请人、事项或意见", "applicantKeyword", "operationRecord", "operation-keyword-field") +
-      renderBoundSelectFilter("审核类型", opState.filters.auditType, filters.typeOptions || ["全部"], "auditType", "operationRecord", "filter-select-native") +
-      renderBoundSelectFilter("审核状态", opState.filters.auditStatus, filters.statusOptions || ["全部"], "auditStatus", "operationRecord", "filter-select-native") +
-      '<div class="info-filter-field"><span class="filter-label">提交时间：</span>' +
-      renderInfoDatePicker("audit-record-range", "range") +
-      '</div></div><div class="info-filter-actions">' +
+      '<div class="page-stack operation-record-page audit-record-page">' +
+      renderOperationRecordHeader("审批进度") +
+      '<section class="audit-record-filter-panel"><div class="audit-record-filter-grid">' +
+      '<label class="audit-record-filter-field audit-record-filter-id"><span>ID：</span><input class="audit-record-input" type="text" value="' +
+      escapeHtml(opState.filters.auditRecordId || "") +
+      '" data-filter-scope="operationRecord" data-filter-key="auditRecordId" /></label>' +
+      '<label class="audit-record-filter-field audit-record-filter-applicant"><span>申请者：</span><input class="audit-record-input" type="text" value="' +
+      escapeHtml(opState.filters.auditApplicantKeyword || "") +
+      '" data-filter-scope="operationRecord" data-filter-key="auditApplicantKeyword" /></label>' +
+      '<label class="audit-record-filter-field audit-record-filter-type"><span>申请类型：</span>' +
+      renderAuditTypeSelect(opState.filters.auditType || "", filters.typeOptions || [], opState.filters.auditTypeOpen) +
+      "</label>" +
+      '<label class="audit-record-filter-field audit-record-filter-time"><span>申请时段：</span>' +
+      renderAuditRangeControl(opState.filters.auditRange || {}) +
+      "</label>" +
+      '<div class="audit-record-filter-actions">' +
       renderUiActionButton("重置", "ghost", "reset-audit-record") +
       renderUiActionButton("查询", "primary", "query-audit-record") +
-      "</div></section>" +
-      renderSectionTable("audit-record-table", getAuditRecordTable()) +
+      "</div></div></section>" +
+      renderAuditRecordTable() +
       "</div>"
     );
   }
@@ -16159,16 +16443,70 @@
         setFlashMessage("请选择有效的提交时间范围。", "info");
         return true;
       }
+      ensureOperationRecordState().filters.auditTypeOpen = false;
+      ensureOperationRecordState().filters.auditRangePickerOpen = false;
       setFlashMessage("已按当前条件刷新审核记录。", "success");
       return true;
     }
     if (action === "reset-audit-record") {
       var auditRecordFilters = operationRecordMock.auditRecords && operationRecordMock.auditRecords.filters;
-      ensureOperationRecordState().filters.applicantKeyword = "";
-      ensureOperationRecordState().filters.auditType = "全部";
-      ensureOperationRecordState().filters.auditStatus = "全部";
+      ensureOperationRecordState().filters.auditRecordId = "";
+      ensureOperationRecordState().filters.auditApplicantKeyword = "";
+      ensureOperationRecordState().filters.auditType = "";
+      ensureOperationRecordState().filters.auditTypeOpen = false;
+      ensureOperationRecordState().filters.auditRangePickerOpen = false;
+      ensureOperationRecordState().filters.auditRangeCalendarMonth = "2026-06";
+      ensureOperationRecordState().filters.auditRangeSelectingPart = "start";
+      ensureOperationRecordState().filters.expandedAuditRecordIds = new Set();
+      ensureOperationRecordState().filters.auditRecordPage = 1;
       ensureOperationRecordState().filters.auditRange = cloneRange((auditRecordFilters && auditRecordFilters.defaultRange) || getAuditRecordDefaultRange());
       setFlashMessage("审核记录筛选已重置。", "info");
+      return true;
+    }
+    if (action === "toggle-audit-type") {
+      ensureOperationRecordState().filters.auditTypeOpen = !ensureOperationRecordState().filters.auditTypeOpen;
+      ensureOperationRecordState().filters.auditRangePickerOpen = false;
+      return true;
+    }
+    if (action === "toggle-audit-range-picker") {
+      ensureOperationRecordState().filters.auditRangePickerOpen = !ensureOperationRecordState().filters.auditRangePickerOpen;
+      ensureOperationRecordState().filters.auditTypeOpen = false;
+      return true;
+    }
+    if (action === "audit-calendar-prev" || action === "audit-calendar-next") {
+      var auditCalendarMonth = parseAuditDate((ensureOperationRecordState().filters.auditRangeCalendarMonth || "2026-06") + "-01") || new Date(2026, 5, 1);
+      var auditMonthOffset = action === "audit-calendar-prev" ? -1 : 1;
+      var nextAuditMonth = new Date(auditCalendarMonth.getFullYear(), auditCalendarMonth.getMonth() + auditMonthOffset, 1);
+      ensureOperationRecordState().filters.auditRangeCalendarMonth = nextAuditMonth.getFullYear() + "-" + String(nextAuditMonth.getMonth() + 1).padStart(2, "0");
+      ensureOperationRecordState().filters.auditRangePickerOpen = true;
+      return true;
+    }
+    if (action === "confirm-audit-range") {
+      ensureOperationRecordState().filters.auditRangePickerOpen = false;
+      return true;
+    }
+    if (action === "toggle-audit-record-detail") {
+      var auditRecordId = target.getAttribute("data-record-id") || "";
+      var expandedAuditIds = ensureOperationRecordState().filters.expandedAuditRecordIds || new Set();
+      if (expandedAuditIds.has(auditRecordId)) {
+        expandedAuditIds.delete(auditRecordId);
+      } else {
+        expandedAuditIds.add(auditRecordId);
+      }
+      ensureOperationRecordState().filters.expandedAuditRecordIds = expandedAuditIds;
+      return true;
+    }
+    if (action === "audit-record-prev-page") {
+      ensureOperationRecordState().filters.auditRecordPage = Math.max(1, (ensureOperationRecordState().filters.auditRecordPage || 1) - 1);
+      return true;
+    }
+    if (action === "audit-record-next-page") {
+      var auditLastPage = ((operationRecordMock.auditRecords && operationRecordMock.auditRecords.filters && operationRecordMock.auditRecords.filters.lastPage) || 41);
+      ensureOperationRecordState().filters.auditRecordPage = Math.min(auditLastPage, (ensureOperationRecordState().filters.auditRecordPage || 1) + 1);
+      return true;
+    }
+    if (action === "audit-record-page") {
+      ensureOperationRecordState().filters.auditRecordPage = Math.max(1, Number(target.getAttribute("data-page")) || 1);
       return true;
     }
     if (action === "reload-data-monitor") {
@@ -16498,6 +16836,46 @@
       return;
     }
 
+    var auditTypeOption = event.target.closest("[data-audit-type-option]");
+    if (auditTypeOption) {
+      event.preventDefault();
+      ensureOperationRecordState().filters.auditType = auditTypeOption.getAttribute("data-audit-type-option") || "";
+      ensureOperationRecordState().filters.auditTypeOpen = false;
+      renderApp();
+      return;
+    }
+
+    var auditDateButton = event.target.closest("[data-audit-date]");
+    if (auditDateButton) {
+      event.preventDefault();
+      var selectedAuditDate = auditDateButton.getAttribute("data-audit-date") || "";
+      var auditFilters = ensureOperationRecordState().filters;
+      var currentAuditRange = auditFilters.auditRange || { start: "", end: "" };
+      if (auditFilters.auditRangeSelectingPart !== "end" || !currentAuditRange.start || (currentAuditRange.start && currentAuditRange.end)) {
+        auditFilters.auditRange = {
+          start: selectedAuditDate + " 00:00:00",
+          end: "",
+        };
+        auditFilters.auditRangeSelectingPart = "end";
+      } else if (selectedAuditDate < getDateOnly(currentAuditRange.start)) {
+        auditFilters.auditRange = {
+          start: selectedAuditDate + " 00:00:00",
+          end: getDateOnly(currentAuditRange.start) + " 23:59:59",
+        };
+        auditFilters.auditRangeSelectingPart = "start";
+      } else {
+        auditFilters.auditRange = {
+          start: currentAuditRange.start,
+          end: selectedAuditDate + " 23:59:59",
+        };
+        auditFilters.auditRangeSelectingPart = "start";
+      }
+      auditFilters.auditRangeCalendarMonth = selectedAuditDate.slice(0, 7);
+      auditFilters.auditRangePickerOpen = true;
+      renderApp();
+      return;
+    }
+
     var tradeCenterToggle = event.target.closest("[data-trade-center-toggle]");
     if (tradeCenterToggle) {
       state.ui.tradeCenterOpen = !state.ui.tradeCenterOpen;
@@ -16795,7 +17173,18 @@
       return;
     }
 
-    if (!event.target.closest(".selector-shell") && (state.ui.tradeCenterOpen || state.ui.activeDatePickerId)) {
+    if (
+      !event.target.closest(".selector-shell") &&
+      !event.target.closest(".audit-type-select") &&
+      !event.target.closest(".audit-range-picker") &&
+      (state.ui.tradeCenterOpen ||
+        state.ui.activeDatePickerId ||
+        (state.operationRecord && state.operationRecord.filters && (state.operationRecord.filters.auditTypeOpen || state.operationRecord.filters.auditRangePickerOpen)))
+    ) {
+      if (state.operationRecord && state.operationRecord.filters) {
+        state.operationRecord.filters.auditTypeOpen = false;
+        state.operationRecord.filters.auditRangePickerOpen = false;
+      }
       closeAllPanels();
       renderApp();
     }
@@ -16868,6 +17257,13 @@
     if (event.target.matches("[data-operation-log-page-input]")) {
       var operationLogLastPage = ((operationRecordMock.operationLog && operationRecordMock.operationLog.filters && operationRecordMock.operationLog.filters.lastPage) || 19030);
       ensureOperationRecordState().filters.operationLogPage = Math.min(Math.max(Number(event.target.value) || 1, 1), operationLogLastPage);
+      renderApp();
+      return;
+    }
+
+    if (event.target.matches("[data-audit-record-page-input]")) {
+      var auditRecordLastPage = ((operationRecordMock.auditRecords && operationRecordMock.auditRecords.filters && operationRecordMock.auditRecords.filters.lastPage) || 41);
+      ensureOperationRecordState().filters.auditRecordPage = Math.min(Math.max(Number(event.target.value) || 1, 1), auditRecordLastPage);
       renderApp();
       return;
     }
