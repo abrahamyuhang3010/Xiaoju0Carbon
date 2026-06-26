@@ -12798,10 +12798,15 @@
       return node.path && node.path.length;
     });
     var bestIndex = flatNodes.length + 1;
+    var bestDepth = -1;
     flatNodes.forEach(function matchNode(node, index) {
       var nodePath = serializeDataMonitorPath(node.path);
+      var nodeDepth = normalizeDataMonitorPath(node.path).length;
       if (nodePath && recordPath.indexOf(nodePath) === 0) {
-        bestIndex = Math.min(bestIndex, index);
+        if (nodeDepth > bestDepth || (nodeDepth === bestDepth && index < bestIndex)) {
+          bestDepth = nodeDepth;
+          bestIndex = index;
+        }
       }
     });
     return bestIndex;
@@ -12932,7 +12937,11 @@
   }
 
   function getDataMonitorRecordsRaw() {
-    return (dataMonitorMock.records || []).map(getDataMonitorDisplayRecord);
+    return (dataMonitorMock.records || []).map(function mapRecord(record, index) {
+      var displayRecord = getDataMonitorDisplayRecord(record);
+      displayRecord.__sourceOrder = index;
+      return displayRecord;
+    });
   }
 
   function getDataMonitorRecordById(recordId) {
@@ -12974,6 +12983,56 @@
     return 8;
   }
 
+  function normalizeDataMonitorOrderName(value) {
+    return String(value || "")
+      .replace(/\s+/g, "")
+      .replace(/（/g, "(")
+      .replace(/）/g, ")")
+      .replace(/：/g, ":");
+  }
+
+  function getDataMonitorDisclosureItemOrders() {
+    if (dataMonitorMock.__disclosureItemOrders) {
+      return dataMonitorMock.__disclosureItemOrders;
+    }
+
+    var orders = {};
+    var loadMetrics = (infoDisclosureConfig.marketMappings && infoDisclosureConfig.marketMappings.loadMetrics) || {};
+    Object.keys(loadMetrics).forEach(function eachCenter(centerKey) {
+      var centerName = centerKey === "hunan" ? "湖南" : centerKey === "shaanxi" ? "陕西" : centerKey === "guangdong" ? "广东" : centerKey;
+      orders[centerName] = orders[centerName] || {};
+      (loadMetrics[centerKey] || []).forEach(function eachGroup(group) {
+        (group.items || []).forEach(function eachItem(item) {
+          [item.label, item.forecastModule, item.dataType, item.actualModule].forEach(function eachName(name) {
+            var normalizedName = normalizeDataMonitorOrderName(name);
+            if (normalizedName && orders[centerName][normalizedName] === undefined) {
+              orders[centerName][normalizedName] = Object.keys(orders[centerName]).length;
+            }
+          });
+        });
+      });
+    });
+
+    dataMonitorMock.__disclosureItemOrders = orders;
+    return orders;
+  }
+
+  function getDataMonitorDisclosureSortWeight(record) {
+    var centerOrders = getDataMonitorDisclosureItemOrders()[record.tradeCenter] || {};
+    var itemKeys = [record.dataItem, record.sourceDataItem].map(normalizeDataMonitorOrderName);
+    for (var index = 0; index < itemKeys.length; index += 1) {
+      if (centerOrders[itemKeys[index]] !== undefined) {
+        return centerOrders[itemKeys[index]];
+      }
+    }
+    return 999999;
+  }
+
+  function getDataMonitorSourceSortWeight(record) {
+    var sourceOrder = Number(record && record.__sourceOrder);
+    return Number.isNaN(sourceOrder) ? 999999 : sourceOrder;
+  }
+
   function getDataMonitorFilteredRecords() {
     var selectedTradeCenter = getDataMonitorSelectedTradeCenterKey();
     var selectedPath = ensureDataMonitorState().filters.categoryPath || [];
@@ -12983,11 +13042,12 @@
       })
       .sort(function sortRecord(a, b) {
         var categoryDiff = getDataMonitorCategorySortWeight(a) - getDataMonitorCategorySortWeight(b);
-        var weightDiff = categoryDiff || getDataMonitorSortWeight(a) - getDataMonitorSortWeight(b);
-        if (weightDiff !== 0) {
-          return weightDiff;
+        var disclosureDiff = categoryDiff || getDataMonitorDisclosureSortWeight(a) - getDataMonitorDisclosureSortWeight(b);
+        var sourceDiff = disclosureDiff || getDataMonitorSourceSortWeight(a) - getDataMonitorSourceSortWeight(b);
+        if (sourceDiff !== 0) {
+          return sourceDiff;
         }
-        return String(a.nextFetchAt || "").localeCompare(String(b.nextFetchAt || ""), "zh-CN");
+        return String(a.dataItem || "").localeCompare(String(b.dataItem || ""), "zh-CN");
       });
   }
 
@@ -13135,6 +13195,7 @@
       { key: "outputTime", label: "产出时间", width: 128 },
       { key: "warningTime", label: "预警时间", width: 120 },
       { key: "valueRange", label: "取值范围", width: 126 },
+      { key: "fetchToolTimeliness", label: "取数工具时效", width: 280 },
       { key: "lastSuccessAt", label: "最近成功入库时间", width: 176 },
       { key: "nextFetchAt", label: "下次取数时间", width: 164 },
       { key: "actions", label: "操作", sortable: false, width: 150 },
@@ -13153,12 +13214,13 @@
           outputTime: record.outputTime,
           warningTime: record.warningTime,
           valueRange: record.valueRange,
+          fetchToolTimeliness: record.fetchToolTimeliness,
           lastSuccessAt: record.lastSuccessAt,
           nextFetchAt: record.nextFetchAt,
           actions: createTableActionCell(record.id, actions),
         };
       }),
-      minWidth: 1428,
+      minWidth: 1840,
     };
   }
 
