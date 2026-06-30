@@ -12736,8 +12736,12 @@
     return record && qualityAbnormalStatuses.indexOf(record.qualityStatus) >= 0;
   }
 
+  function isDataMonitorCollectorAbnormal(record) {
+    return record && (record.collectorStatus === "abnormal" || record.collectorStatus === "异常");
+  }
+
   function isDataMonitorRecordAbnormal(record) {
-    return isDataMonitorFetchAbnormal(record) || isDataMonitorQualityAbnormal(record);
+    return isDataMonitorCollectorAbnormal(record) || isDataMonitorFetchAbnormal(record) || isDataMonitorQualityAbnormal(record);
   }
 
   function getDataMonitorCenterRecords() {
@@ -12858,12 +12862,14 @@
 
   function getDataMonitorSummary(records) {
     var scopedRecords = records || [];
+    var collectorAbnormalCount = scopedRecords.filter(isDataMonitorCollectorAbnormal).length;
     var fetchAbnormalCount = scopedRecords.filter(isDataMonitorFetchAbnormal).length;
     var qualityAbnormalCount = scopedRecords.filter(isDataMonitorQualityAbnormal).length;
     var abnormalRecords = scopedRecords.filter(isDataMonitorRecordAbnormal);
     return {
       expectedCount: scopedRecords.length,
       normalCount: scopedRecords.length - abnormalRecords.length,
+      collectorAbnormalCount: collectorAbnormalCount,
       fetchAbnormalCount: fetchAbnormalCount,
       qualityAbnormalCount: qualityAbnormalCount,
       p0Count: abnormalRecords.filter(function countP0(record) {
@@ -13302,7 +13308,7 @@
         '<div class="data-monitor-alert-title">当前所有数据运行正常</div>' +
         '<div class="data-monitor-alert-meta">应取数据 ' +
         escapeHtml(summary.expectedCount || 0) +
-        " 项，暂无取数异常与质量异常。</div></div></section>"
+        " 项，暂无采集器运行状态异常、取数异常与质量异常。</div></div></section>"
       );
     }
     return (
@@ -13314,7 +13320,9 @@
       escapeHtml(summary.expectedCount || 0) +
       " ｜正常 " +
       escapeHtml(summary.normalCount || 0) +
-      " ｜取数通道异常 " +
+      " ｜采集器运行状态异常 " +
+      escapeHtml(summary.collectorAbnormalCount || 0) +
+      " 项 ｜取数通道异常 " +
       escapeHtml(summary.fetchAbnormalCount || 0) +
       " 项 ｜数据质量异常 " +
       escapeHtml(summary.qualityAbnormalCount || 0) +
