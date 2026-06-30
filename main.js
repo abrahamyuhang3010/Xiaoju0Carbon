@@ -13031,9 +13031,7 @@
         return record.tradeCenter === selectedTradeCenter && isDataMonitorRecordInCategory(record, selectedPath);
       })
       .sort(function sortRecord(a, b) {
-        var categoryDiff = getDataMonitorCategorySortWeight(a) - getDataMonitorCategorySortWeight(b);
-        var disclosureDiff = categoryDiff || getDataMonitorDisclosureSortWeight(a) - getDataMonitorDisclosureSortWeight(b);
-        var sourceDiff = disclosureDiff || getDataMonitorSourceSortWeight(a) - getDataMonitorSourceSortWeight(b);
+        var sourceDiff = getDataMonitorSourceSortWeight(a) - getDataMonitorSourceSortWeight(b);
         if (sourceDiff !== 0) {
           return sourceDiff;
         }
@@ -15450,6 +15448,7 @@
         { label: "交易中心", value: record.tradeCenterName },
         { label: "业务模块", value: (record.categoryPath || []).join(" / ") || record.businessModule },
         { label: "数据项", value: record.dataItem },
+        { label: "包含数据子项", value: Array.isArray(record.dataChildren) && record.dataChildren.length ? record.dataChildren.join("、") : "-" },
       ]) +
       renderDataMonitorDetailSection("取数配置", [
         { label: "时间点位", value: record.timePoint },
