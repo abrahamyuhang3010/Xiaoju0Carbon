@@ -2353,7 +2353,14 @@ a {
   position: sticky;
   z-index: 2;
   background: #fff;
+}
+
+.data-table .table-fixed-left {
   box-shadow: 1px 0 0 var(--line);
+}
+
+.data-table .table-fixed-right {
+  box-shadow: -1px 0 0 var(--line);
 }
 
 .data-table thead .table-fixed-col {
@@ -3880,6 +3887,7 @@ a {
   padding: 0 10px;
   border-radius: 999px;
   font-weight: 800;
+  white-space: nowrap;
 }
 
 .data-monitor-status-success .table-cell-text {
@@ -3901,6 +3909,11 @@ a {
 .data-monitor-status-warning .table-cell-text {
   color: #d46b08;
   background: rgba(255, 122, 69, 0.16);
+}
+
+.data-monitor-status-info .table-cell-text {
+  color: var(--blue);
+  background: rgba(47, 111, 237, 0.12);
 }
 
 .data-monitor-empty-panel .chart-main {

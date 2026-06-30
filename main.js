@@ -12724,15 +12724,11 @@
   }
 
   function isDataMonitorFetchMissing(record) {
-    return record && (record.fetchStatus === "数据未取回" || record.fetchStatus === "取数失败");
-  }
-
-  function isDataMonitorFrontendAbnormal(record) {
-    return record && (record.fetchStatus === "前端展示异常" || record.fetchStatus === "展示异常");
+    return record && record.fetchStatus === "数据未取回";
   }
 
   function isDataMonitorFetchAbnormal(record) {
-    return isDataMonitorFetchMissing(record) || isDataMonitorFrontendAbnormal(record);
+    return isDataMonitorFetchMissing(record);
   }
 
   function isDataMonitorQualityAbnormal(record) {
@@ -12962,25 +12958,19 @@
     if (isDataMonitorFetchMissing(record) && priority === "P0") {
       return 1;
     }
-    if (isDataMonitorFrontendAbnormal(record) && priority === "P0") {
+    if (isDataMonitorQualityAbnormal(record) && priority === "P0") {
       return 2;
     }
-    if (isDataMonitorQualityAbnormal(record) && priority === "P0") {
+    if (isDataMonitorFetchMissing(record) && priority === "P1") {
       return 3;
     }
-    if (isDataMonitorFetchMissing(record) && priority === "P1") {
+    if (isDataMonitorQualityAbnormal(record) && priority === "P1") {
       return 4;
     }
-    if (isDataMonitorFrontendAbnormal(record) && priority === "P1") {
+    if (record.fetchStatus === "取数中" || record.qualityStatus === "待校验") {
       return 5;
     }
-    if (isDataMonitorQualityAbnormal(record) && priority === "P1") {
-      return 6;
-    }
-    if (record.fetchStatus === "待取数" || record.qualityStatus === "待校验") {
-      return 7;
-    }
-    return 8;
+    return 6;
   }
 
   function normalizeDataMonitorOrderName(value) {
@@ -13059,6 +13049,28 @@
     ) {
       return "已忽略";
     }
+    if (statusType === "collector") {
+      var collectorTextMap = {
+        normal: "正常",
+        running: "执行中",
+        abnormal: "异常",
+        正常: "正常",
+        执行中: "执行中",
+        异常: "异常",
+      };
+      return collectorTextMap[record.collectorStatus] || "-";
+    }
+    if (statusType === "arrival") {
+      var arrivalTextMap = {
+        pending: "待到位",
+        arrived: "已到位",
+        notArrived: "未到位",
+        待到位: "待到位",
+        已到位: "已到位",
+        未到位: "未到位",
+      };
+      return arrivalTextMap[record.arrivalStatus] || "-";
+    }
     if (statusType === "fetch") {
       if (record.fetchStatus === "已忽略") {
         return "已忽略";
@@ -13066,14 +13078,11 @@
       if (record.fetchStatus === "正常") {
         return "正常";
       }
-      if (record.fetchStatus === "待取数") {
-        return "待取数";
+      if (record.fetchStatus === "取数中") {
+        return "取数中";
       }
       if (isDataMonitorFetchMissing(record)) {
-        return "取数失败";
-      }
-      if (isDataMonitorFrontendAbnormal(record)) {
-        return "展示异常";
+        return "数据未取回";
       }
       return record.fetchStatus || "-";
     }
@@ -13097,6 +13106,27 @@
     ) {
       return "data-monitor-status-ignored";
     }
+    if (statusType === "collector") {
+      if (record.collectorStatus === "normal" || record.collectorStatus === "正常") {
+        return "data-monitor-status-success";
+      }
+      if (record.collectorStatus === "running" || record.collectorStatus === "执行中") {
+        return "data-monitor-status-info";
+      }
+      if (record.collectorStatus === "abnormal" || record.collectorStatus === "异常") {
+        return "data-monitor-status-danger";
+      }
+      return "data-monitor-status-default";
+    }
+    if (statusType === "arrival") {
+      if (record.arrivalStatus === "arrived" || record.arrivalStatus === "已到位") {
+        return "data-monitor-status-success";
+      }
+      if (record.arrivalStatus === "notArrived" || record.arrivalStatus === "未到位") {
+        return "data-monitor-status-danger";
+      }
+      return "data-monitor-status-warning";
+    }
     if (statusType === "fetch") {
       if (record.fetchStatus === "已忽略") {
         return "data-monitor-status-ignored";
@@ -13104,11 +13134,8 @@
       if (record.fetchStatus === "正常") {
         return "data-monitor-status-success";
       }
-      if (record.fetchStatus === "待取数") {
-        return "data-monitor-status-default";
-      }
-      if (isDataMonitorFrontendAbnormal(record)) {
-        return "data-monitor-status-warning";
+      if (record.fetchStatus === "取数中") {
+        return "data-monitor-status-info";
       }
       if (isDataMonitorFetchMissing(record)) {
         return "data-monitor-status-danger";
@@ -13135,6 +13162,27 @@
     ) {
       return "⚫";
     }
+    if (statusType === "collector") {
+      if (record.collectorStatus === "normal" || record.collectorStatus === "正常") {
+        return "✅";
+      }
+      if (record.collectorStatus === "running" || record.collectorStatus === "执行中") {
+        return "🔵";
+      }
+      if (record.collectorStatus === "abnormal" || record.collectorStatus === "异常") {
+        return "🔴";
+      }
+      return "⚪";
+    }
+    if (statusType === "arrival") {
+      if (record.arrivalStatus === "arrived" || record.arrivalStatus === "已到位") {
+        return "✅";
+      }
+      if (record.arrivalStatus === "notArrived" || record.arrivalStatus === "未到位") {
+        return "🔴";
+      }
+      return "🟠";
+    }
     if (statusType === "fetch") {
       if (record.fetchStatus === "已忽略") {
         return "⚫";
@@ -13142,11 +13190,8 @@
       if (record.fetchStatus === "正常") {
         return "✅";
       }
-      if (record.fetchStatus === "待取数") {
-        return "⚪";
-      }
-      if (isDataMonitorFrontendAbnormal(record)) {
-        return "🟠";
+      if (record.fetchStatus === "取数中") {
+        return "🔵";
       }
       if (isDataMonitorFetchMissing(record)) {
         return "🔴";
@@ -13169,10 +13214,29 @@
   }
 
   function createDataMonitorStatusCell(record, statusType) {
+    var sortWeights = {
+      collector: {
+        normal: 1,
+        正常: 1,
+        running: 2,
+        执行中: 2,
+        abnormal: 3,
+        异常: 3,
+      },
+      arrival: {
+        arrived: 1,
+        已到位: 1,
+        pending: 2,
+        待到位: 2,
+        notArrived: 3,
+        未到位: 3,
+      },
+    };
+    var statusValue = statusType === "collector" ? record.collectorStatus : statusType === "arrival" ? record.arrivalStatus : "";
     return createStyledCell(
       getDataMonitorStatusIcon(record, statusType) + " " + getDataMonitorStatusText(record, statusType),
       "data-monitor-status-cell " + getDataMonitorStatusClass(record, statusType),
-      getDataMonitorSortWeight(record),
+      sortWeights[statusType] ? sortWeights[statusType][statusValue] || 99 : getDataMonitorSortWeight(record),
     );
   }
 
@@ -13188,8 +13252,10 @@
 
   function getDataMonitorTable() {
     var columns = [
-      { key: "dataItem", label: "数据项", width: 230 },
+      { key: "dataItem", label: "数据项", width: 230, fixed: true },
+      { key: "collectorStatus", label: "采集器状态", width: 132 },
       { key: "fetchStatus", label: "取数状态", width: 190 },
+      { key: "arrivalStatus", label: "数据到位状态", width: 146 },
       { key: "qualityStatus", label: "质量状态", width: 178 },
       { key: "timePoint", label: "时间点位", width: 100 },
       { key: "outputTime", label: "产出时间", width: 128 },
@@ -13198,7 +13264,7 @@
       { key: "fetchToolTimeliness", label: "取数工具时效", width: 280 },
       { key: "lastSuccessAt", label: "最近成功入库时间", width: 176 },
       { key: "nextFetchAt", label: "下次取数时间", width: 164 },
-      { key: "actions", label: "操作", sortable: false, width: 150 },
+      { key: "actions", label: "操作", sortable: false, width: 150, fixedRight: true },
     ];
 
     return {
@@ -13208,7 +13274,9 @@
 
         return {
           dataItem: record.dataItem,
+          collectorStatus: createDataMonitorStatusCell(record, "collector"),
           fetchStatus: createDataMonitorStatusCell(record, "fetch"),
+          arrivalStatus: createDataMonitorStatusCell(record, "arrival"),
           qualityStatus: createDataMonitorStatusCell(record, "quality"),
           timePoint: record.timePoint,
           outputTime: record.outputTime,
@@ -13220,7 +13288,7 @@
           actions: createTableActionCell(record.id, actions),
         };
       }),
-      minWidth: 1840,
+      minWidth: 2118,
     };
   }
 
@@ -15427,7 +15495,9 @@
       ]) +
       '<section class="data-monitor-detail-section"><div class="data-monitor-detail-section-title">当前状态</div><div class="data-monitor-current-status-grid">' +
       renderDataMonitorStatusReadonlyCard("取数通道状态", [
+        { label: "采集器状态", value: getDataMonitorStatusText(record, "collector") },
         { label: "取数状态", value: getDataMonitorStatusText(record, "fetch") },
+        { label: "数据到位状态", value: getDataMonitorStatusText(record, "arrival") },
         { label: "取数异常类型", value: record.fetchExceptionType },
         { label: "取数异常时间", value: record.fetchExceptionAt },
         { label: "取数是否已通知", value: record.fetchNotified },

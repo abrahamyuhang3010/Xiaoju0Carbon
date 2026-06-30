@@ -31,21 +31,26 @@
           label: column,
           sortable: true,
           fixed: false,
+          fixedSide: "",
           width: 128,
           left: 0,
+          right: 0,
         };
       }
       var width = Number(column.width || 128);
+      var fixedSide = column.fixed === "right" || column.fixedRight ? "right" : column.fixed ? "left" : "";
       var normalizedColumn = {
         key: column.key || "col-" + index,
         label: column.label || column.title || column.key || "列" + (index + 1),
         sortable: column.sortable !== false,
         draggable: column.draggable !== false,
-        fixed: Boolean(column.fixed),
+        fixed: Boolean(fixedSide),
+        fixedSide: fixedSide,
         width: width,
         left: 0,
+        right: 0,
       };
-      if (normalizedColumn.fixed) {
+      if (normalizedColumn.fixedSide === "left") {
         normalizedColumn.left = fixedLeft;
         fixedLeft += width;
       }
@@ -53,8 +58,11 @@
     });
     var columnOrder = Array.isArray(options.columnOrder) ? options.columnOrder : [];
     if (columnOrder.length) {
-      var fixedColumns = columns.filter(function filterFixedColumn(column) {
-        return column.fixed;
+      var fixedLeftColumns = columns.filter(function filterFixedLeftColumn(column) {
+        return column.fixedSide === "left";
+      });
+      var fixedRightColumns = columns.filter(function filterFixedRightColumn(column) {
+        return column.fixedSide === "right";
       });
       var scrollColumns = columns.filter(function filterScrollColumn(column) {
         return !column.fixed;
@@ -73,7 +81,14 @@
         }
         return aIndex - bIndex;
       });
-      columns = fixedColumns.concat(scrollColumns);
+      columns = fixedLeftColumns.concat(scrollColumns).concat(fixedRightColumns);
+    }
+    var fixedRight = 0;
+    for (var rightIndex = columns.length - 1; rightIndex >= 0; rightIndex -= 1) {
+      if (columns[rightIndex].fixedSide === "right") {
+        columns[rightIndex].right = fixedRight;
+        fixedRight += columns[rightIndex].width;
+      }
     }
     var rows = (options.rows || []).slice();
     var sortState = options.sortState || {};
@@ -106,12 +121,15 @@
       .map(function mapColumn(column) {
         var direction = sortState.key === column.key ? sortState.direction : "";
         var thAttrs = "";
-        var className = column.fixed ? ' class="table-fixed-col"' : "";
-        var style = column.fixed
+        var fixedClass = column.fixed ? "table-fixed-col table-fixed-" + column.fixedSide : "";
+        var className = fixedClass ? ' class="' + fixedClass + '"' : "";
+        var style = column.fixedSide === "left"
           ? ' style="left:' + escapeHtml(String(column.left)) + "px;width:" + escapeHtml(String(column.width)) + "px;min-width:" + escapeHtml(String(column.width)) + 'px;"'
-          : column.width
-            ? ' style="min-width:' + escapeHtml(String(column.width)) + 'px;"'
-            : "";
+          : column.fixedSide === "right"
+            ? ' style="right:' + escapeHtml(String(column.right)) + "px;width:" + escapeHtml(String(column.width)) + "px;min-width:" + escapeHtml(String(column.width)) + 'px;"'
+            : column.width
+              ? ' style="min-width:' + escapeHtml(String(column.width)) + 'px;"'
+              : "";
         if (options.enableColumnDrag && column.sortable !== false && column.draggable !== false) {
           thAttrs =
             ' draggable="true" data-table-id="' +
@@ -150,8 +168,14 @@
           .map(function mapColumn(column, index) {
             var value = Array.isArray(row) ? row[index] : row[column.key];
             if (value && typeof value === "object" && Array.isArray(value.actions)) {
+              var actionCellClassName = column.fixed ? ' class="table-fixed-col table-fixed-' + escapeHtml(column.fixedSide) + '"' : "";
+              var actionCellStyle = column.fixedSide === "left"
+                ? ' style="left:' + escapeHtml(String(column.left)) + "px;width:" + escapeHtml(String(column.width)) + "px;min-width:" + escapeHtml(String(column.width)) + 'px;"'
+                : column.fixedSide === "right"
+                  ? ' style="right:' + escapeHtml(String(column.right)) + "px;width:" + escapeHtml(String(column.width)) + "px;min-width:" + escapeHtml(String(column.width)) + 'px;"'
+                  : "";
               return (
-                '<td><div class="table-action-group">' +
+                "<td" + actionCellClassName + actionCellStyle + '><div class="table-action-group">' +
                 value.actions
                   .map(function mapAction(action) {
                     var attrs = "";
@@ -178,14 +202,20 @@
               displayValue !== "--" &&
               !Number.isNaN(Number(displayValue)) &&
               Number(displayValue) < 0;
-            var cellClassName = [column.fixed ? "table-fixed-col" : "", negative ? "table-negative" : "", extraClassName]
+            var cellClassName = [
+              column.fixed ? "table-fixed-col table-fixed-" + column.fixedSide : "",
+              negative ? "table-negative" : "",
+              extraClassName,
+            ]
               .filter(Boolean)
               .join(" ");
-            var cellStyle = column.fixed
+            var cellStyle = column.fixedSide === "left"
               ? ' style="left:' + escapeHtml(String(column.left)) + "px;width:" + escapeHtml(String(column.width)) + "px;min-width:" + escapeHtml(String(column.width)) + 'px;"'
-              : column.width
-                ? ' style="min-width:' + escapeHtml(String(column.width)) + 'px;"'
-                : "";
+              : column.fixedSide === "right"
+                ? ' style="right:' + escapeHtml(String(column.right)) + "px;width:" + escapeHtml(String(column.width)) + "px;min-width:" + escapeHtml(String(column.width)) + 'px;"'
+                : column.width
+                  ? ' style="min-width:' + escapeHtml(String(column.width)) + 'px;"'
+                  : "";
             var copyable = !(value && typeof value === "object" && value.copyable === false);
             var contentHtml = value && typeof value === "object" && value.badge
               ? '<span class="table-badge table-badge-' + escapeHtml(value.tone || "default") + '">' + escapeHtml(displayValue) + "</span>"
