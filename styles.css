@@ -4890,6 +4890,19 @@ a {
   font-size: 13px;
 }
 
+.update-data-modal .form-hint-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.update-data-modal .form-hint-link {
+  flex: 0 0 auto;
+  color: var(--blue);
+  font-weight: 600;
+}
+
 .download-date-modal .required-label::before {
   content: "*";
   margin-right: 4px;

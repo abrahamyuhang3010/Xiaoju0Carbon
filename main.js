@@ -2254,6 +2254,143 @@
     return isInfoDisclosurePage(state.currentPageKey);
   }
 
+  function isManualUploadModeAvailable() {
+    return !(isInfoDisclosureManualUpdateModalContext() && getSelectedTradeCenterKey() === "shaanxi");
+  }
+
+  function getEffectiveManualUpdateMode() {
+    if (state.ui.manualUpdateMode === "upload" && !isManualUploadModeAvailable()) {
+      return "pull";
+    }
+    return state.ui.manualUpdateMode;
+  }
+
+  function isHunanManualUploadMode() {
+    return isInfoDisclosureManualUpdateModalContext() && getSelectedTradeCenterKey() === "hunan" && getEffectiveManualUpdateMode() === "upload";
+  }
+
+  function parseManualUploadRunDate(fileName) {
+    var match = String(fileName || "").match(/(20\d{2})\D?([01]\d)\D?([0-3]\d)/);
+    if (!match) {
+      return "";
+    }
+    var dateText = match[1] + "-" + match[2] + "-" + match[3];
+    var parsedDate = parseDate(dateText);
+    return !Number.isNaN(parsedDate.getTime()) && formatDateValue(parsedDate) === dateText ? dateText : "";
+  }
+
+  function normalizeManualUploadName(value) {
+    return String(value || "")
+      .replace(/\.[^.]+$/, "")
+      .replace(/[（）]/g, function normalizeBracket(bracket) {
+        return bracket === "（" ? "(" : ")";
+      })
+      .replace(/[^0-9a-zA-Z\u4e00-\u9fa5]/g, "")
+      .toLowerCase();
+  }
+
+  function getManualUploadNameVariants(name) {
+    var text = String(name || "").trim();
+    if (!text) {
+      return [];
+    }
+    return [text, text.replace(/[（(][^）)]*[）)]/g, ""), text.replace(/（日）|\(日\)/g, "")]
+      .map(normalizeManualUploadName)
+      .filter(function filterVariant(variant, index, source) {
+        return variant && source.indexOf(variant) === index;
+      });
+  }
+
+  function getHunanManualUploadMetricCandidates() {
+    var candidates = [];
+    getMarketLoadMetricGroups().forEach(function eachGroup(group) {
+      (group.items || []).forEach(function eachMetric(metric) {
+        [metric.label, metric.dataType, metric.forecastModule, metric.actualModule].forEach(function eachName(name) {
+          getManualUploadNameVariants(name).forEach(function eachVariant(variant) {
+            candidates.push({
+              metric: metric,
+              normalizedName: variant,
+            });
+          });
+        });
+      });
+    });
+    return candidates.sort(function sortCandidate(left, right) {
+      return right.normalizedName.length - left.normalizedName.length;
+    });
+  }
+
+  function findHunanManualUploadMetric(fileName) {
+    var normalizedFileName = normalizeManualUploadName(fileName);
+    return (
+      getHunanManualUploadMetricCandidates().find(function findCandidate(candidate) {
+        return candidate.normalizedName && normalizedFileName.indexOf(candidate.normalizedName) >= 0;
+      }) || null
+    );
+  }
+
+  function getHunanManualUploadFileMatch(fileName) {
+    var runDate = parseManualUploadRunDate(fileName);
+    var metricCandidate = findHunanManualUploadMetric(fileName);
+    if (!runDate || (isScopedLoadInfoTab() && !metricCandidate)) {
+      return {
+        valid: false,
+        runDate: "",
+        metric: null,
+      };
+    }
+    return {
+      valid: true,
+      runDate: runDate,
+      metric: metricCandidate && metricCandidate.metric,
+    };
+  }
+
+  function applyManualUploadRunDate(runDate) {
+    var range = {
+      start: runDate,
+      end: runDate,
+    };
+    var activeTab = getActiveInfoTab();
+    if (getActiveInfoPrimaryTab() === INFO_DISCLOSURE_TIME_SHARING_TAB) {
+      setInfoTimeSharingRange(range);
+      return;
+    }
+    if (isCurrentMarketDisclosureView()) {
+      var disclosureState = getMarketDisclosureState();
+      disclosureState.filterRange = cloneRange(range);
+      disclosureState.appliedRange = cloneRange(range);
+      disclosureState.queryCount += 1;
+      return;
+    }
+    if (activeTab === "节点电价") {
+      state.tradeResult.filters.nodeRunRange = cloneRange(range);
+      return;
+    }
+    if (activeTab === "全省统一出清价" || activeTab === "出清电量" || activeTab === "交易结果") {
+      state.tradeResult.filters.marketRunRange = cloneRange(range);
+      return;
+    }
+    if (activeTab === "日前申报") {
+      state.declaration.filters.declarationRange = cloneRange(range);
+      return;
+    }
+    setInfoLoadRunDateRange(range);
+  }
+
+  function applyHunanManualUploadResult(matchResult, activeInfoTab) {
+    applyManualUploadRunDate(matchResult.runDate);
+    if (matchResult.metric && matchResult.metric.id) {
+      state.info.selectedMetric = matchResult.metric.id;
+    }
+    setInfoUpdateOverride(activeInfoTab, "人工上传");
+    state.ui.manualUpdateModalVisible = false;
+    state.ui.manualUpdateContext = "";
+    state.ui.manualUpdateTab = "";
+    closeDatePicker("manual-pull-range", false);
+    setFlashMessage("数据更新成功，当前弹窗自动关闭", "success");
+  }
+
   function isManualUpdateSubmitReady() {
     if (!isTimeSharingManualUpdateContext()) {
       return true;
@@ -2261,7 +2398,7 @@
     if (isTimeSharingHistoryUpdateTargetTab(state.ui.manualUpdateTab) && !state.ui.manualUpdateAgentMonth) {
       return false;
     }
-    if (state.ui.manualUpdateMode === "upload") {
+    if (getEffectiveManualUpdateMode() === "upload") {
       return Boolean(state.ui.manualUploadFileName);
     }
     return isRangeValid(state.ui.manualPullRangeDraft);
@@ -2271,7 +2408,7 @@
     if (!isInfoDisclosureManualUpdateModalContext()) {
       return true;
     }
-    if (state.ui.manualUpdateMode === "upload") {
+    if (getEffectiveManualUpdateMode() === "upload") {
       return Boolean(state.ui.manualUploadFileName);
     }
     return isRangeValid(state.ui.manualPullRangeDraft);
@@ -2281,7 +2418,7 @@
     var activeInfoTab = getActiveInfoTab();
     state.ui.manualUpdateContext = isTimeSharingUpdateTargetTab(activeInfoTab) ? "time-sharing-update" : "";
     state.ui.manualUpdateTab = activeInfoTab;
-    state.ui.manualUpdateMode = "upload";
+    state.ui.manualUpdateMode = getSelectedTradeCenterKey() === "shaanxi" ? "pull" : "upload";
     state.ui.manualUploadFileName = "";
     state.ui.manualUpdateError = "";
     state.ui.manualPullRangeDraft = isEnterpriseTimeSharingTargetTab(activeInfoTab)
@@ -15343,6 +15480,9 @@
   function renderManualUpdateModalOverlay() {
     var isTimeSharingTarget = isTimeSharingManualUpdateContext();
     var isInfoDisclosureContext = isInfoDisclosureManualUpdateModalContext();
+    var allowUpload = isManualUploadModeAvailable();
+    var effectiveMode = getEffectiveManualUpdateMode();
+    var showHunanUploadRuleLink = isInfoDisclosureContext && getSelectedTradeCenterKey() === "hunan" && effectiveMode === "upload";
     if (!state.ui.manualUpdateModalVisible) {
       return "";
     }
@@ -15350,13 +15490,20 @@
     return renderManualUpdateModal({
       title: isInfoDisclosureContext ? "更新数据" : "手动更新",
       confirmText: isInfoDisclosureContext ? "更新" : "确认",
-      mode: state.ui.manualUpdateMode,
+      mode: effectiveMode,
+      allowUpload: allowUpload,
       fileName: state.ui.manualUploadFileName,
       agentMonth: state.ui.manualUpdateAgentMonth,
       showAgentMonth: isTimeSharingTarget && isTimeSharingHistoryUpdateTargetTab(state.ui.manualUpdateTab),
       uploadLabel: isInfoDisclosureContext ? "上传文件" : "原始文件",
       uploadPlaceholder: isInfoDisclosureContext ? "上传" : "选择文件（仅模拟，不真实上传）",
       uploadHint: isInfoDisclosureContext ? "请上传交易中心下载的数据源文件" : "",
+      uploadRuleLink: showHunanUploadRuleLink
+        ? {
+            label: "查看命名规则",
+            href: "copper",
+          }
+        : null,
       pullLabel: isInfoDisclosureContext ? "运行日期" : "拉取日期",
       pullHint: isInfoDisclosureContext ? "为保证性能及合规风险，单次支持更新7天" : "",
       canSubmit: isTimeSharingTarget ? isManualUpdateSubmitReady() : isInfoDisclosureUpdateSubmitReady(),
@@ -15962,15 +16109,25 @@
   function confirmManualUpdate() {
     var isTimeSharingTarget = isTimeSharingManualUpdateContext();
     var activeInfoTab = isTimeSharingTarget ? state.ui.manualUpdateTab : getActiveInfoTab();
+    var effectiveMode = getEffectiveManualUpdateMode();
     state.ui.manualUpdateError = "";
     if (isTimeSharingTarget) {
       if (isTimeSharingHistoryUpdateTargetTab(activeInfoTab) && !state.ui.manualUpdateAgentMonth) {
         state.ui.manualUpdateError = "请选择代理月份。";
         return;
       }
-      if (state.ui.manualUpdateMode === "upload") {
+      if (effectiveMode === "upload") {
         if (!state.ui.manualUploadFileName) {
           state.ui.manualUpdateError = "请上传交易中心下载的数据源文件。";
+          return;
+        }
+        if (isHunanManualUploadMode()) {
+          var timeSharingUploadMatch = getHunanManualUploadFileMatch(state.ui.manualUploadFileName);
+          if (!timeSharingUploadMatch.valid) {
+            setFlashMessage("上传的文件名不符合要求，请根据规则重新命名，保持当前页面", "info");
+            return;
+          }
+          applyHunanManualUploadResult(timeSharingUploadMatch, activeInfoTab);
           return;
         }
         setInfoUpdateOverride(activeInfoTab, "人工上传");
@@ -15993,9 +16150,18 @@
       return;
     }
 
-    if (state.ui.manualUpdateMode === "upload") {
+    if (effectiveMode === "upload") {
       if (!state.ui.manualUploadFileName) {
         state.ui.manualUpdateError = isInfoDisclosureManualUpdateModalContext() ? "请上传交易中心下载的数据源文件。" : "请选择原始文件。";
+        return;
+      }
+      if (isHunanManualUploadMode()) {
+        var uploadMatch = getHunanManualUploadFileMatch(state.ui.manualUploadFileName);
+        if (!uploadMatch.valid) {
+          setFlashMessage("上传的文件名不符合要求，请根据规则重新命名，保持当前页面", "info");
+          return;
+        }
+        applyHunanManualUploadResult(uploadMatch, activeInfoTab);
         return;
       }
     } else {
@@ -17496,6 +17662,7 @@
 
     if (event.target.matches("[data-manual-upload-file]")) {
       state.ui.manualUploadFileName = event.target.files && event.target.files[0] ? event.target.files[0].name : "";
+      state.ui.manualUpdateError = "";
       renderApp();
       return;
     }
@@ -17508,7 +17675,8 @@
     }
 
     if (event.target.matches("[data-update-mode]")) {
-      state.ui.manualUpdateMode = event.target.getAttribute("data-update-mode");
+      var nextManualUpdateMode = event.target.getAttribute("data-update-mode");
+      state.ui.manualUpdateMode = nextManualUpdateMode === "upload" && !isManualUploadModeAvailable() ? "pull" : nextManualUpdateMode;
       state.ui.manualUpdateError = "";
       renderApp();
       return;
