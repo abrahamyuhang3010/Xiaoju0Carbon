@@ -3704,6 +3704,11 @@ a {
   margin-top: 20px;
 }
 
+.data-monitor-page .page-header {
+  align-items: center;
+  margin-bottom: 12px;
+}
+
 .data-monitor-alert-panel {
   display: flex;
   align-items: flex-start;
@@ -3872,48 +3877,104 @@ a {
   overflow: auto;
 }
 
+.data-monitor-table-panel .data-table {
+  table-layout: fixed;
+}
+
 .data-monitor-table-panel .data-table tbody td {
+  box-sizing: border-box;
   height: 40px;
+  padding: 0 12px;
+}
+
+.data-monitor-table-panel .data-table thead th {
+  box-sizing: border-box;
+  padding: 0 12px;
 }
 
 .data-monitor-status-cell .table-cell-shell {
   justify-content: flex-start;
 }
 
-.data-monitor-status-cell .table-cell-text {
+.data-monitor-table-panel .table-cell-shell {
+  gap: 8px;
+  min-width: 0;
+}
+
+.data-monitor-cell-text {
+  display: inline-block;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  line-height: 20px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.data-monitor-status-tag {
   display: inline-flex;
   align-items: center;
-  min-height: 26px;
-  padding: 0 10px;
-  border-radius: 999px;
-  font-weight: 800;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 22px;
+  padding: 0 7px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20px;
   white-space: nowrap;
+  vertical-align: middle;
 }
 
-.data-monitor-status-success .table-cell-text {
-  color: #159957;
-  background: rgba(35, 200, 135, 0.12);
+.data-monitor-status-tag-success {
+  color: #52c41a;
 }
 
-.data-monitor-status-default .table-cell-text,
-.data-monitor-status-ignored .table-cell-text {
-  color: #6f7d90;
-  background: #f2f5fa;
+.data-monitor-status-tag-default {
+  color: #8c8c8c;
 }
 
-.data-monitor-status-danger .table-cell-text {
-  color: var(--danger);
-  background: rgba(255, 77, 79, 0.12);
+.data-monitor-status-tag-error {
+  color: #ff4d4f;
 }
 
-.data-monitor-status-warning .table-cell-text {
-  color: #d46b08;
-  background: rgba(255, 122, 69, 0.16);
+.data-monitor-status-tag-warning {
+  color: #faad14;
 }
 
-.data-monitor-status-info .table-cell-text {
-  color: var(--blue);
-  background: rgba(47, 111, 237, 0.12);
+.data-monitor-status-tag-processing {
+  color: #1677ff;
+}
+
+.data-monitor-tooltip {
+  position: fixed;
+  z-index: 10000;
+  max-width: min(520px, calc(100vw - 32px));
+  padding: 8px 12px;
+  color: #fff;
+  background: rgba(48, 48, 48, 0.92);
+  border-radius: 4px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0;
+  white-space: normal;
+  word-break: break-all;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(2px);
+  transition: opacity 0.06s ease, transform 0.06s ease, visibility 0s linear 0.06s;
+}
+
+.data-monitor-tooltip.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition-delay: 0s;
 }
 
 .data-monitor-empty-panel .chart-main {

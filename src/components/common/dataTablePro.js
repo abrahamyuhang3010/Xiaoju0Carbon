@@ -217,9 +217,11 @@
                   ? ' style="min-width:' + escapeHtml(String(column.width)) + 'px;"'
                   : "";
             var copyable = !(value && typeof value === "object" && value.copyable === false);
-            var contentHtml = value && typeof value === "object" && value.badge
-              ? '<span class="table-badge table-badge-' + escapeHtml(value.tone || "default") + '">' + escapeHtml(displayValue) + "</span>"
-              : '<span class="table-cell-text">' + escapeHtml(displayValue) + "</span>";
+            var contentHtml = value && typeof value === "object" && value.html !== undefined
+              ? value.html
+              : value && typeof value === "object" && value.badge
+                ? '<span class="table-badge table-badge-' + escapeHtml(value.tone || "default") + '">' + escapeHtml(displayValue) + "</span>"
+                : '<span class="table-cell-text">' + escapeHtml(displayValue) + "</span>";
             return (
               '<td class="' +
               cellClassName +

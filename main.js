@@ -11655,6 +11655,15 @@
     };
   }
 
+  function createHtmlCell(html, text, className, sortValue) {
+    return {
+      html: html,
+      text: text,
+      className: className,
+      sortValue: sortValue !== undefined ? sortValue : text,
+    };
+  }
+
   function compareDateAsc(a, b) {
     if (a === b) {
       return 0;
@@ -13091,107 +13100,55 @@
     return record.qualityStatus || "-";
   }
 
-  function getDataMonitorStatusClass(record, statusType) {
-    if (
-      record.processStatus === "已忽略" &&
-      ((statusType === "fetch" && isDataMonitorFetchAbnormal(record)) ||
-        (statusType === "quality" && isDataMonitorQualityAbnormal(record)))
-    ) {
-      return "data-monitor-status-ignored";
-    }
-    if (statusType === "collector") {
-      if (record.collectorStatus === "normal" || record.collectorStatus === "正常") {
-        return "data-monitor-status-success";
-      }
-      if (record.collectorStatus === "running" || record.collectorStatus === "运行中") {
-        return "data-monitor-status-info";
-      }
-      if (record.collectorStatus === "abnormal" || record.collectorStatus === "异常") {
-        return "data-monitor-status-danger";
-      }
-      return "data-monitor-status-default";
-    }
-    if (statusType === "fetch") {
-      if (record.fetchStatus === "已忽略") {
-        return "data-monitor-status-ignored";
-      }
-      if (record.fetchStatus === "正常") {
-        return "data-monitor-status-success";
-      }
-      if (record.fetchStatus === "取数中") {
-        return "data-monitor-status-info";
-      }
-      if (isDataMonitorFetchMissing(record)) {
-        return "data-monitor-status-danger";
-      }
-      return "data-monitor-status-default";
-    }
-    if (record.qualityStatus === "正常") {
-      return "data-monitor-status-success";
-    }
-    if (record.qualityStatus === "已忽略") {
-      return "data-monitor-status-ignored";
-    }
-    if (record.qualityStatus === "校验中") {
-      return "data-monitor-status-info";
-    }
-    if (isDataMonitorQualityAbnormal(record)) {
-      return record.priority === "P0" ? "data-monitor-status-danger" : "data-monitor-status-warning";
-    }
-    return "data-monitor-status-default";
+  var DATA_MONITOR_STATUS_TONE_MAP = {
+    正常: "success",
+    运行中: "processing",
+    取数中: "processing",
+    异常: "error",
+    数据未取回: "error",
+    未配置: "default",
+    待校验: "default",
+    校验中: "processing",
+    校验失败: "error",
+    数据未更新: "warning",
+    数据为空: "error",
+    数据不完整: "error",
+    数值越界: "error",
+    数值异常: "error",
+    已忽略: "default",
+  };
+
+  function getDataMonitorStatusTone(statusText) {
+    return DATA_MONITOR_STATUS_TONE_MAP[statusText] || "default";
   }
 
-  function getDataMonitorStatusIcon(record, statusType) {
-    if (
-      record.processStatus === "已忽略" &&
-      ((statusType === "fetch" && isDataMonitorFetchAbnormal(record)) ||
-        (statusType === "quality" && isDataMonitorQualityAbnormal(record)))
-    ) {
-      return "⚫";
+  function renderDataMonitorStatusTag(statusText, extraClassName) {
+    var text = statusText || "-";
+    var tone = getDataMonitorStatusTone(text);
+    var className = ["data-monitor-status-tag", "data-monitor-status-tag-" + tone, extraClassName || ""].filter(Boolean).join(" ");
+    return '<span class="' + escapeHtml(className) + '" data-data-monitor-tooltip="' + escapeHtml(text) + '">' + escapeHtml(text) + "</span>";
+  }
+
+  var DATA_MONITOR_CELL_TEXT_LIMIT = 12;
+
+  function getDataMonitorCellDisplayText(value) {
+    var text = value === null || value === undefined ? "" : String(value);
+    if (text.length <= DATA_MONITOR_CELL_TEXT_LIMIT) {
+      return text;
     }
-    if (statusType === "collector") {
-      if (record.collectorStatus === "normal" || record.collectorStatus === "正常") {
-        return "✅";
-      }
-      if (record.collectorStatus === "running" || record.collectorStatus === "运行中") {
-        return "🔵";
-      }
-      if (record.collectorStatus === "abnormal" || record.collectorStatus === "异常") {
-        return "🔴";
-      }
-      return "⚪";
-    }
-    if (statusType === "fetch") {
-      if (record.fetchStatus === "已忽略") {
-        return "⚫";
-      }
-      if (record.fetchStatus === "正常") {
-        return "✅";
-      }
-      if (record.fetchStatus === "取数中") {
-        return "🔵";
-      }
-      if (isDataMonitorFetchMissing(record)) {
-        return "🔴";
-      }
-      return "⚪";
-    }
-    if (record.qualityStatus === "正常") {
-      return "✅";
-    }
-    if (record.qualityStatus === "已忽略") {
-      return "⚫";
-    }
-    if (record.qualityStatus === "校验中") {
-      return "🔵";
-    }
-    if (isDataMonitorQualityAbnormal(record)) {
-      return record.priority === "P0" ? "🔴" : "🟠";
-    }
-    if (record.qualityStatus === "待校验") {
-      return "⏳";
-    }
-    return "⚪";
+    return text.slice(0, DATA_MONITOR_CELL_TEXT_LIMIT - 1).trimEnd() + "…";
+  }
+
+  function createDataMonitorTextCell(value) {
+    var text = value === null || value === undefined ? "" : String(value);
+    var displayText = getDataMonitorCellDisplayText(text);
+    var tooltipAttr = text ? ' data-data-monitor-tooltip="' + escapeHtml(text) + '" tabindex="0"' : "";
+    return {
+      html: '<span class="data-monitor-cell-text"' + tooltipAttr + ">" + escapeHtml(displayText) + "</span>",
+      text: text,
+      sortValue: text,
+      copyable: Boolean(text),
+    };
   }
 
   function createDataMonitorStatusCell(record, statusType) {
@@ -13206,11 +13163,62 @@
       },
     };
     var statusValue = statusType === "collector" ? record.collectorStatus : "";
-    return createStyledCell(
-      getDataMonitorStatusIcon(record, statusType) + " " + getDataMonitorStatusText(record, statusType),
-      "data-monitor-status-cell " + getDataMonitorStatusClass(record, statusType),
+    var statusText = getDataMonitorStatusText(record, statusType);
+    return createHtmlCell(
+      renderDataMonitorStatusTag(statusText),
+      statusText,
+      "data-monitor-status-cell",
       sortWeights[statusType] ? sortWeights[statusType][statusValue] || 99 : getDataMonitorSortWeight(record),
     );
+  }
+
+  var dataMonitorTooltipTimer = null;
+
+  function ensureDataMonitorTooltipElement() {
+    var tooltip = document.querySelector(".data-monitor-tooltip");
+    if (!tooltip) {
+      tooltip = document.createElement("div");
+      tooltip.className = "data-monitor-tooltip";
+      tooltip.setAttribute("role", "tooltip");
+      document.body.appendChild(tooltip);
+    }
+    return tooltip;
+  }
+
+  function positionDataMonitorTooltip(tooltip, target) {
+    var rect = target.getBoundingClientRect();
+    var margin = 12;
+    var tooltipRect = tooltip.getBoundingClientRect();
+    var left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+    left = Math.max(margin, Math.min(left, window.innerWidth - tooltipRect.width - margin));
+    var top = rect.top - tooltipRect.height - 8;
+    if (top < margin) {
+      top = rect.bottom + 8;
+    }
+    tooltip.style.left = left + "px";
+    tooltip.style.top = top + "px";
+  }
+
+  function showDataMonitorTooltip(target) {
+    var text = target && target.getAttribute("data-data-monitor-tooltip");
+    if (!text || !target.closest(".data-monitor-table-panel")) {
+      return;
+    }
+    window.clearTimeout(dataMonitorTooltipTimer);
+    dataMonitorTooltipTimer = window.setTimeout(function openTooltip() {
+      var tooltip = ensureDataMonitorTooltipElement();
+      tooltip.textContent = text;
+      tooltip.classList.add("is-open");
+      positionDataMonitorTooltip(tooltip, target);
+    }, 40);
+  }
+
+  function hideDataMonitorTooltip() {
+    window.clearTimeout(dataMonitorTooltipTimer);
+    var tooltip = document.querySelector(".data-monitor-tooltip");
+    if (tooltip) {
+      tooltip.classList.remove("is-open");
+    }
   }
 
   function canIgnoreDataMonitorRecord(record) {
@@ -13225,18 +13233,19 @@
 
   function getDataMonitorTable() {
     var columns = [
-      { key: "dataItem", label: "数据项", width: 230, fixed: true },
-      { key: "collectorStatus", label: "采集器状态", width: 132 },
-      { key: "fetchStatus", label: "取数状态", width: 190 },
-      { key: "qualityStatus", label: "质量状态", width: 178 },
-      { key: "timePoint", label: "时间点位", width: 100 },
-      { key: "outputTime", label: "产出时间", width: 128 },
-      { key: "warningTime", label: "预警时间", width: 120 },
-      { key: "valueRange", label: "取值范围", width: 126 },
-      { key: "fetchToolTimeliness", label: "取数工具时效", width: 280 },
-      { key: "lastSuccessAt", label: "最近成功入库时间", width: 176 },
-      { key: "nextFetchAt", label: "下次取数时间", width: 164 },
-      { key: "actions", label: "操作", sortable: false, width: 150, fixedRight: true },
+      { key: "dataItem", label: "数据项", width: 172, fixed: true },
+      { key: "collectorStatus", label: "采集器状态", width: 112 },
+      { key: "fetchStatus", label: "取数状态", width: 128 },
+      { key: "qualityStatus", label: "质量状态", width: 128 },
+      { key: "timePoint", label: "时间点位", width: 96 },
+      { key: "outputTime", label: "产出时间", width: 148 },
+      { key: "warningTime", label: "预警时间", width: 112 },
+      { key: "valueRange", label: "取值范围", width: 132 },
+      { key: "fetchToolTimeliness", label: "取数工具时效", width: 172 },
+      { key: "lastSuccessAt", label: "最近成功入库时间", width: 148 },
+      { key: "nextFetchAt", label: "下次取数时间", width: 148 },
+      { key: "remark", label: "备注", width: 172 },
+      { key: "actions", label: "操作", sortable: false, width: 112, fixedRight: true },
     ];
 
     return {
@@ -13245,21 +13254,24 @@
         var actions = [{ label: "详情", action: "open-data-monitor-detail" }];
 
         return {
-          dataItem: record.dataItem,
+          dataItem: createDataMonitorTextCell(record.dataItem),
           collectorStatus: createDataMonitorStatusCell(record, "collector"),
           fetchStatus: createDataMonitorStatusCell(record, "fetch"),
           qualityStatus: createDataMonitorStatusCell(record, "quality"),
-          timePoint: record.timePoint,
-          outputTime: record.outputTime,
-          warningTime: record.warningTime,
-          valueRange: record.valueRange,
-          fetchToolTimeliness: record.fetchToolTimeliness,
-          lastSuccessAt: record.lastSuccessAt,
-          nextFetchAt: record.nextFetchAt,
+          timePoint: createDataMonitorTextCell(record.timePoint),
+          outputTime: createDataMonitorTextCell(record.outputTime),
+          warningTime: createDataMonitorTextCell(record.warningTime),
+          valueRange: createDataMonitorTextCell(record.valueRange),
+          fetchToolTimeliness: createDataMonitorTextCell(record.fetchToolTimeliness),
+          lastSuccessAt: createDataMonitorTextCell(record.lastSuccessAt),
+          nextFetchAt: createDataMonitorTextCell(record.nextFetchAt),
+          remark: createDataMonitorTextCell(record.remark || ""),
           actions: createTableActionCell(record.id, actions),
         };
       }),
-      minWidth: 1974,
+      minWidth: columns.reduce(function sumWidth(total, column) {
+        return total + Number(column.width || 128);
+      }, 0),
     };
   }
 
@@ -13270,7 +13282,7 @@
       '<div class="data-monitor-table-meta">' +
       '<span class="data-monitor-table-count">' +
       escapeHtml(selectedName) +
-      "展示 " +
+      "应取 " +
       escapeHtml(visibleCount) +
       " 项</span></div>"
     );
@@ -13398,9 +13410,7 @@
       '<div class="page-stack data-monitor-page">' +
       '<section class="page-header page-header-market-disclosure"><div class="page-title-block"><h1>' +
       escapeHtml(page.title || "数据监控") +
-      '</h1><div class="page-description">' +
-      escapeHtml(page.subtitle || "展示各项市场数据的实时取数通道状态与数据质量状态。") +
-      "</div></div>" +
+      "</h1></div>" +
       renderTradeCenterSelector({
         selected: tradeCenterName,
         options: getDataMonitorTradeCenterOptions(),
@@ -13410,7 +13420,7 @@
       }) +
       "</section>" +
       renderDataMonitorAlert() +
-      renderSectionHeading("实时状态列表", "展示当前交易中心各项市场数据的实时取数通道状态与质量状态") +
+      renderSectionHeading("实时状态列表", "当前交易中心各项市场数据的采集器运行状态、实时取数通道状态、质量状态") +
       renderDataMonitorTableSection() +
       "</div>"
     );
@@ -15409,13 +15419,23 @@
     );
   }
 
+  function renderDataMonitorDetailItemFromConfig(item) {
+    return (
+      '<div class="data-monitor-detail-item"><span class="data-monitor-detail-label">' +
+      escapeHtml(item.label) +
+      '</span><span class="data-monitor-detail-value">' +
+      (item.html !== undefined ? item.html : escapeHtml(item.value || "-")) +
+      "</span></div>"
+    );
+  }
+
   function renderDataMonitorDetailSection(title, items) {
     return (
       '<section class="data-monitor-detail-section"><div class="data-monitor-detail-section-title">' +
       escapeHtml(title) +
       '</div><div class="data-monitor-detail-grid">' +
       (items || []).map(function mapItem(item) {
-        return renderDataMonitorDetailItem(item.label, item.value);
+        return renderDataMonitorDetailItemFromConfig(item);
       }).join("") +
       "</div></section>"
     );
@@ -15427,7 +15447,7 @@
       escapeHtml(title) +
       '</div><div class="data-monitor-status-card-grid">' +
       (items || []).map(function mapItem(item) {
-        return renderDataMonitorDetailItem(item.label, item.value);
+        return renderDataMonitorDetailItemFromConfig(item);
       }).join("") +
       "</div></section>"
     );
@@ -15476,14 +15496,14 @@
       ]) +
       '<section class="data-monitor-detail-section"><div class="data-monitor-detail-section-title">当前状态</div><div class="data-monitor-current-status-grid">' +
       renderDataMonitorStatusReadonlyCard("取数通道状态", [
-        { label: "采集器状态", value: getDataMonitorStatusText(record, "collector") },
-        { label: "取数状态", value: getDataMonitorStatusText(record, "fetch") },
+        { label: "采集器状态", html: renderDataMonitorStatusTag(getDataMonitorStatusText(record, "collector")) },
+        { label: "取数状态", html: renderDataMonitorStatusTag(getDataMonitorStatusText(record, "fetch")) },
         { label: "取数异常类型", value: record.fetchExceptionType },
         { label: "取数异常时间", value: record.fetchExceptionAt },
         { label: "取数是否已通知", value: record.fetchNotified },
       ]) +
       renderDataMonitorStatusReadonlyCard("数据质量监控结果", [
-        { label: "质量状态", value: getDataMonitorStatusText(record, "quality") },
+        { label: "质量状态", html: renderDataMonitorStatusTag(getDataMonitorStatusText(record, "quality")) },
         { label: "校验时间", value: record.checkAt },
         { label: "校验规则", value: record.checkRules },
         { label: "告警阈值", value: record.warningThreshold },
@@ -17388,6 +17408,41 @@
     if (event.target.matches('[data-filter-field][type="text"]')) {
       state.info.filters[event.target.getAttribute("data-filter-field")] = event.target.value;
       renderApp();
+    }
+  });
+
+  document.addEventListener("mouseover", function handleDataMonitorTooltipEnter(event) {
+    var tooltipTarget = event.target.closest("[data-data-monitor-tooltip]");
+    if (!tooltipTarget) {
+      return;
+    }
+    showDataMonitorTooltip(tooltipTarget);
+  });
+
+  document.addEventListener("mouseout", function handleDataMonitorTooltipLeave(event) {
+    var tooltipTarget = event.target.closest("[data-data-monitor-tooltip]");
+    if (!tooltipTarget) {
+      return;
+    }
+    if (event.relatedTarget && tooltipTarget.contains(event.relatedTarget)) {
+      return;
+    }
+    hideDataMonitorTooltip();
+  });
+
+  document.addEventListener("scroll", hideDataMonitorTooltip, true);
+
+  document.addEventListener("focusin", function handleDataMonitorTooltipFocusIn(event) {
+    var tooltipTarget = event.target.closest("[data-data-monitor-tooltip]");
+    if (!tooltipTarget) {
+      return;
+    }
+    showDataMonitorTooltip(tooltipTarget);
+  });
+
+  document.addEventListener("focusout", function handleDataMonitorTooltipFocusOut(event) {
+    if (event.target.closest("[data-data-monitor-tooltip]")) {
+      hideDataMonitorTooltip();
     }
   });
 
