@@ -13133,10 +13133,11 @@
 
   function getDataMonitorCellDisplayText(value) {
     var text = value === null || value === undefined ? "" : String(value);
-    if (text.length <= DATA_MONITOR_CELL_TEXT_LIMIT) {
+    var chars = Array.from(text);
+    if (chars.length <= DATA_MONITOR_CELL_TEXT_LIMIT) {
       return text;
     }
-    return text.slice(0, DATA_MONITOR_CELL_TEXT_LIMIT - 1).trimEnd() + "…";
+    return chars.slice(0, DATA_MONITOR_CELL_TEXT_LIMIT - 1).join("").trimEnd() + "…";
   }
 
   function createDataMonitorTextCell(value) {
@@ -13147,7 +13148,7 @@
       html: '<span class="data-monitor-cell-text"' + tooltipAttr + ">" + escapeHtml(displayText) + "</span>",
       text: text,
       sortValue: text,
-      copyable: Boolean(text),
+      copyable: false,
     };
   }
 
@@ -13164,12 +13165,14 @@
     };
     var statusValue = statusType === "collector" ? record.collectorStatus : "";
     var statusText = getDataMonitorStatusText(record, statusType);
-    return createHtmlCell(
+    var cell = createHtmlCell(
       renderDataMonitorStatusTag(statusText),
       statusText,
       "data-monitor-status-cell",
       sortWeights[statusType] ? sortWeights[statusType][statusValue] || 99 : getDataMonitorSortWeight(record),
     );
+    cell.copyable = false;
+    return cell;
   }
 
   var dataMonitorTooltipTimer = null;
@@ -13233,18 +13236,18 @@
 
   function getDataMonitorTable() {
     var columns = [
-      { key: "dataItem", label: "数据项", width: 172, fixed: true },
+      { key: "dataItem", label: "数据项", width: 196, fixed: true },
       { key: "collectorStatus", label: "采集器状态", width: 112 },
       { key: "fetchStatus", label: "取数状态", width: 128 },
       { key: "qualityStatus", label: "质量状态", width: 128 },
-      { key: "timePoint", label: "时间点位", width: 96 },
-      { key: "outputTime", label: "产出时间", width: 148 },
-      { key: "warningTime", label: "预警时间", width: 112 },
-      { key: "valueRange", label: "取值范围", width: 132 },
-      { key: "fetchToolTimeliness", label: "取数工具时效", width: 172 },
-      { key: "lastSuccessAt", label: "最近成功入库时间", width: 148 },
-      { key: "nextFetchAt", label: "下次取数时间", width: 148 },
-      { key: "remark", label: "备注", width: 172 },
+      { key: "timePoint", label: "时间点位", width: 112 },
+      { key: "outputTime", label: "产出时间", width: 168 },
+      { key: "warningTime", label: "预警时间", width: 128 },
+      { key: "valueRange", label: "取值范围", width: 140 },
+      { key: "fetchToolTimeliness", label: "取数工具时效", width: 212 },
+      { key: "lastSuccessAt", label: "最近成功入库时间", width: 156 },
+      { key: "nextFetchAt", label: "下次取数时间", width: 156 },
+      { key: "remark", label: "备注", width: 220 },
       { key: "actions", label: "操作", sortable: false, width: 112, fixedRight: true },
     ];
 
@@ -13301,6 +13304,7 @@
         rows: table.rows,
         minWidth: table.minWidth,
         sortState: getTableSortState(tableId),
+        useColumnWidth: true,
         escapeHtml: escapeHtml,
         renderIcon: renderIcon,
         renderEmptyState: renderEmptyState,

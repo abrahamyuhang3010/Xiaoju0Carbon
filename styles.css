@@ -3897,15 +3897,21 @@ a {
 }
 
 .data-monitor-table-panel .table-cell-shell {
+  position: relative;
+  width: 100%;
   gap: 8px;
+  justify-content: flex-start;
   min-width: 0;
+  overflow: hidden;
 }
 
 .data-monitor-cell-text {
-  display: inline-block;
+  display: block;
+  flex: 0 1 auto;
   max-width: 100%;
   min-width: 0;
   overflow: hidden;
+  text-overflow: ellipsis;
   line-height: 20px;
   white-space: nowrap;
   vertical-align: middle;

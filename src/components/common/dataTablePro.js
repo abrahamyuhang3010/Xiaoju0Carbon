@@ -23,6 +23,7 @@
   global.BOSS_COMPONENTS.renderDataTablePro = function renderDataTablePro(options) {
     var escapeHtml = options.escapeHtml;
     var renderEmptyState = options.renderEmptyState;
+    var useColumnWidth = Boolean(options.useColumnWidth);
     var fixedLeft = 0;
     var columns = (options.columns || []).map(function normalize(column, index) {
       if (typeof column === "string") {
@@ -128,7 +129,11 @@
           : column.fixedSide === "right"
             ? ' style="right:' + escapeHtml(String(column.right)) + "px;width:" + escapeHtml(String(column.width)) + "px;min-width:" + escapeHtml(String(column.width)) + 'px;"'
             : column.width
-              ? ' style="min-width:' + escapeHtml(String(column.width)) + 'px;"'
+              ? ' style="' +
+                (useColumnWidth ? "width:" + escapeHtml(String(column.width)) + "px;" : "") +
+                "min-width:" +
+                escapeHtml(String(column.width)) +
+                'px;"'
               : "";
         if (options.enableColumnDrag && column.sortable !== false && column.draggable !== false) {
           thAttrs =
@@ -173,7 +178,13 @@
                 ? ' style="left:' + escapeHtml(String(column.left)) + "px;width:" + escapeHtml(String(column.width)) + "px;min-width:" + escapeHtml(String(column.width)) + 'px;"'
                 : column.fixedSide === "right"
                   ? ' style="right:' + escapeHtml(String(column.right)) + "px;width:" + escapeHtml(String(column.width)) + "px;min-width:" + escapeHtml(String(column.width)) + 'px;"'
-                  : "";
+                  : column.width
+                    ? ' style="' +
+                      (useColumnWidth ? "width:" + escapeHtml(String(column.width)) + "px;" : "") +
+                      "min-width:" +
+                      escapeHtml(String(column.width)) +
+                      'px;"'
+                    : "";
               return (
                 "<td" + actionCellClassName + actionCellStyle + '><div class="table-action-group">' +
                 value.actions
@@ -214,7 +225,11 @@
               : column.fixedSide === "right"
                 ? ' style="right:' + escapeHtml(String(column.right)) + "px;width:" + escapeHtml(String(column.width)) + "px;min-width:" + escapeHtml(String(column.width)) + 'px;"'
                 : column.width
-                  ? ' style="min-width:' + escapeHtml(String(column.width)) + 'px;"'
+                  ? ' style="' +
+                    (useColumnWidth ? "width:" + escapeHtml(String(column.width)) + "px;" : "") +
+                    "min-width:" +
+                    escapeHtml(String(column.width)) +
+                    'px;"'
                   : "";
             var copyable = !(value && typeof value === "object" && value.copyable === false);
             var contentHtml = value && typeof value === "object" && value.html !== undefined
