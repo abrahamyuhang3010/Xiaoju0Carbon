@@ -15420,8 +15420,11 @@
   }
 
   function renderDataMonitorDetailItemFromConfig(item) {
+    var className = ["data-monitor-detail-item", item.wide ? "data-monitor-detail-item-wide" : ""].filter(Boolean).join(" ");
     return (
-      '<div class="data-monitor-detail-item"><span class="data-monitor-detail-label">' +
+      '<div class="' +
+      escapeHtml(className) +
+      '"><span class="data-monitor-detail-label">' +
       escapeHtml(item.label) +
       '</span><span class="data-monitor-detail-value">' +
       (item.html !== undefined ? item.html : escapeHtml(item.value || "-")) +
@@ -15429,28 +15432,70 @@
     );
   }
 
-  function renderDataMonitorDetailSection(title, items) {
+  function renderDataMonitorDetailItemList(items) {
+    return (items || []).map(function mapItem(item) {
+      return renderDataMonitorDetailItemFromConfig(item);
+    }).join("");
+  }
+
+  function renderDataMonitorDetailGroup(title, items) {
+    return (
+      '<div class="data-monitor-detail-group">' +
+      '<div class="data-monitor-detail-group-title">' +
+      escapeHtml(title) +
+      '</div><div class="data-monitor-detail-grid data-monitor-detail-grid-compact">' +
+      renderDataMonitorDetailItemList(items) +
+      "</div></div>"
+    );
+  }
+
+  function renderDataMonitorDetailSection(title, items, groups) {
     return (
       '<section class="data-monitor-detail-section"><div class="data-monitor-detail-section-title">' +
       escapeHtml(title) +
       '</div><div class="data-monitor-detail-grid">' +
-      (items || []).map(function mapItem(item) {
-        return renderDataMonitorDetailItemFromConfig(item);
+      renderDataMonitorDetailItemList(items) +
+      "</div>" +
+      (groups || []).map(function mapGroup(group) {
+        return renderDataMonitorDetailGroup(group.title, group.items);
       }).join("") +
+      "</section>"
+    );
+  }
+
+  function renderDataMonitorStatusNestedBlock(title, statusHtml, items, extraItems) {
+    return (
+      '<div class="data-monitor-status-nested-block">' +
+      '<div class="data-monitor-status-nested-head"><span>' +
+      escapeHtml(title) +
+      "</span>" +
+      statusHtml +
+      '</div><div class="data-monitor-status-nested-grid">' +
+      renderDataMonitorDetailItemList(items) +
+      "</div>" +
+      (extraItems && extraItems.length
+        ? '<div class="data-monitor-status-extra-grid">' + renderDataMonitorDetailItemList(extraItems) + "</div>"
+        : "") +
+      "</div>"
+    );
+  }
+
+  function renderDataMonitorStatusReadonlyCard(title, contentHtml) {
+    return (
+      '<section class="data-monitor-status-card"><div class="data-monitor-status-card-title">' +
+      escapeHtml(title) +
+      '</div><div class="data-monitor-status-card-body">' +
+      contentHtml +
       "</div></section>"
     );
   }
 
-  function renderDataMonitorStatusReadonlyCard(title, items) {
-    return (
-      '<section class="data-monitor-status-card"><div class="data-monitor-status-card-title">' +
-      escapeHtml(title) +
-      '</div><div class="data-monitor-status-card-grid">' +
-      (items || []).map(function mapItem(item) {
-        return renderDataMonitorDetailItemFromConfig(item);
-      }).join("") +
-      "</div></section>"
-    );
+  function getDataMonitorCollectorExceptionAt(record) {
+    return isDataMonitorCollectorAbnormal(record) ? record.fetchExceptionAt : "-";
+  }
+
+  function getDataMonitorCollectorNotified(record) {
+    return isDataMonitorCollectorAbnormal(record) ? record.notified : "否";
   }
 
   function renderDataMonitorDetailDrawerOverlay() {
@@ -15474,41 +15519,54 @@
       '<div class="drawer-body data-monitor-drawer-body">' +
       renderDataMonitorDetailSection("基础信息", [
         { label: "交易中心", value: record.tradeCenterName },
-        { label: "业务模块", value: (record.categoryPath || []).join(" / ") || record.businessModule },
+        { label: "业务模块", value: (record.categoryPath || []).join(" / ") || record.businessModule, wide: true },
         { label: "数据项", value: record.dataItem },
-        { label: "包含数据子项", value: Array.isArray(record.dataChildren) && record.dataChildren.length ? record.dataChildren.join("、") : "-" },
+        { label: "包含数据子项", value: Array.isArray(record.dataChildren) && record.dataChildren.length ? record.dataChildren.join("、") : "-", wide: true },
+        { label: "备注", value: record.remark, wide: true },
       ]) +
       renderDataMonitorDetailSection("取数配置", [
         { label: "时间点位", value: record.timePoint },
         { label: "产出时间", value: record.outputTime },
         { label: "预警时间", value: record.warningTime },
         { label: "取值范围", value: record.valueRange },
-        { label: "取数工具时效", value: record.fetchToolTimeliness },
+        { label: "取数工具时效", value: record.fetchToolTimeliness, wide: true },
         { label: "最近成功入库时间", value: record.lastSuccessAt },
         { label: "下次取数时间", value: record.nextFetchAt },
-        { label: "页面地址", value: record.pageAddress },
-        { label: "优先级", value: record.priority },
-        { label: "数据告警阈值", value: record.warningThreshold },
-        { label: "文件格式", value: record.fileFormat },
-        { label: "下载文件名称", value: record.downloadFile },
-        { label: "备注", value: record.remark },
-        { label: "命名规则", value: record.namingRule },
+        { label: "交易中心页面地址", value: record.pageAddress, wide: true },
       ]) +
       '<section class="data-monitor-detail-section"><div class="data-monitor-detail-section-title">当前状态</div><div class="data-monitor-current-status-grid">' +
-      renderDataMonitorStatusReadonlyCard("取数通道状态", [
-        { label: "采集器状态", html: renderDataMonitorStatusTag(getDataMonitorStatusText(record, "collector")) },
-        { label: "取数状态", html: renderDataMonitorStatusTag(getDataMonitorStatusText(record, "fetch")) },
-        { label: "取数异常类型", value: record.fetchExceptionType },
-        { label: "取数异常时间", value: record.fetchExceptionAt },
-        { label: "取数是否已通知", value: record.fetchNotified },
-      ]) +
-      renderDataMonitorStatusReadonlyCard("数据质量监控结果", [
-        { label: "质量状态", html: renderDataMonitorStatusTag(getDataMonitorStatusText(record, "quality")) },
-        { label: "校验时间", value: record.checkAt },
-        { label: "校验规则", value: record.checkRules },
-        { label: "告警阈值", value: record.warningThreshold },
-        { label: "质量是否已通知", value: record.qualityNotified },
-      ]) +
+      renderDataMonitorStatusReadonlyCard(
+        "取数通道状态",
+        renderDataMonitorStatusNestedBlock(
+          "采集器状态",
+          renderDataMonitorStatusTag(getDataMonitorStatusText(record, "collector")),
+          [
+            { label: "异常时间", value: getDataMonitorCollectorExceptionAt(record) },
+            { label: "是否已通知", value: getDataMonitorCollectorNotified(record) },
+          ],
+          [],
+        ) +
+          renderDataMonitorStatusNestedBlock(
+            "取数状态",
+            renderDataMonitorStatusTag(getDataMonitorStatusText(record, "fetch")),
+            [
+              { label: "异常时间", value: record.fetchExceptionAt },
+              { label: "是否已通知", value: record.fetchNotified },
+            ],
+            [],
+          ),
+      ) +
+      renderDataMonitorStatusReadonlyCard(
+        "数据质量状态",
+        '<div class="data-monitor-status-nested-grid">' +
+          renderDataMonitorDetailItemList([
+            { label: "质量状态", html: renderDataMonitorStatusTag(getDataMonitorStatusText(record, "quality")) },
+            { label: "校验时间", value: record.checkAt },
+            { label: "数据告警阈值", value: record.warningThreshold },
+            { label: "是否已通知", value: record.qualityNotified },
+          ]) +
+          "</div>",
+      ) +
       "</div></section>" +
       "</div></aside></div>"
     );
