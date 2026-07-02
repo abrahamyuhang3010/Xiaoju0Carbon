@@ -4100,29 +4100,17 @@ a {
   margin-top: 12px;
 }
 
-.data-monitor-status-nested-block {
-  padding: 12px;
-  border: 1px solid #e4ebf5;
-  border-radius: 8px;
-  background: #fff;
-}
-
-.data-monitor-status-nested-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  color: var(--text);
-  font-size: 13px;
-  font-weight: 800;
-}
-
+.data-monitor-status-field-group,
 .data-monitor-status-nested-grid,
 .data-monitor-status-extra-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px 18px;
-  margin-top: 12px;
+}
+
+.data-monitor-status-field-group + .data-monitor-status-field-group {
+  padding-top: 12px;
+  border-top: 1px dashed #e4ebf5;
 }
 
 .data-monitor-status-extra-grid {
@@ -5546,6 +5534,7 @@ a {
     gap: 4px;
   }
 
+  .data-monitor-status-field-group,
   .data-monitor-status-nested-grid,
   .data-monitor-status-extra-grid {
     grid-template-columns: minmax(0, 1fr);

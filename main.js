@@ -15463,23 +15463,6 @@
     );
   }
 
-  function renderDataMonitorStatusNestedBlock(title, statusHtml, items, extraItems) {
-    return (
-      '<div class="data-monitor-status-nested-block">' +
-      '<div class="data-monitor-status-nested-head"><span>' +
-      escapeHtml(title) +
-      "</span>" +
-      statusHtml +
-      '</div><div class="data-monitor-status-nested-grid">' +
-      renderDataMonitorDetailItemList(items) +
-      "</div>" +
-      (extraItems && extraItems.length
-        ? '<div class="data-monitor-status-extra-grid">' + renderDataMonitorDetailItemList(extraItems) + "</div>"
-        : "") +
-      "</div>"
-    );
-  }
-
   function renderDataMonitorStatusReadonlyCard(title, contentHtml) {
     return (
       '<section class="data-monitor-status-card"><div class="data-monitor-status-card-title">' +
@@ -15488,6 +15471,10 @@
       contentHtml +
       "</div></section>"
     );
+  }
+
+  function renderDataMonitorStatusFieldGroup(items) {
+    return '<div class="data-monitor-status-field-group">' + renderDataMonitorDetailItemList(items) + "</div>";
   }
 
   function getDataMonitorCollectorExceptionAt(record) {
@@ -15537,24 +15524,16 @@
       '<section class="data-monitor-detail-section"><div class="data-monitor-detail-section-title">当前状态</div><div class="data-monitor-current-status-grid">' +
       renderDataMonitorStatusReadonlyCard(
         "取数通道状态",
-        renderDataMonitorStatusNestedBlock(
-          "采集器状态",
-          renderDataMonitorStatusTag(getDataMonitorStatusText(record, "collector")),
-          [
-            { label: "异常时间", value: getDataMonitorCollectorExceptionAt(record) },
-            { label: "是否已通知", value: getDataMonitorCollectorNotified(record) },
-          ],
-          [],
-        ) +
-          renderDataMonitorStatusNestedBlock(
-            "取数状态",
-            renderDataMonitorStatusTag(getDataMonitorStatusText(record, "fetch")),
-            [
-              { label: "异常时间", value: record.fetchExceptionAt },
-              { label: "是否已通知", value: record.fetchNotified },
-            ],
-            [],
-          ),
+        renderDataMonitorStatusFieldGroup([
+          { label: "采集器状态", html: renderDataMonitorStatusTag(getDataMonitorStatusText(record, "collector")) },
+          { label: "异常时间", value: getDataMonitorCollectorExceptionAt(record) },
+          { label: "是否已通知", value: getDataMonitorCollectorNotified(record) },
+        ]) +
+          renderDataMonitorStatusFieldGroup([
+            { label: "取数状态", html: renderDataMonitorStatusTag(getDataMonitorStatusText(record, "fetch")) },
+            { label: "异常时间", value: record.fetchExceptionAt },
+            { label: "是否已通知", value: record.fetchNotified },
+          ]),
       ) +
       renderDataMonitorStatusReadonlyCard(
         "数据质量状态",
