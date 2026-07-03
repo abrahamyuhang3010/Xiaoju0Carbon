@@ -13382,8 +13382,6 @@
       { key: "warningTime", label: "预警时间", width: 128 },
       { key: "valueRange", label: "取值范围", width: 140 },
       { key: "fetchToolTimeliness", label: "取数工具时效", width: 212 },
-      { key: "lastSuccessAt", label: "最近成功入库时间", width: 156 },
-      { key: "nextFetchAt", label: "下次取数时间", width: 156 },
       { key: "remark", label: "备注", width: 220 },
       { key: "actions", label: "操作", sortable: false, width: 112, fixedRight: true },
     ];
@@ -13403,8 +13401,6 @@
           warningTime: createDataMonitorTextCell(record.warningTime),
           valueRange: createDataMonitorTextCell(record.valueRange),
           fetchToolTimeliness: createDataMonitorTextCell(record.fetchToolTimeliness),
-          lastSuccessAt: createDataMonitorTextCell(record.lastSuccessAt),
-          nextFetchAt: createDataMonitorTextCell(record.nextFetchAt),
           remark: createDataMonitorTextCell(record.remark || ""),
           actions: createTableActionCell(record.id, actions),
         };
@@ -15668,8 +15664,6 @@
         { label: "预警时间", value: record.warningTime },
         { label: "取值范围", value: record.valueRange },
         { label: "取数工具时效", value: record.fetchToolTimeliness, wide: true },
-        { label: "最近成功入库时间", value: record.lastSuccessAt },
-        { label: "下次取数时间", value: record.nextFetchAt },
         { label: "交易中心页面地址", value: record.pageAddress, wide: true },
       ]) +
       '<section class="data-monitor-detail-section"><div class="data-monitor-detail-section-title">当前状态</div><div class="data-monitor-current-status-grid">' +
