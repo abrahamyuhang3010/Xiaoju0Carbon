@@ -796,8 +796,10 @@
     emptyText: "当前日期暂无陕西交易总体情况 mock 数据。",
   });
   var shaanxiDailySettlementDate = "2026-04-30";
+  var shaanxiDailySettlementDates = buildDateRange(shaanxiDailySettlementDate, 3);
+  var shaanxiDailySettlementEndDate = shaanxiDailySettlementDates[shaanxiDailySettlementDates.length - 1];
   var shaanxiDailySettlementUnitName = "售电公司-北京小桔新能源汽车科技有限公司-常规企业-2026";
-  var shaanxiDailySettlementRows = Array.from({ length: 96 }, function createSettlementRow(_, index) {
+  function createShaanxiDailySettlementQuarterRow(date, dayIndex, index) {
     var periodNumber = index + 1;
     var totalMinutes = periodNumber * 15;
     var hour = totalMinutes / 60;
@@ -806,13 +808,14 @@
 
     if (index === 0) {
       return {
-        settlementDate: shaanxiDailySettlementDate,
+        date: date,
+        settlementDate: date,
         settlementTypeName: "用户侧日清分账单",
         dataType: "解析结果",
         settlementUnitName: shaanxiDailySettlementUnitName,
         period: "1",
         timePoint: "00:15",
-        actualUsage: 1.172,
+        actualUsage: Number((1.172 + dayIndex * 0.018).toFixed(3)),
         intraProvinceNetContractVolume: 0.604,
         intraProvinceNetContractFee: 248.683,
         mediumLongTermReferencePrice: 0.160,
@@ -831,13 +834,14 @@
 
     if (index === 1) {
       return {
-        settlementDate: shaanxiDailySettlementDate,
+        date: date,
+        settlementDate: date,
         settlementTypeName: "用户侧日清分账单",
         dataType: "解析结果",
         settlementUnitName: shaanxiDailySettlementUnitName,
         period: "2",
         timePoint: "00:30",
-        actualUsage: 1.241,
+        actualUsage: Number((1.241 + dayIndex * 0.018).toFixed(3)),
         intraProvinceNetContractVolume: 0.604,
         intraProvinceNetContractFee: 248.683,
         mediumLongTermReferencePrice: 0.152,
@@ -857,6 +861,7 @@
     var actualUsage = Number(
       (
         1.08 +
+        dayIndex * 0.018 +
         Math.max(0, Math.sin(((hour - 6.5) / 24) * Math.PI * 2)) * 0.58 +
         Math.max(0, Math.sin(((hour - 14) / 24) * Math.PI * 2)) * 0.42 +
         [0.014, 0.046, 0.021, 0.063][index % 4] +
@@ -893,7 +898,8 @@
     var realTimeFee = Number((realTimeVolume * realTimeUnifiedPrice).toFixed(2));
 
     return {
-      settlementDate: shaanxiDailySettlementDate,
+      date: date,
+      settlementDate: date,
       settlementTypeName: "用户侧日清分账单",
       dataType: "解析结果",
       settlementUnitName: shaanxiDailySettlementUnitName,
@@ -914,32 +920,48 @@
       realTimeFee: realTimeFee,
       remark: realTimeVolume < 0 ? "实时回退" : "-",
     };
-  });
-  var shaanxiDailySettlementFiles = [
-    {
-      id: "sx-daily-excel-001",
-      fileName: "2026-04-30用户侧日清分账单.xlsx",
+  }
+  var shaanxiDailySettlementRows = shaanxiDailySettlementDates.reduce(function accumulateSettlementRows(result, date, dayIndex) {
+    return result.concat(
+      Array.from({ length: 96 }, function createSettlementRow(_, index) {
+        return createShaanxiDailySettlementQuarterRow(date, dayIndex, index);
+      }),
+    );
+  }, []);
+  var shaanxiDailySettlementFiles = shaanxiDailySettlementDates.map(function mapSettlementFile(date, index) {
+    return {
+      id: "sx-daily-excel-" + pad(index + 1),
+      fileName: date + "用户侧日清分账单.xlsx",
       fileType: "日清算 Excel",
-      publishTime: "2026-05-09 10:52:48",
+      publishTime: buildUpdatedAt("2026-05-09 10:52:48", index * 3),
       parseStatus: "已解析",
       downloadUrl: "#",
-    },
-  ];
+    };
+  });
   var settlementDailyHourColumns = Array.from({ length: 24 }, function createHourColumn(_, index) {
     return String(index + 1) + "时";
   });
   var settlementDailyColumns = [
-    { key: "日期", title: "日期" },
-    { key: "结算类型名称", title: "结算类型名称" },
-    { key: "数据类型", title: "数据类型" },
-    { key: "企业编码", title: "企业编码" },
-    { key: "企业名称", title: "企业名称" },
-    { key: "合计值", title: "合计值" },
-  ].concat(
-    settlementDailyHourColumns.map(function mapHourColumn(hourLabel) {
-      return { key: hourLabel, title: hourLabel };
-    }),
-  );
+    { key: "settlementDate", title: "日期" },
+    { key: "settlementTypeName", title: "结算类型名称" },
+    { key: "dataType", title: "数据类型" },
+    { key: "settlementUnitName", title: "结算单元名称" },
+    { key: "timePoint", title: "时间点位" },
+    { key: "actualUsage", title: "实际用电量（MWh）" },
+    { key: "intraProvinceNetContractVolume", title: "省内净合同电量（MWh）" },
+    { key: "intraProvinceNetContractFee", title: "省内净合同电费（元）" },
+    { key: "mediumLongTermReferencePrice", title: "中长期结算参考点电价（元/MWh）" },
+    { key: "intraProvinceContractFee", title: "省内合约电费（元）" },
+    { key: "interProvinceNetContractVolume", title: "省间净合同电量（MWh）" },
+    { key: "interProvinceNetContractFee", title: "省间净合同电费（元）" },
+    { key: "dayAheadVolume", title: "日前交易电量（MWh）" },
+    { key: "dayAheadUnifiedPrice", title: "日前统一结算点电价（元/MWh）" },
+    { key: "dayAheadFee", title: "日前交易电费（元）" },
+    { key: "realTimeVolume", title: "实时交易电量（MWh）" },
+    { key: "realTimeUnifiedPrice", title: "实时统一结算点电价（元/MWh）" },
+    { key: "realTimeFee", title: "实时交易电费（元）" },
+    { key: "remark", title: "备注" },
+  ];
 
   function aggregateShaanxiQuarterRowsByHour(sourceKey, digits) {
     return Array.from({ length: 24 }, function aggregateHour(_, hourIndex) {
@@ -1009,8 +1031,8 @@
     dataSource: "陕西交易中心日清算Excel解析",
     filters: {
       dateRange: {
-        start: "2026-04-30",
-        end: "2026-04-30",
+        start: shaanxiDailySettlementDate,
+        end: shaanxiDailySettlementEndDate,
       },
       primaryTab: "日清算",
       secondaryTab: "",
@@ -1022,7 +1044,7 @@
     chartUnit: "",
     chartSeries: [],
     tableColumns: settlementDailyColumns,
-    tableData: shaanxiDailySettlementWideRows,
+    tableData: shaanxiDailySettlementRows,
     summaryTable: {
       columns: [],
       data: [],
@@ -2107,7 +2129,7 @@
     { enterpriseCode: "SXQY003", userName: "陕西九电新能源有限责任公司", accountNo: "610390000003", microgridName: "渭南智慧充电微电网", microgridId: "SXMG_1003", meteringPointNo: "610390000003_1" },
     { enterpriseCode: "SXQY004", userName: "陕西众成智慧能源有限公司", accountNo: "610390000004", microgridName: "榆林综合能源微电网", microgridId: "SXMG_1004", meteringPointNo: "610390000004_1" },
   ];
-  var shaanxiEnterpriseHourLabels = buildTimeLabels(60, 24, 60);
+  var shaanxiEnterpriseTimeLabels = quarterHours.slice();
   var shaanxiUnifiedEnterpriseRows = settlementDates.reduce(function accumulateRows(result, date, dayIndex) {
     return result.concat(
       shaanxiEnterpriseProfiles.map(function mapEnterprise(profile, enterpriseIndex) {
@@ -2119,8 +2141,8 @@
         row.microgridId = profile.microgridId;
         row.meteringPointNo = profile.meteringPointNo;
         row.totalValue = row.total96;
-        shaanxiEnterpriseHourLabels.forEach(function eachHourLabel(hourLabel, hourIndex) {
-          row[hourLabel] = row.converted24Values[hourIndex];
+        shaanxiEnterpriseTimeLabels.forEach(function eachTimeLabel(timeLabel, timeIndex) {
+          row[timeLabel] = row.quarterValues[timeIndex];
         });
         return row;
       }),
@@ -2177,18 +2199,18 @@
       },
     ],
     profileModes: {
-      "24": {
-        label: "24点视图",
-        labels: shaanxiEnterpriseHourLabels.slice(),
+      "96": {
+        label: "96点视图",
+        labels: shaanxiEnterpriseTimeLabels.slice(),
         unit: "MWh",
-        valueKey: "converted24Values",
+        valueKey: "quarterValues",
         latestLabel: "所选周期最新日电量",
         averageLabel: "所选周期均值电量",
         compareLatestLabel: "对比周期最新日电量",
         compareAverageLabel: "对比周期均值电量",
       },
     },
-    defaultProfileMode: "24",
+    defaultProfileMode: "96",
     tableColumns: [
       { key: "date", title: "日期" },
       { key: "userCode", title: "电力用户编码" },
@@ -2198,11 +2220,11 @@
       { key: "accountNo", title: "户号" },
       { key: "meteringPointNo", title: "计量点编号" },
     ]
-      .concat(shaanxiEnterpriseHourLabels.map(function mapHourLabel(hourLabel) {
-        return { key: hourLabel, title: hourLabel };
+      .concat(shaanxiEnterpriseTimeLabels.map(function mapTimeLabel(timeLabel) {
+        return { key: timeLabel, title: timeLabel };
       })),
     tableData: shaanxiUnifiedEnterpriseRows,
-    tableMinWidth: 9040,
+    tableMinWidth: 10480,
     fileList: buildMockFileList("sx", "enterprise-load", standardDefaultDate, 3),
     emptyText: "当前日期暂无陕西用电企业分时电量 mock 数据。",
   });
@@ -2586,7 +2608,7 @@
               "批发购电分时均价": "infoRetailSettlementHourlyPrice",
             },
           },
-          "售电公司分时电量": "infoEmptySaleCompany",
+          "售电公司分时电量": "infoSaleCompanyProfile",
           "用电企业分时电量": "infoEnterpriseProfile",
           "节点电价": "infoNodePrice",
           "日前申报": "infoDayAheadDeclaration",
@@ -2647,7 +2669,12 @@
       statusText: "数据更新时间：2026-05-09 10:52:48（陕西交易中心结算任务）",
       publishTime: "2026-05-09 10:52:48",
       tabs: ["日清算", "月结算"],
-      dailyRows: settlementDailyRows,
+      dailyRows: shaanxiDailySettlementRows,
+      dailyColumns: settlementDailyColumns,
+      dailyDateRange: {
+        start: shaanxiDailySettlementDate,
+        end: shaanxiDailySettlementEndDate,
+      },
       monthRows: settlementMonthRows,
       monthlySettlementData: shaanxiMonthlySettlementData,
     },

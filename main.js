@@ -780,6 +780,10 @@
       return overrideRange;
     }
 
+    if (isUnifiedMockInfoTradeTab(getActiveInfoTab()) && !isGuangdongInfoDisclosureCenter() && isCurrentMarketDisclosureView()) {
+      return getMarketDisclosureState().appliedRange;
+    }
+
     if (isUnifiedMockInfoTradeTab(getActiveInfoTab())) {
       return getCurrentInfoDateRange();
     }

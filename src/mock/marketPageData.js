@@ -2240,13 +2240,16 @@
     var centerOffset = tradeCenterKey === "shaanxi" ? 3 : tradeCenterKey === "hunan" ? 1 : 0;
     var volumeFactor = 1 + (((seed + centerOffset) % 9) - 4) * 0.008;
     var priceShift = (((seed + centerOffset * 7) % 11) - 5) * 0.42;
+    var isShaanxiQuarterHourRows = tradeCenterKey === "shaanxi" && (rows || []).length >= 96;
 
     return (rows || []).map(function mapRow(row, index) {
       var waveShift = (((seed + index * 3 + centerOffset) % 7) - 3) * 0.18;
       return {
         date: dateValue,
         time:
-          (tradeCenterKey === "hunan" || tradeCenterKey === "shaanxi") && index === 23
+          isShaanxiQuarterHourRows
+            ? row.time
+            : (tradeCenterKey === "hunan" || tradeCenterKey === "shaanxi") && index === 23
             ? "24:00"
             : tradeCenterKey === "hunan" || tradeCenterKey === "shaanxi"
               ? padNumber(index + 1) + ":00"
@@ -2404,7 +2407,12 @@
       viewType: "mixedTrendTable",
       leftUnit: barSeriesDefinitions.length ? "MWh" : "",
       rightUnit: lineSeriesDefinitions.length ? "元/MWh" : "",
-      timeGranularity: "1h",
+      timeGranularity:
+        (tradingResultData && tradingResultData.timeGranularity) ||
+        (tradeCenterKey === "shaanxi" && ((tradingResultData && tradingResultData.points) || []).length >= 96 ? "15min" : "1h"),
+      periodCount:
+        (tradingResultData && tradingResultData.periodCount) ||
+        (tradeCenterKey === "shaanxi" && ((tradingResultData && tradingResultData.points) || []).length >= 96 ? 96 : 24),
       volumeSource: (tradingResultData && tradingResultData.volumeSource) || "stable-placeholder",
       summaryCards: [
         { label: "日前结算峰值", value: dayAheadSeries.max, unit: "元/MWh" },

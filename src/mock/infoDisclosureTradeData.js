@@ -130,6 +130,23 @@
     });
   }
 
+  function buildQuarterTradingPoints(dayAheadVolumeValues, realTimeVolumeValues, dayAheadPriceValues, realTimePriceValues) {
+    return NODE_PRICE_TIMES_96.map(function mapPoint(time, index) {
+      var hourIndex = Math.floor(index / 4);
+      var quarterIndex = index % 4;
+      var quarterShape = [0.985, 1.006, 0.994, 1.015][quarterIndex];
+      var priceShift = [-0.18, 0.08, -0.06, 0.16][quarterIndex];
+
+      return {
+        time: time,
+        dayAheadVolume: roundNumber((dayAheadVolumeValues[hourIndex] / 4) * quarterShape, 2),
+        realTimeVolume: roundNumber((realTimeVolumeValues[hourIndex] / 4) * (2 - quarterShape), 2),
+        dayAheadSettlementPrice: roundNumber(dayAheadPriceValues[hourIndex] + priceShift, 2),
+        realTimeSettlementPrice: roundNumber(realTimePriceValues[hourIndex] - priceShift, 2),
+      };
+    });
+  }
+
   function sourceSettlementPrices(sourceGroup) {
     return HOURS_24.map(function mapPrice(_, index) {
       var point = sourceGroup && sourceGroup.points && sourceGroup.points[index];
@@ -148,7 +165,8 @@
     };
   }
 
-  function buildCenterTradingResult(centerKey, points) {
+  function buildCenterTradingResult(centerKey, points, options) {
+    var resultOptions = options || {};
     return {
       centerName: CENTER_NAMES[centerKey],
       date: MOCK_DATE,
@@ -156,6 +174,8 @@
       publishTime: MOCK_PUBLISH_TIME,
       source: MOCK_SOURCE,
       volumeSource: "stable-placeholder",
+      timeGranularity: resultOptions.timeGranularity || "1h",
+      periodCount: resultOptions.periodCount || (points || []).length,
       points: points,
     };
   }
@@ -242,7 +262,8 @@
     ),
     shaanxi: buildCenterTradingResult(
       "shaanxi",
-      buildTradingPoints(shaanxiTradingDayAheadVolume, shaanxiTradingRealTimeVolume, shaanxiTradingDayAheadPrice, shaanxiTradingRealTimePrice),
+      buildQuarterTradingPoints(shaanxiTradingDayAheadVolume, shaanxiTradingRealTimeVolume, shaanxiTradingDayAheadPrice, shaanxiTradingRealTimePrice),
+      { timeGranularity: "15min", periodCount: 96 },
     ),
   };
 
