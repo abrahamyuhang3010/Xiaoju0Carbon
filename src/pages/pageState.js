@@ -275,6 +275,7 @@
           expandedMetrics: new Set(["local-power", "west-east", "hn-renewable-output", "sx-renewable-output"]),
           companyQueryAt: 0,
           enterpriseQueryAt: 0,
+          contractCurveDetailTab: "电量明细",
           filters: {
             loadDetailRange: {
               start: "2026-05-08",

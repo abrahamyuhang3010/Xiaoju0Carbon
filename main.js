@@ -90,6 +90,9 @@
     ["售电公司分时电量", "用电企业分时电量"];
   var INFO_DISCLOSURE_SELLER_HISTORY_TAB = "售电公司分时电量历史回溯";
   var INFO_DISCLOSURE_USER_HISTORY_TAB = "用电企业分时电量历史回溯";
+  var INFO_DISCLOSURE_CONTRACT_CURVE_TAB = "中长期合同曲线";
+  var INFO_DISCLOSURE_CONTRACT_CURVE_DETAIL_TAB = "中长期合同曲线明细";
+  var INFO_DISCLOSURE_CONTRACT_CURVE_DETAIL_TABS = ["电量明细", "电价明细"];
   var HISTORY_RETRACE_SCOPE_TEXT = "当前数据为历史回溯口径，按所选代理月份对应的实际代理用户清单统计，与常规分时电量页面的数据口径可能存在差异。";
   var TIME_SHARING_HOUR_LABELS = Array.from({ length: 24 }, function createTimeSharingHour(_, index) {
     return String(index).padStart(2, "0") + ":00";
@@ -117,6 +120,9 @@
     .concat(INFO_DISCLOSURE_PRIMARY_TABS || [])
     .concat(INFO_DISCLOSURE_SECONDARY_TABS || [])
     .concat(INFO_DISCLOSURE_TIME_SHARING_TABS || [])
+    .concat(INFO_DISCLOSURE_CONTRACT_CURVE_DETAIL_TABS.map(function mapContractCurveDownloadType(tab) {
+      return INFO_DISCLOSURE_CONTRACT_CURVE_DETAIL_TAB + "-" + tab;
+    }))
     .filter(function dedupe(item, index, source) {
       return source.indexOf(item) === index;
     });
@@ -188,6 +194,14 @@
 
   function formatDecimal(value) {
     return Number(value).toFixed(1);
+  }
+
+  function trimFixedNumber(value, precision) {
+    var text = Number(value).toFixed(precision);
+    while (text.indexOf(".") >= 0 && text.endsWith("0")) {
+      text = text.slice(0, -1);
+    }
+    return text.endsWith(".") ? text.slice(0, -1) : text;
   }
 
   function formatDiff(value) {
@@ -739,8 +753,9 @@
   function getInfoDisclosurePageData() {
     var activePrimaryTab = getActiveInfoPrimaryTab();
     var activeSecondaryTab = getActiveInfoSecondaryTab();
+    var hasSecondaryTabs = getVisibleInfoSecondaryTabs(activePrimaryTab).length > 0;
     var primaryTabForData = activePrimaryTab === INFO_DISCLOSURE_TIME_SHARING_TAB ? activeSecondaryTab : activePrimaryTab;
-    var secondaryTabForData = activePrimaryTab === "负荷信息" ? activeSecondaryTab : "";
+    var secondaryTabForData = hasSecondaryTabs && activePrimaryTab !== INFO_DISCLOSURE_TIME_SHARING_TAB ? activeSecondaryTab : "";
 
     return (
       resolveMarketPageViewData({
@@ -779,6 +794,16 @@
 
     if (isSingleMetricLoadPage(pageData) && getSelectedTradeCenterKey() === "guangdong") {
       return state.ui.runtimeRange;
+    }
+
+    if (
+      pageData &&
+      pageData.filters &&
+      pageData.filters.dateRange &&
+      pageData.datePickerMode === "range" &&
+      getMarketDisclosureState().queryCount === 0
+    ) {
+      return cloneRange(pageData.filters.dateRange);
     }
 
     if (
@@ -986,6 +1011,13 @@
     }
 
     var disclosureState = getMarketDisclosureState();
+    var defaultRange =
+      pageData &&
+      pageData.filters &&
+      pageData.filters.dateRange &&
+      isRangeValid(pageData.filters.dateRange)
+        ? pageData.filters.dateRange
+        : null;
     var defaultDate =
       (pageData && pageData.filters && pageData.filters.date) ||
       getTradeCenterDefaultDisclosureDate(getSelectedTradeCenterKey()) ||
@@ -994,6 +1026,19 @@
       disclosureState.filterRange.start;
 
     if (!defaultDate) {
+      return;
+    }
+
+    if (
+      defaultRange &&
+      disclosureState.queryCount === 0 &&
+      (disclosureState.appliedRange.start !== defaultRange.start ||
+        disclosureState.appliedRange.end !== defaultRange.end ||
+        disclosureState.filterRange.start !== defaultRange.start ||
+        disclosureState.filterRange.end !== defaultRange.end)
+    ) {
+      disclosureState.filterRange = cloneRange(defaultRange);
+      disclosureState.appliedRange = cloneRange(defaultRange);
       return;
     }
 
@@ -1972,7 +2017,7 @@
 
   function getActiveInfoTab() {
     var primaryTab = getActiveInfoPrimaryTab();
-    if (primaryTab === "负荷信息" || primaryTab === INFO_DISCLOSURE_TIME_SHARING_TAB) {
+    if (getVisibleInfoSecondaryTabs(primaryTab).length > 0) {
       return getActiveInfoSecondaryTab();
     }
     return primaryTab;
@@ -2140,6 +2185,9 @@
 
   function getCurrentDownloadType() {
     if (isInfoDisclosurePage(state.currentPageKey)) {
+      if (isInfoContractCurveDetailPage()) {
+        return INFO_DISCLOSURE_CONTRACT_CURVE_DETAIL_TAB + "-" + getInfoContractCurveDetailTab(getInfoDisclosurePageData());
+      }
       return getActiveInfoTab();
     }
     if (state.currentPageKey === "gd-trade-result") {
@@ -4011,6 +4059,51 @@
       .join("");
   }
 
+  function isInfoContractCurveDetailPage() {
+    return (
+      getActiveInfoPrimaryTab() === INFO_DISCLOSURE_CONTRACT_CURVE_TAB &&
+      getActiveInfoSecondaryTab() === INFO_DISCLOSURE_CONTRACT_CURVE_DETAIL_TAB
+    );
+  }
+
+  function getInfoContractCurveDetailTab(pageData) {
+    var tabs = (pageData && pageData.detailTabs) || INFO_DISCLOSURE_CONTRACT_CURVE_DETAIL_TABS;
+    if (tabs.indexOf(state.info.contractCurveDetailTab) >= 0) {
+      return state.info.contractCurveDetailTab;
+    }
+    state.info.contractCurveDetailTab = tabs[0] || INFO_DISCLOSURE_CONTRACT_CURVE_DETAIL_TABS[0];
+    return state.info.contractCurveDetailTab;
+  }
+
+  function renderInfoContractCurveTertiaryTabs(pageData) {
+    if (!isInfoContractCurveDetailPage()) {
+      return "";
+    }
+
+    var tabs = (pageData && pageData.detailTabs) || INFO_DISCLOSURE_CONTRACT_CURVE_DETAIL_TABS;
+    var activeTab = getInfoContractCurveDetailTab(pageData);
+    return (
+      '<div class="tertiary-tabs">' +
+      tabs
+        .map(function mapTab(tab) {
+          var isActive = tab === activeTab;
+          return (
+            '<button type="button" class="tertiary-tab ' +
+            (isActive ? "active" : "") +
+            '" data-info-contract-curve-detail-tab="' +
+            escapeHtml(tab) +
+            '"' +
+            (isActive ? ' aria-pressed="true"' : "") +
+            ">" +
+            escapeHtml(tab) +
+            "</button>"
+          );
+        })
+        .join("") +
+      "</div>"
+    );
+  }
+
   function createMoreUpdateAction(action) {
     return {
       label: "更多",
@@ -5473,6 +5566,9 @@
     }
 
     if (typeof value === "number") {
+      if (column && typeof column.precision === "number") {
+        return trimFixedNumber(value, column.precision);
+      }
       if (title.indexOf("元/MWh") >= 0 || Math.abs(value % 1) > 0.001) {
         return formatDecimal(value);
       }
@@ -6936,6 +7032,162 @@
     );
   }
 
+  function formatContractCurveTableValue(value) {
+    if (value === null || value === undefined || value === "") {
+      return { text: "--", copyable: false, sortValue: "" };
+    }
+    if (typeof value === "number") {
+      return { text: String(value), sortValue: value };
+    }
+    return String(value);
+  }
+
+  function buildContractCurveTableConfig(columns, rows, minWidth) {
+    var resolvedColumns = (columns || []).map(function mapColumn(column) {
+      return {
+        key: column.key,
+        label: column.title || column.label,
+        sortable: column.sortable !== false,
+        width: column.width || (String(column.key || "").indexOf("slot") === 0 ? 104 : 180),
+      };
+    });
+
+    return {
+      columns: resolvedColumns,
+      rows: (rows || []).map(function mapRow(row) {
+        var result = {};
+        resolvedColumns.forEach(function eachColumn(column) {
+          result[column.key] = formatContractCurveTableValue(row[column.key]);
+        });
+        return result;
+      }),
+      minWidth: minWidth || Math.max(920, resolvedColumns.length * 118),
+    };
+  }
+
+  function renderInfoContractCurveCompareHint(compareRows) {
+    if (!state.ui.hasCompare || !isInfoDisclosureCompareEnabledByConfig(getActiveInfoTab()) || (compareRows || []).length) {
+      return "";
+    }
+    return '<div class="placeholder-note trade-compare-hint">对比日暂无中长期合同曲线数据</div>';
+  }
+
+  function renderInfoContractCurveSummaryContent(pageData) {
+    var rows = filterInfoDisclosurePageRows(pageData.tableData || [], pageData);
+    var compareRows =
+      state.ui.hasCompare && isInfoDisclosureCompareEnabledByConfig(getActiveInfoTab())
+        ? filterInfoDisclosurePageRows(pageData.tableData || [], pageData, state.ui.compareRangeDraft)
+        : [];
+    var tableColumns = pageData.tableColumns || [];
+    var tableRows = rows;
+    var compareSeries = compareRows.length
+      ? (pageData.seriesDefinitions || []).map(function mapCompareSeries(series) {
+          return {
+            id: series.id + "-compare",
+            label: "对比" + series.label,
+            color: "#FF7A45",
+            valueKey: series.valueKey,
+          };
+        })
+      : [];
+
+    if (!rows.length) {
+      return renderInfoUnsupportedEmptyState(pageData.emptyText || INFO_DISCLOSURE_EMPTY_MESSAGE);
+    }
+
+    if (compareRows.length) {
+      tableColumns = [
+        { key: "time", title: "时段" },
+        { key: "currentVolume", title: "当前电量（MWh）" },
+        { key: "compareVolume", title: "对比电量（MWh）" },
+      ];
+      tableRows = rows.map(function mapCompareRow(row, index) {
+        var compareRow = compareRows[index] || {};
+        return {
+          time: row.time,
+          currentVolume: row.volume,
+          compareVolume: compareRow.volume,
+        };
+      });
+    }
+    var tableConfig = buildContractCurveTableConfig(tableColumns, tableRows, pageData.tableMinWidth);
+
+    return (
+      '<section class="panel chart-panel chart-panel-plain"><div class="chart-main chart-main-plain">' +
+      renderInfoContractCurveCompareHint(compareRows) +
+      renderChartWithMarks({
+        chartId: "info-contract-curve-summary-chart-" + getSelectedTradeCenterKey(),
+        title: pageData.chartTitle || pageData.title,
+        labels: rows.map(function mapRow(row) {
+          return buildInfoDisclosureRowLabel(row, pageData);
+        }),
+        unit: pageData.chartUnit || "MWh",
+        series: buildInfoDisclosureSeries(rows, pageData.seriesDefinitions).concat(
+          compareRows.length ? buildInfoDisclosureSeries(compareRows, compareSeries) : [],
+        ),
+        hiddenSeries: getChartHiddenState("info-contract-curve-summary-chart-" + getSelectedTradeCenterKey()),
+        valueFormatter: function formatContractCurveChartValue(value) {
+          return String(value);
+        },
+        escapeHtml: escapeHtml,
+        renderIcon: renderIcon,
+        renderEmptyState: renderEmptyState,
+        breakOnNull: true,
+        xLabelEvery: getDisclosureLabelEvery(rows.length),
+      }) +
+      renderDataTablePro({
+        tableId: "info-contract-curve-summary-table-" + getSelectedTradeCenterKey(),
+        columns: tableConfig.columns,
+        rows: tableConfig.rows,
+        minWidth: compareRows.length ? 900 : pageData.tableMinWidth || 620,
+        enableColumnDrag: true,
+        columnOrder: getTableColumnOrder("info-contract-curve-summary-table-" + getSelectedTradeCenterKey()),
+        sortState: getTableSortState("info-contract-curve-summary-table-" + getSelectedTradeCenterKey()),
+        escapeHtml: escapeHtml,
+        renderIcon: renderIcon,
+        renderEmptyState: renderEmptyState,
+      }) +
+      "</div></section>"
+    );
+  }
+
+  function renderInfoContractCurveDetailContent(pageData) {
+    var activeDetailTab = getInfoContractCurveDetailTab(pageData);
+    var detailTables = pageData.detailTables || {};
+    var detailTable = detailTables[activeDetailTab] || detailTables[Object.keys(detailTables)[0]] || {};
+    var rows = filterInfoDisclosurePageRows(detailTable.rows || [], pageData);
+    var compareRows =
+      state.ui.hasCompare && isInfoDisclosureCompareEnabledByConfig(getActiveInfoTab())
+        ? filterInfoDisclosurePageRows(detailTable.rows || [], pageData, state.ui.compareRangeDraft)
+        : [];
+    var tableId = "info-contract-curve-detail-table-" + getSelectedTradeCenterKey() + "-" + activeDetailTab;
+    var tableConfig = buildContractCurveTableConfig(detailTable.columns || [], rows, detailTable.minWidth);
+    var compareTableConfig = buildContractCurveTableConfig(detailTable.columns || [], compareRows, detailTable.minWidth);
+    var compareTableHtml = compareRows.length
+      ? renderInfoDisclosureDataTablePanel(
+          "对比" + activeDetailTab,
+          tableId + "-compare",
+          compareTableConfig,
+          { enableColumnDrag: true },
+        )
+      : "";
+
+    if (!rows.length) {
+      return renderInfoUnsupportedEmptyState(pageData.emptyText || INFO_DISCLOSURE_EMPTY_MESSAGE);
+    }
+
+    return (
+      renderInfoContractCurveCompareHint(compareRows) +
+      renderInfoDisclosureDataTablePanel(
+        activeDetailTab,
+        tableId,
+        tableConfig,
+        { enableColumnDrag: true },
+      ) +
+      compareTableHtml
+    );
+  }
+
   function renderUnifiedInfoDisclosureContent(pageData) {
     var activeTab = getActiveInfoTab();
     var activeMockDate = getInfoTradeMockDate(activeTab);
@@ -6982,6 +7234,12 @@
     }
     if (pageData.viewType === "maintenanceComposite") {
       return renderInfoDisclosureMaintenanceCompositeContent(pageData);
+    }
+    if (pageData.viewType === "contractCurveSummary") {
+      return renderInfoContractCurveSummaryContent(pageData);
+    }
+    if (pageData.viewType === "contractCurveDetail") {
+      return renderInfoContractCurveDetailContent(pageData);
     }
 
     return renderInfoUnsupportedEmptyState(pageData.emptyText || INFO_DISCLOSURE_EMPTY_MESSAGE);
@@ -7842,13 +8100,15 @@
     var activeTab = getActiveInfoTab();
     var hasVisibleTabs = visiblePrimaryTabs.length > 0;
     var tabDatePickerHtml = hasVisibleTabs ? renderInfoDisclosureTabDatePicker(pageData) : "";
+    var tabsPanelClass = "panel tabs-panel" + (visiblePrimaryTabs.length > 7 ? " info-tabs-overflow-panel" : "");
     var primaryTabsHtml = visiblePrimaryTabs.map(function mapTab(tab) {
       return '<button class="primary-tab ' + (activePrimaryTab === tab ? "active" : "") + '" data-primary-tab="' + escapeHtml(tab) + '">' + escapeHtml(tab) + "</button>";
     }).join("");
     var secondaryTabsHtml =
-      (activePrimaryTab === "负荷信息" || activePrimaryTab === INFO_DISCLOSURE_TIME_SHARING_TAB) && visibleSecondaryTabs.length
+      visibleSecondaryTabs.length
         ? '<div class="secondary-tabs">' + renderSecondaryTabs(visibleSecondaryTabs, getActiveInfoSecondaryTab()) + "</div>"
         : "";
+    var tertiaryTabsHtml = renderInfoContractCurveTertiaryTabs(pageData);
 
     return (
       '<div class="page-stack">' +
@@ -7866,12 +8126,13 @@
       }) +
       "</section>" +
       (hasVisibleTabs
-        ? '<section class="panel tabs-panel"><div class="panel-topline info-tabs-topline"><div class="primary-tabs">' +
+        ? '<section class="' + tabsPanelClass + '"><div class="panel-topline info-tabs-topline"><div class="primary-tabs">' +
           primaryTabsHtml +
           "</div>" +
           tabDatePickerHtml +
           "</div>" +
           secondaryTabsHtml +
+          tertiaryTabsHtml +
           "</section>"
         : "") +
       renderInfoDisclosureFilterBar() +
@@ -17333,6 +17594,15 @@
       if (state.info.secondaryTab !== "负荷信息") {
         state.ui.hasCompare = false;
       }
+      state.ui.downloadDataType = getCurrentDownloadType();
+      renderApp();
+      return;
+    }
+
+    var contractCurveDetailTabButton = event.target.closest("[data-info-contract-curve-detail-tab]");
+    if (contractCurveDetailTabButton) {
+      state.info.contractCurveDetailTab = contractCurveDetailTabButton.getAttribute("data-info-contract-curve-detail-tab");
+      state.ui.hasCompare = false;
       state.ui.downloadDataType = getCurrentDownloadType();
       renderApp();
       return;

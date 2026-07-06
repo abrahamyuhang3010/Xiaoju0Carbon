@@ -860,6 +860,42 @@ a {
   white-space: nowrap;
 }
 
+.info-tabs-overflow-panel .info-tabs-topline {
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.info-tabs-overflow-panel .primary-tabs {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-right: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(138, 149, 168, 0.5) transparent;
+}
+
+.info-tabs-overflow-panel .info-tab-date-query {
+  flex: 0 0 auto;
+  width: auto;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.info-tabs-overflow-panel .primary-tabs::-webkit-scrollbar {
+  height: 4px;
+}
+
+.info-tabs-overflow-panel .primary-tabs::-webkit-scrollbar-thumb {
+  background: rgba(138, 149, 168, 0.45);
+  border-radius: 999px;
+}
+
+.info-tabs-overflow-panel .primary-tabs::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .primary-tab {
   position: relative;
   flex: 0 0 auto;
@@ -875,7 +911,8 @@ a {
 }
 
 .primary-tab:focus-visible,
-.secondary-tab:focus-visible {
+.secondary-tab:focus-visible,
+.tertiary-tab:focus-visible {
   outline: 2px solid rgba(22, 119, 255, 0.28);
   outline-offset: 3px;
 }
@@ -1111,6 +1148,43 @@ a {
 .secondary-tab.active {
   color: var(--blue);
   background: var(--blue-soft);
+}
+
+.tertiary-tabs {
+  display: flex;
+  align-items: center;
+  gap: 42px;
+  margin-top: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tertiary-tab {
+  position: relative;
+  height: 42px;
+  padding: 0 2px;
+  color: var(--text-soft);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tertiary-tab:hover {
+  color: var(--blue);
+}
+
+.tertiary-tab.active {
+  color: var(--blue);
+}
+
+.tertiary-tab.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--blue);
 }
 
 .hn-settlement-doc-panel,

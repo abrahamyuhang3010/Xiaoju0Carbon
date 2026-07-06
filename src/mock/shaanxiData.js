@@ -340,6 +340,7 @@
   var shaanxiInfoUnitStatusUpdatedAt = "2026-06-21 23:00:17";
   var shaanxiInfoDailyMockDates = buildDateRange("2026-05-09", 43);
   var dataSource = "陕西电力交易中心信息披露";
+  var shaanxiContractCurveSource = global.BOSS_SHAANXI_CONTRACT_CURVE_SOURCE || {};
   var weightedPriceRows = buildPriceRows(availableDates, 328, "陕西用户侧加权电价口径", buildUpdatedAt(dataUpdatedAt, -16));
   var saleCompanyRows = availableDates.map(buildQuarterlySalesRow);
   var average96Values = averageBySlot(saleCompanyRows, "quarterValues");
@@ -1429,6 +1430,489 @@
     });
   }
 
+  function getFirstRowDate(rows, fallbackDate) {
+    var firstDatedRow = (rows || []).find(function findRow(row) {
+      return row && row.date;
+    });
+    return (firstDatedRow && firstDatedRow.date) || fallbackDate;
+  }
+
+  function shiftDateText(dateText, offsetDays) {
+    var date = new Date(String(dateText || standardDefaultDate) + "T00:00:00");
+    date.setDate(date.getDate() + offsetDays);
+    return formatDate(date);
+  }
+
+  function getContractCurveDetailLabels() {
+    return (shaanxiContractCurveSource.detailLabels || quarterHours || []).slice();
+  }
+
+  function buildContractCurveSummaryValue(value, slotIndex, dayIndex) {
+    if (typeof value === "number") {
+      return Number((value + dayIndex * 0.09).toFixed(3));
+    }
+
+    var hour = slotIndex / 4;
+    var dayWave = Math.max(0, Math.sin(((hour - 7) / 24) * Math.PI * 2)) * 0.32;
+    var peakWave = Math.max(0, Math.sin(((hour - 15) / 24) * Math.PI * 2)) * 0.58;
+    var valleyOffset = hour < 6 ? -0.18 : 0;
+    var pattern = [0, 0.018, -0.012, 0.026][slotIndex % 4];
+    return Number(Math.max(0, 0.82 + dayIndex * 0.09 + dayWave + peakWave + valleyOffset + pattern).toFixed(3));
+  }
+
+  function buildContractCurveSummaryRows() {
+    var sourceRows = shaanxiContractCurveSource.summaryRows || [];
+    var baseDate = getFirstRowDate(sourceRows, "2026-07-01");
+    return buildDateRange(baseDate, 3).reduce(function accumulateSummaryRows(result, date, dayIndex) {
+      return result.concat(sourceRows.map(function mapSummaryRow(row, slotIndex) {
+        return {
+          date: date,
+          time: row.time,
+          volume: buildContractCurveSummaryValue(row.volume, slotIndex, dayIndex),
+          updatedAt: date + " 00:00:00",
+        };
+      }));
+    }, []);
+  }
+
+  function adjustContractCurveDetailValue(value, slotIndex, dayIndex, unitType) {
+    if (typeof value !== "number") {
+      return null;
+    }
+    if (value === 0) {
+      return 0;
+    }
+    if (unitType === "price") {
+      return Number((value + dayIndex * 1.2 + [0, 0.1, -0.1, 0.2][slotIndex % 4]).toFixed(3));
+    }
+    return Number((value * (1 + dayIndex * 0.02)).toFixed(3));
+  }
+
+  function buildContractCurveDetailRows(sourceRows, unitType) {
+    var labels = getContractCurveDetailLabels();
+    var firstDate = getFirstRowDate(sourceRows, "2026-05-08");
+    return buildDateRange(firstDate, 3).reduce(function accumulateDetailRows(result, date, dayIndex) {
+      return result.concat((sourceRows || []).map(function mapDetailRow(row, rowIndex) {
+        var resultRow = {
+          id: "sx-contract-curve-" + unitType + "-" + dayIndex + "-" + rowIndex,
+          date: date,
+          sequenceName: row.sequenceName || "",
+          contractName: row.contractName || "",
+          contractType: row.contractType || "",
+          sellerUserName: row.sellerUserName || "",
+          sellerUnitName: row.sellerUnitName || "",
+          buyerUserName: row.buyerUserName || "",
+          buyerUnitName: row.buyerUnitName || "",
+        };
+
+        labels.forEach(function eachLabel(_, index) {
+          resultRow["slot" + index] = adjustContractCurveDetailValue((row.values || [])[index], index, dayIndex, unitType);
+        });
+
+        return resultRow;
+      }));
+    }, []);
+  }
+
+  function getContractCurveUniqueOptions(rows, key) {
+    var options = ["全部"];
+    (rows || []).forEach(function eachRow(row) {
+      var value = row && row[key];
+      if (value && options.indexOf(value) < 0) {
+        options.push(value);
+      }
+    });
+    return options;
+  }
+
+  function buildContractCurveDetailColumns(unit) {
+    return [
+      { key: "date", title: "日期", width: 130 },
+      { key: "sequenceName", title: "合同序列名称", width: 260 },
+      { key: "contractName", title: "合同名称", width: 420 },
+      { key: "contractType", title: "合同类型", width: 170 },
+      { key: "sellerUserName", title: "售方用户名称", width: 220 },
+      { key: "sellerUnitName", title: "售方单元名称", width: 280 },
+    ].concat(
+      getContractCurveDetailLabels().map(function mapLabel(label, index) {
+        return { key: "slot" + index, title: label + "（" + unit + "）", width: 104 };
+      })
+    );
+  }
+
+  var shaanxiContractCurveSummaryRows = buildContractCurveSummaryRows();
+  var shaanxiContractCurveSummaryDate = getFirstRowDate(shaanxiContractCurveSummaryRows, "2026-07-01");
+  var shaanxiContractCurveSummaryEndDate = shiftDateText(shaanxiContractCurveSummaryDate, 2);
+  var shaanxiContractCurveDetailVolumeRows = buildContractCurveDetailRows(shaanxiContractCurveSource.volumeRows || [], "volume");
+  var shaanxiContractCurveDetailPriceRows = buildContractCurveDetailRows(shaanxiContractCurveSource.priceRows || [], "price");
+  var shaanxiContractCurveDetailDate = getFirstRowDate(shaanxiContractCurveDetailVolumeRows, "2026-05-08");
+  var shaanxiContractCurveDetailEndDate = shiftDateText(shaanxiContractCurveDetailDate, 2);
+  var shaanxiContractCurveFilterRows = shaanxiContractCurveDetailVolumeRows.length
+    ? shaanxiContractCurveDetailVolumeRows
+    : shaanxiContractCurveDetailPriceRows;
+  var shaanxiContractCurveFilterFields = [
+    {
+      type: "text",
+      label: "合同序列名称",
+      fieldKey: "contractCurveSequenceName",
+      rowKey: "sequenceName",
+      placeholder: "请输入合同序列名称",
+      widthClass: "filter-input-wide",
+    },
+    {
+      type: "text",
+      label: "合同名称",
+      fieldKey: "contractCurveName",
+      rowKey: "contractName",
+      placeholder: "请输入合同名称",
+      widthClass: "filter-input-wide",
+    },
+    {
+      type: "text",
+      label: "售方用户名称",
+      fieldKey: "contractCurveSellerUserName",
+      rowKey: "sellerUserName",
+      placeholder: "请输入售方用户名称",
+      widthClass: "filter-input-wide",
+    },
+    {
+      type: "text",
+      label: "售方单元名称",
+      fieldKey: "contractCurveSellerUnitName",
+      rowKey: "sellerUnitName",
+      placeholder: "请输入售方单元名称",
+      widthClass: "filter-input-wide",
+    },
+  ];
+  var shaanxiContractCurveSummaryPage = createPageData({
+    title: "中长期合同曲线汇总",
+    description: "陕西交易中心信息披露页中长期合同曲线汇总数据。",
+    updateTime: shaanxiContractCurveSummaryDate + " 00:00:00",
+    dataSource: "表1：中长期合同曲线汇总",
+    filters: {
+      date: shaanxiContractCurveSummaryDate,
+      dateRange: {
+        start: shaanxiContractCurveSummaryDate,
+        end: shaanxiContractCurveSummaryEndDate,
+      },
+      primaryTab: "中长期合同曲线",
+      secondaryTab: "中长期合同曲线汇总",
+    },
+    viewType: "contractCurveSummary",
+    datePickerMode: "range",
+    chartTitle: "中长期合同曲线汇总趋势图",
+    chartUnit: "MWh",
+    labelKey: "time",
+    tableColumns: [
+      { key: "date", title: "日期" },
+      { key: "time", title: "时段" },
+      { key: "volume", title: "电量（MWh）" },
+    ],
+    tableData: shaanxiContractCurveSummaryRows,
+    tableMinWidth: 620,
+    seriesDefinitions: [
+      { id: "sx-contract-curve-summary-volume", label: "电量", color: "#1677FF", valueKey: "volume" },
+    ],
+    fileList: buildMockFileList("sx", "contract-curve-summary", shaanxiContractCurveSummaryDate, 1),
+    availableRange: {
+      start: shaanxiContractCurveSummaryDate,
+      end: shaanxiContractCurveSummaryEndDate,
+    },
+    emptyText: "当前日期暂无陕西中长期合同曲线汇总数据。",
+  });
+  var shaanxiContractCurveDetailPage = createPageData({
+    title: "中长期合同曲线明细",
+    description: "陕西交易中心信息披露页中长期合同曲线明细数据。",
+    updateTime: shaanxiContractCurveDetailDate + " 00:00:00",
+    dataSource: "表2：中长期合同曲线明细",
+    filters: {
+      date: shaanxiContractCurveDetailDate,
+      dateRange: {
+        start: shaanxiContractCurveDetailDate,
+        end: shaanxiContractCurveDetailEndDate,
+      },
+      primaryTab: "中长期合同曲线",
+      secondaryTab: "中长期合同曲线明细",
+    },
+    viewType: "contractCurveDetail",
+    datePickerMode: "range",
+    filterFields: shaanxiContractCurveFilterFields,
+    optionHints: {
+      sequenceNames: getContractCurveUniqueOptions(shaanxiContractCurveFilterRows, "sequenceName"),
+      contractNames: getContractCurveUniqueOptions(shaanxiContractCurveFilterRows, "contractName"),
+      sellerUserNames: getContractCurveUniqueOptions(shaanxiContractCurveFilterRows, "sellerUserName"),
+      sellerUnitNames: getContractCurveUniqueOptions(shaanxiContractCurveFilterRows, "sellerUnitName"),
+    },
+    detailTabs: ["电量明细", "电价明细"],
+    detailTables: {
+      "电量明细": {
+        title: "电量明细",
+        unit: "MWh",
+        columns: buildContractCurveDetailColumns("MWh"),
+        rows: shaanxiContractCurveDetailVolumeRows,
+        minWidth: 12380,
+      },
+      "电价明细": {
+        title: "电价明细",
+        unit: "元/MWh",
+        columns: buildContractCurveDetailColumns("元/MWh"),
+        rows: shaanxiContractCurveDetailPriceRows,
+        minWidth: 12380,
+      },
+    },
+    fileList: buildMockFileList("sx", "contract-curve-detail", shaanxiContractCurveDetailDate, 1),
+    availableRange: {
+      start: shaanxiContractCurveDetailDate,
+      end: shaanxiContractCurveDetailEndDate,
+    },
+    emptyText: "当前日期暂无陕西中长期合同曲线明细数据。",
+  });
+
+  var shaanxiWholesaleWeightedPriceBaseRows = [
+    { period: "01:00", dailyAveragePrice: 340.332, monthCumulativeAveragePrice: 336.651 },
+    { period: "02:00", dailyAveragePrice: 310.068, monthCumulativeAveragePrice: 305.957 },
+    { period: "03:00", dailyAveragePrice: 287.119, monthCumulativeAveragePrice: 281.699 },
+    { period: "04:00", dailyAveragePrice: 284.456, monthCumulativeAveragePrice: 279.547 },
+    { period: "05:00", dailyAveragePrice: 284.637, monthCumulativeAveragePrice: 278.095 },
+    { period: "06:00", dailyAveragePrice: 285.315, monthCumulativeAveragePrice: 280.543 },
+    { period: "07:00", dailyAveragePrice: 328.148, monthCumulativeAveragePrice: 325.844 },
+    { period: "08:00", dailyAveragePrice: 324.695, monthCumulativeAveragePrice: 323.259 },
+    { period: "09:00", dailyAveragePrice: 263.009, monthCumulativeAveragePrice: 255.238 },
+    { period: "10:00", dailyAveragePrice: 211.339, monthCumulativeAveragePrice: 230.657 },
+    { period: "11:00", dailyAveragePrice: 188.483, monthCumulativeAveragePrice: 204.883 },
+    { period: "12:00", dailyAveragePrice: 187.203, monthCumulativeAveragePrice: 211.635 },
+    { period: "13:00", dailyAveragePrice: 197.284, monthCumulativeAveragePrice: 219.73 },
+    { period: "14:00", dailyAveragePrice: 191.713, monthCumulativeAveragePrice: 217.743 },
+    { period: "15:00", dailyAveragePrice: 193.123, monthCumulativeAveragePrice: 212.962 },
+    { period: "16:00", dailyAveragePrice: 183.29, monthCumulativeAveragePrice: 190.43 },
+    { period: "17:00", dailyAveragePrice: 194.166, monthCumulativeAveragePrice: 198.786 },
+    { period: "18:00", dailyAveragePrice: 372.861, monthCumulativeAveragePrice: 373.509 },
+    { period: "19:00", dailyAveragePrice: 396.778, monthCumulativeAveragePrice: 395.756 },
+    { period: "20:00", dailyAveragePrice: 395.71, monthCumulativeAveragePrice: 393.409 },
+    { period: "21:00", dailyAveragePrice: 389.585, monthCumulativeAveragePrice: 379.968 },
+    { period: "22:00", dailyAveragePrice: 360.472, monthCumulativeAveragePrice: 354.909 },
+    { period: "23:00", dailyAveragePrice: 345.136, monthCumulativeAveragePrice: 343.362 },
+    { period: "24:00", dailyAveragePrice: 333.547, monthCumulativeAveragePrice: 332.861 },
+    { period: "合计", dailyAveragePrice: 296.988, monthCumulativeAveragePrice: 299.605 },
+  ];
+  var shaanxiWholesaleWeightedPriceDate = "2026-06-26";
+  var shaanxiWholesaleWeightedPriceEndDate = shiftDateText(shaanxiWholesaleWeightedPriceDate, 2);
+
+  function adjustShaanxiWholesaleWeightedPrice(value, rowIndex, dayIndex, isCumulative) {
+    if (typeof value !== "number") {
+      return null;
+    }
+    if (!dayIndex) {
+      return value;
+    }
+    return Number((value + dayIndex * (isCumulative ? 0.72 : 1.18) + [0, 0.16, -0.11, 0.08][rowIndex % 4]).toFixed(3));
+  }
+
+  function buildShaanxiWholesaleWeightedPriceRows() {
+    return buildDateRange(shaanxiWholesaleWeightedPriceDate, 3).reduce(function accumulateWholesaleRows(result, date, dayIndex) {
+      return result.concat(
+        shaanxiWholesaleWeightedPriceBaseRows.map(function mapWholesaleRow(row, rowIndex) {
+          return {
+            date: date,
+            period: row.period,
+            dailyAveragePrice: adjustShaanxiWholesaleWeightedPrice(row.dailyAveragePrice, rowIndex, dayIndex, false),
+            monthCumulativeAveragePrice: adjustShaanxiWholesaleWeightedPrice(row.monthCumulativeAveragePrice, rowIndex, dayIndex, true),
+            updatedAt: date + " 00:00:00",
+          };
+        }),
+      );
+    }, []);
+  }
+
+  var shaanxiRetailSettlementBaseMetrics = [
+    {
+      label: "Q中长期合同电量",
+      key: "mediumLongContractVolume",
+      type: "volume",
+      values: [248535.492, 212227.798, 206528.879, 205958.478, 203837.717, 209615.111, 215301.967, 266930.242, 249677.322, 155992.864, 155787.809, 157008.828, 151872.477, 150136.939, 152041.441, 154291.314, 156233.083, 221177.334, 270089.253, 274263.081, 266390.587, 203516.223, 225346.678, 223023.618],
+    },
+    {
+      label: "Q日前市场出清电量",
+      key: "dayAheadClearingVolume",
+      type: "volume",
+      values: [292556.219, 282756.58, 277061.944, 274070.016, 269364.952, 273130.506, 275054.377, 272243.719, 304003.076, 276989.281, 286128.391, 285515.856, 278128.749, 277069.173, 278497.533, 275064.847, 276334.485, 299914.719, 294283.847, 294315.937, 292817.6, 272105.14, 280299.858, 277740.554],
+    },
+    {
+      label: "Q实际用电量",
+      key: "actualUsage",
+      type: "volume",
+      values: [315493.187, 319250.077, 319116.773, 317289.091, 312676.225, 312776.751, 313976.151, 318216.556, 335194.728, 354003.916, 362855.913, 360965.938, 351646.284, 351754.525, 351614.838, 352456.791, 350667.337, 341490.951, 338715.894, 337494.759, 333729.782, 327395.409, 318423.301, 312070.762],
+    },
+    {
+      label: "K1",
+      key: "k1",
+      type: "ratio",
+      values: [0.79, 0.66, 0.65, 0.65, 0.65, 0.67, 0.69, 0.84, 0.74, 0.44, 0.43, 0.43, 0.43, 0.43, 0.43, 0.44, 0.45, 0.65, 0.8, 0.81, 0.8, 0.62, 0.71, 0.71],
+    },
+    {
+      label: "K2",
+      key: "k2",
+      type: "ratio",
+      values: [0.93, 0.89, 0.87, 0.86, 0.86, 0.87, 0.88, 0.86, 0.91, 0.78, 0.79, 0.79, 0.79, 0.79, 0.79, 0.78, 0.79, 0.88, 0.87, 0.87, 0.88, 0.83, 0.88, 0.89],
+    },
+    {
+      label: "P中长期电价",
+      key: "mediumLongPrice",
+      type: "price",
+      values: [400.942, 358.718, 322.253, 318.902, 319.98, 327.642, 371.154, 361.606, 348.569, 262.557, 217.305, 220.944, 224.875, 224.958, 223.565, 223.134, 275.221, 410.188, 427.333, 430.534, 423.445, 380.49, 385.441, 384.179],
+    },
+    {
+      label: "P现货日前出清电价",
+      key: "dayAheadClearingPrice",
+      type: "price",
+      values: [286.173, 223.816, 199.941, 180.102, 165.854, 193.804, 244.042, 356.293, 264.617, 110.413, 53.985, 34.291, 20.131, 18.116, 25.584, 38.616, 95.34, 262.417, 446.067, 528.449, 418.355, 356.738, 294.333, 265.451],
+    },
+    {
+      label: "P现货实时出清电价",
+      key: "realTimeClearingPrice",
+      type: "price",
+      values: [261.515, 208.095, 196.794, 176.287, 158.797, 179.021, 226.796, 297.127, 251.949, 124.068, 84.074, 62.588, 19.878, 20.125, 28.79, 69.084, 118.849, 313.023, 418.675, 458.304, 395.405, 349.66, 307.37, 243.161],
+    },
+    {
+      label: "P批发购电分时均价",
+      key: "wholesaleTimeSharingPrice",
+      type: "price",
+      values: [394.594, 321.498, 281.08, 272.268, 269.635, 291.458, 341.58, 402.172, 334.976, 174.352, 117.593, 108.326, 108.227, 106.616, 110.011, 113.101, 170.644, 331.647, 449.432, 496.836, 438.033, 374.649, 351.328, 363.122],
+    },
+    {
+      label: "P批发购电加权均价",
+      key: "wholesaleWeightedAveragePrice",
+      type: "price",
+      constant: true,
+      values: Array.from({ length: 24 }, function fillWeightedAverage() {
+        return 276.033;
+      }),
+    },
+  ];
+  var shaanxiRetailSettlementBaseDate = "2026-02-01";
+  var shaanxiRetailSettlementEndDate = shiftDateText(shaanxiRetailSettlementBaseDate, 2);
+
+  function adjustShaanxiRetailSettlementValue(value, metric, hourIndex, dayIndex) {
+    if (typeof value !== "number") {
+      return null;
+    }
+    if (!dayIndex) {
+      return value;
+    }
+    if (metric.type === "ratio") {
+      return Number(Math.max(0, Math.min(0.99, value + dayIndex * 0.01)).toFixed(2));
+    }
+    if (metric.type === "volume") {
+      return Number((value * (1 + dayIndex * 0.006)).toFixed(3));
+    }
+    if (metric.constant) {
+      return Number((value + dayIndex * 0.8).toFixed(3));
+    }
+    return Number((value + dayIndex * 1.15 + [0, 0.12, -0.08, 0.18][hourIndex % 4]).toFixed(3));
+  }
+
+  function buildShaanxiRetailSettlementRows() {
+    return buildDateRange(shaanxiRetailSettlementBaseDate, 3).reduce(function accumulateRetailRows(result, date, dayIndex) {
+      return result.concat(
+        Array.from({ length: 24 }, function mapRetailHour(_, hourIndex) {
+          var time = hourIndex === 23 ? "24:00" : pad(hourIndex + 1) + ":00";
+          var row = {
+            date: date,
+            period: time,
+            updatedAt: date + " 00:00:00",
+          };
+
+          shaanxiRetailSettlementBaseMetrics.forEach(function eachMetric(metric) {
+            row[metric.key] = adjustShaanxiRetailSettlementValue(metric.values[hourIndex], metric, hourIndex, dayIndex);
+          });
+
+          return row;
+        }),
+      );
+    }, []);
+  }
+
+  var shaanxiWholesaleWeightedPriceRows = buildShaanxiWholesaleWeightedPriceRows();
+  var shaanxiRetailSettlementRows = buildShaanxiRetailSettlementRows();
+  var shaanxiWholesaleWeightedPricePage = createPageData({
+    title: "中长期批发市场净合同加权均价",
+    description: "陕西交易中心信息披露页交易总体情况中长期批发市场净合同加权均价数据。",
+    updateTime: shaanxiWholesaleWeightedPriceDate + " 00:00:00",
+    dataSource: "表1：中长期批发市场净合同加权均价",
+    filters: {
+      date: shaanxiWholesaleWeightedPriceDate,
+      dateRange: {
+        start: shaanxiWholesaleWeightedPriceDate,
+        end: shaanxiWholesaleWeightedPriceEndDate,
+      },
+      primaryTab: "交易总体情况",
+      secondaryTab: "中长期批发市场净合同加权均价",
+    },
+    viewType: "lineTable",
+    datePickerMode: "range",
+    chartTitle: "中长期批发市场净合同加权均价趋势图",
+    chartUnit: "元/MWh",
+    labelKey: "period",
+    seriesDefinitions: [
+      { id: "sx-wholesale-weighted-daily-price", label: "当日均价", color: "#1677FF", valueKey: "dailyAveragePrice" },
+      { id: "sx-wholesale-weighted-month-price", label: "月累计均价（全月）", color: "#2FCB8F", valueKey: "monthCumulativeAveragePrice" },
+    ],
+    tableColumns: [
+      { key: "date", title: "日期" },
+      { key: "period", title: "时段" },
+      { key: "dailyAveragePrice", title: "当日均价（元/MWh）", precision: 3 },
+      { key: "monthCumulativeAveragePrice", title: "月累计均价（全月）（元/MWh）", precision: 3 },
+    ],
+    tableData: shaanxiWholesaleWeightedPriceRows,
+    tableMinWidth: 1120,
+    fileList: buildMockFileList("sx", "wholesale-weighted-price", shaanxiWholesaleWeightedPriceDate, 1),
+    availableRange: {
+      start: shaanxiWholesaleWeightedPriceDate,
+      end: shaanxiWholesaleWeightedPriceEndDate,
+    },
+    emptyText: "当前日期暂无陕西中长期批发市场净合同加权均价数据。",
+  });
+  var shaanxiRetailSettlementPage = createPageData({
+    title: "批发购电分时均价",
+    description: "陕西交易中心信息披露页零售用户结算情况批发购电分时均价数据。",
+    updateTime: shaanxiRetailSettlementBaseDate + " 00:00:00",
+    dataSource: "批发购电分时均价",
+    filters: {
+      date: shaanxiRetailSettlementBaseDate,
+      dateRange: {
+        start: shaanxiRetailSettlementBaseDate,
+        end: shaanxiRetailSettlementEndDate,
+      },
+      primaryTab: "零售用户结算情况",
+      secondaryTab: "批发购电分时均价",
+    },
+    viewType: "disclosureTable",
+    datePickerMode: "range",
+    tableTitle: "批发购电分时均价",
+    tableColumns: [
+      { key: "date", title: "日期" },
+      { key: "period", title: "时段" },
+      { key: "mediumLongContractVolume", title: "Q中长期合同电量", precision: 3 },
+      { key: "dayAheadClearingVolume", title: "Q日前市场出清电量", precision: 3 },
+      { key: "actualUsage", title: "Q实际用电量", precision: 3 },
+      { key: "k1", title: "K1", precision: 2 },
+      { key: "k2", title: "K2", precision: 2 },
+      { key: "mediumLongPrice", title: "P中长期电价", precision: 3 },
+      { key: "dayAheadClearingPrice", title: "P现货日前出清电价", precision: 3 },
+      { key: "realTimeClearingPrice", title: "P现货实时出清电价", precision: 3 },
+      { key: "wholesaleTimeSharingPrice", title: "P批发购电分时电价", precision: 3 },
+      { key: "wholesaleWeightedAveragePrice", title: "P批发购电加权均价", precision: 3 },
+    ],
+    tableData: shaanxiRetailSettlementRows,
+    tableMinWidth: 1760,
+    fileList: buildMockFileList("sx", "retail-settlement-hourly-price", shaanxiRetailSettlementBaseDate, 1),
+    availableRange: {
+      start: shaanxiRetailSettlementBaseDate,
+      end: shaanxiRetailSettlementEndDate,
+    },
+    emptyText: "当前日期暂无陕西批发购电分时均价数据。",
+  });
+
   function buildShaanxiQuarterProfileRow(date, companyName, companyIndex, dayIndex) {
     var quarterValues = buildWaveValues(15, 96, {
       base: 152 + dayIndex * 3.4 + companyIndex * 10.8,
@@ -2042,6 +2526,10 @@
       infoDayAheadDeclaration: shaanxiUnifiedDeclarationPage,
       infoUnitStatus: shaanxiUnifiedUnitStatusPage,
       infoReserve: shaanxiUnifiedReservePage,
+      infoContractCurveSummary: shaanxiContractCurveSummaryPage,
+      infoContractCurveDetail: shaanxiContractCurveDetailPage,
+      infoWholesaleWeightedPrice: shaanxiWholesaleWeightedPricePage,
+      infoRetailSettlementHourlyPrice: shaanxiRetailSettlementPage,
       infoEmptyLoad: createShaanxiInfoEmptyPage("负荷信息", "负荷信息", "负荷信息"),
       infoEmptyLoadDetail: createShaanxiInfoEmptyPage("负荷详情", "负荷信息", "负荷详情"),
       infoEmptyVolume: createShaanxiInfoEmptyPage(
@@ -2079,6 +2567,25 @@
           "全省统一出清价": "infoUnifiedPrice",
           "出清电量": "infoEmptyVolume",
           "交易结果": "infoEmptyTradeResult",
+          "中长期合同曲线": {
+            defaultDatasetKey: "infoContractCurveSummary",
+            secondaryTabs: {
+              "中长期合同曲线汇总": "infoContractCurveSummary",
+              "中长期合同曲线明细": "infoContractCurveDetail",
+            },
+          },
+          "交易总体情况": {
+            defaultDatasetKey: "infoWholesaleWeightedPrice",
+            secondaryTabs: {
+              "中长期批发市场净合同加权均价": "infoWholesaleWeightedPrice",
+            },
+          },
+          "零售用户结算情况": {
+            defaultDatasetKey: "infoRetailSettlementHourlyPrice",
+            secondaryTabs: {
+              "批发购电分时均价": "infoRetailSettlementHourlyPrice",
+            },
+          },
           "售电公司分时电量": "infoEmptySaleCompany",
           "用电企业分时电量": "infoEnterpriseProfile",
           "节点电价": "infoNodePrice",
