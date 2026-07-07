@@ -1739,7 +1739,6 @@
             period: row.period,
             dailyAveragePrice: adjustShaanxiWholesaleWeightedPrice(row.dailyAveragePrice, rowIndex, dayIndex, false),
             monthCumulativeAveragePrice: adjustShaanxiWholesaleWeightedPrice(row.monthCumulativeAveragePrice, rowIndex, dayIndex, true),
-            updatedAt: date + " 00:00:00",
           };
         }),
       );
