@@ -1361,6 +1361,116 @@ a {
   width: 188px;
 }
 
+.contract-curve-detail-filter-panel {
+  flex-direction: column;
+  gap: 0;
+  padding: 20px 28px 24px;
+}
+
+.contract-curve-detail-filter-panel .tertiary-tabs {
+  width: 100%;
+  margin-top: 0;
+}
+
+.contract-curve-detail-filter-body {
+  width: 100%;
+  padding-top: 24px;
+}
+
+.contract-curve-detail-filter-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(300px, 1fr));
+  gap: 18px 48px;
+}
+
+.contract-curve-detail-filter-fields .info-filter-field {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+.contract-curve-detail-filter-fields .filter-label {
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.contract-curve-detail-filter-fields .filter-input {
+  width: 100%;
+}
+
+.contract-curve-detail-filter-actions {
+  grid-column: 3;
+  justify-self: end;
+  justify-content: flex-end;
+}
+
+.contract-curve-detail-filter-actions .ghost-btn,
+.contract-curve-detail-filter-actions .primary-btn,
+.contract-curve-detail-table-actions .ghost-btn,
+.contract-curve-detail-table-actions .primary-btn {
+  height: 36px;
+  min-width: 78px;
+  border-radius: 4px;
+}
+
+.contract-curve-detail-table-panel {
+  padding-top: 0;
+}
+
+.contract-curve-detail-table-main {
+  padding: 24px 28px 28px;
+}
+
+.contract-curve-detail-table-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.contract-curve-detail-table-title-block {
+  min-width: 0;
+}
+
+.contract-curve-detail-table-title {
+  margin-bottom: 8px;
+}
+
+.contract-curve-detail-table-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.contract-curve-detail-disclosure-link {
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.contract-curve-detail-table-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.contract-curve-detail-table-panel .table-wrap {
+  max-height: 720px;
+  margin-top: 0;
+  border-top: 0;
+  border-radius: 8px;
+  box-shadow: 0 10px 28px rgba(25, 42, 70, 0.08);
+}
+
 .status-panel,
 .simulation-filter-panel {
   display: flex;
@@ -5530,6 +5640,14 @@ a {
   .info-tab-date-query {
     justify-content: flex-start;
   }
+
+  .contract-curve-detail-filter-fields {
+    grid-template-columns: repeat(2, minmax(280px, 1fr));
+  }
+
+  .contract-curve-detail-filter-actions {
+    grid-column: 2;
+  }
 }
 
 @media (max-width: 1200px) {
@@ -5613,6 +5731,25 @@ a {
   .hn-settlement-doc-meta {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .contract-curve-detail-table-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .contract-curve-detail-filter-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 24px;
+  }
+
+  .contract-curve-detail-filter-actions,
+  .contract-curve-detail-table-actions {
+    align-self: flex-end;
+  }
+
+  .contract-curve-detail-filter-actions {
+    justify-self: end;
+  }
 }
 
 @media (max-width: 860px) {
@@ -5651,6 +5788,41 @@ a {
 
   .placeholder-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .contract-curve-detail-filter-panel,
+  .contract-curve-detail-table-main {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .contract-curve-detail-filter-panel .tertiary-tabs {
+    overflow-x: auto;
+  }
+
+  .contract-curve-detail-filter-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .contract-curve-detail-filter-fields .info-filter-field {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .contract-curve-detail-filter-actions,
+  .contract-curve-detail-table-actions {
+    align-self: stretch;
+  }
+
+  .contract-curve-detail-filter-actions {
+    grid-column: 1;
+    justify-self: stretch;
+  }
+
+  .contract-curve-detail-filter-actions .ghost-btn,
+  .contract-curve-detail-filter-actions .primary-btn,
+  .contract-curve-detail-table-actions .ghost-btn,
+  .contract-curve-detail-table-actions .primary-btn {
+    flex: 1 1 0;
   }
 
   .drawer-panel,

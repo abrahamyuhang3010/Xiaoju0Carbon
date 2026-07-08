@@ -4070,6 +4070,10 @@
     );
   }
 
+  function isShaanxiInfoContractCurveDetailPage(pageData) {
+    return getSelectedTradeCenterKey() === "shaanxi" && isInfoContractCurveDetailPage() && (!pageData || pageData.viewType === "contractCurveDetail");
+  }
+
   function getInfoContractCurveDetailTab(pageData) {
     var tabs = (pageData && pageData.detailTabs) || INFO_DISCLOSURE_CONTRACT_CURVE_DETAIL_TABS;
     if (tabs.indexOf(state.info.contractCurveDetailTab) >= 0) {
@@ -4105,6 +4109,27 @@
         })
         .join("") +
       "</div>"
+    );
+  }
+
+  function renderInfoContractCurveDetailFilterBar(pageData) {
+    var filterFieldsHtml = renderUnifiedInfoDisclosureBusinessFilterFields(pageData);
+    var actionsHtml = filterFieldsHtml
+      ? renderUiActionButton("重置", "ghost", "reset-info-disclosure-filters") +
+        renderUiActionButton("查询", "primary", "query-info-disclosure-filters")
+      : "";
+
+    return (
+      '<section class="panel info-filter-panel contract-curve-detail-filter-panel">' +
+      renderInfoContractCurveTertiaryTabs(pageData) +
+      (filterFieldsHtml
+        ? '<div class="contract-curve-detail-filter-body"><div class="info-filter-fields contract-curve-detail-filter-fields">' +
+          filterFieldsHtml +
+          '<div class="info-filter-actions contract-curve-detail-filter-actions">' +
+          actionsHtml +
+          "</div></div></div>"
+        : "") +
+      "</section>"
     );
   }
 
@@ -7076,6 +7101,42 @@
     return '<div class="placeholder-note trade-compare-hint">对比日暂无中长期合同曲线数据</div>';
   }
 
+  function renderInfoContractCurveDetailTablePanel(pageData, activeDetailTab, tableId, tableConfig) {
+    var status = getInfoDisclosureStatus();
+    var sourceText = status.source || (pageData && pageData.dataSource) || "交易中心披露";
+    var metaText =
+      "数据更新时间:" +
+      (status.time || "--") +
+      (sourceText ? "(" + sourceText + ")" : "");
+
+    return (
+      '<section class="panel chart-panel chart-panel-plain contract-curve-detail-table-panel"><div class="chart-main chart-main-plain contract-curve-detail-table-main">' +
+      '<div class="contract-curve-detail-table-heading"><div class="contract-curve-detail-table-title-block">' +
+      '<div class="overview-section-title contract-curve-detail-table-title">' +
+      escapeHtml(activeDetailTab + "列表") +
+      '</div><div class="contract-curve-detail-table-meta"><span>' +
+      escapeHtml(metaText) +
+      '</span><button type="button" class="contract-curve-detail-disclosure-link" data-ui-action="open-data-disclosure-time">数据披露时间</button></div></div>' +
+      '<div class="contract-curve-detail-table-actions">' +
+      renderUiActionButton("更新数据", "ghost", "open-manual-update") +
+      renderUiActionButton("下载", "primary", "open-download") +
+      "</div></div>" +
+      renderDataTablePro({
+        tableId: tableId,
+        columns: tableConfig.columns,
+        rows: tableConfig.rows,
+        minWidth: tableConfig.minWidth,
+        enableColumnDrag: true,
+        columnOrder: getTableColumnOrder(tableId),
+        sortState: getTableSortState(tableId),
+        escapeHtml: escapeHtml,
+        renderIcon: renderIcon,
+        renderEmptyState: renderEmptyState,
+      }) +
+      "</div></section>"
+    );
+  }
+
   function renderInfoContractCurveSummaryContent(pageData) {
     var rows = filterInfoDisclosurePageRows(pageData.tableData || [], pageData);
     var compareRows =
@@ -7180,16 +7241,16 @@
       return renderInfoUnsupportedEmptyState(pageData.emptyText || INFO_DISCLOSURE_EMPTY_MESSAGE);
     }
 
-    return (
-      renderInfoContractCurveCompareHint(compareRows) +
-      renderInfoDisclosureDataTablePanel(
-        activeDetailTab,
-        tableId,
-        tableConfig,
-        { enableColumnDrag: true },
-      ) +
-      compareTableHtml
-    );
+    var detailTablePanelHtml = isShaanxiInfoContractCurveDetailPage(pageData)
+      ? renderInfoContractCurveDetailTablePanel(pageData, activeDetailTab, tableId, tableConfig)
+      : renderInfoDisclosureDataTablePanel(
+          activeDetailTab,
+          tableId,
+          tableConfig,
+          { enableColumnDrag: true },
+        );
+
+    return renderInfoContractCurveCompareHint(compareRows) + detailTablePanelHtml + compareTableHtml;
   }
 
   function renderUnifiedInfoDisclosureContent(pageData) {
@@ -7698,6 +7759,9 @@
     }
 
     if (!isGuangdongInfoDisclosureCenter()) {
+      if (isShaanxiInfoContractCurveDetailPage(pageData)) {
+        return renderInfoContractCurveDetailFilterBar(pageData);
+      }
       return renderUnifiedInfoDisclosureFilterBar(pageData);
     }
     var activePrimaryTab = getActiveInfoPrimaryTab();
@@ -8112,7 +8176,8 @@
       visibleSecondaryTabs.length
         ? '<div class="secondary-tabs">' + renderSecondaryTabs(visibleSecondaryTabs, getActiveInfoSecondaryTab()) + "</div>"
         : "";
-    var tertiaryTabsHtml = renderInfoContractCurveTertiaryTabs(pageData);
+    var useShaanxiContractCurveDetailLayout = isShaanxiInfoContractCurveDetailPage(pageData);
+    var tertiaryTabsHtml = useShaanxiContractCurveDetailLayout ? "" : renderInfoContractCurveTertiaryTabs(pageData);
 
     return (
       '<div class="page-stack">' +
@@ -8142,7 +8207,9 @@
       renderInfoDisclosureFilterBar() +
       (!hasVisibleTabs || activeTab === "用电企业分时电量" || activeTab === "售电公司分时电量" || isHistoryTimeSharingTab(activeTab)
         ? ""
-        : renderInfoUnifiedDataUpdateBar(getInfoDisclosureStatus(), isInfoDisclosureCompareSupported())) +
+        : useShaanxiContractCurveDetailLayout
+          ? ""
+          : renderInfoUnifiedDataUpdateBar(getInfoDisclosureStatus(), isInfoDisclosureCompareSupported())) +
       renderInfoDisclosureContent() +
       "</div>"
     );
