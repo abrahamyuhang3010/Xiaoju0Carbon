@@ -20,7 +20,7 @@
         { key: "unitMaintenanceCapacity", label: "机组检修容量", hasDataSource: true, order: 3 },
         { key: "reserveInfo", label: "备用信息", hasDataSource: true, order: 4 },
         { key: "unitStatus", label: "机组状态", hasDataSource: false, order: 5 },
-        { key: "transmissionMaintenancePlan", label: "发输变电设备检修计划", hasDataSource: false, order: 6 },
+        { key: "transmissionMaintenancePlan", label: "发输变电设备检修计划", hasDataSource: true, order: 6 },
       ],
       hn: [
         { key: "loadInfo", label: "负荷信息", hasDataSource: true, order: 1 },
@@ -60,7 +60,7 @@
         "机组检修容量": true,
         "备用信息": true,
         "机组状态": false,
-        "发输变电设备检修计划": false,
+        "发输变电设备检修计划": true,
         "全省统一出清价": true,
         "出清电量": true,
         "交易结果": true,

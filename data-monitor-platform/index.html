@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>数据监控预警</title>
+    <link rel="stylesheet" href="./styles.css?v=production-ready" />
+  </head>
+  <body>
+    <div id="app" class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <h1>数据监控预警</h1>
+        </div>
+        <div class="global-controls" aria-label="全局条件">
+          <label class="control">
+            <span>交易中心</span>
+            <select id="centerSelect"></select>
+          </label>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <nav class="tabs" aria-label="监控类型">
+          <button class="tab active" type="button" data-tab="fetch">取数通道监控</button>
+          <button class="tab" type="button" data-tab="quality">数据质量监控</button>
+        </nav>
+
+        <section id="fetchPanel" class="tab-panel active">
+          <form class="filter-grid" id="fetchFilters">
+            <label class="field span-2">
+              <span>运行日期</span>
+              <div class="range">
+                <input name="runStart" type="date" />
+                <i>至</i>
+                <input name="runEnd" type="date" />
+              </div>
+            </label>
+            <label class="field span-2">
+              <span>预警时间</span>
+              <div class="range compact">
+                <input name="warningDate" type="date" />
+                <select name="warningBatch">
+                  <option value="">全部</option>
+                  <option value="11:40">11:40</option>
+                  <option value="18:30">18:30</option>
+                  <option value="D+1 11:40">D+1 11:40</option>
+                </select>
+              </div>
+            </label>
+            <label class="field">
+              <span>业务模块</span>
+              <select name="businessModule" data-options="modules"></select>
+            </label>
+            <label class="field">
+              <span>数据名称</span>
+              <input name="dataName" placeholder="输入数据名称" />
+            </label>
+            <label class="field">
+              <span>数据优先级</span>
+              <select name="priority" data-options="priorities"></select>
+            </label>
+            <label class="field">
+              <span>异常状态</span>
+              <select name="status" data-options="fetchStatuses"></select>
+            </label>
+            <label class="field">
+              <span>异常类型</span>
+              <select name="exceptionType" data-options="fetchTypes"></select>
+            </label>
+            <div class="filter-actions">
+              <button class="btn primary" type="submit">查询</button>
+              <button class="btn" type="button" data-reset="fetch">重置</button>
+            </div>
+          </form>
+
+          <div class="metric-grid" id="fetchMetrics"></div>
+
+          <section class="table-block">
+            <div class="section-title">
+              <h2>取数通道异常明细</h2>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>业务模块</th>
+                    <th>数据名称</th>
+                    <th>运行日期</th>
+                    <th>预警时间</th>
+                    <th>数据来源</th>
+                    <th>优先级</th>
+                    <th>异常状态</th>
+                    <th>异常类型</th>
+                    <th>异常说明</th>
+                    <th>最近取数时间</th>
+                    <th>通知状态</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="fetchTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+
+        <section id="qualityPanel" class="tab-panel">
+          <form class="filter-grid" id="qualityFilters">
+            <label class="field span-2">
+              <span>运行日期</span>
+              <div class="range">
+                <input name="runStart" type="date" />
+                <i>至</i>
+                <input name="runEnd" type="date" />
+              </div>
+            </label>
+            <label class="field span-2">
+              <span>校验时间</span>
+              <div class="range">
+                <input name="checkStart" type="date" />
+                <i>至</i>
+                <input name="checkEnd" type="date" />
+              </div>
+            </label>
+            <label class="field">
+              <span>业务模块</span>
+              <select name="businessModule" data-options="modules"></select>
+            </label>
+            <label class="field">
+              <span>数据名称</span>
+              <input name="dataName" placeholder="输入数据名称" />
+            </label>
+            <label class="field">
+              <span>数据优先级</span>
+              <select name="priority" data-options="priorities"></select>
+            </label>
+            <label class="field">
+              <span>异常状态</span>
+              <select name="status" data-options="qualityStatuses"></select>
+            </label>
+            <label class="field">
+              <span>异常类型</span>
+              <select name="exceptionType" data-options="qualityTypes"></select>
+            </label>
+            <div class="filter-actions">
+              <button class="btn primary" type="submit">查询</button>
+              <button class="btn" type="button" data-reset="quality">重置</button>
+            </div>
+          </form>
+
+          <div class="metric-grid" id="qualityMetrics"></div>
+
+          <section class="table-block">
+            <div class="section-title">
+              <h2>数据质量异常明细</h2>
+            </div>
+            <div class="table-scroll">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>业务模块</th>
+                    <th>数据名称</th>
+                    <th>运行日期</th>
+                    <th>优先级</th>
+                    <th>校验时间</th>
+                    <th>异常状态</th>
+                    <th>异常类型</th>
+                    <th>命中规则</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="qualityTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div id="drawerMask" class="drawer-mask" hidden></div>
+    <aside id="detailDrawer" class="drawer" aria-hidden="true">
+      <div class="drawer-header">
+        <div>
+          <h2 id="drawerTitle">异常详情</h2>
+          <p id="drawerSubtitle">--</p>
+        </div>
+        <button class="btn" id="drawerCloseBtn" type="button">关闭</button>
+      </div>
+      <div class="drawer-body" id="drawerBody"></div>
+      <div class="drawer-footer">
+        <button class="btn" id="drawerLogBtn" type="button">日志入口</button>
+        <button class="btn" id="drawerBizBtn" type="button">业务页面入口</button>
+        <button class="btn primary" id="drawerRecheckBtn" type="button">重新校验</button>
+      </div>
+    </aside>
+
+    <script src="./config.js?v=production-ready"></script>
+    <script src="./data/seed-monitor-data.js?v=production-ready"></script>
+    <script src="./app.js?v=production-ready"></script>
+  </body>
+</html>

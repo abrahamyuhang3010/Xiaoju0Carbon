@@ -2473,7 +2473,7 @@
           "全省统一出清价": "infoUnifiedPrice",
           "出清电量": "infoEmptyVolume",
           "交易结果": "infoEmptyTradeResult",
-          "售电公司分时电量": "infoEmptySaleCompany",
+          "售电公司分时电量": "infoSaleCompanyProfile",
           "用电企业分时电量": "infoEnterpriseProfile",
           "节点电价": "infoNodePrice",
           "日前申报": "infoDayAheadDeclaration",

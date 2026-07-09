@@ -135,6 +135,71 @@ FORMULA_RENDER_CSS = """
     .math-bigop-symbol { font-size: 1.48em; line-height: 1; }
     .math-bigop-sup,
     .math-bigop-sub { font-size: 0.56em; line-height: 1; }
+    .math-overline {
+      display: inline-block;
+      text-decoration: overline;
+      text-decoration-thickness: 1px;
+      text-decoration-skip-ink: none;
+    }
+    .math-sqrt {
+      display: inline-flex;
+      align-items: stretch;
+      vertical-align: middle;
+      margin: 0 0.06em;
+    }
+    .math-sqrt-symbol {
+      font-size: 1.18em;
+      line-height: 1;
+      transform: translateY(0.08em);
+    }
+    .math-sqrt-body {
+      border-block-start: 0.06em solid currentColor;
+      padding: 0.02em 0.08em 0;
+    }
+    .piecewise-latex-rendered {
+      line-height: 1.55;
+      text-align: center;
+    }
+    .piecewise-formula {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      min-width: max-content;
+    }
+    .piecewise-left {
+      margin-right: 0.16em;
+      white-space: nowrap;
+    }
+    .piecewise-brace {
+      display: inline-block;
+      margin: 0 0.14em 0 0;
+      font-size: 2.8em;
+      line-height: 0.86;
+      transform: scaleY(1.28);
+      transform-origin: center;
+    }
+    .piecewise-body {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.16em;
+      line-height: 1.4;
+    }
+    .piecewise-row {
+      display: grid;
+      grid-template-columns: 1.2em auto;
+      column-gap: 1.2em;
+      align-items: baseline;
+      text-align: left;
+    }
+    .piecewise-value {
+      text-align: left;
+    }
+    .piecewise-text {
+      font-family: "Songti SC", "SimSun", "STSong", "Noto Serif CJK SC", serif;
+      font-style: normal;
+    }
 """
 
 WATERMARK_LINE_RE = re.compile(

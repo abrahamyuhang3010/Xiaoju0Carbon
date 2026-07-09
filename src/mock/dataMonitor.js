@@ -3,13 +3,13 @@
   "title": "数据监控",
   "subtitle": "展示当前交易中心各项市场数据的实时状态。",
   "status": {
-    "expectedCount": 84,
-    "normalCount": 52,
-    "fetchAbnormalCount": 16,
-    "qualityAbnormalCount": 21,
-    "p0Count": 29,
+    "expectedCount": 87,
+    "normalCount": 54,
+    "fetchAbnormalCount": 17,
+    "qualityAbnormalCount": 22,
+    "p0Count": 30,
     "p1Count": 3,
-    "abnormalCount": 32
+    "abnormalCount": 33
   },
   "filters": {
     "tradeCenterOptions": [
@@ -1059,6 +1059,63 @@
         "信息披露",
         "分时电量",
         "用电企业分时电量"
+      ],
+      "timeline": [
+        "2026-06-16 17:15 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-086",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-分时电量-售电公司分时电量",
+      "dataItem": "售电公司分时电量",
+      "sourceDataItem": "售电公司日电量",
+      "dataType": "实际",
+      "dataParent": "售电公司分时电量",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 86,
+      "targetInternalKey": "陕西|售电公司分时电量|信息披露-分时电量-售电公司分时电量|86",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        20
+      ],
+      "excelMatchKey": "陕西|售电公司分时电量|86",
+      "fileFormat": "excel",
+      "downloadFile": "2026-05-01用户侧实际用电量.xlsx",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "collectorStatus": "normal",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D-2日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-5日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:15",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "信息披露-售电公司日电量",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:23",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "分时电量",
+        "售电公司分时电量"
       ],
       "timeline": [
         "2026-06-16 17:15 最近一次数据成功入库",
@@ -2567,6 +2624,63 @@
       ]
     },
     {
+      "id": "dm-087",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-分时电量-售电公司分时电量",
+      "dataItem": "售电公司分时电量",
+      "sourceDataItem": "日用电信息（现货）",
+      "dataType": "实际",
+      "dataParent": "售电公司分时电量",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 87,
+      "targetInternalKey": "湖南|售电公司分时电量|信息披露-分时电量-售电公司分时电量|87",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        21
+      ],
+      "excelMatchKey": "湖南|售电公司分时电量|87",
+      "fileFormat": "excel",
+      "downloadFile": "现货日用电信息-售电公司_REPORT0 (4).xlsx",
+      "fetchStatus": "数据未取回",
+      "qualityStatus": "数据未更新",
+      "collectorStatus": "normal",
+      "timePoint": "1h",
+      "outputTime": "D日 出 D-2日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-2日 ～ D-2日",
+      "lastSuccessAt": "2026-06-16 17:15",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "信息披露-用户用电信息查询-日用电信息（现货）",
+      "fetchExceptionType": "数据未取回",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "是",
+      "fetchProcessStatus": "待处理",
+      "checkAt": "2026-06-16 18:23",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "数据未更新",
+      "qualityNotified": "是",
+      "qualityProcessStatus": "待处理",
+      "processStatus": "待处理",
+      "notified": "是",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "分时电量",
+        "售电公司分时电量"
+      ],
+      "timeline": [
+        "2026-06-16 17:15 最近一次数据成功入库",
+        "- 命中取数状态：数据未取回",
+        "2026-06-16 18:40 命中数据质量异常：数据未更新"
+      ]
+    },
+    {
       "id": "dm-039",
       "tradeCenter": "湖南",
       "tradeCenterName": "湖南交易中心",
@@ -3809,6 +3923,63 @@
         "2026-06-16 10:20 最近一次数据成功入库",
         "2026-06-16 18:20 取数任务已发起，当前仍在执行",
         "2026-06-16 18:40 数据质量校验待触发"
+      ]
+    },
+    {
+      "id": "dm-088",
+      "tradeCenter": "广东",
+      "tradeCenterName": "广东交易中心",
+      "businessModule": "信息披露-负荷信息-发输变电设备检修计划",
+      "dataItem": "发输变电设备检修计划",
+      "sourceDataItem": "输变电检修预测信息",
+      "dataType": "预测",
+      "dataParent": "发输变电设备检修计划",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 88,
+      "targetInternalKey": "广东|发输变电设备检修计划|信息披露-负荷信息-发输变电设备检修计划|88",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        60
+      ],
+      "excelMatchKey": "广东|发输变电设备检修计划|88",
+      "fileFormat": "-",
+      "downloadFile": "广东-机组检修预测信息.xlsx",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "collectorStatus": "normal",
+      "timePoint": "1D",
+      "outputTime": "D日11:00 出 D+1日",
+      "warningTime": "D日 11:40",
+      "valueRange": "D-6日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 10:05",
+      "nextFetchAt": "2026-06-17 11:40",
+      "fetchToolTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "pageAddress": "现货交易（新）-披露中心-信息披露查询-预测",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 11:13",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "环比阈值：记录数较上一期±30%；同比阈值：记录数较去年同期±50%；非连续数值类，重点校验设备/日期/状态字段完整性",
+      "priority": "-",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "发输变电设备检修计划"
+      ],
+      "timeline": [
+        "2026-06-16 10:05 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
       ]
     },
     {
@@ -5065,6 +5236,14 @@
             ],
             "children": [
               {
+                "label": "售电公司分时电量",
+                "path": [
+                  "信息披露",
+                  "分时电量",
+                  "售电公司分时电量"
+                ]
+              },
+              {
                 "label": "用电企业分时电量",
                 "path": [
                   "信息披露",
@@ -5195,6 +5374,14 @@
             ],
             "children": [
               {
+                "label": "售电公司分时电量",
+                "path": [
+                  "信息披露",
+                  "分时电量",
+                  "售电公司分时电量"
+                ]
+              },
+              {
                 "label": "用电企业分时电量",
                 "path": [
                   "信息披露",
@@ -5276,6 +5463,14 @@
                   "信息披露",
                   "负荷信息",
                   "备用信息"
+                ]
+              },
+              {
+                "label": "发输变电设备检修计划",
+                "path": [
+                  "信息披露",
+                  "负荷信息",
+                  "发输变电设备检修计划"
                 ]
               }
             ]

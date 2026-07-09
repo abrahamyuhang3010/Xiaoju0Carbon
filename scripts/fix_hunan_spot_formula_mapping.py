@@ -85,6 +85,7 @@ SYMBOL_COMMANDS = {
     "div": "÷",
     "forall": "∀",
     "in": "∈",
+    "ldots": "…",
 }
 INLINE_BRACE = r"\{(?:[^{}]|\\mathrm\{[^{}]+\}|\\max|\\min)+\}"
 INLINE_SUFFIX = rf"(?:_{INLINE_BRACE}|_[A-Za-z0-9]+|\^{INLINE_BRACE}|\^[A-Za-z0-9+\-']+)"
@@ -216,9 +217,16 @@ def latex_base_html(base: str) -> str:
     return f"<i>{html.escape(base)}</i>"
 
 
+COMPLEX_INLINE_COMMAND_RE = re.compile(
+    r"\\(?:sum|frac|mathrm|le|ge|times|div|forall|in|hat|bar|overline|sqrt|ldots|%|alpha|beta|gamma|delta|Delta|eta|lambda|mu|rho|sigma|tau)"
+)
+
+
 def latex_inline_to_html(latex: str) -> str:
     if latex in INLINE_MATH_HTML:
         return INLINE_MATH_HTML[latex]
+    if COMPLEX_INLINE_COMMAND_RE.search(latex):
+        return inline_math(render_latex_fragment(latex))
     out: list[str] = []
     pos = 0
     while pos < len(latex):
@@ -297,6 +305,10 @@ def render_latex_fragment(latex: str | None, script_mode: bool = False) -> str:
                 out.append(f'<span class="math-delim">{html.escape(latex[pos + 1])}</span>')
                 pos += 2
                 continue
+            if pos + 1 < len(latex) and latex[pos + 1] == "%":
+                out.append("%")
+                pos += 2
+                continue
             command_match = re.match(r"\\[A-Za-z]+", latex[pos:])
             if not command_match:
                 out.append(html.escape(char))
@@ -323,6 +335,49 @@ def render_latex_fragment(latex: str | None, script_mode: bool = False) -> str:
                     "</span>"
                 )
                 continue
+            if command == "hat":
+                while pos < len(latex) and latex[pos].isspace():
+                    pos += 1
+                if pos < len(latex) and latex[pos] == "{":
+                    body, pos = read_group(latex, pos)
+                    sub, sup, pos = read_scripts(latex, pos)
+                    target = var_fragment(f'<span class="math-hat">{render_latex_fragment(body)}</span>', sub, sup)
+                else:
+                    base = read_latex_base(latex, pos)
+                    if base:
+                        raw_base, pos = base
+                        sub, sup, pos = read_scripts(latex, pos)
+                        target = var_fragment(f'<span class="math-hat">{latex_base_html(raw_base)}</span>', sub, sup)
+                    else:
+                        target = '<span class="math-hat"></span>'
+                out.append(target)
+                continue
+            if command in {"bar", "overline"}:
+                while pos < len(latex) and latex[pos].isspace():
+                    pos += 1
+                if pos < len(latex) and latex[pos] == "{":
+                    body, pos = read_group(latex, pos)
+                    sub, sup, pos = read_scripts(latex, pos)
+                    target = var_fragment(f'<span class="math-overline">{render_latex_fragment(body)}</span>', sub, sup)
+                else:
+                    base = read_latex_base(latex, pos)
+                    if base:
+                        raw_base, pos = base
+                        sub, sup, pos = read_scripts(latex, pos)
+                        target = var_fragment(f'<span class="math-overline">{latex_base_html(raw_base)}</span>', sub, sup)
+                    else:
+                        target = '<span class="math-overline"></span>'
+                out.append(target)
+                continue
+            if command == "sqrt":
+                body, pos = read_group(latex, pos)
+                out.append(
+                    '<span class="math-sqrt">'
+                    '<span class="math-sqrt-symbol">√</span>'
+                    f'<span class="math-sqrt-body">{render_latex_fragment(body)}</span>'
+                    "</span>"
+                )
+                continue
             if command == "mathrm":
                 body, pos = read_group(latex, pos)
                 base_html = f'<span class="math-upright">{html.escape(body)}</span>'
@@ -336,13 +391,23 @@ def render_latex_fragment(latex: str | None, script_mode: bool = False) -> str:
             sub, sup, pos = read_scripts(latex, pos)
             out.append(var_fragment(base_html, sub, sup))
             continue
-        if char.isalpha():
+        if re.match(r"[\u4e00-\u9fff]", char):
+            match = re.match(r"[\u4e00-\u9fff]+", latex[pos:])
+            assert match is not None
+            out.append(f'<span class="math-upright">{html.escape(match.group(0))}</span>')
+            pos += len(match.group(0))
+            continue
+        if char.isalpha() and char.isascii():
             match = re.match(r"[A-Za-z]+", latex[pos:])
             assert match is not None
             base = match.group(0)
             pos += len(base)
             sub, sup, pos = read_scripts(latex, pos)
             out.append(var_fragment(f"<i>{html.escape(base)}</i>", sub, sup))
+            continue
+        if char.isalpha():
+            out.append(f"<i>{html.escape(char)}</i>")
+            pos += 1
             continue
         if char.isdigit():
             match = re.match(r"\d+(?:\.\d+)?", latex[pos:])
@@ -372,7 +437,101 @@ def render_latex_fragment(latex: str | None, script_mode: bool = False) -> str:
     return "".join(out)
 
 
+def render_policy_objective_formula(latex: str) -> str | None:
+    compact = re.sub(r"\s+", "", latex)
+    if not compact.startswith(r"\min\left\{"):
+        return None
+    if "C^G_{v,t}" not in compact or "L^+_{s,t}" not in compact or "L^-_{s,t}" not in compact:
+        return None
+
+    scuc_rows = [
+        r"\sum_{i=1}^{N}\sum_{t=1}^{T}\left[C_{i,t}(P_{i,t})+C^U_{i,t}+C^0_{i,t}\right]+\sum_{v=1}^{V}\sum_{t=1}^{T}\left[C^G_{v,t}(P^G_{v,t})+C^L_{v,t}(P^L_{v,t})\right]",
+        r"+\sum_{s=1}^{NS}\sum_{t=1}^{T}M\left[L^+_{s,t}+L^-_{s,t}\right]",
+    ]
+    sced_rows = [
+        r"\sum_{i=1}^{N}\sum_{t=1}^{T}C_{i,t}(P_{i,t})+\sum_{v=1}^{V}\sum_{t=1}^{T}\left[C^G_{v,t}(P^G_{v,t})+C^L_{v,t}(P^L_{v,t})\right]+\sum_{s=1}^{NS}\sum_{t=1}^{T}M\left[L^+_{s,t}+L^-_{s,t}\right]",
+    ]
+    if "C^U_{i,t}" in compact and "C^0_{i,t}" in compact:
+        rows = scuc_rows
+        row_class = "objective-formula-two-row"
+    else:
+        rows = sced_rows
+        row_class = "objective-formula-one-row"
+
+    rendered_rows = "".join(
+        f'<div class="objective-row">{render_latex_fragment(row)}</div>'
+        for row in rows
+    )
+    return (
+        '<div class="math-block formula-render formula-render-html">'
+        '<div class="latex-rendered objective-latex-rendered" role="math">'
+        f'<div class="objective-formula {row_class}">'
+        '<span class="objective-min">min</span>'
+        '<span class="objective-brace objective-left-brace">{</span>'
+        f'<div class="objective-body">{rendered_rows}</div>'
+        '<span class="objective-brace objective-right-brace">}</span>'
+        "</div></div></div>"
+    )
+
+
+def render_text_mixed_fragment(text: str) -> str:
+    out: list[str] = []
+    pos = 0
+    while pos < len(text):
+        match = re.search(r"\\text\{", text[pos:])
+        if not match:
+            if text[pos:].strip():
+                out.append(render_latex_fragment(text[pos:]))
+            break
+        start = pos + match.start()
+        if start > pos and text[pos:start].strip():
+            out.append(render_latex_fragment(text[pos:start]))
+        body, end_pos = read_group(text, start + len(r"\text"))
+        out.append(f'<span class="piecewise-text">{html.escape(body)}</span>')
+        pos = end_pos
+    return "".join(out)
+
+
+def render_cases_formula(latex: str) -> str | None:
+    match = re.fullmatch(
+        r"(?s)(?P<left>.+?)=\\begin\{cases\}(?P<body>.*?)\\end\{cases\}",
+        latex.strip(),
+    )
+    if not match:
+        return None
+    rendered_rows: list[str] = []
+    rows = [row.strip() for row in re.split(r"\\\\", match.group("body")) if row.strip()]
+    for row in rows:
+        if "&" in row:
+            value, condition = row.split("&", 1)
+        else:
+            value, condition = row, ""
+        value = value.strip().rstrip(",").strip()
+        condition = condition.strip()
+        rendered_rows.append(
+            '<div class="piecewise-row">'
+            f'<span class="piecewise-value">{render_latex_fragment(value)}</span>'
+            f'<span class="piecewise-condition">{render_text_mixed_fragment(condition)}</span>'
+            "</div>"
+        )
+    return (
+        '<div class="math-block formula-render formula-render-html">'
+        '<div class="latex-rendered piecewise-latex-rendered" role="math">'
+        '<div class="piecewise-formula">'
+        f'<span class="piecewise-left">{render_latex_fragment(match.group("left").strip() + "=")}</span>'
+        '<span class="piecewise-brace">{</span>'
+        f'<div class="piecewise-body">{"".join(rendered_rows)}</div>'
+        "</div></div></div>"
+    )
+
+
 def render_latex_display(latex: str) -> str:
+    objective_html = render_policy_objective_formula(latex)
+    if objective_html is not None:
+        return objective_html
+    cases_html = render_cases_formula(latex)
+    if cases_html is not None:
+        return cases_html
     lines = [line.strip() for line in latex.splitlines() if line.strip()]
     rendered_lines = []
     for line in lines:

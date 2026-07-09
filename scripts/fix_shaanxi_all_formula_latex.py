@@ -228,35 +228,35 @@ $$
 机组启动费用表达式：
 
 $$
-C^U_{i,t}=C^U_i h_{i,t}
+C^U_{i,t}=\eta_{i,t}C^U_i
 $$
 
-其中，$C^U_i$ 为机组 $i$ 申报的单次启动费用，$h_{i,t}$ 表征机组 $i$ 在时段 $t$ 是否切换到启动状态。
+其中，$C^U_i$ 为机组 $i$ 申报的单次启动费用，$\eta_{i,t}$ 表征机组 $i$ 在时段 $t$ 是否切换到启动状态。
 
 机组空载费用表达式：
 
 $$
-C^0_{i,t}=C^0_i a_{i,t}
+C^0_{i,t}=\alpha_{i,t}C^0_i
 $$
 
-其中，$C^0_i$ 为机组 $i$ 申报的空载费用，$a_{i,t}$ 表示可控发电主体 $i$ 在时段 $t$ 的运行状态，取值为0 时表示停运，取值为1 时表示在运。虚拟电厂出力/负荷及发电/用电费用的表达式与机组出力及运行费用的定义形式一致。
+其中，$C^0_i$ 为机组 $i$ 申报的空载费用，$\alpha_{i,t}$ 表示可控发电主体 $i$ 在时段 $t$ 的运行状态，取值为0 时表示停运，取值为1 时表示在运。虚拟电厂出力/负荷及发电/用电费用的表达式与机组出力及运行费用的定义形式一致。
 
 日前电能量市场出清SCUC 的约束条件包括：
 
 （1）系统负荷平衡约束。对于每个时段 $t$，负荷平衡约束可以描述为：
 
 $$
-\sum_i P_{i,t}+\sum_j T_{j,t}=\sum_k D_{k,t}
+\sum P_t+\sum T_t=\sum D_t
 $$
 
-其中，$\sum_i P_{i,t}$ 表示时段 $t$ 的系统发电出力总和，$\sum_j T_{j,t}$ 表示时段 $t$ 的联络线计划功率总和（受入为正、送出为负），$\sum_k D_{k,t}$ 为时段 $t$ 的系统负荷总和。
+其中，$\sum P_t$ 表示时段 $t$ 的系统发电出力总和，$\sum T_t$ 表示时段 $t$ 的联络线计划功率总和（受入为正、送出为负），$\sum D_t$ 为时段 $t$ 的系统负荷总和。
 
 （2）系统正备用容量约束。需要保证每天的总开机容量满足系统的最小备用容量。系统正备用容量约束可以描述为：
 
 $$
-\sum_{i=1}^{N}a_{i,t}P^{\max}_{i,t}
+\sum_{i=1}^{N}\alpha_{i,t}P^{\max}_{i,t}
 \ge
-\sum_kD_{k,t}-\sum_{j=1}^{NT}T_{j,t}+R^U_t
+\sum D_t-\sum_{j=1}^{NT}T_{j,t}+R^U_t
 +\sum_{k=1}^{N^W}(1-\mu^w_t)P^w_{k,t}
 +\sum_{m=1}^{N^S}(1-\mu^s_t)P^s_{m,t}
 $$
@@ -266,7 +266,7 @@ $$
 （3）系统负备用容量约束。系统负备用容量约束可以描述为：
 
 $$
-\sum_{i=1}^{N}a_{i,t}P^{\min}_{i,t}\le \sum_kD_{k,t}-\sum_{j=1}^{NT}T_{j,t}-R^D_t
+\sum_{i=1}^{N}\alpha_{i,t}P^{\min}_{i,t}\le \sum D_t-\sum_{j=1}^{NT}T_{j,t}-R^D_t
 $$
 
 其中，$P^{\min}_{i,t}$ 为发电主体 $i$ 在时段 $t$ 的最小发电能力；$R^D_t$ 为时段 $t$ 的系统负备用容量要求。
@@ -274,7 +274,7 @@ $$
 （4）发电出力上下限约束。发电主体的出力应该处于其最大/最小发电能力范围之内，其约束条件可以描述为：
 
 $$
-a_{i,t}P^{\min}_{i,t}\le P_{i,t}\le a_{i,t}P^{\max}_{i,t}
+\alpha_{i,t}P^{\min}_{i,t}\le P_{i,t}\le \alpha_{i,t}P^{\max}_{i,t}
 $$
 
 （5）发电主体群出力上下限约束。发电主体群的出力应该处于其最大/最小出力范围之内，其约束条件可描述为：
@@ -289,12 +289,12 @@ $$
 
 $$
 P_{i,t}-P_{i,t-1}\le
-\Delta P^U_i a_{i,t-1}+P^{\min}_{i,t}(a_{i,t}-a_{i,t-1})+P^{\max}_{i,t}(1-a_{i,t})
+\Delta P^U_i \alpha_{i,t-1}+P^{\min}_{i,t}(\alpha_{i,t}-\alpha_{i,t-1})+P^{\max}_{i,t}(1-\alpha_{i,t})
 $$
 
 $$
 P_{i,t-1}-P_{i,t}\le
-\Delta P^D_i a_{i,t}-P^{\min}_{i,t}(a_{i,t}-a_{i,t-1})+P^{\max}_{i,t}(1-a_{i,t-1})
+\Delta P^D_i \alpha_{i,t}-P^{\min}_{i,t}(\alpha_{i,t}-\alpha_{i,t-1})+P^{\max}_{i,t}(1-\alpha_{i,t-1})
 $$
 
 其中，$\Delta P^U_i$ 为发电主体 $i$ 最大上爬坡速率，$\Delta P^D_i$ 为发电主体 $i$ 最大下爬坡速率。
@@ -302,60 +302,58 @@ $$
 （7）机组最小连续开停时间约束。由于火电机组的物理属性及实际运行需要，要求火电机组满足最小连续开机/停机时间。最小连续开停时间约束可以描述为：
 
 $$
-T^D_{i,t}-(a_{i,t-1}-a_{i,t})T_D\ge0
+T^D_{i,t}-(\alpha_{i,t}-\alpha_{i,t-1})T_D\ge0
 $$
 
 $$
-T^U_{i,t}-(a_{i,t}-a_{i,t-1})T_U\ge0
+T^U_{i,t}-(\alpha_{i,t-1}-\alpha_{i,t})T_U\ge0
 $$
 
-其中，$a_{i,t}$ 为机组 $i$ 在时段 $t$ 的启停状态；$T_U$、$T_D$ 为机组的最小连续开机时间和最小连续停机时间；$T^U_{i,t}$、$T^D_{i,t}$ 为机组 $i$ 在时段 $t$ 时已经连续开机的时间和连续停机的时间，可以用状态变量表示为：
+其中，$\alpha_{i,t}$ 为机组 $i$ 在时段 $t$ 的启停状态；$T_U$、$T_D$ 为机组的最小连续开机时间和最小连续停机时间；$T^U_{i,t}$、$T^D_{i,t}$ 为机组 $i$ 在时段 $t$ 时已经连续开机的时间和连续停机的时间，可以用状态变量表示为：
 
 $$
-T^U_{i,t}=\sum_{k=t-T_U}^{t-1}a_{i,k}
-$$
-
-$$
-T^D_{i,t}=\sum_{k=t-T_D}^{t-1}(1-a_{i,k})
-$$
-
-（8）机组最大启停次数约束。首先定义启动与停机的切换变量。$h_{i,t}$ 为机组 $i$ 在时段 $t$ 是否切换到启动状态；$g_{i,t}$ 表示机组 $i$ 在时段 $t$ 是否切换到停机状态：
-
-$$
-h_{i,t}=1,\quad a_{i,t}=1,\ a_{i,t-1}=0
+T^U_{i,t}=\sum_{k=t-T_U}^{t-1}\alpha_{i,k}
 $$
 
 $$
-h_{i,t}=0,\quad \mathrm{otherwise}
+T^D_{i,t}=\sum_{k=t-T_D}^{t-1}(1-\alpha_{i,k})
+$$
+
+（8）机组最大启停次数约束。首先定义启动与停机的切换变量。定义 $\eta_{i,t}$ 为机组 $i$ 在时段 $t$ 是否切换到启动状态；定义 $\gamma_{i,t}$ 表示机组 $i$ 在时段 $t$ 是否切换到停机状态，$\eta_{i,t}$、$\gamma_{i,t}$ 满足如下条件：
+
+$$
+\eta_{i,t}=\begin{cases}
+1, & \text{仅当 }\alpha_{i,t}=1\text{ 且 }\alpha_{i,t-1}=0\\
+0, & \text{其余情况}
+\end{cases}
 $$
 
 $$
-g_{i,t}=1,\quad a_{i,t}=0,\ a_{i,t-1}=1
-$$
-
-$$
-g_{i,t}=0,\quad \mathrm{otherwise}
+\gamma_{i,t}=\begin{cases}
+1, & \text{仅当 }\alpha_{i,t}=0\text{ 且 }\alpha_{i,t-1}=1\\
+0, & \text{其余情况}
+\end{cases}
 $$
 
 机组启停次数限制可表达如下：
 
 $$
-\sum_{t=1}^{T}h_{i,t}\le h^{\max}_i
+\sum_i\sum_{t=1}^{T}\eta_{i,t}\le \eta^{\max}
 $$
 
 $$
-\sum_{t=1}^{T}g_{i,t}\le g^{\max}_i
+\sum_i\sum_{t=1}^{T}\gamma_{i,t}\le \gamma^{\max}
 $$
 
 （9）分区净启停机容量约束。因政府环保、保民生、促消纳等要求，区域内的机组净启停机容量应该处于指定最大/最小容量范围之内，其约束条件可以描述为：
 
 $$
 P^{\min}_{\mathrm{area}}\le
-\sum_{i=1}^{N_{\mathrm{area}}}\sum_{t=1}^{T}(h_{i,t}-g_{i,t})P_i
+\sum_{i=1}^{N_{\mathrm{area}}}\sum_{t=1}^{T}(\eta_{i,t}\bar P_i-\gamma_{i,t}\bar P_i)
 \le P^{\max}_{\mathrm{area}}
 $$
 
-其中，$P^{\min}_{\mathrm{area}}$ 和 $P^{\max}_{\mathrm{area}}$ 为该区域内机组净启停机容量的最小和最大限额；$N_{\mathrm{area}}$ 为该区域内的机组集合；$P_i$ 为机组 $i$ 的额定容量。
+其中，$P^{\min}_{\mathrm{area}}$ 和 $P^{\max}_{\mathrm{area}}$ 为该区域内机组净启停机容量的最小和最大限额；$N_{\mathrm{area}}$ 为该区域内的机组集合；$\bar P_i$ 为机组 $i$ 的额定容量。
 
 （10）网络潮流约束。网络潮流约束可以描述为：
 
@@ -373,7 +371,7 @@ $$
 （11）特殊机组状态约束。对于人工判断确定为必开机组的，其约束可描述为：
 
 $$
-a_{i,t}=1,\quad \forall i\in I_{s1}
+\alpha_{i,t}=1,\quad \forall i\in I_{s1}
 $$
 
 其中，$I_{s1}$ 为必开机组集合。
@@ -381,7 +379,7 @@ $$
 对于人工判断确定为必停机组的，其约束可描述为：
 
 $$
-a_{i,t}=0,\quad \forall i\in I_{s2}
+\alpha_{i,t}=0,\quad \forall i\in I_{s2}
 $$
 
 其中，$I_{s2}$ 为必停机组集合。
@@ -389,7 +387,7 @@ $$
 （12）同一火电厂单日最大开停机次数约束。同一火电厂 $N$ 台可优化开机的机组单日最大开机次数约束：
 
 $$
-\sum_{i=1}^{N}\sum_{t=1}^{T}h_{i,t}\le U^{su}
+\sum_{i=1}^{N}\sum_{t=1}^{T}\eta_{i,t}\le U^{su}
 $$
 
 其中，$U^{su}$ 为同一火电厂日最大开机次数。
@@ -397,7 +395,7 @@ $$
 同一火电厂 $N$ 台可优化停机的机组单日最大停机次数约束：
 
 $$
-\sum_{i=1}^{N}\sum_{t=1}^{T}g_{i,t}\le U^{st}
+\sum_{i=1}^{N}\sum_{t=1}^{T}\gamma_{i,t}\le U^{st}
 $$
 
 其中，$U^{st}$ 为同一火电厂日最大停机次数。
@@ -405,50 +403,50 @@ $$
 （13）独立储能充放电功率及荷电状态约束。
 
 $$
-0\le a^{ch}_{e,t}P^{ch,\min}_{e}\le P^{ch}_{e,t}\le a^{ch}_{e,t}P^{ch,\max}_{e}
+\alpha^{ch}_{e,t}P^{ch,\min}_{e}\le P^{ch}_{e,t}\le \alpha^{ch}_{e,t}P^{ch,\max}_{e}\le0
 $$
 
 $$
-0\le a^{dis}_{e,t}P^{dis,\min}_{e}\le P^{dis}_{e,t}\le a^{dis}_{e,t}P^{dis,\max}_{e}
+0\le \alpha^{dis}_{e,t}P^{dis,\min}_{e}\le P^{dis}_{e,t}\le \alpha^{dis}_{e,t}P^{dis,\max}_{e}
 $$
 
 $$
-a^{ch}_{e,t}+a^{dis}_{e,t}\le1,\quad a^{ch}_{e,t},a^{dis}_{e,t}\in\{0,1\}
+\alpha^{ch}_{e,t}+\alpha^{dis}_{e,t}=1,\quad \alpha^{ch}_{e,t},\alpha^{dis}_{e,t}\in\{0,1\}
 $$
 
 $$
-SOC_{e,t}=SOC_{e,t-1}+\eta^{ch}_{e}P^{ch}_{e,t}\Delta t-\frac{P^{dis}_{e,t}\Delta t}{\eta^{dis}_{e}}
+SOC_{e,t}=SOC_{e,t-1}-\eta^{ch}_{e}P^{ch}_{e,t}\Delta t-\frac{P^{dis}_{e,t}\Delta t}{\eta^{dis}_{e}}
 $$
 
 $$
 SOC^{\min}_{e,t}\le SOC_{e,t}\le SOC^{\max}_{e,t}
 $$
 
-其中，$P^{ch}_{e,t}$ 和 $P^{dis}_{e,t}$ 分别表示独立储能 $e$ 在时段 $t$ 的充电功率和放电功率；$P^{ch,\max}_{e}$、$P^{ch,\min}_{e}$ 和 $P^{dis,\max}_{e}$、$P^{dis,\min}_{e}$ 分别表示独立储能 $e$ 充电功率和放电功率的最大值、最小值；$a^{ch}_{e,t}$ 和 $a^{dis}_{e,t}$ 分别表示独立储能 $e$ 在时段 $t$ 的充电状态和放电状态；$SOC_{e,t}$ 表示独立储能 $e$ 在时段 $t$ 的荷电状态，$SOC^{\min}_{e,t}$ 和 $SOC^{\max}_{e,t}$ 分别表示独立储能 $e$ 在时段 $t$ 的荷电状态上下限；$\eta^{ch}_e$ 和 $\eta^{dis}_e$ 分别表示独立储能 $e$ 的充电效率和放电效率；$\Delta t$ 表示充放电时段长度。
+其中，$P^{ch}_{e,t}$ 和 $P^{dis}_{e,t}$ 分别表示独立储能 $e$ 在时段 $t$ 的充电功率和放电功率；$P^{ch,\max}_{e}$、$P^{ch,\min}_{e}$ 和 $P^{dis,\max}_{e}$、$P^{dis,\min}_{e}$ 分别表示独立储能 $e$ 充电功率和放电功率的最大值、最小值；$\alpha^{ch}_{e,t}$ 和 $\alpha^{dis}_{e,t}$ 分别表示独立储能 $e$ 在时段 $t$ 的充电状态和放电状态；$SOC_{e,t}$ 表示独立储能 $e$ 在时段 $t$ 的荷电状态，$SOC^{\min}_{e,t}$ 和 $SOC^{\max}_{e,t}$ 分别表示独立储能 $e$ 在时段 $t$ 的荷电状态上下限；$\eta^{ch}_e$ 和 $\eta^{dis}_e$ 分别表示独立储能 $e$ 的充电效率和放电效率；$\Delta t$ 表示充放电时段长度。
 
 （14）一体化虚拟电厂发用电功率约束。
 
 $$
-0\le a^L_{v,t}P^{L,\min}_{v,t}\le P^L_{v,t}\le a^L_{v,t}P^{L,\max}_{v,t}
+\alpha^L_{v,t}P^{L,\min}_{v,t}\le P^L_{v,t}\le \alpha^L_{v,t}P^{L,\max}_{v,t}\le0
 $$
 
 $$
-0\le a^G_{v,t}P^{G,\min}_{v,t}\le P^G_{v,t}\le a^G_{v,t}P^{G,\max}_{v,t}
+0\le \alpha^G_{v,t}P^{G,\min}_{v,t}\le P^G_{v,t}\le \alpha^G_{v,t}P^{G,\max}_{v,t}
 $$
 
 $$
-a^L_{v,t}+a^G_{v,t}\le1,\quad a^L_{v,t},a^G_{v,t}\in\{0,1\}
+\alpha^L_{v,t}+\alpha^G_{v,t}=1,\quad \alpha^L_{v,t},\alpha^G_{v,t}\in\{0,1\}
 $$
 
-其中，$P^L_{v,t}$ 和 $P^G_{v,t}$ 分别表示虚拟电厂 $v$ 在时段 $t$ 的用电负荷和发电出力；$P^{G,\max}_{v,t}$、$P^{G,\min}_{v,t}$ 和 $P^{L,\max}_{v,t}$、$P^{L,\min}_{v,t}$ 分别表示虚拟电厂 $v$ 在时段 $t$ 的用电负荷和发电出力的最大值、最小值；$a^L_{v,t}$ 和 $a^G_{v,t}$ 分别表示虚拟电厂 $v$ 在时段 $t$ 的用电状态和发电状态。
+其中，$P^L_{v,t}$ 和 $P^G_{v,t}$ 分别表示虚拟电厂 $v$ 在时段 $t$ 的用电负荷和发电出力；$P^{G,\max}_{v,t}$、$P^{G,\min}_{v,t}$ 和 $P^{L,\max}_{v,t}$、$P^{L,\min}_{v,t}$ 分别表示虚拟电厂 $v$ 在时段 $t$ 的用电负荷和发电出力的最大值、最小值；$\alpha^L_{v,t}$ 和 $\alpha^G_{v,t}$ 分别表示虚拟电厂 $v$ 在时段 $t$ 的用电状态和发电状态。
 
 （15）独立储能日充放电循环次数约束。
 
 $$
-\frac{\sum_{t=1}^{T}\left(P^{dis}_{e,t}/\eta^{dis}_e-P^{ch}_{e,t}\eta^{ch}_e\right)\Delta t}{2SOC_e}\le N^{circle}
+\frac{\sum_{t=1}^{T}\left(P^{dis}_{e,t}/\eta^{dis}_e-\eta^{ch}_eP^{ch}_{e,t}\right)\Delta t}{2\bar{SOC}_e}\le N_{\mathrm{circle}}
 $$
 
-其中，$SOC_e$ 表示独立储能 $e$ 的额定电能量容量；$N^{circle}$ 表示独立储能每日充放电循环次数上限。
+其中，$\bar{SOC}_e$ 表示独立储能 $e$ 的额定电能量容量；$N_{\mathrm{circle}}$ 表示独立储能每日充放电循环次数上限。
 
 #### 5.7.2. 日前安全约束经济调度（SCED）模型
 
@@ -487,7 +485,7 @@ $$
 （1）系统负荷平衡约束。
 
 $$
-\sum_i P_{i,t}+\sum_j T_{j,t}=\sum_k D_{k,t}
+\sum P_t+\sum T_t=\sum D_t
 $$
 
 （2）发电主体出力上下限约束。
@@ -536,19 +534,19 @@ $$
 （7）独立储能充放电功率及荷电状态约束。
 
 $$
-0\le a^{ch}_{e,t}P^{ch,\min}_{e}\le P^{ch}_{e,t}\le a^{ch}_{e,t}P^{ch,\max}_{e}
+\alpha^{ch}_{e,t}P^{ch,\min}_{e}\le P^{ch}_{e,t}\le \alpha^{ch}_{e,t}P^{ch,\max}_{e}\le0
 $$
 
 $$
-0\le a^{dis}_{e,t}P^{dis,\min}_{e}\le P^{dis}_{e,t}\le a^{dis}_{e,t}P^{dis,\max}_{e}
+0\le \alpha^{dis}_{e,t}P^{dis,\min}_{e}\le P^{dis}_{e,t}\le \alpha^{dis}_{e,t}P^{dis,\max}_{e}
 $$
 
 $$
-a^{ch}_{e,t}+a^{dis}_{e,t}\le1,\quad a^{ch}_{e,t},a^{dis}_{e,t}\in\{0,1\}
+\alpha^{ch}_{e,t}+\alpha^{dis}_{e,t}=1,\quad \alpha^{ch}_{e,t},\alpha^{dis}_{e,t}\in\{0,1\}
 $$
 
 $$
-SOC_{e,t}=SOC_{e,t-1}+\eta^{ch}_{e}P^{ch}_{e,t}\Delta t-\frac{P^{dis}_{e,t}\Delta t}{\eta^{dis}_{e}}
+SOC_{e,t}=SOC_{e,t-1}-\eta^{ch}_{e}P^{ch}_{e,t}\Delta t-\frac{P^{dis}_{e,t}\Delta t}{\eta^{dis}_{e}}
 $$
 
 $$
@@ -558,21 +556,21 @@ $$
 （8）一体化虚拟电厂发用电功率约束。
 
 $$
-0\le a^L_{v,t}P^{L,\min}_{v,t}\le P^L_{v,t}\le a^L_{v,t}P^{L,\max}_{v,t}
+\alpha^L_{v,t}P^{L,\min}_{v,t}\le P^L_{v,t}\le \alpha^L_{v,t}P^{L,\max}_{v,t}\le0
 $$
 
 $$
-0\le a^G_{v,t}P^{G,\min}_{v,t}\le P^G_{v,t}\le a^G_{v,t}P^{G,\max}_{v,t}
+0\le \alpha^G_{v,t}P^{G,\min}_{v,t}\le P^G_{v,t}\le \alpha^G_{v,t}P^{G,\max}_{v,t}
 $$
 
 $$
-a^L_{v,t}+a^G_{v,t}\le1,\quad a^L_{v,t},a^G_{v,t}\in\{0,1\}
+\alpha^L_{v,t}+\alpha^G_{v,t}=1,\quad \alpha^L_{v,t},\alpha^G_{v,t}\in\{0,1\}
 $$
 
 （9）独立储能日充放电循环次数约束。
 
 $$
-\frac{\sum_{t=1}^{T}\left(P^{dis}_{e,t}/\eta^{dis}_e-P^{ch}_{e,t}\eta^{ch}_e\right)\Delta t}{2SOC_e}\le N^{circle}
+\frac{\sum_{t=1}^{T}\left(P^{dis}_{e,t}/\eta^{dis}_e-\eta^{ch}_eP^{ch}_{e,t}\right)\Delta t}{2\bar{SOC}_e}\le N_{\mathrm{circle}}
 $$
 """
 
