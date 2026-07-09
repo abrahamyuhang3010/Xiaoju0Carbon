@@ -3,13 +3,13 @@
   "title": "数据监控",
   "subtitle": "展示当前交易中心各项市场数据的实时状态。",
   "status": {
-    "expectedCount": 87,
-    "normalCount": 54,
-    "fetchAbnormalCount": 17,
-    "qualityAbnormalCount": 22,
-    "p0Count": 30,
+    "expectedCount": 84,
+    "normalCount": 50,
+    "fetchAbnormalCount": 16,
+    "qualityAbnormalCount": 21,
+    "p0Count": 29,
     "p1Count": 3,
-    "abnormalCount": 33
+    "abnormalCount": 34
   },
   "filters": {
     "tradeCenterOptions": [
@@ -19,24 +19,23 @@
     ],
     "businessModuleOptions": [
       "全部",
-      "信息披露-负荷信息-负荷信息",
-      "信息披露-负荷信息-省间联络",
       "信息披露-交易结果",
-      "信息披露-分时电量-用电企业分时电量",
-      "信息披露-日前申报",
-      "信息披露-节点电价",
-      "信息披露-负荷信息-机组状态",
-      "日清月结-日清算结果",
-      "日清月结-月结算结果",
-      "信息披露-负荷信息-备用信息",
-      "信息披露-负荷信息-发输变电设备检修计划",
-      "信息披露-负荷信息-机组检修容量",
-      "后台数据",
+      "信息披露-出清电量",
       "信息披露-分时电量-售电公司分时电量",
       "信息披露-分时电量-售电公司分时电量历史回溯",
+      "信息披露-分时电量-用电企业分时电量",
       "信息披露-分时电量-用电企业分时电量历史回溯",
-      "信息披露-出清电量",
-      "零售关系"
+      "信息披露-日前申报",
+      "信息披露-节点电价",
+      "信息披露-负荷信息-发输变电设备检修计划",
+      "信息披露-负荷信息-备用信息",
+      "信息披露-负荷信息-机组检修容量",
+      "信息披露-负荷信息-机组状态",
+      "信息披露-负荷信息-省间联络",
+      "信息披露-负荷信息-负荷信息",
+      "日清月结-日清算结果",
+      "日清月结-月结算结果",
+      "无（后台数据）"
     ],
     "collectorStatusOptions": [
       "全部",
@@ -88,2766 +87,6 @@
   "records": [
     {
       "id": "dm-001",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "系统负荷预测（日）",
-      "sourceDataItem": "系统负荷预测（日）",
-      "dataType": "预测",
-      "dataParent": "系统负荷预测（日）",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 2,
-      "targetInternalKey": "陕西|系统负荷预测（日）|信息披露-负荷信息-负荷信息|2",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        2
-      ],
-      "excelMatchKey": "陕西|系统负荷预测（日）|2",
-      "fileFormat": "excel",
-      "downloadFile": "2026-05-08snLoadSupplyAndDemandBalance.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-15 17:01",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-省内现货-系统负荷预测（日）",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:30",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-15 17:01 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-002",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "实际负荷",
-      "sourceDataItem": "实际负荷",
-      "dataType": "实际",
-      "dataParent": "实际负荷",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 3,
-      "targetInternalKey": "陕西|实际负荷|信息披露-负荷信息-负荷信息|3",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        3
-      ],
-      "excelMatchKey": "陕西|实际负荷|3",
-      "fileFormat": "excel",
-      "downloadFile": "2026-05-08snDwsjfhplby.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-4日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:09",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-省内现货-实际负荷",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:40",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "交易中心D日实时滚动",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:09 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-003",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "发电总出力预测",
-      "sourceDataItem": "发电总出力预测",
-      "dataType": "预测",
-      "dataParent": "发电总出力预测",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 4,
-      "targetInternalKey": "陕西|发电总出力预测|信息披露-负荷信息-负荷信息|4",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        4
-      ],
-      "excelMatchKey": "陕西|发电总出力预测|4",
-      "fileFormat": "excel",
-      "downloadFile": "2026-05-08snRqgjysdfdzcljfqclyc.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:17",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "信息披露-省内现货-发电总出力预测",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:40",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:17 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-004",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "发电总出力",
-      "sourceDataItem": "发电总出力",
-      "dataType": "实际",
-      "dataParent": "发电总出力",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 5,
-      "targetInternalKey": "陕西|发电总出力|信息披露-负荷信息-负荷信息|5",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        5
-      ],
-      "excelMatchKey": "陕西|发电总出力|5",
-      "fileFormat": "无文件导出",
-      "downloadFile": "-",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-4日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:25",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "信息披露-省内现货-发电总出力",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:33",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "交易中心D日实时滚动",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:25 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-005",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "非市场机组总出力预测",
-      "sourceDataItem": "非市场机组总出力预测",
-      "dataType": "预测",
-      "dataParent": "非市场机组总出力预测",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 6,
-      "targetInternalKey": "陕西|非市场机组总出力预测|信息披露-负荷信息-负荷信息|6",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        6
-      ],
-      "excelMatchKey": "陕西|非市场机组总出力预测|6",
-      "fileFormat": "excel",
-      "downloadFile": "2026-05-08snRqglfscjzclyc.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:33",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-省内现货-非市场机组总出力预测",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:41",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:33 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-006",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "非市场机组总出力",
-      "sourceDataItem": "非市场机组总出力",
-      "dataType": "实际",
-      "dataParent": "非市场机组总出力",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 7,
-      "targetInternalKey": "陕西|非市场机组总出力|信息披露-负荷信息-负荷信息|7",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        7
-      ],
-      "excelMatchKey": "陕西|非市场机组总出力|7",
-      "fileFormat": "无文件导出",
-      "downloadFile": "-",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-4日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:41",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-省内现货-非市场机组总出力",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:49",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "交易中心D日实时滚动",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:41 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-007",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "新能源总出力预测（日）",
-      "sourceDataItem": "新能源总出力预测（日）",
-      "dataType": "预测",
-      "dataParent": "新能源总出力预测（日）",
-      "dataChildren": [
-        "新能源总出力预测数值",
-        "光电总出力预测数值",
-        "风电总出力预测数值"
-      ],
-      "isCollected": "✅",
-      "targetRowNumber": 8,
-      "targetInternalKey": "陕西|新能源总出力预测（日）|信息披露-负荷信息-负荷信息|8",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        8,
-        9,
-        10
-      ],
-      "excelMatchKey": "陕西|新能源总出力预测（日）|8",
-      "fileFormat": "excel",
-      "downloadFile": "2026-05-08snRqxnyzcljflclyc.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:04",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-省内现货-新能源总出力预测（日）",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:12",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:04 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-008",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "新能源总出力",
-      "sourceDataItem": "新能源总出力",
-      "dataType": "实际",
-      "dataParent": "新能源总出力",
-      "dataChildren": [
-        "新能源总出力",
-        "光伏总出力",
-        "风电总出力"
-      ],
-      "isCollected": "✅",
-      "targetRowNumber": 9,
-      "targetInternalKey": "陕西|新能源总出力|信息披露-负荷信息-负荷信息|9",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        11,
-        12,
-        13
-      ],
-      "excelMatchKey": "陕西|新能源总出力|9",
-      "fileFormat": "excel",
-      "downloadFile": "2026-05-08snXnyzcljflxcl.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-4日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:12",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-省内现货-新能源总出力",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:20",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "交易中心D日实时滚动",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:12 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-009",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "水电（含抽蓄）总出力预测（日）",
-      "sourceDataItem": "水电（含抽蓄）总出力预测（日）",
-      "dataType": "预测",
-      "dataParent": "水电（含抽蓄）总出力预测（日）",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 10,
-      "targetInternalKey": "陕西|水电（含抽蓄）总出力预测（日）|信息披露-负荷信息-负荷信息|10",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        14
-      ],
-      "excelMatchKey": "陕西|水电（含抽蓄）总出力预测（日）|10",
-      "fileFormat": "excel",
-      "downloadFile": "2026-05-08snRqsdfdclyc.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:20",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-省内现货-水电（含抽蓄）出力",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:28",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:20 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-010",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "水电（含抽蓄）出力",
-      "sourceDataItem": "水电（含抽蓄）出力",
-      "dataType": "实际",
-      "dataParent": "水电（含抽蓄）出力",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 11,
-      "targetInternalKey": "陕西|水电（含抽蓄）出力|信息披露-负荷信息-负荷信息|11",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        15
-      ],
-      "excelMatchKey": "陕西|水电（含抽蓄）出力|11",
-      "fileFormat": "无文件导出",
-      "downloadFile": "-",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-4日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:28",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-省内现货-水电（含抽蓄）出力",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:36",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "交易中心D日实时滚动",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:28 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-011",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-负荷信息-省间联络",
-      "dataItem": "省间联络线输电曲线预测",
-      "sourceDataItem": "省间联络线输电曲线预测",
-      "dataType": "预测",
-      "dataParent": "省间联络线输电曲线预测",
-      "dataChildren": [
-        "外来电交易计划"
-      ],
-      "isCollected": "✅",
-      "targetRowNumber": 12,
-      "targetInternalKey": "陕西|省间联络线输电曲线预测|信息披露-负荷信息-省间联络|12",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        16
-      ],
-      "excelMatchKey": "陕西|省间联络线输电曲线预测|12",
-      "fileFormat": "excel",
-      "downloadFile": "2026-05-08snTieLineCurrent.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:36",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-省内现货-省间联络线输电曲线预测",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:44",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "省间联络"
-      ],
-      "timeline": [
-        "2026-06-16 17:36 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-012",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-负荷信息-省间联络",
-      "dataItem": "省间联络线输电情况",
-      "sourceDataItem": "省间联络线输电情况",
-      "dataType": "实际",
-      "dataParent": "省间联络线输电情况",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 13,
-      "targetInternalKey": "陕西|省间联络线输电情况|信息披露-负荷信息-省间联络|13",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        17
-      ],
-      "excelMatchKey": "陕西|省间联络线输电情况|13",
-      "fileFormat": "无文件导出",
-      "downloadFile": "-",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-4日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:44",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-省内现货- 省间联络线输电情况",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:52",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "交易中心D日实时滚动",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "省间联络"
-      ],
-      "timeline": [
-        "2026-06-16 17:44 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-018",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-负荷信息-机组状态",
-      "dataItem": "机组状态",
-      "sourceDataItem": "机组状态",
-      "dataType": "-",
-      "dataParent": "机组状态",
-      "dataChildren": [],
-      "isCollected": "-",
-      "targetRowNumber": 14,
-      "targetInternalKey": "陕西|机组状态|信息披露-负荷信息-机组状态|14",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        25
-      ],
-      "excelMatchKey": "陕西|机组状态|14",
-      "fileFormat": "-",
-      "downloadFile": "-",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D日",
-      "warningTime": "D日11:40",
-      "valueRange": "D-1日 ～ D日",
-      "lastSuccessAt": "2026-06-16 10:02",
-      "nextFetchAt": "2026-06-17 11:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "信息披露-综合查询-电网运行-机组状态",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 11:10",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P1",
-      "remark": "交易中心D日实时滚动",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "机组状态"
-      ],
-      "timeline": [
-        "2026-06-16 10:02 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-021",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-负荷信息-备用信息",
-      "dataItem": "系统备用信息",
-      "sourceDataItem": "系统备用信息",
-      "dataType": "-",
-      "dataParent": "系统备用信息",
-      "dataChildren": [],
-      "isCollected": "-",
-      "targetRowNumber": 15,
-      "targetInternalKey": "陕西|系统备用信息|信息披露-负荷信息-备用信息|15",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        29
-      ],
-      "excelMatchKey": "陕西|系统备用信息|15",
-      "fileFormat": "-",
-      "downloadFile": "-",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D-1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-7日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:26",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 14:00",
-      "pageAddress": "信息披露-省内现货-系统备用信息",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:34",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P1",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "备用信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:26 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-013",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-交易结果",
-      "dataItem": "用户侧加权电价（日前）",
-      "sourceDataItem": "用户侧加权电价（日前）",
-      "dataType": "日前；实时",
-      "dataParent": "用户侧加权电价（日前）",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 16,
-      "targetInternalKey": "陕西|用户侧加权电价（日前）|信息披露-交易结果|16",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        18,
-        19
-      ],
-      "excelMatchKey": "陕西|用户侧加权电价（日前）|16",
-      "fileFormat": "无文件导出",
-      "downloadFile": "-",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 22:00 出 D+1日",
-      "warningTime": "D+1日11:40",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-15 17:07",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "现货交易-用户侧加权电价",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:30",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "交易结果"
-      ],
-      "timeline": [
-        "2026-06-15 17:07 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-085",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-交易结果",
-      "dataItem": "用户侧加权电价（实时）",
-      "sourceDataItem": "用户侧加权电价（实时）",
-      "dataType": "日前；实时",
-      "dataParent": "用户侧加权电价（实时）",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 17,
-      "targetInternalKey": "陕西|用户侧加权电价（实时）|信息披露-交易结果|17",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [],
-      "excelMatchKey": "陕西|用户侧加权电价（实时）|17",
-      "fileFormat": "无文件导出",
-      "downloadFile": "-",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D-1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D-1日",
-      "lastSuccessAt": "2026-06-15 17:07",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "现货交易-用户侧加权电价",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:30",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "交易结果"
-      ],
-      "timeline": [
-        "2026-06-15 17:07 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-014",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-分时电量-用电企业分时电量",
-      "dataItem": "售电公司日电量",
-      "sourceDataItem": "售电公司日电量",
-      "dataType": "实际",
-      "dataParent": "售电公司日电量",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 18,
-      "targetInternalKey": "陕西|售电公司日电量|信息披露-分时电量-用电企业分时电量|18",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        20
-      ],
-      "excelMatchKey": "陕西|售电公司日电量|18",
-      "fileFormat": "excel",
-      "downloadFile": "2026-05-01用户侧实际用电量.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D-2日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-5日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:15",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "信息披露-售电公司日电量",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:23",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "分时电量",
-        "用电企业分时电量"
-      ],
-      "timeline": [
-        "2026-06-16 17:15 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-086",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-分时电量-售电公司分时电量",
-      "dataItem": "售电公司分时电量",
-      "sourceDataItem": "售电公司日电量",
-      "dataType": "实际",
-      "dataParent": "售电公司分时电量",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 86,
-      "targetInternalKey": "陕西|售电公司分时电量|信息披露-分时电量-售电公司分时电量|86",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        20
-      ],
-      "excelMatchKey": "陕西|售电公司分时电量|86",
-      "fileFormat": "excel",
-      "downloadFile": "2026-05-01用户侧实际用电量.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D-2日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-5日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:15",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "信息披露-售电公司日电量",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:23",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "分时电量",
-        "售电公司分时电量"
-      ],
-      "timeline": [
-        "2026-06-16 17:15 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-015",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-日前申报",
-      "dataItem": "日前申报",
-      "sourceDataItem": "日前申报",
-      "dataType": "日前",
-      "dataParent": "日前申报",
-      "dataChildren": [],
-      "isCollected": "-",
-      "targetRowNumber": 19,
-      "targetInternalKey": "陕西|日前申报|信息披露-日前申报|19",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        22
-      ],
-      "excelMatchKey": "陕西|日前申报|19",
-      "fileFormat": "excel",
-      "downloadFile": "电能量申报数据.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
-      "valueRange": "D日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:23",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 14:00",
-      "pageAddress": "现货交易-现货申报_用电侧",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:31",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "交易中心D日申报后即有数据",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "日前申报"
-      ],
-      "timeline": [
-        "2026-06-16 17:23 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-016",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-节点电价",
-      "dataItem": "日前现货市场节点边际电价（日）",
-      "sourceDataItem": "日前现货市场节点边际电价（日）",
-      "dataType": "日前",
-      "dataParent": "日前现货市场节点边际电价（日）",
-      "dataChildren": [],
-      "isCollected": "-",
-      "targetRowNumber": 20,
-      "targetInternalKey": "陕西|日前现货市场节点边际电价（日）|信息披露-节点电价|20",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        23
-      ],
-      "excelMatchKey": "陕西|日前现货市场节点边际电价（日）|20",
-      "fileFormat": "-",
-      "downloadFile": "-",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-7日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:31",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 14:00",
-      "pageAddress": "信息披露-综合查询-市场运营-交易组织及出清-现货市场申报、出清信息-日前现货市场节点边际电价（日）",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:39",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "节点电价"
-      ],
-      "timeline": [
-        "2026-06-16 17:31 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-017",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "信息披露-节点电价",
-      "dataItem": "实时现货市场节点边际电价（日）",
-      "sourceDataItem": "实时现货市场节点边际电价（日）",
-      "dataType": "实时",
-      "dataParent": "实时现货市场节点边际电价（日）",
-      "dataChildren": [],
-      "isCollected": "-",
-      "targetRowNumber": 21,
-      "targetInternalKey": "陕西|实时现货市场节点边际电价（日）|信息披露-节点电价|21",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        24
-      ],
-      "excelMatchKey": "陕西|实时现货市场节点边际电价（日）|21",
-      "fileFormat": "-",
-      "downloadFile": "-",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D-1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-7日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:39",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 14:00",
-      "pageAddress": "信息披露-综合查询-市场运营-交易组织及出清-现货市场申报、出清信息-实时现货市场节点边际电价（日）",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:47",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "节点电价"
-      ],
-      "timeline": [
-        "2026-06-16 17:39 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-019",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "日清月结-日清算结果",
-      "dataItem": "日清算",
-      "sourceDataItem": "日清算",
-      "dataType": "-",
-      "dataParent": "日清算",
-      "dataChildren": [],
-      "isCollected": "-",
-      "targetRowNumber": 22,
-      "targetInternalKey": "陕西|日清算|日清月结-日清算结果|22",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        26
-      ],
-      "excelMatchKey": "陕西|日清算|22",
-      "fileFormat": "excel",
-      "downloadFile": "2026-04-30用户侧日清分账单.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D-6日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-10日 ～ D-6日",
-      "lastSuccessAt": "2026-06-16 17:10",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 17:00、18:00、23:00",
-      "pageAddress": "我的结算-用户侧日清分账单",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:18",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "日清月结",
-        "日清算结果"
-      ],
-      "timeline": [
-        "2026-06-16 17:10 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-020",
-      "tradeCenter": "陕西",
-      "tradeCenterName": "陕西交易中心",
-      "businessModule": "日清月结-月结算结果",
-      "dataItem": "月结算-售电公司",
-      "sourceDataItem": "月结算-售电公司",
-      "dataType": "-",
-      "dataParent": "月结算-售电公司",
-      "dataChildren": [],
-      "isCollected": "-",
-      "targetRowNumber": 23,
-      "targetInternalKey": "陕西|月结算-售电公司|日清月结-月结算结果|23",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [],
-      "excelMatchKey": "陕西|月结算-售电公司|23",
-      "fileFormat": "-",
-      "downloadFile": "-",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "1M",
-      "outputTime": "M月9日 出 M-1月",
-      "warningTime": "D日18:30",
-      "valueRange": "M-1月",
-      "lastSuccessAt": "2026-06-04 17:18",
-      "nextFetchAt": "2026-07-15 18:30",
-      "fetchToolTimeliness": "M月15日起，每日 17:00、18:00、23:00，取到即止",
-      "pageAddress": "我的结算-结算单确认（新）-用电侧-售电公司交易结算单",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:26",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "-",
-      "remark": "仅在采集当日监控预警",
-      "namingRule": "-",
-      "categoryPath": [
-        "日清月结",
-        "月结算结果"
-      ],
-      "timeline": [
-        "2026-06-04 17:18 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-022",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "系统负荷预测（日）",
-      "sourceDataItem": "系统负荷预测（日）",
-      "dataType": "预测",
-      "dataParent": "系统负荷预测（日）",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 2,
-      "targetInternalKey": "湖南|系统负荷预测（日）|信息披露-负荷信息-负荷信息|2",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        2
-      ],
-      "excelMatchKey": "湖南|系统负荷预测（日）|2",
-      "fileFormat": "excel",
-      "downloadFile": "5.1.______【事前日】系统负荷预测-日.xlsx",
-      "fetchStatus": "数据未取回",
-      "qualityStatus": "待校验",
-      "collectorStatus": "abnormal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-15 17:22",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-系统负荷预测（日）",
-      "fetchExceptionType": "数据未取回",
-      "fetchExceptionAt": "2026-06-16 18:30",
-      "fetchNotified": "是",
-      "fetchProcessStatus": "待处理",
-      "checkAt": "-",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "待处理",
-      "notified": "是",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-15 17:22 最近一次数据成功入库",
-        "2026-06-16 18:30 命中取数状态：数据未取回",
-        "2026-06-16 18:40 数据质量校验待触发"
-      ]
-    },
-    {
-      "id": "dm-023",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "实际负荷",
-      "sourceDataItem": "实际负荷",
-      "dataType": "实际",
-      "dataParent": "实际负荷",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 3,
-      "targetInternalKey": "湖南|实际负荷|信息披露-负荷信息-负荷信息|3",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        3
-      ],
-      "excelMatchKey": "湖南|实际负荷|3",
-      "fileFormat": "excel",
-      "downloadFile": "8.6._【事后】实际负荷.xlsx",
-      "fetchStatus": "数据未取回",
-      "qualityStatus": "待校验",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 12:00 出 D-1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-4日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:30",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-实际负荷",
-      "fetchExceptionType": "数据未取回",
-      "fetchExceptionAt": "2026-06-16 18:30",
-      "fetchNotified": "是",
-      "fetchProcessStatus": "待处理",
-      "checkAt": "-",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "待处理",
-      "notified": "是",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:30 最近一次数据成功入库",
-        "2026-06-16 18:30 命中取数状态：数据未取回",
-        "2026-06-16 18:40 数据质量校验待触发"
-      ]
-    },
-    {
-      "id": "dm-024",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "新能源总出力预测（日）",
-      "sourceDataItem": "新能源总出力预测（日）",
-      "dataType": "预测",
-      "dataParent": "新能源总出力预测（日）",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 4,
-      "targetInternalKey": "湖南|新能源总出力预测（日）|信息披露-负荷信息-负荷信息|4",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        4
-      ],
-      "excelMatchKey": "湖南|新能源总出力预测（日）|4",
-      "fileFormat": "excel",
-      "downloadFile": "5.7._【事前】新能源总出力预测.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "数据为空",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:38",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-新能源总出力预测（日）",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:46",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "数据为空",
-      "qualityNotified": "是",
-      "qualityProcessStatus": "待处理",
-      "processStatus": "待处理",
-      "notified": "是",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:38 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 命中数据质量异常：数据为空"
-      ]
-    },
-    {
-      "id": "dm-025",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "新能源总出力",
-      "sourceDataItem": "新能源总出力",
-      "dataType": "实际",
-      "dataParent": "新能源总出力",
-      "dataChildren": [
-        "湖南风电发电有功电力",
-        "湖南光伏发电有功电力"
-      ],
-      "isCollected": "✅",
-      "targetRowNumber": 5,
-      "targetInternalKey": "湖南|新能源总出力|信息披露-负荷信息-负荷信息|5",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        5,
-        6
-      ],
-      "excelMatchKey": "湖南|新能源总出力|5",
-      "fileFormat": "excel",
-      "downloadFile": "8.4._【事后】新能源总出力 (2).xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "数据不完整",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 12:00 出 D-1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-4日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:01",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-新能源总出力",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:09",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "数据不完整",
-      "qualityNotified": "是",
-      "qualityProcessStatus": "待处理",
-      "processStatus": "待处理",
-      "notified": "是",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:01 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 命中数据质量异常：数据不完整"
-      ]
-    },
-    {
-      "id": "dm-026",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "水电（含抽蓄）总出力预测(日）",
-      "sourceDataItem": "水电（含抽蓄）总出力预测(日）",
-      "dataType": "预测",
-      "dataParent": "水电（含抽蓄）总出力预测(日）",
-      "dataChildren": [
-        "水电总出力预测"
-      ],
-      "isCollected": "✅",
-      "targetRowNumber": 6,
-      "targetInternalKey": "湖南|水电（含抽蓄）总出力预测(日）|信息披露-负荷信息-负荷信息|6",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        7
-      ],
-      "excelMatchKey": "湖南|水电（含抽蓄）总出力预测(日）|6",
-      "fileFormat": "excel",
-      "downloadFile": "5.9._【事前】水电（含抽蓄）总出力预测-日 (5).xlsx",
-      "fetchStatus": "数据未取回",
-      "qualityStatus": "数据未更新",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:09",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-水电（含抽蓄）总出力预测（日）",
-      "fetchExceptionType": "数据未取回",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "是",
-      "fetchProcessStatus": "待处理",
-      "checkAt": "2026-06-16 18:17",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "数据未更新",
-      "qualityNotified": "是",
-      "qualityProcessStatus": "待处理",
-      "processStatus": "待处理",
-      "notified": "是",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:09 最近一次数据成功入库",
-        "- 命中取数状态：数据未取回",
-        "2026-06-16 18:40 命中数据质量异常：数据未更新"
-      ]
-    },
-    {
-      "id": "dm-027",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "水电（含抽蓄）总出力",
-      "sourceDataItem": "水电（含抽蓄）总出力",
-      "dataType": "实际",
-      "dataParent": "水电（含抽蓄）总出力",
-      "dataChildren": [
-        "湖南水电发电有功电力"
-      ],
-      "isCollected": "✅",
-      "targetRowNumber": 7,
-      "targetInternalKey": "湖南|水电（含抽蓄）总出力|信息披露-负荷信息-负荷信息|7",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        8
-      ],
-      "excelMatchKey": "湖南|水电（含抽蓄）总出力|7",
-      "fileFormat": "excel",
-      "downloadFile": "8.5._【事后】水电（含抽蓄）总出力 (1).xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "数值异常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 12:00 出 D-1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-4日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:17",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-水电（含抽蓄）总出力",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:25",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "数值异常",
-      "qualityNotified": "是",
-      "qualityProcessStatus": "待处理",
-      "processStatus": "待处理",
-      "notified": "是",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:17 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 命中数据质量异常：数值异常"
-      ]
-    },
-    {
-      "id": "dm-030",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "发电总出力预测",
-      "sourceDataItem": "发电总出力预测",
-      "dataType": "预测",
-      "dataParent": "发电总出力预测",
-      "dataChildren": [
-        "机组发电总出力预测"
-      ],
-      "isCollected": "✅",
-      "targetRowNumber": 8,
-      "targetInternalKey": "湖南|发电总出力预测|信息披露-负荷信息-负荷信息|8",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        13
-      ],
-      "excelMatchKey": "湖南|发电总出力预测|8",
-      "fileFormat": "excel",
-      "downloadFile": "5.5._【事前】发电总出力预测.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:41",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-发电总出力预测",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:49",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:41 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-031",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "发电总出力",
-      "sourceDataItem": "发电总出力",
-      "dataType": "实际",
-      "dataParent": "发电总出力",
-      "dataChildren": [
-        "发电总出力"
-      ],
-      "isCollected": "-",
-      "targetRowNumber": 9,
-      "targetInternalKey": "湖南|发电总出力|信息披露-负荷信息-负荷信息|9",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        14
-      ],
-      "excelMatchKey": "湖南|发电总出力|9",
-      "fileFormat": "excel",
-      "downloadFile": "8.2._【事后】发电总出力.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 12:00 出 D-1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-7日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:04",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-发电总出力",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:12",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "湖南实际发电总出力计划yyyy-MM-dd",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:04 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-032",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "非市场机组总出力预测",
-      "sourceDataItem": "非市场机组总出力预测",
-      "dataType": "预测",
-      "dataParent": "非市场机组总出力预测",
-      "dataChildren": [
-        "非市场机组计划总曲线"
-      ],
-      "isCollected": "✅",
-      "targetRowNumber": 10,
-      "targetInternalKey": "湖南|非市场机组总出力预测|信息披露-负荷信息-负荷信息|10",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        15
-      ],
-      "excelMatchKey": "湖南|非市场机组总出力预测|10",
-      "fileFormat": "excel",
-      "downloadFile": "5.6._【事前】非市场机组总出力预测.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:12",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-非市场机组总出力预测",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:20",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:12 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-033",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-负荷信息-负荷信息",
-      "dataItem": "非市场机组总出力",
-      "sourceDataItem": "非市场机组总出力",
-      "dataType": "实际",
-      "dataParent": "非市场机组总出力",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 11,
-      "targetInternalKey": "湖南|非市场机组总出力|信息披露-负荷信息-负荷信息|11",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        16
-      ],
-      "excelMatchKey": "湖南|非市场机组总出力|11",
-      "fileFormat": "excel",
-      "downloadFile": "8.3._【事后】非市场机组总出力.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 12:00 出 D-1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-4日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:20",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-非市场机组总出力",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:28",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "负荷信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:20 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-028",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-负荷信息-省间联络",
-      "dataItem": "省间联络线输电曲线预测",
-      "sourceDataItem": "省间联络线输电曲线预测",
-      "dataType": "预测",
-      "dataParent": "省间联络线输电曲线预测",
-      "dataChildren": [
-        "中衡直流（日前）",
-        "主网送湘（日前）",
-        "祁韶直流（日前）"
-      ],
-      "isCollected": "✅",
-      "targetRowNumber": 12,
-      "targetInternalKey": "湖南|省间联络线输电曲线预测|信息披露-负荷信息-省间联络|12",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        9,
-        10,
-        11
-      ],
-      "excelMatchKey": "湖南|省间联络线输电曲线预测|12",
-      "fileFormat": "excel",
-      "downloadFile": "5.4._【事前】省间联络线输电曲线预测.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:25",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-省间联络线输电曲线预测",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:33",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "省间联络"
-      ],
-      "timeline": [
-        "2026-06-16 17:25 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-029",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-负荷信息-省间联络",
-      "dataItem": "省间联络线输电情况",
-      "sourceDataItem": "省间联络线输电情况",
-      "dataType": "实际",
-      "dataParent": "省间联络线输电情况",
-      "dataChildren": [
-        "省间联络线实际输电情况"
-      ],
-      "isCollected": "✅",
-      "targetRowNumber": 13,
-      "targetInternalKey": "湖南|省间联络线输电情况|信息披露-负荷信息-省间联络|13",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        12
-      ],
-      "excelMatchKey": "湖南|省间联络线输电情况|13",
-      "fileFormat": "excel",
-      "downloadFile": "8.10._【事后】省间联络线输电情况.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 12:00 出 D-1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-4日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:33",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-省间联络线输电情况",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:41",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "省间联络"
-      ],
-      "timeline": [
-        "2026-06-16 17:33 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-041",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-负荷信息-机组状态",
-      "dataItem": "机组状态",
-      "sourceDataItem": "机组状态",
-      "dataType": "-",
-      "dataParent": "机组状态",
-      "dataChildren": [],
-      "isCollected": "-",
-      "targetRowNumber": 14,
-      "targetInternalKey": "湖南|机组状态|信息披露-负荷信息-机组状态|14",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        25
-      ],
-      "excelMatchKey": "湖南|机组状态|14",
-      "fileFormat": "excel",
-      "downloadFile": "8.1._【事后】机组状态.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 17:00 出 D-1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-2日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:39",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 17:00、18:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-电网运行-机组状态",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:47",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P1",
-      "remark": "",
-      "namingRule": "湖南机组状态yyyy-MM-dd",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "机组状态"
-      ],
-      "timeline": [
-        "2026-06-16 17:39 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-044",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-负荷信息-备用信息",
-      "dataItem": "系统备用信息",
-      "sourceDataItem": "系统备用信息",
-      "dataType": "-",
-      "dataParent": "系统备用信息",
-      "dataChildren": [
-        "负备用",
-        "正备用"
-      ],
-      "isCollected": "-",
-      "targetRowNumber": 15,
-      "targetInternalKey": "湖南|系统备用信息|信息披露-负荷信息-备用信息|15",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        29,
-        30
-      ],
-      "excelMatchKey": "湖南|系统备用信息|15",
-      "fileFormat": "excel",
-      "downloadFile": "8.7._【事后】系统备用信息.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 17:00 出 D-1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-2日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:18",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 17:00、18:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-电网运行-系统备用信息",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:26",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P1",
-      "remark": "",
-      "namingRule": "湖南备用实际信息yyyy-MM-dd",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "备用信息"
-      ],
-      "timeline": [
-        "2026-06-16 17:18 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-045",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-负荷信息-发输变电设备检修计划",
-      "dataItem": "发输变电设备检修计划（日）",
-      "sourceDataItem": "发输变电设备检修计划（日）",
-      "dataType": "日前",
-      "dataParent": "发输变电设备检修计划（日）",
-      "dataChildren": [],
-      "isCollected": "-",
-      "targetRowNumber": 16,
-      "targetInternalKey": "湖南|发输变电设备检修计划（日）|信息披露-负荷信息-发输变电设备检修计划|16",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        31
-      ],
-      "excelMatchKey": "湖南|发输变电设备检修计划（日）|16",
-      "fileFormat": "excel",
-      "downloadFile": "发输变电设备检修计划-日.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "1D",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:26",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-供需与约束-约束信息-发输变电设备检修计划（日）",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:34",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P1",
-      "remark": "",
-      "namingRule": "湖南输变电检修预测信息yyyy-MM-dd",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "发输变电设备检修计划"
-      ],
-      "timeline": [
-        "2026-06-16 17:26 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-034",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-节点电价",
-      "dataItem": "日前节点边际电价",
-      "sourceDataItem": "日前节点边际电价",
-      "dataType": "日前",
-      "dataParent": "日前节点边际电价",
-      "dataChildren": [
-        "节点电能量价格"
-      ],
-      "isCollected": "-",
-      "targetRowNumber": 17,
-      "targetInternalKey": "湖南|日前节点边际电价|信息披露-节点电价|17",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        17
-      ],
-      "excelMatchKey": "湖南|日前节点边际电价|17",
-      "fileFormat": "excel",
-      "downloadFile": "6.3._【事后】日前节点边际电价.xlsx",
-      "fetchStatus": "数据未取回",
-      "qualityStatus": "待校验",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-15 17:28",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-日前节点边际电价",
-      "fetchExceptionType": "数据未取回",
-      "fetchExceptionAt": "2026-06-16 18:30",
-      "fetchNotified": "是",
-      "fetchProcessStatus": "待处理",
-      "checkAt": "-",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "待处理",
-      "notified": "是",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "湖南日前节点边际电价yyyy-MM-dd",
-      "categoryPath": [
-        "信息披露",
-        "节点电价"
-      ],
-      "timeline": [
-        "2026-06-15 17:28 最近一次数据成功入库",
-        "2026-06-16 18:30 命中取数状态：数据未取回",
-        "2026-06-16 18:40 数据质量校验待触发"
-      ]
-    },
-    {
-      "id": "dm-035",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-节点电价",
-      "dataItem": "实时节点边际电价",
-      "sourceDataItem": "实时节点边际电价",
-      "dataType": "实时",
-      "dataParent": "实时节点边际电价",
-      "dataChildren": [
-        "节点电能量价格"
-      ],
-      "isCollected": "✅",
-      "targetRowNumber": 18,
-      "targetInternalKey": "湖南|实时节点边际电价|信息披露-节点电价|18",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        18
-      ],
-      "excelMatchKey": "湖南|实时节点边际电价|18",
-      "fileFormat": "excel",
-      "downloadFile": "6.4._【事后】实时节点边际电价 (1).xlsx",
-      "fetchStatus": "数据未取回",
-      "qualityStatus": "待校验",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 12:00 出 D-1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:36",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-实时节点边际电价",
-      "fetchExceptionType": "数据未取回",
-      "fetchExceptionAt": "2026-06-16 18:30",
-      "fetchNotified": "是",
-      "fetchProcessStatus": "待处理",
-      "checkAt": "-",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "待处理",
-      "notified": "是",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "节点电价"
-      ],
-      "timeline": [
-        "2026-06-16 17:36 最近一次数据成功入库",
-        "2026-06-16 18:30 命中取数状态：数据未取回",
-        "2026-06-16 18:40 数据质量校验待触发"
-      ]
-    },
-    {
-      "id": "dm-036",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-交易结果",
-      "dataItem": "日前用户侧统一结算价格",
-      "sourceDataItem": "日前用户侧统一结算价格",
-      "dataType": "日前",
-      "dataParent": "日前用户侧统一结算价格",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 19,
-      "targetInternalKey": "湖南|日前用户侧统一结算价格|信息披露-交易结果|19",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        19
-      ],
-      "excelMatchKey": "湖南|日前用户侧统一结算价格|19",
-      "fileFormat": "excel",
-      "downloadFile": "6.10._【事后】日前用户侧统一结算价格 (2).xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "数据为空",
-      "collectorStatus": "normal",
-      "timePoint": "1h",
-      "outputTime": "D日 12:00 出 D日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:44",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-日前用户侧统一结算价格",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:52",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "数据为空",
-      "qualityNotified": "是",
-      "qualityProcessStatus": "待处理",
-      "processStatus": "待处理",
-      "notified": "是",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "交易结果"
-      ],
-      "timeline": [
-        "2026-06-16 17:44 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 命中数据质量异常：数据为空"
-      ]
-    },
-    {
-      "id": "dm-037",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-交易结果",
-      "dataItem": "实时用户侧统一结算价格",
-      "sourceDataItem": "实时用户侧统一结算价格",
-      "dataType": "实时",
-      "dataParent": "实时用户侧统一结算价格",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 20,
-      "targetInternalKey": "湖南|实时用户侧统一结算价格|信息披露-交易结果|20",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        20
-      ],
-      "excelMatchKey": "湖南|实时用户侧统一结算价格|20",
-      "fileFormat": "excel",
-      "downloadFile": "6.11._【事后】实时用户侧统一结算价格 (4).xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "数据不完整",
-      "collectorStatus": "normal",
-      "timePoint": "1h",
-      "outputTime": "D日 出 D-4日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D日",
-      "lastSuccessAt": "2026-06-16 17:07",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-实时用户侧统一结算价格",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:15",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "数据不完整",
-      "qualityNotified": "是",
-      "qualityProcessStatus": "待处理",
-      "processStatus": "待处理",
-      "notified": "是",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "交易结果"
-      ],
-      "timeline": [
-        "2026-06-16 17:07 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 命中数据质量异常：数据不完整"
-      ]
-    },
-    {
-      "id": "dm-040",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-交易结果",
-      "dataItem": "日前用户侧24点出清电量",
-      "sourceDataItem": "日前用户侧24点出清电量",
-      "dataType": "日前",
-      "dataParent": "日前用户侧24点出清电量",
-      "dataChildren": [],
-      "isCollected": "-",
-      "targetRowNumber": 21,
-      "targetInternalKey": "湖南|日前用户侧24点出清电量|信息披露-交易结果|21",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        24
-      ],
-      "excelMatchKey": "湖南|日前用户侧24点出清电量|21",
-      "fileFormat": "excel",
-      "downloadFile": "6.12._【事后】日前用户侧24点出清电量.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "1h",
-      "outputTime": "D日 出 D-1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-3日 ～ D-1日",
-      "lastSuccessAt": "2026-06-16 17:31",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-日前用户侧24点出清电量",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:39",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "湖南日前交易结果yyyy-MM-dd",
-      "categoryPath": [
-        "信息披露",
-        "交易结果"
-      ],
-      "timeline": [
-        "2026-06-16 17:31 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-038",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-分时电量-用电企业分时电量",
-      "dataItem": "日用电信息（现货）",
-      "sourceDataItem": "日用电信息（现货）",
-      "dataType": "实际",
-      "dataParent": "日用电信息（现货）",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 22,
-      "targetInternalKey": "湖南|日用电信息（现货）|信息披露-分时电量-用电企业分时电量|22",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        21
-      ],
-      "excelMatchKey": "湖南|日用电信息（现货）|22",
-      "fileFormat": "excel",
-      "downloadFile": "现货日用电信息-售电公司_REPORT0 (4).xlsx",
-      "fetchStatus": "数据未取回",
-      "qualityStatus": "数据未更新",
-      "collectorStatus": "normal",
-      "timePoint": "1h",
-      "outputTime": "D日 出 D-2日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-2日 ～ D-2日",
-      "lastSuccessAt": "2026-06-16 17:15",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "信息披露-用户用电信息查询-日用电信息（现货）",
-      "fetchExceptionType": "数据未取回",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "是",
-      "fetchProcessStatus": "待处理",
-      "checkAt": "2026-06-16 18:23",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "数据未更新",
-      "qualityNotified": "是",
-      "qualityProcessStatus": "待处理",
-      "processStatus": "待处理",
-      "notified": "是",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "分时电量",
-        "用电企业分时电量"
-      ],
-      "timeline": [
-        "2026-06-16 17:15 最近一次数据成功入库",
-        "- 命中取数状态：数据未取回",
-        "2026-06-16 18:40 命中数据质量异常：数据未更新"
-      ]
-    },
-    {
-      "id": "dm-087",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-分时电量-售电公司分时电量",
-      "dataItem": "售电公司分时电量",
-      "sourceDataItem": "日用电信息（现货）",
-      "dataType": "实际",
-      "dataParent": "售电公司分时电量",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 87,
-      "targetInternalKey": "湖南|售电公司分时电量|信息披露-分时电量-售电公司分时电量|87",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        21
-      ],
-      "excelMatchKey": "湖南|售电公司分时电量|87",
-      "fileFormat": "excel",
-      "downloadFile": "现货日用电信息-售电公司_REPORT0 (4).xlsx",
-      "fetchStatus": "数据未取回",
-      "qualityStatus": "数据未更新",
-      "collectorStatus": "normal",
-      "timePoint": "1h",
-      "outputTime": "D日 出 D-2日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-2日 ～ D-2日",
-      "lastSuccessAt": "2026-06-16 17:15",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "信息披露-用户用电信息查询-日用电信息（现货）",
-      "fetchExceptionType": "数据未取回",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "是",
-      "fetchProcessStatus": "待处理",
-      "checkAt": "2026-06-16 18:23",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "数据未更新",
-      "qualityNotified": "是",
-      "qualityProcessStatus": "待处理",
-      "processStatus": "待处理",
-      "notified": "是",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "分时电量",
-        "售电公司分时电量"
-      ],
-      "timeline": [
-        "2026-06-16 17:15 最近一次数据成功入库",
-        "- 命中取数状态：数据未取回",
-        "2026-06-16 18:40 命中数据质量异常：数据未更新"
-      ]
-    },
-    {
-      "id": "dm-039",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "信息披露-日前申报",
-      "dataItem": "日前申报",
-      "sourceDataItem": "日前申报",
-      "dataType": "日前",
-      "dataParent": "日前申报",
-      "dataChildren": [],
-      "isCollected": "-",
-      "targetRowNumber": 23,
-      "targetInternalKey": "湖南|日前申报|信息披露-日前申报|23",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        23
-      ],
-      "excelMatchKey": "湖南|日前申报|23",
-      "fileFormat": "excel",
-      "downloadFile": "电能量申报数据 (1).xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "数值异常",
-      "collectorStatus": "normal",
-      "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
-      "valueRange": "D日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 17:23",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 14:00、16:00",
-      "pageAddress": "现货交易_省内-现货申报（用电侧）",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:31",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "数值异常",
-      "qualityNotified": "是",
-      "qualityProcessStatus": "待处理",
-      "processStatus": "待处理",
-      "notified": "是",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "交易中心D日申报后即有数据",
-      "namingRule": "湖南日前申报yyyy-MM-dd",
-      "categoryPath": [
-        "信息披露",
-        "日前申报"
-      ],
-      "timeline": [
-        "2026-06-16 17:23 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 命中数据质量异常：数值异常"
-      ]
-    },
-    {
-      "id": "dm-042",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "日清月结-日清算结果",
-      "dataItem": "日清算",
-      "sourceDataItem": "日清算",
-      "dataType": "-",
-      "dataParent": "日清算",
-      "dataChildren": [],
-      "isCollected": "-",
-      "targetRowNumber": 24,
-      "targetInternalKey": "湖南|日清算|日清月结-日清算结果|24",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        26
-      ],
-      "excelMatchKey": "湖南|日清算|24",
-      "fileFormat": "pdf",
-      "downloadFile": "北京小桔新能源汽车科技有限公司01售电公司日清分结算单.pdf",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "1h",
-      "outputTime": "D日 出 D-6日",
-      "warningTime": "D日18:30",
-      "valueRange": "D-6日 ～ D-4日，取所在月份",
-      "lastSuccessAt": "2026-06-16 17:02",
-      "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "结算-结算单查询",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:10",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "P0",
-      "remark": "",
-      "namingRule": "湖南售电公司日用电信息yyyy-MM-dd",
-      "categoryPath": [
-        "日清月结",
-        "日清算结果"
-      ],
-      "timeline": [
-        "2026-06-16 17:02 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-043",
-      "tradeCenter": "湖南",
-      "tradeCenterName": "湖南交易中心",
-      "businessModule": "日清月结-月结算结果",
-      "dataItem": "月结算-售电公司",
-      "sourceDataItem": "月结算-售电公司",
-      "dataType": "-",
-      "dataParent": "月结算-售电公司",
-      "dataChildren": [],
-      "isCollected": "-",
-      "targetRowNumber": 25,
-      "targetInternalKey": "湖南|月结算-售电公司|日清月结-月结算结果|25",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [],
-      "excelMatchKey": "湖南|月结算-售电公司|25",
-      "fileFormat": "-",
-      "downloadFile": "-",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "1M",
-      "outputTime": "M月10日 出 M-1月",
-      "warningTime": "D日18:30",
-      "valueRange": "D-6日 ～ D-4日，取所在月份",
-      "lastSuccessAt": "2026-06-04 17:10",
-      "nextFetchAt": "2026-07-15 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
-      "pageAddress": "结算-结算单查询-售电公司",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 18:18",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "-",
-      "priority": "-",
-      "remark": "仅在采集当日监控预警",
-      "namingRule": "-",
-      "categoryPath": [
-        "日清月结",
-        "月结算结果"
-      ],
-      "timeline": [
-        "2026-06-04 17:10 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-046",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-负荷信息",
@@ -2867,21 +106,17 @@
       "targetInternalKey": "广东|负荷预测信息|信息披露-负荷信息-负荷信息|2",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        2,
-        3,
-        4,
-        5,
-        6
+        2
       ],
       "excelMatchKey": "广东|负荷预测信息|2",
       "fileFormat": "-",
       "downloadFile": "信息披露查询预测信息(2026-03-07)(1).xlsx",
+      "collectorStatus": "abnormal",
       "fetchStatus": "数据未取回",
       "qualityStatus": "待校验",
-      "collectorStatus": "abnormal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 10:01",
       "nextFetchAt": "2026-06-17 11:40",
@@ -2914,7 +149,7 @@
       ]
     },
     {
-      "id": "dm-047",
+      "id": "dm-002",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-负荷信息",
@@ -2935,19 +170,14 @@
       "targetInternalKey": "广东|负荷实际信息|信息披露-负荷信息-负荷信息|3",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        7,
-        8,
-        9,
-        10,
-        11,
-        12
+        3
       ],
       "excelMatchKey": "广东|负荷实际信息|3",
       "fileFormat": "-",
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
       "qualityStatus": "待校验",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D日18:30",
@@ -2983,7 +213,7 @@
       ]
     },
     {
-      "id": "dm-048",
+      "id": "dm-003",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-负荷信息",
@@ -3002,20 +232,17 @@
       "targetInternalKey": "广东|地方电预测信息|信息披露-负荷信息-负荷信息|4",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        13,
-        14,
-        15,
-        16
+        4
       ],
       "excelMatchKey": "广东|地方电预测信息|4",
       "fileFormat": "-",
       "downloadFile": "信息披露查询预测信息(2026-03-07)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "数据为空",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:17",
       "nextFetchAt": "2026-06-17 11:40",
@@ -3048,7 +275,7 @@
       ]
     },
     {
-      "id": "dm-049",
+      "id": "dm-004",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-负荷信息",
@@ -3069,19 +296,14 @@
       "targetInternalKey": "广东|地方电实际信息|信息披露-负荷信息-负荷信息|5",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        17,
-        18,
-        19,
-        20,
-        21,
-        22
+        5
       ],
       "excelMatchKey": "广东|地方电实际信息|5",
       "fileFormat": "-",
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "数据不完整",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D日18:30",
@@ -3117,7 +339,7 @@
       ]
     },
     {
-      "id": "dm-050",
+      "id": "dm-005",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-负荷信息",
@@ -3143,24 +365,14 @@
       "targetInternalKey": "广东|西电东送各通道实际信息|信息披露-负荷信息-负荷信息|6",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        23,
-        24,
-        25,
-        26,
-        27,
-        28,
-        29,
-        30,
-        31,
-        32,
-        33
+        6
       ],
       "excelMatchKey": "广东|西电东送各通道实际信息|6",
       "fileFormat": "-",
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
       "qualityStatus": "数据未更新",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D日18:30",
@@ -3196,7 +408,7 @@
       ]
     },
     {
-      "id": "dm-055",
+      "id": "dm-006",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-负荷信息",
@@ -3213,18 +425,17 @@
       "targetInternalKey": "广东|统调新能源出力信息|信息披露-负荷信息-负荷信息|7",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        42,
-        43
+        7
       ],
       "excelMatchKey": "广东|统调新能源出力信息|7",
       "fileFormat": "-",
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "未配置",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:28",
       "nextFetchAt": "2026-06-17 11:40",
@@ -3257,7 +468,7 @@
       ]
     },
     {
-      "id": "dm-061",
+      "id": "dm-007",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-负荷信息",
@@ -3271,17 +482,17 @@
       "targetInternalKey": "广东|发电总出力预测信息|信息披露-负荷信息-负荷信息|8",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        49
+        8
       ],
       "excelMatchKey": "广东|发电总出力预测信息|8",
       "fileFormat": "-",
       "downloadFile": "信息披露查询预测信息(2026-03-07)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "数据不完整",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:31",
       "nextFetchAt": "2026-06-17 11:40",
@@ -3314,7 +525,7 @@
       ]
     },
     {
-      "id": "dm-062",
+      "id": "dm-008",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-负荷信息",
@@ -3333,17 +544,14 @@
       "targetInternalKey": "广东|机组出力情况|信息披露-负荷信息-负荷信息|9",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        50,
-        52,
-        53,
-        54
+        9
       ],
       "excelMatchKey": "广东|机组出力情况|9",
       "fileFormat": "-",
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
       "qualityStatus": "数据未更新",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D日18:30",
@@ -3379,7 +587,7 @@
       ]
     },
     {
-      "id": "dm-063",
+      "id": "dm-009",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-负荷信息",
@@ -3393,17 +601,17 @@
       "targetInternalKey": "广东|水电（含抽蓄）总出力预测信息|信息披露-负荷信息-负荷信息|10",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        51
+        10
       ],
       "excelMatchKey": "广东|水电（含抽蓄）总出力预测信息|10",
       "fileFormat": "-",
       "downloadFile": "信息披露查询预测信息(2026-03-07)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "数值异常",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:02",
       "nextFetchAt": "2026-06-17 11:40",
@@ -3436,7 +644,7 @@
       ]
     },
     {
-      "id": "dm-064",
+      "id": "dm-010",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-负荷信息",
@@ -3455,17 +663,14 @@
       "targetInternalKey": "广东|机组出力情况（水电含抽蓄总出力）|信息披露-负荷信息-负荷信息|11",
       "targetDuplicateIndex": 2,
       "excelSourceRowNumbers": [
-        50,
-        52,
-        53,
-        54
+        11
       ],
       "excelMatchKey": "广东|机组出力情况（水电含抽蓄总出力）|11",
       "fileFormat": "-",
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D日18:30",
@@ -3501,7 +706,7 @@
       ]
     },
     {
-      "id": "dm-065",
+      "id": "dm-011",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-负荷信息",
@@ -3520,17 +725,14 @@
       "targetInternalKey": "广东|机组出力情况（统调系统实际负荷+新能源总出力）|信息披露-负荷信息-负荷信息|12",
       "targetDuplicateIndex": 3,
       "excelSourceRowNumbers": [
-        50,
-        52,
-        53,
-        54
+        12
       ],
       "excelMatchKey": "广东|机组出力情况（统调系统实际负荷+新能源总出力）|12",
       "fileFormat": "-",
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D日18:30",
@@ -3566,7 +768,7 @@
       ]
     },
     {
-      "id": "dm-066",
+      "id": "dm-012",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-负荷信息",
@@ -3584,19 +786,17 @@
       "targetInternalKey": "广东|现货新能源总出力|信息披露-负荷信息-负荷信息|13",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        55,
-        56,
-        57
+        13
       ],
       "excelMatchKey": "广东|现货新能源总出力|13",
       "fileFormat": "-",
       "downloadFile": "信息披露查询预测信息(2026-03-07)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:26",
       "nextFetchAt": "2026-06-17 11:40",
@@ -3629,7 +829,7 @@
       ]
     },
     {
-      "id": "dm-067",
+      "id": "dm-013",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-负荷信息",
@@ -3643,17 +843,17 @@
       "targetInternalKey": "广东|抽蓄电站出力计划|信息披露-负荷信息-负荷信息|14",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        58
+        14
       ],
       "excelMatchKey": "广东|抽蓄电站出力计划|14",
       "fileFormat": "-",
       "downloadFile": "信息披露查询预测信息(2026-03-07)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:34",
       "nextFetchAt": "2026-06-17 11:40",
@@ -3686,7 +886,7 @@
       ]
     },
     {
-      "id": "dm-051",
+      "id": "dm-014",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-机组检修容量",
@@ -3700,17 +900,17 @@
       "targetInternalKey": "广东|机组检修容量预测信息|信息披露-负荷信息-机组检修容量|15",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        34
+        15
       ],
       "excelMatchKey": "广东|机组检修容量预测信息|15",
       "fileFormat": "-",
       "downloadFile": "信息披露查询预测信息(2026-03-07)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "数值异常",
-      "collectorStatus": "normal",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:41",
       "nextFetchAt": "2026-06-17 11:40",
@@ -3743,7 +943,7 @@
       ]
     },
     {
-      "id": "dm-052",
+      "id": "dm-015",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-机组检修容量",
@@ -3757,14 +957,14 @@
       "targetInternalKey": "广东|机组检修容量实际信息|信息披露-负荷信息-机组检修容量|16",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        35
+        16
       ],
       "excelMatchKey": "广东|机组检修容量实际信息|16",
       "fileFormat": "-",
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D日18:30",
@@ -3800,7 +1000,7 @@
       ]
     },
     {
-      "id": "dm-053",
+      "id": "dm-016",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-备用信息",
@@ -3818,19 +1018,17 @@
       "targetInternalKey": "广东|备用预测信息|信息披露-负荷信息-备用信息|17",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        36,
-        37,
-        38
+        17
       ],
       "excelMatchKey": "广东|备用预测信息|17",
       "fileFormat": "-",
       "downloadFile": "信息披露查询预测信息(2026-03-07)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:12",
       "nextFetchAt": "2026-06-17 11:40",
@@ -3863,7 +1061,7 @@
       ]
     },
     {
-      "id": "dm-054",
+      "id": "dm-017",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-负荷信息-备用信息",
@@ -3881,16 +1079,14 @@
       "targetInternalKey": "广东|备用实际信息|信息披露-负荷信息-备用信息|18",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        39,
-        40,
-        41
+        18
       ],
       "excelMatchKey": "广东|备用实际信息|18",
       "fileFormat": "-",
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
+      "collectorStatus": "running",
       "fetchStatus": "取数中",
       "qualityStatus": "待校验",
-      "collectorStatus": "running",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D日18:30",
@@ -3926,64 +1122,7 @@
       ]
     },
     {
-      "id": "dm-088",
-      "tradeCenter": "广东",
-      "tradeCenterName": "广东交易中心",
-      "businessModule": "信息披露-负荷信息-发输变电设备检修计划",
-      "dataItem": "发输变电设备检修计划",
-      "sourceDataItem": "输变电检修预测信息",
-      "dataType": "预测",
-      "dataParent": "发输变电设备检修计划",
-      "dataChildren": [],
-      "isCollected": "✅",
-      "targetRowNumber": 88,
-      "targetInternalKey": "广东|发输变电设备检修计划|信息披露-负荷信息-发输变电设备检修计划|88",
-      "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [
-        60
-      ],
-      "excelMatchKey": "广东|发输变电设备检修计划|88",
-      "fileFormat": "-",
-      "downloadFile": "广东-机组检修预测信息.xlsx",
-      "fetchStatus": "正常",
-      "qualityStatus": "正常",
-      "collectorStatus": "normal",
-      "timePoint": "1D",
-      "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
-      "valueRange": "D-6日 ～ D+1日",
-      "lastSuccessAt": "2026-06-16 10:05",
-      "nextFetchAt": "2026-06-17 11:40",
-      "fetchToolTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
-      "pageAddress": "现货交易（新）-披露中心-信息披露查询-预测",
-      "fetchExceptionType": "-",
-      "fetchExceptionAt": "-",
-      "fetchNotified": "否",
-      "fetchProcessStatus": "-",
-      "checkAt": "2026-06-16 11:13",
-      "checkRules": "非空、完整性、更新时效、数值边界",
-      "qualityExceptionType": "-",
-      "qualityNotified": "否",
-      "qualityProcessStatus": "-",
-      "processStatus": "-",
-      "notified": "否",
-      "warningThreshold": "环比阈值：记录数较上一期±30%；同比阈值：记录数较去年同期±50%；非连续数值类，重点校验设备/日期/状态字段完整性",
-      "priority": "-",
-      "remark": "",
-      "namingRule": "-",
-      "categoryPath": [
-        "信息披露",
-        "负荷信息",
-        "发输变电设备检修计划"
-      ],
-      "timeline": [
-        "2026-06-16 10:05 最近一次数据成功入库",
-        "2026-06-16 18:30 取数、解析与入库流程完成",
-        "2026-06-16 18:40 数据质量校验通过"
-      ]
-    },
-    {
-      "id": "dm-070",
+      "id": "dm-018",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-分时电量-售电公司分时电量",
@@ -3997,14 +1136,14 @@
       "targetInternalKey": "广东|售电公司分时电量|信息披露-分时电量-售电公司分时电量|19",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        61
+        19
       ],
       "excelMatchKey": "广东|售电公司分时电量|19",
       "fileFormat": "-",
       "downloadFile": "售电公司分时电量列表2026-03-0615_24_21.xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
       "qualityStatus": "待校验",
-      "collectorStatus": "normal",
       "timePoint": "1h",
       "outputTime": "D日 出 D-4日",
       "warningTime": "D日18:30",
@@ -4040,7 +1179,7 @@
       ]
     },
     {
-      "id": "dm-071",
+      "id": "dm-019",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-分时电量-用电企业分时电量",
@@ -4054,14 +1193,14 @@
       "targetInternalKey": "广东|用电企业分时电量|信息披露-分时电量-用电企业分时电量|20",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        62
+        20
       ],
       "excelMatchKey": "广东|用电企业分时电量|20",
       "fileFormat": "-",
       "downloadFile": "售电公司分时计量点详情列表2026-03-0615_25_21.xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
       "qualityStatus": "待校验",
-      "collectorStatus": "normal",
       "timePoint": "1h",
       "outputTime": "D日 出 D-4日",
       "warningTime": "D日18:30",
@@ -4097,7 +1236,7 @@
       ]
     },
     {
-      "id": "dm-083",
+      "id": "dm-020",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-分时电量-售电公司分时电量历史回溯",
@@ -4110,13 +1249,15 @@
       "targetRowNumber": 21,
       "targetInternalKey": "广东|售电公司分时电量历史回溯|信息披露-分时电量-售电公司分时电量历史回溯|21",
       "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [],
+      "excelSourceRowNumbers": [
+        21
+      ],
       "excelMatchKey": "广东|售电公司分时电量历史回溯|21",
       "fileFormat": "-",
       "downloadFile": "售电公司分时电量历史回溯列表2026-03-0615_24_21.xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "1h",
       "outputTime": "D日 出 D-4日",
       "warningTime": "D日18:30",
@@ -4124,7 +1265,7 @@
       "lastSuccessAt": "2026-06-16 17:34",
       "nextFetchAt": "2026-06-17 18:30",
       "fetchToolTimeliness": "",
-      "pageAddress": "零售交易-历史电量管理-分时历史电量-历史回溯",
+      "pageAddress": "零售交易-历史电量管理-分时历史电量",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
       "fetchNotified": "否",
@@ -4138,7 +1279,7 @@
       "notified": "否",
       "warningThreshold": "环比阈值：同一时段较上一日±60%；同比阈值：同一时段较去年同期±100%；历史回溯按代理月份校验完整性",
       "priority": "P0",
-      "remark": "",
+      "remark": "全量回刷：D-4至2025年1月1日；补取数据：D-4至D-10；M月19日、20日07:00分别执行两次全量回刷任务，21日前完成；20日后每日补取一次最新数据",
       "namingRule": "-",
       "categoryPath": [
         "信息披露",
@@ -4152,7 +1293,7 @@
       ]
     },
     {
-      "id": "dm-084",
+      "id": "dm-021",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-分时电量-用电企业分时电量历史回溯",
@@ -4165,13 +1306,15 @@
       "targetRowNumber": 22,
       "targetInternalKey": "广东|用电企业分时电量历史回溯|信息披露-分时电量-用电企业分时电量历史回溯|22",
       "targetDuplicateIndex": 1,
-      "excelSourceRowNumbers": [],
+      "excelSourceRowNumbers": [
+        22
+      ],
       "excelMatchKey": "广东|用电企业分时电量历史回溯|22",
       "fileFormat": "-",
       "downloadFile": "用电企业分时电量历史回溯列表2026-03-0615_25_21.xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "1h",
       "outputTime": "D日 出 D-4日",
       "warningTime": "D日18:30",
@@ -4179,7 +1322,7 @@
       "lastSuccessAt": "2026-06-16 17:36",
       "nextFetchAt": "2026-06-17 18:30",
       "fetchToolTimeliness": "",
-      "pageAddress": "零售交易-历史电量管理-分时历史电量-分时计量点详情-历史回溯",
+      "pageAddress": "零售交易-历史电量管理-分时历史电量-分时计量点详情",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
       "fetchNotified": "否",
@@ -4193,7 +1336,7 @@
       "notified": "否",
       "warningThreshold": "环比阈值：同一时段较上一日±60%；同比阈值：同一时段较去年同期±100%；历史回溯按代理月份校验完整性",
       "priority": "P0",
-      "remark": "",
+      "remark": "全量回刷：D-4至2025年1月1日；补取数据：D-4至D-10；M月19日、20日07:00分别执行两次全量回刷任务，21日前完成；20日后每日补取一次最新数据",
       "namingRule": "-",
       "categoryPath": [
         "信息披露",
@@ -4207,7 +1350,7 @@
       ]
     },
     {
-      "id": "dm-072",
+      "id": "dm-022",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-出清电量",
@@ -4224,15 +1367,14 @@
       "targetInternalKey": "广东|日前开机台数和出清电量|信息披露-出清电量|23",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        63,
-        64
+        23
       ],
       "excelMatchKey": "广东|日前开机台数和出清电量|23",
       "fileFormat": "-",
       "downloadFile": "现货分时分类型出清电量2026-03-12.xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "数据为空",
-      "collectorStatus": "normal",
       "timePoint": "1h",
       "outputTime": "D日 出 D日",
       "warningTime": "D日18:30",
@@ -4267,7 +1409,7 @@
       ]
     },
     {
-      "id": "dm-073",
+      "id": "dm-023",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-出清电量",
@@ -4284,15 +1426,14 @@
       "targetInternalKey": "广东|实时开机台数和出清电量|信息披露-出清电量|24",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        65,
-        66
+        24
       ],
       "excelMatchKey": "广东|实时开机台数和出清电量|24",
       "fileFormat": "-",
       "downloadFile": "现货分时分类型出清电量2026-03-10.xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "数据不完整",
-      "collectorStatus": "normal",
       "timePoint": "1h",
       "outputTime": "D日 出 D-2日",
       "warningTime": "D日18:30",
@@ -4327,7 +1468,7 @@
       ]
     },
     {
-      "id": "dm-074",
+      "id": "dm-024",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-交易结果",
@@ -4344,18 +1485,17 @@
       "targetInternalKey": "广东|日前交易结果|信息披露-交易结果|25",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        67,
-        68
+        25
       ],
       "excelMatchKey": "广东|日前交易结果|25",
       "fileFormat": "-",
       "downloadFile": "实际运行结果(2026-03-06) (1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
       "qualityStatus": "数据未更新",
-      "collectorStatus": "normal",
       "timePoint": "1h",
       "outputTime": "D日 出 D-5日",
-      "warningTime": "D日18:30",
+      "warningTime": "D+1日09:00",
       "valueRange": "D-9日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:00",
       "nextFetchAt": "2026-06-17 18:30",
@@ -4387,7 +1527,7 @@
       ]
     },
     {
-      "id": "dm-075",
+      "id": "dm-025",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-交易结果",
@@ -4404,18 +1544,17 @@
       "targetInternalKey": "广东|实时交易结果|信息披露-交易结果|26",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        69,
-        70
+        26
       ],
       "excelMatchKey": "广东|实时交易结果|26",
       "fileFormat": "-",
       "downloadFile": "同日前交易结果在同一个文件",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "数值异常",
-      "collectorStatus": "normal",
       "timePoint": "1h",
       "outputTime": "D日 出 D-5日",
-      "warningTime": "D日18:30",
+      "warningTime": "D+1日09:00",
       "valueRange": "D-9日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:08",
       "nextFetchAt": "2026-06-17 18:30",
@@ -4447,7 +1586,7 @@
       ]
     },
     {
-      "id": "dm-076",
+      "id": "dm-026",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-节点电价",
@@ -4461,14 +1600,14 @@
       "targetInternalKey": "广东|日前节点电价|信息披露-节点电价|27",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        71
+        27
       ],
       "excelMatchKey": "广东|日前节点电价|27",
       "fileFormat": "-",
       "downloadFile": "日前节点电价查询(2026-03-06).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日 17:00 出 D+1日",
       "warningTime": "D日18:30",
@@ -4503,7 +1642,7 @@
       ]
     },
     {
-      "id": "dm-077",
+      "id": "dm-027",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-节点电价",
@@ -4517,14 +1656,14 @@
       "targetInternalKey": "广东|实时节点电价|信息披露-节点电价|28",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        72
+        28
       ],
       "excelMatchKey": "广东|实时节点电价|28",
       "fileFormat": "-",
       "downloadFile": "实时节点电价查询(2026-03-04).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日 16:00 出 D+1日",
       "warningTime": "D日18:30",
@@ -4559,7 +1698,7 @@
       ]
     },
     {
-      "id": "dm-078",
+      "id": "dm-028",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "信息披露-日前申报",
@@ -4573,14 +1712,14 @@
       "targetInternalKey": "广东|日前申报|信息披露-日前申报|29",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        73
+        29
       ],
       "excelMatchKey": "广东|日前申报|29",
       "fileFormat": "-",
       "downloadFile": "用电侧申报查询(2026-03-07).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "1h",
       "outputTime": "D日 13:00 出 D+1日",
       "warningTime": "D日18:30",
@@ -4615,7 +1754,7 @@
       ]
     },
     {
-      "id": "dm-079",
+      "id": "dm-029",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "日清月结-日清算结果",
@@ -4629,14 +1768,14 @@
       "targetInternalKey": "广东|日清算结果|日清月结-日清算结果|30",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        74
+        30
       ],
       "excelMatchKey": "广东|日清算结果|30",
       "fileFormat": "-",
       "downloadFile": "电能量日清算查询-售电公司_2026-02-28~2026-02-28.xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "1h",
       "outputTime": "D日 出 D-6日",
       "warningTime": "D日18:30",
@@ -4671,7 +1810,7 @@
       ]
     },
     {
-      "id": "dm-080",
+      "id": "dm-030",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "日清月结-月结算结果",
@@ -4685,14 +1824,14 @@
       "targetInternalKey": "广东|月结算结果|日清月结-月结算结果|31",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        75
+        31
       ],
       "excelMatchKey": "广东|月结算结果|31",
       "fileFormat": "-",
       "downloadFile": "售电公司_2026-01.xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "1M",
       "outputTime": "M月12日 出 M-1月",
       "warningTime": "D日18:30",
@@ -4727,7 +1866,7 @@
       ]
     },
     {
-      "id": "dm-081",
+      "id": "dm-031",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "日清月结-月结算结果",
@@ -4741,14 +1880,14 @@
       "targetInternalKey": "广东|月结算明细|日清月结-月结算结果|32",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        76
+        32
       ],
       "excelMatchKey": "广东|月结算明细|32",
       "fileFormat": "-",
       "downloadFile": "月零售用户分摊数据详情_2026-01.xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "1M",
       "outputTime": "M月12日 出 M-1月",
       "warningTime": "D日18:30",
@@ -4783,7 +1922,7 @@
       ]
     },
     {
-      "id": "dm-056",
+      "id": "dm-032",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "无（后台数据）",
@@ -4797,14 +1936,14 @@
       "targetInternalKey": "广东|实时出清断面|无（后台数据）|33",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        44
+        33
       ],
       "excelMatchKey": "广东|实时出清断面|33",
       "fileFormat": "-",
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
+      "collectorStatus": "abnormal",
       "fetchStatus": "数据未取回",
       "qualityStatus": "待校验",
-      "collectorStatus": "abnormal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D日18:30",
@@ -4838,7 +1977,7 @@
       ]
     },
     {
-      "id": "dm-057",
+      "id": "dm-033",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "无（后台数据）",
@@ -4852,14 +1991,14 @@
       "targetInternalKey": "广东|实际断面|无（后台数据）|34",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        45
+        34
       ],
       "excelMatchKey": "广东|实际断面|34",
       "fileFormat": "-",
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "数据为空",
-      "collectorStatus": "normal",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D日18:30",
@@ -4893,7 +2032,7 @@
       ]
     },
     {
-      "id": "dm-058",
+      "id": "dm-034",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "无（后台数据）",
@@ -4907,17 +2046,17 @@
       "targetInternalKey": "广东|必开必停容量预测信息|无（后台数据）|35",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        46
+        35
       ],
       "excelMatchKey": "广东|必开必停容量预测信息|35",
       "fileFormat": "-",
       "downloadFile": "信息披露查询预测信息(2026-03-07)(1).xlsx",
+      "collectorStatus": "abnormal",
       "fetchStatus": "数据未取回",
       "qualityStatus": "待校验",
-      "collectorStatus": "abnormal",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 10:07",
       "nextFetchAt": "2026-06-17 11:40",
@@ -4948,7 +2087,7 @@
       ]
     },
     {
-      "id": "dm-059",
+      "id": "dm-035",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "无（后台数据）",
@@ -4962,14 +2101,14 @@
       "targetInternalKey": "广东|必开必停容量实际信息|无（后台数据）|36",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        47
+        36
       ],
       "excelMatchKey": "广东|必开必停容量实际信息|36",
       "fileFormat": "-",
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
       "qualityStatus": "待校验",
-      "collectorStatus": "normal",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D日18:30",
@@ -5003,7 +2142,7 @@
       ]
     },
     {
-      "id": "dm-060",
+      "id": "dm-036",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "无（后台数据）",
@@ -5017,14 +2156,14 @@
       "targetInternalKey": "广东|输变电设备检修计划执行情况|无（后台数据）|37",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        48
+        37
       ],
       "excelMatchKey": "广东|输变电设备检修计划执行情况|37",
       "fileFormat": "-",
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "数据为空",
-      "collectorStatus": "normal",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D日18:30",
@@ -5058,7 +2197,7 @@
       ]
     },
     {
-      "id": "dm-068",
+      "id": "dm-037",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "无（后台数据）",
@@ -5072,17 +2211,17 @@
       "targetInternalKey": "广东|机组检修预测信息|无（后台数据）|38",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        59
+        38
       ],
       "excelMatchKey": "广东|机组检修预测信息|38",
       "fileFormat": "-",
       "downloadFile": "信息披露查询预测信息(2026-03-07)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:42",
       "nextFetchAt": "2026-06-17 11:40",
@@ -5113,7 +2252,7 @@
       ]
     },
     {
-      "id": "dm-069",
+      "id": "dm-038",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
       "businessModule": "无（后台数据）",
@@ -5127,17 +2266,17 @@
       "targetInternalKey": "广东|输变电检修预测信息|无（后台数据）|39",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
-        60
+        39
       ],
       "excelMatchKey": "广东|输变电检修预测信息|39",
       "fileFormat": "-",
       "downloadFile": "信息披露查询预测信息(2026-03-07)(1).xlsx",
+      "collectorStatus": "normal",
       "fetchStatus": "正常",
       "qualityStatus": "正常",
-      "collectorStatus": "normal",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:05",
       "nextFetchAt": "2026-06-17 11:40",
@@ -5166,267 +2305,2796 @@
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
       ]
+    },
+    {
+      "id": "dm-039",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "系统负荷预测（日）",
+      "sourceDataItem": "系统负荷预测（日）",
+      "dataType": "预测",
+      "dataParent": "系统负荷预测（日）",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 2,
+      "targetInternalKey": "湖南|系统负荷预测（日）|信息披露-负荷信息-负荷信息|2",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        2
+      ],
+      "excelMatchKey": "湖南|系统负荷预测（日）|2",
+      "fileFormat": "excel",
+      "downloadFile": "5.1.______【事前日】系统负荷预测-日.xlsx",
+      "collectorStatus": "abnormal",
+      "fetchStatus": "数据未取回",
+      "qualityStatus": "待校验",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D+1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-15 17:22",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-系统负荷预测（日）",
+      "fetchExceptionType": "数据未取回",
+      "fetchExceptionAt": "2026-06-16 18:30",
+      "fetchNotified": "是",
+      "fetchProcessStatus": "待处理",
+      "checkAt": "-",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "待处理",
+      "notified": "是",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-15 17:22 最近一次数据成功入库",
+        "2026-06-16 18:30 命中取数状态：数据未取回",
+        "2026-06-16 18:40 数据质量校验待触发"
+      ]
+    },
+    {
+      "id": "dm-040",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "实际负荷",
+      "sourceDataItem": "实际负荷",
+      "dataType": "实际",
+      "dataParent": "实际负荷",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 3,
+      "targetInternalKey": "湖南|实际负荷|信息披露-负荷信息-负荷信息|3",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        3
+      ],
+      "excelMatchKey": "湖南|实际负荷|3",
+      "fileFormat": "excel",
+      "downloadFile": "8.6._【事后】实际负荷.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "数据未取回",
+      "qualityStatus": "待校验",
+      "timePoint": "15min",
+      "outputTime": "D日 12:00 出 D-1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-4日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:30",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-实际负荷",
+      "fetchExceptionType": "数据未取回",
+      "fetchExceptionAt": "2026-06-16 18:30",
+      "fetchNotified": "是",
+      "fetchProcessStatus": "待处理",
+      "checkAt": "-",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "待处理",
+      "notified": "是",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:30 最近一次数据成功入库",
+        "2026-06-16 18:30 命中取数状态：数据未取回",
+        "2026-06-16 18:40 数据质量校验待触发"
+      ]
+    },
+    {
+      "id": "dm-041",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "新能源总出力预测（日）",
+      "sourceDataItem": "新能源总出力预测（日）",
+      "dataType": "预测",
+      "dataParent": "新能源总出力预测（日）",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 4,
+      "targetInternalKey": "湖南|新能源总出力预测（日）|信息披露-负荷信息-负荷信息|4",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        4
+      ],
+      "excelMatchKey": "湖南|新能源总出力预测（日）|4",
+      "fileFormat": "excel",
+      "downloadFile": "5.7._【事前】新能源总出力预测.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "数据为空",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D+1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:38",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-新能源总出力预测（日）",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:46",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "数据为空",
+      "qualityNotified": "是",
+      "qualityProcessStatus": "待处理",
+      "processStatus": "待处理",
+      "notified": "是",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:38 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 命中数据质量异常：数据为空"
+      ]
+    },
+    {
+      "id": "dm-042",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "新能源总出力",
+      "sourceDataItem": "新能源总出力",
+      "dataType": "实际",
+      "dataParent": "新能源总出力",
+      "dataChildren": [
+        "湖南风电发电有功电力",
+        "湖南光伏发电有功电力"
+      ],
+      "isCollected": "✅",
+      "targetRowNumber": 5,
+      "targetInternalKey": "湖南|新能源总出力|信息披露-负荷信息-负荷信息|5",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        5
+      ],
+      "excelMatchKey": "湖南|新能源总出力|5",
+      "fileFormat": "excel",
+      "downloadFile": "8.4._【事后】新能源总出力 (2).xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "数据不完整",
+      "timePoint": "15min",
+      "outputTime": "D日 12:00 出 D-1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-4日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:01",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-新能源总出力",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:09",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "数据不完整",
+      "qualityNotified": "是",
+      "qualityProcessStatus": "待处理",
+      "processStatus": "待处理",
+      "notified": "是",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:01 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 命中数据质量异常：数据不完整"
+      ]
+    },
+    {
+      "id": "dm-043",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "水电（含抽蓄）总出力预测(日）",
+      "sourceDataItem": "水电（含抽蓄）总出力预测(日）",
+      "dataType": "预测",
+      "dataParent": "水电（含抽蓄）总出力预测(日）",
+      "dataChildren": [
+        "水电总出力预测"
+      ],
+      "isCollected": "✅",
+      "targetRowNumber": 6,
+      "targetInternalKey": "湖南|水电（含抽蓄）总出力预测(日）|信息披露-负荷信息-负荷信息|6",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        6
+      ],
+      "excelMatchKey": "湖南|水电（含抽蓄）总出力预测(日）|6",
+      "fileFormat": "excel",
+      "downloadFile": "5.9._【事前】水电（含抽蓄）总出力预测-日 (5).xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "数据未取回",
+      "qualityStatus": "数据未更新",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D+1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:09",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-水电（含抽蓄）总出力预测（日）",
+      "fetchExceptionType": "数据未取回",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "是",
+      "fetchProcessStatus": "待处理",
+      "checkAt": "2026-06-16 18:17",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "数据未更新",
+      "qualityNotified": "是",
+      "qualityProcessStatus": "待处理",
+      "processStatus": "待处理",
+      "notified": "是",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:09 最近一次数据成功入库",
+        "- 命中取数状态：数据未取回",
+        "2026-06-16 18:40 命中数据质量异常：数据未更新"
+      ]
+    },
+    {
+      "id": "dm-044",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "水电（含抽蓄）总出力",
+      "sourceDataItem": "水电（含抽蓄）总出力",
+      "dataType": "实际",
+      "dataParent": "水电（含抽蓄）总出力",
+      "dataChildren": [
+        "湖南水电发电有功电力"
+      ],
+      "isCollected": "✅",
+      "targetRowNumber": 7,
+      "targetInternalKey": "湖南|水电（含抽蓄）总出力|信息披露-负荷信息-负荷信息|7",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        7
+      ],
+      "excelMatchKey": "湖南|水电（含抽蓄）总出力|7",
+      "fileFormat": "excel",
+      "downloadFile": "8.5._【事后】水电（含抽蓄）总出力 (1).xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "数值异常",
+      "timePoint": "15min",
+      "outputTime": "D日 12:00 出 D-1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-4日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:17",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-水电（含抽蓄）总出力",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:25",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "数值异常",
+      "qualityNotified": "是",
+      "qualityProcessStatus": "待处理",
+      "processStatus": "待处理",
+      "notified": "是",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:17 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 命中数据质量异常：数值异常"
+      ]
+    },
+    {
+      "id": "dm-045",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "发电总出力预测",
+      "sourceDataItem": "发电总出力预测",
+      "dataType": "预测",
+      "dataParent": "发电总出力预测",
+      "dataChildren": [
+        "机组发电总出力预测"
+      ],
+      "isCollected": "✅",
+      "targetRowNumber": 8,
+      "targetInternalKey": "湖南|发电总出力预测|信息披露-负荷信息-负荷信息|8",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        8
+      ],
+      "excelMatchKey": "湖南|发电总出力预测|8",
+      "fileFormat": "excel",
+      "downloadFile": "5.5._【事前】发电总出力预测.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D+1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:41",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-发电总出力预测",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:49",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:41 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-046",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "发电总出力",
+      "sourceDataItem": "发电总出力",
+      "dataType": "实际",
+      "dataParent": "发电总出力",
+      "dataChildren": [
+        "发电总出力"
+      ],
+      "isCollected": "-",
+      "targetRowNumber": 9,
+      "targetInternalKey": "湖南|发电总出力|信息披露-负荷信息-负荷信息|9",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        9
+      ],
+      "excelMatchKey": "湖南|发电总出力|9",
+      "fileFormat": "excel",
+      "downloadFile": "8.2._【事后】发电总出力.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 12:00 出 D-1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-7日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:04",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-发电总出力",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:12",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "湖南实际发电总出力计划yyyy-MM-dd",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:04 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-047",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "非市场机组总出力预测",
+      "sourceDataItem": "非市场机组总出力预测",
+      "dataType": "预测",
+      "dataParent": "非市场机组总出力预测",
+      "dataChildren": [
+        "非市场机组计划总曲线"
+      ],
+      "isCollected": "✅",
+      "targetRowNumber": 10,
+      "targetInternalKey": "湖南|非市场机组总出力预测|信息披露-负荷信息-负荷信息|10",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        10
+      ],
+      "excelMatchKey": "湖南|非市场机组总出力预测|10",
+      "fileFormat": "excel",
+      "downloadFile": "5.6._【事前】非市场机组总出力预测.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D+1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:12",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-非市场机组总出力预测",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:20",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:12 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-048",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "非市场机组总出力",
+      "sourceDataItem": "非市场机组总出力",
+      "dataType": "实际",
+      "dataParent": "非市场机组总出力",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 11,
+      "targetInternalKey": "湖南|非市场机组总出力|信息披露-负荷信息-负荷信息|11",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        11
+      ],
+      "excelMatchKey": "湖南|非市场机组总出力|11",
+      "fileFormat": "excel",
+      "downloadFile": "8.3._【事后】非市场机组总出力.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 12:00 出 D-1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-4日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:20",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-非市场机组总出力",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:28",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:20 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-049",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-负荷信息-省间联络",
+      "dataItem": "省间联络线输电曲线预测",
+      "sourceDataItem": "省间联络线输电曲线预测",
+      "dataType": "预测",
+      "dataParent": "省间联络线输电曲线预测",
+      "dataChildren": [
+        "中衡直流（日前）",
+        "主网送湘（日前）",
+        "祁韶直流（日前）"
+      ],
+      "isCollected": "✅",
+      "targetRowNumber": 12,
+      "targetInternalKey": "湖南|省间联络线输电曲线预测|信息披露-负荷信息-省间联络|12",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        12
+      ],
+      "excelMatchKey": "湖南|省间联络线输电曲线预测|12",
+      "fileFormat": "excel",
+      "downloadFile": "5.4._【事前】省间联络线输电曲线预测.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D+1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:25",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-省间联络线输电曲线预测",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:33",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "省间联络"
+      ],
+      "timeline": [
+        "2026-06-16 17:25 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-050",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-负荷信息-省间联络",
+      "dataItem": "省间联络线输电情况",
+      "sourceDataItem": "省间联络线输电情况",
+      "dataType": "实际",
+      "dataParent": "省间联络线输电情况",
+      "dataChildren": [
+        "省间联络线实际输电情况"
+      ],
+      "isCollected": "✅",
+      "targetRowNumber": 13,
+      "targetInternalKey": "湖南|省间联络线输电情况|信息披露-负荷信息-省间联络|13",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        13
+      ],
+      "excelMatchKey": "湖南|省间联络线输电情况|13",
+      "fileFormat": "excel",
+      "downloadFile": "8.10._【事后】省间联络线输电情况.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 12:00 出 D-1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-4日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:33",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-省间联络线输电情况",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:41",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "省间联络"
+      ],
+      "timeline": [
+        "2026-06-16 17:33 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-051",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-负荷信息-机组状态",
+      "dataItem": "机组状态",
+      "sourceDataItem": "机组状态",
+      "dataType": "-",
+      "dataParent": "机组状态",
+      "dataChildren": [],
+      "isCollected": "-",
+      "targetRowNumber": 14,
+      "targetInternalKey": "湖南|机组状态|信息披露-负荷信息-机组状态|14",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        14
+      ],
+      "excelMatchKey": "湖南|机组状态|14",
+      "fileFormat": "excel",
+      "downloadFile": "8.1._【事后】机组状态.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 17:00 出 D-1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-2日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:39",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 17:00、18:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-电网运行-机组状态",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:47",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P1",
+      "remark": "",
+      "namingRule": "湖南机组状态yyyy-MM-dd",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "机组状态"
+      ],
+      "timeline": [
+        "2026-06-16 17:39 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-052",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-负荷信息-备用信息",
+      "dataItem": "系统备用信息",
+      "sourceDataItem": "系统备用信息",
+      "dataType": "-",
+      "dataParent": "系统备用信息",
+      "dataChildren": [
+        "负备用",
+        "正备用"
+      ],
+      "isCollected": "-",
+      "targetRowNumber": 15,
+      "targetInternalKey": "湖南|系统备用信息|信息披露-负荷信息-备用信息|15",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        15
+      ],
+      "excelMatchKey": "湖南|系统备用信息|15",
+      "fileFormat": "excel",
+      "downloadFile": "8.7._【事后】系统备用信息.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 17:00 出 D-1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-2日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:18",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 17:00、18:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-电网运行-系统备用信息",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:26",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P1",
+      "remark": "",
+      "namingRule": "湖南备用实际信息yyyy-MM-dd",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "备用信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:18 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-053",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-负荷信息-发输变电设备检修计划",
+      "dataItem": "发输变电设备检修计划（日）",
+      "sourceDataItem": "发输变电设备检修计划（日）",
+      "dataType": "日前",
+      "dataParent": "发输变电设备检修计划（日）",
+      "dataChildren": [],
+      "isCollected": "-",
+      "targetRowNumber": 16,
+      "targetInternalKey": "湖南|发输变电设备检修计划（日）|信息披露-负荷信息-发输变电设备检修计划|16",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        16
+      ],
+      "excelMatchKey": "湖南|发输变电设备检修计划（日）|16",
+      "fileFormat": "excel",
+      "downloadFile": "发输变电设备检修计划-日.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "1D",
+      "outputTime": "D日 出 D+1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:26",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-供需与约束-约束信息-发输变电设备检修计划（日）",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:34",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P1",
+      "remark": "",
+      "namingRule": "湖南输变电检修预测信息yyyy-MM-dd",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "发输变电设备检修计划"
+      ],
+      "timeline": [
+        "2026-06-16 17:26 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-054",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-节点电价",
+      "dataItem": "日前节点边际电价",
+      "sourceDataItem": "日前节点边际电价",
+      "dataType": "日前",
+      "dataParent": "日前节点边际电价",
+      "dataChildren": [
+        "节点电能量价格"
+      ],
+      "isCollected": "-",
+      "targetRowNumber": 17,
+      "targetInternalKey": "湖南|日前节点边际电价|信息披露-节点电价|17",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        17
+      ],
+      "excelMatchKey": "湖南|日前节点边际电价|17",
+      "fileFormat": "excel",
+      "downloadFile": "6.3._【事后】日前节点边际电价.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "数据未取回",
+      "qualityStatus": "待校验",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D+1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-15 17:28",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-日前节点边际电价",
+      "fetchExceptionType": "数据未取回",
+      "fetchExceptionAt": "2026-06-16 18:30",
+      "fetchNotified": "是",
+      "fetchProcessStatus": "待处理",
+      "checkAt": "-",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "待处理",
+      "notified": "是",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "湖南日前节点边际电价yyyy-MM-dd",
+      "categoryPath": [
+        "信息披露",
+        "节点电价"
+      ],
+      "timeline": [
+        "2026-06-15 17:28 最近一次数据成功入库",
+        "2026-06-16 18:30 命中取数状态：数据未取回",
+        "2026-06-16 18:40 数据质量校验待触发"
+      ]
+    },
+    {
+      "id": "dm-055",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-节点电价",
+      "dataItem": "实时节点边际电价",
+      "sourceDataItem": "实时节点边际电价",
+      "dataType": "实时",
+      "dataParent": "实时节点边际电价",
+      "dataChildren": [
+        "节点电能量价格"
+      ],
+      "isCollected": "✅",
+      "targetRowNumber": 18,
+      "targetInternalKey": "湖南|实时节点边际电价|信息披露-节点电价|18",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        18
+      ],
+      "excelMatchKey": "湖南|实时节点边际电价|18",
+      "fileFormat": "excel",
+      "downloadFile": "6.4._【事后】实时节点边际电价 (1).xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "数据未取回",
+      "qualityStatus": "待校验",
+      "timePoint": "15min",
+      "outputTime": "D日 12:00 出 D-1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:36",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-实时节点边际电价",
+      "fetchExceptionType": "数据未取回",
+      "fetchExceptionAt": "2026-06-16 18:30",
+      "fetchNotified": "是",
+      "fetchProcessStatus": "待处理",
+      "checkAt": "-",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "待处理",
+      "notified": "是",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "节点电价"
+      ],
+      "timeline": [
+        "2026-06-16 17:36 最近一次数据成功入库",
+        "2026-06-16 18:30 命中取数状态：数据未取回",
+        "2026-06-16 18:40 数据质量校验待触发"
+      ]
+    },
+    {
+      "id": "dm-056",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-交易结果",
+      "dataItem": "日前用户侧统一结算价格",
+      "sourceDataItem": "日前用户侧统一结算价格",
+      "dataType": "日前",
+      "dataParent": "日前用户侧统一结算价格",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 19,
+      "targetInternalKey": "湖南|日前用户侧统一结算价格|信息披露-交易结果|19",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        19
+      ],
+      "excelMatchKey": "湖南|日前用户侧统一结算价格|19",
+      "fileFormat": "excel",
+      "downloadFile": "6.10._【事后】日前用户侧统一结算价格 (2).xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "数据为空",
+      "timePoint": "1h",
+      "outputTime": "D日 12:00 出 D日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:44",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-日前用户侧统一结算价格",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:52",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "数据为空",
+      "qualityNotified": "是",
+      "qualityProcessStatus": "待处理",
+      "processStatus": "待处理",
+      "notified": "是",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "交易结果"
+      ],
+      "timeline": [
+        "2026-06-16 17:44 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 命中数据质量异常：数据为空"
+      ]
+    },
+    {
+      "id": "dm-057",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-交易结果",
+      "dataItem": "实时用户侧统一结算价格",
+      "sourceDataItem": "实时用户侧统一结算价格",
+      "dataType": "实时",
+      "dataParent": "实时用户侧统一结算价格",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 20,
+      "targetInternalKey": "湖南|实时用户侧统一结算价格|信息披露-交易结果|20",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        20
+      ],
+      "excelMatchKey": "湖南|实时用户侧统一结算价格|20",
+      "fileFormat": "excel",
+      "downloadFile": "6.11._【事后】实时用户侧统一结算价格 (4).xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "数据不完整",
+      "timePoint": "1h",
+      "outputTime": "D日 出 D-4日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D日",
+      "lastSuccessAt": "2026-06-16 17:07",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-实时用户侧统一结算价格",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:15",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "数据不完整",
+      "qualityNotified": "是",
+      "qualityProcessStatus": "待处理",
+      "processStatus": "待处理",
+      "notified": "是",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "交易结果"
+      ],
+      "timeline": [
+        "2026-06-16 17:07 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 命中数据质量异常：数据不完整"
+      ]
+    },
+    {
+      "id": "dm-058",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-交易结果",
+      "dataItem": "日前用户侧24点出清电量",
+      "sourceDataItem": "日前用户侧24点出清电量",
+      "dataType": "日前",
+      "dataParent": "日前用户侧24点出清电量",
+      "dataChildren": [],
+      "isCollected": "-",
+      "targetRowNumber": 21,
+      "targetInternalKey": "湖南|日前用户侧24点出清电量|信息披露-交易结果|21",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        21
+      ],
+      "excelMatchKey": "湖南|日前用户侧24点出清电量|21",
+      "fileFormat": "excel",
+      "downloadFile": "6.12._【事后】日前用户侧24点出清电量.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "1h",
+      "outputTime": "D日 出 D-1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:31",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-日前用户侧24点出清电量",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:39",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "湖南日前交易结果yyyy-MM-dd",
+      "categoryPath": [
+        "信息披露",
+        "交易结果"
+      ],
+      "timeline": [
+        "2026-06-16 17:31 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-059",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-分时电量-用电企业分时电量",
+      "dataItem": "日用电信息（现货）",
+      "sourceDataItem": "日用电信息（现货）",
+      "dataType": "实际",
+      "dataParent": "日用电信息（现货）",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 22,
+      "targetInternalKey": "湖南|日用电信息（现货）|信息披露-分时电量-用电企业分时电量|22",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        22
+      ],
+      "excelMatchKey": "湖南|日用电信息（现货）|22",
+      "fileFormat": "excel",
+      "downloadFile": "现货日用电信息-售电公司_REPORT0 (4).xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "数据未取回",
+      "qualityStatus": "数据未更新",
+      "timePoint": "1h",
+      "outputTime": "D日 出 D-2日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-2日 ～ D-2日",
+      "lastSuccessAt": "2026-06-16 17:15",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "信息披露-用户用电信息查询-日用电信息（现货）",
+      "fetchExceptionType": "数据未取回",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "是",
+      "fetchProcessStatus": "待处理",
+      "checkAt": "2026-06-16 18:23",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "数据未更新",
+      "qualityNotified": "是",
+      "qualityProcessStatus": "待处理",
+      "processStatus": "待处理",
+      "notified": "是",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "分时电量",
+        "用电企业分时电量"
+      ],
+      "timeline": [
+        "2026-06-16 17:15 最近一次数据成功入库",
+        "- 命中取数状态：数据未取回",
+        "2026-06-16 18:40 命中数据质量异常：数据未更新"
+      ]
+    },
+    {
+      "id": "dm-060",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "信息披露-日前申报",
+      "dataItem": "日前申报",
+      "sourceDataItem": "日前申报",
+      "dataType": "日前",
+      "dataParent": "日前申报",
+      "dataChildren": [],
+      "isCollected": "-",
+      "targetRowNumber": 23,
+      "targetInternalKey": "湖南|日前申报|信息披露-日前申报|23",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        23
+      ],
+      "excelMatchKey": "湖南|日前申报|23",
+      "fileFormat": "excel",
+      "downloadFile": "电能量申报数据 (1).xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "数值异常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D+1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:23",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 14:00、16:00",
+      "pageAddress": "现货交易_省内-现货申报（用电侧）",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:31",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "数值异常",
+      "qualityNotified": "是",
+      "qualityProcessStatus": "待处理",
+      "processStatus": "待处理",
+      "notified": "是",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "交易中心D日申报后即有数据",
+      "namingRule": "湖南日前申报yyyy-MM-dd",
+      "categoryPath": [
+        "信息披露",
+        "日前申报"
+      ],
+      "timeline": [
+        "2026-06-16 17:23 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 命中数据质量异常：数值异常"
+      ]
+    },
+    {
+      "id": "dm-061",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "日清月结-日清算结果",
+      "dataItem": "日清算",
+      "sourceDataItem": "日清算",
+      "dataType": "-",
+      "dataParent": "日清算",
+      "dataChildren": [],
+      "isCollected": "-",
+      "targetRowNumber": 24,
+      "targetInternalKey": "湖南|日清算|日清月结-日清算结果|24",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        24
+      ],
+      "excelMatchKey": "湖南|日清算|24",
+      "fileFormat": "pdf",
+      "downloadFile": "北京小桔新能源汽车科技有限公司01售电公司日清分结算单.pdf",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "1h",
+      "outputTime": "D日 出 D-6日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-6日 ～ D-4日，取所在月份",
+      "lastSuccessAt": "2026-06-16 17:02",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "结算-结算单查询",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:10",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "湖南售电公司日用电信息yyyy-MM-dd",
+      "categoryPath": [
+        "日清月结",
+        "日清算结果"
+      ],
+      "timeline": [
+        "2026-06-16 17:02 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-062",
+      "tradeCenter": "湖南",
+      "tradeCenterName": "湖南交易中心",
+      "businessModule": "日清月结-月结算结果",
+      "dataItem": "月结算-售电公司",
+      "sourceDataItem": "月结算-售电公司",
+      "dataType": "-",
+      "dataParent": "月结算-售电公司",
+      "dataChildren": [],
+      "isCollected": "-",
+      "targetRowNumber": 25,
+      "targetInternalKey": "湖南|月结算-售电公司|日清月结-月结算结果|25",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        25
+      ],
+      "excelMatchKey": "湖南|月结算-售电公司|25",
+      "fileFormat": "-",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "1M",
+      "outputTime": "M月10日 出 M-1月",
+      "warningTime": "D日18:30",
+      "valueRange": "D-6日 ～ D-4日，取所在月份",
+      "lastSuccessAt": "2026-06-04 17:10",
+      "nextFetchAt": "2026-07-15 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "结算-结算单查询-售电公司",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:18",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "-",
+      "remark": "仅在采集当日监控预警",
+      "namingRule": "-",
+      "categoryPath": [
+        "日清月结",
+        "月结算结果"
+      ],
+      "timeline": [
+        "2026-06-04 17:10 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-063",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "系统负荷预测（日）",
+      "sourceDataItem": "系统负荷预测（日）",
+      "dataType": "预测",
+      "dataParent": "系统负荷预测（日）",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 2,
+      "targetInternalKey": "陕西|系统负荷预测（日）|信息披露-负荷信息-负荷信息|2",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        2
+      ],
+      "excelMatchKey": "陕西|系统负荷预测（日）|2",
+      "fileFormat": "excel",
+      "downloadFile": "2026-05-08snLoadSupplyAndDemandBalance.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D+1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-15 17:01",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-省内现货-系统负荷预测（日）",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:30",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-15 17:01 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-064",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "实际负荷",
+      "sourceDataItem": "实际负荷",
+      "dataType": "实际",
+      "dataParent": "实际负荷",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 3,
+      "targetInternalKey": "陕西|实际负荷|信息披露-负荷信息-负荷信息|3",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        3
+      ],
+      "excelMatchKey": "陕西|实际负荷|3",
+      "fileFormat": "excel",
+      "downloadFile": "2026-05-08snDwsjfhplby.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-4日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:09",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-省内现货-实际负荷",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:40",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "交易中心D日实时滚动",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:09 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-065",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "发电总出力预测",
+      "sourceDataItem": "发电总出力预测",
+      "dataType": "预测",
+      "dataParent": "发电总出力预测",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 4,
+      "targetInternalKey": "陕西|发电总出力预测|信息披露-负荷信息-负荷信息|4",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        4
+      ],
+      "excelMatchKey": "陕西|发电总出力预测|4",
+      "fileFormat": "excel",
+      "downloadFile": "2026-05-08snRqgjysdfdzcljfqclyc.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D+1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:17",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "信息披露-省内现货-发电总出力预测",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:40",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:17 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-066",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "发电总出力",
+      "sourceDataItem": "发电总出力",
+      "dataType": "实际",
+      "dataParent": "发电总出力",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 5,
+      "targetInternalKey": "陕西|发电总出力|信息披露-负荷信息-负荷信息|5",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        5
+      ],
+      "excelMatchKey": "陕西|发电总出力|5",
+      "fileFormat": "无文件导出",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-4日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:25",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "信息披露-省内现货-发电总出力",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:33",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "交易中心D日实时滚动",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:25 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-067",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "非市场机组总出力预测",
+      "sourceDataItem": "非市场机组总出力预测",
+      "dataType": "预测",
+      "dataParent": "非市场机组总出力预测",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 6,
+      "targetInternalKey": "陕西|非市场机组总出力预测|信息披露-负荷信息-负荷信息|6",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        6
+      ],
+      "excelMatchKey": "陕西|非市场机组总出力预测|6",
+      "fileFormat": "excel",
+      "downloadFile": "2026-05-08snRqglfscjzclyc.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D+1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:33",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-省内现货-非市场机组总出力预测",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:41",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:33 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-068",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "非市场机组总出力",
+      "sourceDataItem": "非市场机组总出力",
+      "dataType": "实际",
+      "dataParent": "非市场机组总出力",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 7,
+      "targetInternalKey": "陕西|非市场机组总出力|信息披露-负荷信息-负荷信息|7",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        7
+      ],
+      "excelMatchKey": "陕西|非市场机组总出力|7",
+      "fileFormat": "无文件导出",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-4日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:41",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-省内现货-非市场机组总出力",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:49",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "交易中心D日实时滚动",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:41 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-069",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "新能源总出力预测（日）",
+      "sourceDataItem": "新能源总出力预测（日）",
+      "dataType": "预测",
+      "dataParent": "新能源总出力预测（日）",
+      "dataChildren": [
+        "新能源总出力预测数值",
+        "光电总出力预测数值",
+        "风电总出力预测数值"
+      ],
+      "isCollected": "✅",
+      "targetRowNumber": 8,
+      "targetInternalKey": "陕西|新能源总出力预测（日）|信息披露-负荷信息-负荷信息|8",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        8
+      ],
+      "excelMatchKey": "陕西|新能源总出力预测（日）|8",
+      "fileFormat": "excel",
+      "downloadFile": "2026-05-08snRqxnyzcljflclyc.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D+1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:04",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-省内现货-新能源总出力预测（日）",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:12",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:04 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-070",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "新能源总出力",
+      "sourceDataItem": "新能源总出力",
+      "dataType": "实际",
+      "dataParent": "新能源总出力",
+      "dataChildren": [
+        "新能源总出力",
+        "光伏总出力",
+        "风电总出力"
+      ],
+      "isCollected": "✅",
+      "targetRowNumber": 9,
+      "targetInternalKey": "陕西|新能源总出力|信息披露-负荷信息-负荷信息|9",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        9
+      ],
+      "excelMatchKey": "陕西|新能源总出力|9",
+      "fileFormat": "excel",
+      "downloadFile": "2026-05-08snXnyzcljflxcl.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-4日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:12",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-省内现货-新能源总出力",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:20",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "交易中心D日实时滚动",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:12 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-071",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "水电（含抽蓄）总出力预测（日）",
+      "sourceDataItem": "水电（含抽蓄）总出力预测（日）",
+      "dataType": "预测",
+      "dataParent": "水电（含抽蓄）总出力预测（日）",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 10,
+      "targetInternalKey": "陕西|水电（含抽蓄）总出力预测（日）|信息披露-负荷信息-负荷信息|10",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        10
+      ],
+      "excelMatchKey": "陕西|水电（含抽蓄）总出力预测（日）|10",
+      "fileFormat": "excel",
+      "downloadFile": "2026-05-08snRqsdfdclyc.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D+1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:20",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-省内现货-水电（含抽蓄）出力",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:28",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:20 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-072",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-负荷信息-负荷信息",
+      "dataItem": "水电（含抽蓄）出力",
+      "sourceDataItem": "水电（含抽蓄）出力",
+      "dataType": "实际",
+      "dataParent": "水电（含抽蓄）出力",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 11,
+      "targetInternalKey": "陕西|水电（含抽蓄）出力|信息披露-负荷信息-负荷信息|11",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        11
+      ],
+      "excelMatchKey": "陕西|水电（含抽蓄）出力|11",
+      "fileFormat": "无文件导出",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-4日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:28",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-省内现货-水电（含抽蓄）出力",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:36",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "交易中心D日实时滚动",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "负荷信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:28 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-073",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-负荷信息-省间联络",
+      "dataItem": "省间联络线输电曲线预测",
+      "sourceDataItem": "省间联络线输电曲线预测",
+      "dataType": "预测",
+      "dataParent": "省间联络线输电曲线预测",
+      "dataChildren": [
+        "外来电交易计划"
+      ],
+      "isCollected": "✅",
+      "targetRowNumber": 12,
+      "targetInternalKey": "陕西|省间联络线输电曲线预测|信息披露-负荷信息-省间联络|12",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        12
+      ],
+      "excelMatchKey": "陕西|省间联络线输电曲线预测|12",
+      "fileFormat": "excel",
+      "downloadFile": "2026-05-08snTieLineCurrent.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D+1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:36",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-省内现货-省间联络线输电曲线预测",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:44",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "省间联络"
+      ],
+      "timeline": [
+        "2026-06-16 17:36 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-074",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-负荷信息-省间联络",
+      "dataItem": "省间联络线输电情况",
+      "sourceDataItem": "省间联络线输电情况",
+      "dataType": "实际",
+      "dataParent": "省间联络线输电情况",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 13,
+      "targetInternalKey": "陕西|省间联络线输电情况|信息披露-负荷信息-省间联络|13",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        13
+      ],
+      "excelMatchKey": "陕西|省间联络线输电情况|13",
+      "fileFormat": "无文件导出",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-4日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:44",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "pageAddress": "信息披露-省内现货- 省间联络线输电情况",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:52",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "交易中心D日实时滚动",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "省间联络"
+      ],
+      "timeline": [
+        "2026-06-16 17:44 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-075",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-负荷信息-机组状态",
+      "dataItem": "机组状态",
+      "sourceDataItem": "机组状态",
+      "dataType": "-",
+      "dataParent": "机组状态",
+      "dataChildren": [],
+      "isCollected": "-",
+      "targetRowNumber": 14,
+      "targetInternalKey": "陕西|机组状态|信息披露-负荷信息-机组状态|14",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        14
+      ],
+      "excelMatchKey": "陕西|机组状态|14",
+      "fileFormat": "-",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D日",
+      "warningTime": "D日11:40",
+      "valueRange": "D-1日 ～ D日",
+      "lastSuccessAt": "2026-06-16 10:02",
+      "nextFetchAt": "2026-06-17 11:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "信息披露-综合查询-电网运行-机组状态",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 11:10",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P1",
+      "remark": "交易中心D日实时滚动",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "机组状态"
+      ],
+      "timeline": [
+        "2026-06-16 10:02 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-076",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-负荷信息-备用信息",
+      "dataItem": "系统备用信息",
+      "sourceDataItem": "系统备用信息",
+      "dataType": "-",
+      "dataParent": "系统备用信息",
+      "dataChildren": [],
+      "isCollected": "-",
+      "targetRowNumber": 15,
+      "targetInternalKey": "陕西|系统备用信息|信息披露-负荷信息-备用信息|15",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        15
+      ],
+      "excelMatchKey": "陕西|系统备用信息|15",
+      "fileFormat": "-",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D-1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-7日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:26",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 14:00",
+      "pageAddress": "信息披露-省内现货-系统备用信息",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:34",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P1",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "负荷信息",
+        "备用信息"
+      ],
+      "timeline": [
+        "2026-06-16 17:26 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-077",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-交易结果",
+      "dataItem": "用户侧加权电价（日前）",
+      "sourceDataItem": "用户侧加权电价（日前）",
+      "dataType": "日前；实时",
+      "dataParent": "用户侧加权电价（日前）",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 16,
+      "targetInternalKey": "陕西|用户侧加权电价（日前）|信息披露-交易结果|16",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        16
+      ],
+      "excelMatchKey": "陕西|用户侧加权电价（日前）|16",
+      "fileFormat": "无文件导出",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 22:00 出 D+1日",
+      "warningTime": "D+1日09:00",
+      "valueRange": "D-3日 ～ D+1日",
+      "lastSuccessAt": "2026-06-15 17:07",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "现货交易-用户侧加权电价",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:30",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "交易结果"
+      ],
+      "timeline": [
+        "2026-06-15 17:07 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-078",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-交易结果",
+      "dataItem": "用户侧加权电价（实时）",
+      "sourceDataItem": "用户侧加权电价（实时）",
+      "dataType": "日前；实时",
+      "dataParent": "用户侧加权电价（实时）",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 17,
+      "targetInternalKey": "陕西|用户侧加权电价（实时）|信息披露-交易结果|17",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        17
+      ],
+      "excelMatchKey": "陕西|用户侧加权电价（实时）|17",
+      "fileFormat": "无文件导出",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D-1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-3日 ～ D-1日",
+      "lastSuccessAt": "2026-06-15 17:07",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "现货交易-用户侧加权电价",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:30",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "交易结果"
+      ],
+      "timeline": [
+        "2026-06-15 17:07 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-079",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-分时电量-用电企业分时电量",
+      "dataItem": "售电公司日电量",
+      "sourceDataItem": "售电公司日电量",
+      "dataType": "实际",
+      "dataParent": "售电公司日电量",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 18,
+      "targetInternalKey": "陕西|售电公司日电量|信息披露-分时电量-用电企业分时电量|18",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        18
+      ],
+      "excelMatchKey": "陕西|售电公司日电量|18",
+      "fileFormat": "excel",
+      "downloadFile": "2026-05-01用户侧实际用电量.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D-2日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-5日 ～ D-1日",
+      "lastSuccessAt": "2026-06-16 17:15",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "pageAddress": "信息披露-售电公司日电量",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:23",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "分时电量",
+        "用电企业分时电量"
+      ],
+      "timeline": [
+        "2026-06-16 17:15 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-080",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-日前申报",
+      "dataItem": "日前申报",
+      "sourceDataItem": "日前申报",
+      "dataType": "日前",
+      "dataParent": "日前申报",
+      "dataChildren": [],
+      "isCollected": "-",
+      "targetRowNumber": 19,
+      "targetInternalKey": "陕西|日前申报|信息披露-日前申报|19",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        19
+      ],
+      "excelMatchKey": "陕西|日前申报|19",
+      "fileFormat": "excel",
+      "downloadFile": "电能量申报数据.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D日",
+      "warningTime": "D日18:30",
+      "valueRange": "D日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:23",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 14:00",
+      "pageAddress": "现货交易-现货申报_用电侧",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:31",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "交易中心D日申报后即有数据",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "日前申报"
+      ],
+      "timeline": [
+        "2026-06-16 17:23 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-081",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-节点电价",
+      "dataItem": "日前现货市场节点边际电价（日）",
+      "sourceDataItem": "日前现货市场节点边际电价（日）",
+      "dataType": "日前",
+      "dataParent": "日前现货市场节点边际电价（日）",
+      "dataChildren": [],
+      "isCollected": "-",
+      "targetRowNumber": 20,
+      "targetInternalKey": "陕西|日前现货市场节点边际电价（日）|信息披露-节点电价|20",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        20
+      ],
+      "excelMatchKey": "陕西|日前现货市场节点边际电价（日）|20",
+      "fileFormat": "-",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-7日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:31",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 14:00",
+      "pageAddress": "信息披露-综合查询-市场运营-交易组织及出清-现货市场申报、出清信息-日前现货市场节点边际电价（日）",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:39",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "节点电价"
+      ],
+      "timeline": [
+        "2026-06-16 17:31 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-082",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-节点电价",
+      "dataItem": "实时现货市场节点边际电价（日）",
+      "sourceDataItem": "实时现货市场节点边际电价（日）",
+      "dataType": "实时",
+      "dataParent": "实时现货市场节点边际电价（日）",
+      "dataChildren": [],
+      "isCollected": "-",
+      "targetRowNumber": 21,
+      "targetInternalKey": "陕西|实时现货市场节点边际电价（日）|信息披露-节点电价|21",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        21
+      ],
+      "excelMatchKey": "陕西|实时现货市场节点边际电价（日）|21",
+      "fileFormat": "-",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D-1日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-7日 ～ D+1日",
+      "lastSuccessAt": "2026-06-16 17:39",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 14:00",
+      "pageAddress": "信息披露-综合查询-市场运营-交易组织及出清-现货市场申报、出清信息-实时现货市场节点边际电价（日）",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:47",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "节点电价"
+      ],
+      "timeline": [
+        "2026-06-16 17:39 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-083",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "日清月结-日清算结果",
+      "dataItem": "日清算",
+      "sourceDataItem": "日清算",
+      "dataType": "-",
+      "dataParent": "日清算",
+      "dataChildren": [],
+      "isCollected": "-",
+      "targetRowNumber": 22,
+      "targetInternalKey": "陕西|日清算|日清月结-日清算结果|22",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        22
+      ],
+      "excelMatchKey": "陕西|日清算|22",
+      "fileFormat": "excel",
+      "downloadFile": "2026-04-30用户侧日清分账单.xlsx",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D-6日",
+      "warningTime": "D日18:30",
+      "valueRange": "D-10日 ～ D-6日",
+      "lastSuccessAt": "2026-06-16 17:10",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 17:00、18:00、23:00",
+      "pageAddress": "我的结算-用户侧日清分账单",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:18",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "P0",
+      "remark": "",
+      "namingRule": "-",
+      "categoryPath": [
+        "日清月结",
+        "日清算结果"
+      ],
+      "timeline": [
+        "2026-06-16 17:10 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-084",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "日清月结-月结算结果",
+      "dataItem": "月结算-售电公司",
+      "sourceDataItem": "月结算-售电公司",
+      "dataType": "-",
+      "dataParent": "月结算-售电公司",
+      "dataChildren": [],
+      "isCollected": "-",
+      "targetRowNumber": 23,
+      "targetInternalKey": "陕西|月结算-售电公司|日清月结-月结算结果|23",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        23
+      ],
+      "excelMatchKey": "陕西|月结算-售电公司|23",
+      "fileFormat": "-",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "1M",
+      "outputTime": "M月9日 出 M-1月",
+      "warningTime": "D日18:30",
+      "valueRange": "M-1月",
+      "lastSuccessAt": "2026-06-04 17:18",
+      "nextFetchAt": "2026-07-15 18:30",
+      "fetchToolTimeliness": "M月15日起，每日 17:00、18:00、23:00，取到即止",
+      "pageAddress": "我的结算-结算单确认（新）-用电侧-售电公司交易结算单",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:26",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "-",
+      "remark": "仅在采集当日监控预警",
+      "namingRule": "-",
+      "categoryPath": [
+        "日清月结",
+        "月结算结果"
+      ],
+      "timeline": [
+        "2026-06-04 17:18 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
     }
   ],
   "categoryTrees": {
-    "陕西": [
-      {
-        "label": "全部",
-        "path": []
-      },
-      {
-        "label": "信息披露",
-        "path": [
-          "信息披露"
-        ],
-        "children": [
-          {
-            "label": "负荷信息",
-            "path": [
-              "信息披露",
-              "负荷信息"
-            ],
-            "children": [
-              {
-                "label": "负荷信息",
-                "path": [
-                  "信息披露",
-                  "负荷信息",
-                  "负荷信息"
-                ]
-              },
-              {
-                "label": "省间联络",
-                "path": [
-                  "信息披露",
-                  "负荷信息",
-                  "省间联络"
-                ]
-              },
-              {
-                "label": "机组状态",
-                "path": [
-                  "信息披露",
-                  "负荷信息",
-                  "机组状态"
-                ]
-              },
-              {
-                "label": "备用信息",
-                "path": [
-                  "信息披露",
-                  "负荷信息",
-                  "备用信息"
-                ]
-              }
-            ]
-          },
-          {
-            "label": "交易结果",
-            "path": [
-              "信息披露",
-              "交易结果"
-            ]
-          },
-          {
-            "label": "分时电量",
-            "path": [
-              "信息披露",
-              "分时电量"
-            ],
-            "children": [
-              {
-                "label": "售电公司分时电量",
-                "path": [
-                  "信息披露",
-                  "分时电量",
-                  "售电公司分时电量"
-                ]
-              },
-              {
-                "label": "用电企业分时电量",
-                "path": [
-                  "信息披露",
-                  "分时电量",
-                  "用电企业分时电量"
-                ]
-              }
-            ]
-          },
-          {
-            "label": "日前申报",
-            "path": [
-              "信息披露",
-              "日前申报"
-            ]
-          },
-          {
-            "label": "节点电价",
-            "path": [
-              "信息披露",
-              "节点电价"
-            ]
-          }
-        ]
-      },
-      {
-        "label": "日清月结",
-        "path": [
-          "日清月结"
-        ],
-        "children": [
-          {
-            "label": "日清算结果",
-            "path": [
-              "日清月结",
-              "日清算结果"
-            ]
-          },
-          {
-            "label": "月结算结果",
-            "path": [
-              "日清月结",
-              "月结算结果"
-            ]
-          }
-        ]
-      }
-    ],
-    "湖南": [
-      {
-        "label": "全部",
-        "path": []
-      },
-      {
-        "label": "信息披露",
-        "path": [
-          "信息披露"
-        ],
-        "children": [
-          {
-            "label": "负荷信息",
-            "path": [
-              "信息披露",
-              "负荷信息"
-            ],
-            "children": [
-              {
-                "label": "负荷信息",
-                "path": [
-                  "信息披露",
-                  "负荷信息",
-                  "负荷信息"
-                ]
-              },
-              {
-                "label": "省间联络",
-                "path": [
-                  "信息披露",
-                  "负荷信息",
-                  "省间联络"
-                ]
-              },
-              {
-                "label": "机组状态",
-                "path": [
-                  "信息披露",
-                  "负荷信息",
-                  "机组状态"
-                ]
-              },
-              {
-                "label": "备用信息",
-                "path": [
-                  "信息披露",
-                  "负荷信息",
-                  "备用信息"
-                ]
-              },
-              {
-                "label": "发输变电设备检修计划",
-                "path": [
-                  "信息披露",
-                  "负荷信息",
-                  "发输变电设备检修计划"
-                ]
-              }
-            ]
-          },
-          {
-            "label": "节点电价",
-            "path": [
-              "信息披露",
-              "节点电价"
-            ]
-          },
-          {
-            "label": "交易结果",
-            "path": [
-              "信息披露",
-              "交易结果"
-            ]
-          },
-          {
-            "label": "分时电量",
-            "path": [
-              "信息披露",
-              "分时电量"
-            ],
-            "children": [
-              {
-                "label": "售电公司分时电量",
-                "path": [
-                  "信息披露",
-                  "分时电量",
-                  "售电公司分时电量"
-                ]
-              },
-              {
-                "label": "用电企业分时电量",
-                "path": [
-                  "信息披露",
-                  "分时电量",
-                  "用电企业分时电量"
-                ]
-              }
-            ]
-          },
-          {
-            "label": "日前申报",
-            "path": [
-              "信息披露",
-              "日前申报"
-            ]
-          }
-        ]
-      },
-      {
-        "label": "日清月结",
-        "path": [
-          "日清月结"
-        ],
-        "children": [
-          {
-            "label": "日清算结果",
-            "path": [
-              "日清月结",
-              "日清算结果"
-            ]
-          },
-          {
-            "label": "月结算结果",
-            "path": [
-              "日清月结",
-              "月结算结果"
-            ]
-          }
-        ]
-      }
-    ],
     "广东": [
       {
         "label": "全部",
-        "path": []
+        "path": [],
+        "children": [
+          {
+            "label": "信息披露",
+            "path": [
+              "信息披露"
+            ],
+            "children": [
+              {
+                "label": "交易结果",
+                "path": [
+                  "信息披露",
+                  "交易结果"
+                ]
+              },
+              {
+                "label": "出清电量",
+                "path": [
+                  "信息披露",
+                  "出清电量"
+                ]
+              },
+              {
+                "label": "分时电量",
+                "path": [
+                  "信息披露",
+                  "分时电量"
+                ],
+                "children": [
+                  {
+                    "label": "售电公司分时电量",
+                    "path": [
+                      "信息披露",
+                      "分时电量",
+                      "售电公司分时电量"
+                    ]
+                  },
+                  {
+                    "label": "售电公司分时电量历史回溯",
+                    "path": [
+                      "信息披露",
+                      "分时电量",
+                      "售电公司分时电量历史回溯"
+                    ]
+                  },
+                  {
+                    "label": "用电企业分时电量",
+                    "path": [
+                      "信息披露",
+                      "分时电量",
+                      "用电企业分时电量"
+                    ]
+                  },
+                  {
+                    "label": "用电企业分时电量历史回溯",
+                    "path": [
+                      "信息披露",
+                      "分时电量",
+                      "用电企业分时电量历史回溯"
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "日前申报",
+                "path": [
+                  "信息披露",
+                  "日前申报"
+                ]
+              },
+              {
+                "label": "节点电价",
+                "path": [
+                  "信息披露",
+                  "节点电价"
+                ]
+              },
+              {
+                "label": "负荷信息",
+                "path": [
+                  "信息披露",
+                  "负荷信息"
+                ],
+                "children": [
+                  {
+                    "label": "备用信息",
+                    "path": [
+                      "信息披露",
+                      "负荷信息",
+                      "备用信息"
+                    ]
+                  },
+                  {
+                    "label": "机组检修容量",
+                    "path": [
+                      "信息披露",
+                      "负荷信息",
+                      "机组检修容量"
+                    ]
+                  },
+                  {
+                    "label": "负荷信息",
+                    "path": [
+                      "信息披露",
+                      "负荷信息",
+                      "负荷信息"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label": "日清月结",
+            "path": [
+              "日清月结"
+            ],
+            "children": [
+              {
+                "label": "日清算结果",
+                "path": [
+                  "日清月结",
+                  "日清算结果"
+                ]
+              },
+              {
+                "label": "月结算结果",
+                "path": [
+                  "日清月结",
+                  "月结算结果"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "后台数据",
+            "path": [
+              "后台数据"
+            ]
+          }
+        ]
       },
       {
         "label": "信息披露",
@@ -5435,44 +5103,17 @@
         ],
         "children": [
           {
-            "label": "负荷信息",
+            "label": "交易结果",
             "path": [
               "信息披露",
-              "负荷信息"
-            ],
-            "children": [
-              {
-                "label": "负荷信息",
-                "path": [
-                  "信息披露",
-                  "负荷信息",
-                  "负荷信息"
-                ]
-              },
-              {
-                "label": "机组检修容量",
-                "path": [
-                  "信息披露",
-                  "负荷信息",
-                  "机组检修容量"
-                ]
-              },
-              {
-                "label": "备用信息",
-                "path": [
-                  "信息披露",
-                  "负荷信息",
-                  "备用信息"
-                ]
-              },
-              {
-                "label": "发输变电设备检修计划",
-                "path": [
-                  "信息披露",
-                  "负荷信息",
-                  "发输变电设备检修计划"
-                ]
-              }
+              "交易结果"
+            ]
+          },
+          {
+            "label": "出清电量",
+            "path": [
+              "信息披露",
+              "出清电量"
             ]
           },
           {
@@ -5488,14 +5129,6 @@
                   "信息披露",
                   "分时电量",
                   "售电公司分时电量"
-                ]
-              },
-              {
-                "label": "用电企业分时电量",
-                "path": [
-                  "信息披露",
-                  "分时电量",
-                  "用电企业分时电量"
                 ]
               },
               {
@@ -5504,6 +5137,14 @@
                   "信息披露",
                   "分时电量",
                   "售电公司分时电量历史回溯"
+                ]
+              },
+              {
+                "label": "用电企业分时电量",
+                "path": [
+                  "信息披露",
+                  "分时电量",
+                  "用电企业分时电量"
                 ]
               },
               {
@@ -5517,17 +5158,10 @@
             ]
           },
           {
-            "label": "出清电量",
+            "label": "日前申报",
             "path": [
               "信息披露",
-              "出清电量"
-            ]
-          },
-          {
-            "label": "交易结果",
-            "path": [
-              "信息披露",
-              "交易结果"
+              "日前申报"
             ]
           },
           {
@@ -5538,10 +5172,36 @@
             ]
           },
           {
-            "label": "日前申报",
+            "label": "负荷信息",
             "path": [
               "信息披露",
-              "日前申报"
+              "负荷信息"
+            ],
+            "children": [
+              {
+                "label": "备用信息",
+                "path": [
+                  "信息披露",
+                  "负荷信息",
+                  "备用信息"
+                ]
+              },
+              {
+                "label": "机组检修容量",
+                "path": [
+                  "信息披露",
+                  "负荷信息",
+                  "机组检修容量"
+                ]
+              },
+              {
+                "label": "负荷信息",
+                "path": [
+                  "信息披露",
+                  "负荷信息",
+                  "负荷信息"
+                ]
+              }
             ]
           }
         ]
@@ -5572,6 +5232,474 @@
         "label": "后台数据",
         "path": [
           "后台数据"
+        ]
+      }
+    ],
+    "湖南": [
+      {
+        "label": "全部",
+        "path": [],
+        "children": [
+          {
+            "label": "信息披露",
+            "path": [
+              "信息披露"
+            ],
+            "children": [
+              {
+                "label": "交易结果",
+                "path": [
+                  "信息披露",
+                  "交易结果"
+                ]
+              },
+              {
+                "label": "分时电量",
+                "path": [
+                  "信息披露",
+                  "分时电量"
+                ],
+                "children": [
+                  {
+                    "label": "用电企业分时电量",
+                    "path": [
+                      "信息披露",
+                      "分时电量",
+                      "用电企业分时电量"
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "日前申报",
+                "path": [
+                  "信息披露",
+                  "日前申报"
+                ]
+              },
+              {
+                "label": "节点电价",
+                "path": [
+                  "信息披露",
+                  "节点电价"
+                ]
+              },
+              {
+                "label": "负荷信息",
+                "path": [
+                  "信息披露",
+                  "负荷信息"
+                ],
+                "children": [
+                  {
+                    "label": "发输变电设备检修计划",
+                    "path": [
+                      "信息披露",
+                      "负荷信息",
+                      "发输变电设备检修计划"
+                    ]
+                  },
+                  {
+                    "label": "备用信息",
+                    "path": [
+                      "信息披露",
+                      "负荷信息",
+                      "备用信息"
+                    ]
+                  },
+                  {
+                    "label": "机组状态",
+                    "path": [
+                      "信息披露",
+                      "负荷信息",
+                      "机组状态"
+                    ]
+                  },
+                  {
+                    "label": "省间联络",
+                    "path": [
+                      "信息披露",
+                      "负荷信息",
+                      "省间联络"
+                    ]
+                  },
+                  {
+                    "label": "负荷信息",
+                    "path": [
+                      "信息披露",
+                      "负荷信息",
+                      "负荷信息"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label": "日清月结",
+            "path": [
+              "日清月结"
+            ],
+            "children": [
+              {
+                "label": "日清算结果",
+                "path": [
+                  "日清月结",
+                  "日清算结果"
+                ]
+              },
+              {
+                "label": "月结算结果",
+                "path": [
+                  "日清月结",
+                  "月结算结果"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "信息披露",
+        "path": [
+          "信息披露"
+        ],
+        "children": [
+          {
+            "label": "交易结果",
+            "path": [
+              "信息披露",
+              "交易结果"
+            ]
+          },
+          {
+            "label": "分时电量",
+            "path": [
+              "信息披露",
+              "分时电量"
+            ],
+            "children": [
+              {
+                "label": "用电企业分时电量",
+                "path": [
+                  "信息披露",
+                  "分时电量",
+                  "用电企业分时电量"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "日前申报",
+            "path": [
+              "信息披露",
+              "日前申报"
+            ]
+          },
+          {
+            "label": "节点电价",
+            "path": [
+              "信息披露",
+              "节点电价"
+            ]
+          },
+          {
+            "label": "负荷信息",
+            "path": [
+              "信息披露",
+              "负荷信息"
+            ],
+            "children": [
+              {
+                "label": "发输变电设备检修计划",
+                "path": [
+                  "信息披露",
+                  "负荷信息",
+                  "发输变电设备检修计划"
+                ]
+              },
+              {
+                "label": "备用信息",
+                "path": [
+                  "信息披露",
+                  "负荷信息",
+                  "备用信息"
+                ]
+              },
+              {
+                "label": "机组状态",
+                "path": [
+                  "信息披露",
+                  "负荷信息",
+                  "机组状态"
+                ]
+              },
+              {
+                "label": "省间联络",
+                "path": [
+                  "信息披露",
+                  "负荷信息",
+                  "省间联络"
+                ]
+              },
+              {
+                "label": "负荷信息",
+                "path": [
+                  "信息披露",
+                  "负荷信息",
+                  "负荷信息"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "日清月结",
+        "path": [
+          "日清月结"
+        ],
+        "children": [
+          {
+            "label": "日清算结果",
+            "path": [
+              "日清月结",
+              "日清算结果"
+            ]
+          },
+          {
+            "label": "月结算结果",
+            "path": [
+              "日清月结",
+              "月结算结果"
+            ]
+          }
+        ]
+      }
+    ],
+    "陕西": [
+      {
+        "label": "全部",
+        "path": [],
+        "children": [
+          {
+            "label": "信息披露",
+            "path": [
+              "信息披露"
+            ],
+            "children": [
+              {
+                "label": "交易结果",
+                "path": [
+                  "信息披露",
+                  "交易结果"
+                ]
+              },
+              {
+                "label": "分时电量",
+                "path": [
+                  "信息披露",
+                  "分时电量"
+                ],
+                "children": [
+                  {
+                    "label": "用电企业分时电量",
+                    "path": [
+                      "信息披露",
+                      "分时电量",
+                      "用电企业分时电量"
+                    ]
+                  }
+                ]
+              },
+              {
+                "label": "日前申报",
+                "path": [
+                  "信息披露",
+                  "日前申报"
+                ]
+              },
+              {
+                "label": "节点电价",
+                "path": [
+                  "信息披露",
+                  "节点电价"
+                ]
+              },
+              {
+                "label": "负荷信息",
+                "path": [
+                  "信息披露",
+                  "负荷信息"
+                ],
+                "children": [
+                  {
+                    "label": "备用信息",
+                    "path": [
+                      "信息披露",
+                      "负荷信息",
+                      "备用信息"
+                    ]
+                  },
+                  {
+                    "label": "机组状态",
+                    "path": [
+                      "信息披露",
+                      "负荷信息",
+                      "机组状态"
+                    ]
+                  },
+                  {
+                    "label": "省间联络",
+                    "path": [
+                      "信息披露",
+                      "负荷信息",
+                      "省间联络"
+                    ]
+                  },
+                  {
+                    "label": "负荷信息",
+                    "path": [
+                      "信息披露",
+                      "负荷信息",
+                      "负荷信息"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label": "日清月结",
+            "path": [
+              "日清月结"
+            ],
+            "children": [
+              {
+                "label": "日清算结果",
+                "path": [
+                  "日清月结",
+                  "日清算结果"
+                ]
+              },
+              {
+                "label": "月结算结果",
+                "path": [
+                  "日清月结",
+                  "月结算结果"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "信息披露",
+        "path": [
+          "信息披露"
+        ],
+        "children": [
+          {
+            "label": "交易结果",
+            "path": [
+              "信息披露",
+              "交易结果"
+            ]
+          },
+          {
+            "label": "分时电量",
+            "path": [
+              "信息披露",
+              "分时电量"
+            ],
+            "children": [
+              {
+                "label": "用电企业分时电量",
+                "path": [
+                  "信息披露",
+                  "分时电量",
+                  "用电企业分时电量"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "日前申报",
+            "path": [
+              "信息披露",
+              "日前申报"
+            ]
+          },
+          {
+            "label": "节点电价",
+            "path": [
+              "信息披露",
+              "节点电价"
+            ]
+          },
+          {
+            "label": "负荷信息",
+            "path": [
+              "信息披露",
+              "负荷信息"
+            ],
+            "children": [
+              {
+                "label": "备用信息",
+                "path": [
+                  "信息披露",
+                  "负荷信息",
+                  "备用信息"
+                ]
+              },
+              {
+                "label": "机组状态",
+                "path": [
+                  "信息披露",
+                  "负荷信息",
+                  "机组状态"
+                ]
+              },
+              {
+                "label": "省间联络",
+                "path": [
+                  "信息披露",
+                  "负荷信息",
+                  "省间联络"
+                ]
+              },
+              {
+                "label": "负荷信息",
+                "path": [
+                  "信息披露",
+                  "负荷信息",
+                  "负荷信息"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "label": "日清月结",
+        "path": [
+          "日清月结"
+        ],
+        "children": [
+          {
+            "label": "日清算结果",
+            "path": [
+              "日清月结",
+              "日清算结果"
+            ]
+          },
+          {
+            "label": "月结算结果",
+            "path": [
+              "日清月结",
+              "月结算结果"
+            ]
+          }
         ]
       }
     ]
