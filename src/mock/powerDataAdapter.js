@@ -2,15 +2,18 @@
   var HOURS = Array.from({ length: 24 }, function createHour(_, index) {
     return String(index).padStart(2, "0") + ":00";
   });
-  var MAY_2026_START = "2026-05-01";
-  var MAY_2026_DAYS = 31;
-  var MAY_2026_MONTH = "2026-05";
+  var MOCK_DATA_START = "2026-04-01";
+  var MOCK_DATA_END = "2026-07-31";
+  var MOCK_DATA_DAYS = 122;
+  var MOCK_DATA_MONTHS = ["2026-04", "2026-05", "2026-06", "2026-07"];
+  var MOCK_LATEST_MONTH = "2026-07";
   var SELLER_POWER_MULTIPLIER = 12.1;
   var generatedUserRowsCache = {};
   var generatedSellerHistoryRowsCache = {};
   var generatedUserHistoryRowsCache = {};
   var generatedRetailHourlyRowsCache = {};
   var generatedRetailDailyRowsCache = {};
+  var generatedRetailMonthlyRowsCache = {};
 
   var SELLER_COMPANY_BY_MARKET = {
     guangdong: {
@@ -29,8 +32,8 @@
 
   var MARKET_META = {
     guangdong: {
-      updateTime: "2026-05-29 11:35:33",
-      publishTime: "2026-05-29 10:55:00",
+      updateTime: "2026-07-31 11:35:33",
+      publishTime: "2026-07-31 10:55:00",
       dataSource: "取数工具",
       codePrefix: "GD",
       accountPrefix: "4401",
@@ -62,8 +65,8 @@
       ],
     },
     hunan: {
-      updateTime: "2026-05-29 10:46:00",
-      publishTime: "2026-05-29 10:20:00",
+      updateTime: "2026-07-31 10:46:00",
+      publishTime: "2026-07-31 10:20:00",
       dataSource: "取数工具",
       codePrefix: "HN",
       accountPrefix: "4301",
@@ -95,8 +98,8 @@
       ],
     },
     shaanxi: {
-      updateTime: "2026-05-29 10:58:00",
-      publishTime: "2026-05-29 10:35:00",
+      updateTime: "2026-07-31 10:58:00",
+      publishTime: "2026-07-31 10:35:00",
       dataSource: "取数工具",
       codePrefix: "SX",
       accountPrefix: "6101",
@@ -205,8 +208,26 @@
     });
   }
 
-  function isMay2026Date(date) {
-    return date >= MAY_2026_START && date <= "2026-05-31";
+  function isGeneratedMockDate(date) {
+    return date >= MOCK_DATA_START && date <= MOCK_DATA_END;
+  }
+
+  function getMonthKey(date) {
+    return String(date || "").slice(0, 7);
+  }
+
+  function getSeasonalLoadFactor(date) {
+    var month = Number(String(date || "").slice(5, 7));
+    if (month === 7) {
+      return 1.16;
+    }
+    if (month === 6) {
+      return 1.1;
+    }
+    if (month === 5) {
+      return 1.04;
+    }
+    return 0.98;
   }
 
   function isWeekend(date) {
@@ -264,10 +285,15 @@
     var shape = PROFILE_SHAPES[template.type] || PROFILE_SHAPES.park;
     var dayWave = Math.sin((dayIndex + 1) * 0.73 + userIndex * 0.41) * 0.035;
     var weekdayFactor = 1 + getProfileWeekendOffset(template.type, isWeekend(date));
+    var seasonalFactor = getSeasonalLoadFactor(date);
     var dayPattern = ((dayIndex + userIndex) % 5 - 2) * 0.007;
     var hourWave = Math.sin((hourIndex + 1) * (userIndex + 2) * 0.19 + dayIndex * 0.23) * 0.032;
     var hourPattern = ((dayIndex + hourIndex + userIndex) % 7 - 3) * 0.006;
-    var value = template.scale * shape[hourIndex] * (weekdayFactor + dayWave + dayPattern) * (1 + hourWave + hourPattern);
+    var coolingPeak =
+      Number(String(date || "").slice(5, 7)) >= 6 && hourIndex >= 12 && hourIndex <= 21
+        ? 1 + Math.sin(((hourIndex - 12) / 9) * Math.PI) * 0.12
+        : 1;
+    var value = template.scale * shape[hourIndex] * seasonalFactor * coolingPeak * (weekdayFactor + dayWave + dayPattern) * (1 + hourWave + hourPattern);
 
     if (template.type === "smallCharging" && hourIndex >= 2 && hourIndex <= 5 && (dayIndex + hourIndex + userIndex) % 4 === 0) {
       value = 0;
@@ -286,7 +312,7 @@
     var templates = buildGeneratedUserTemplates(marketKey);
     var rows = [];
 
-    buildDateRange(MAY_2026_START, MAY_2026_DAYS).forEach(function eachDate(date, dayIndex) {
+    buildDateRange(MOCK_DATA_START, MOCK_DATA_DAYS).forEach(function eachDate(date, dayIndex) {
       templates.forEach(function eachTemplate(template, userIndex) {
         HOURS.forEach(function eachHour(hour, hourIndex) {
           rows.push({
@@ -316,7 +342,7 @@
   function mergeGeneratedRows(generatedRows, legacyRows, dateKey) {
     return generatedRows.concat(
       (legacyRows || []).filter(function filterLegacyRow(row) {
-        return !isMay2026Date(row && row[dateKey || "date"]);
+        return !isGeneratedMockDate(row && row[dateKey || "date"]);
       }),
     );
   }
@@ -518,7 +544,7 @@
     var sellerCompany = getSellerCompany(marketKey);
     var rows = getUserHourlyPowerData(marketKey);
     var retailRows = aggregateRows(rows, ["date", "hour"], function buildRetailHourRow(firstRow, group) {
-      var isGeneratedMayRow = isMay2026Date(firstRow.date);
+      var isGeneratedRow = isGeneratedMockDate(firstRow.date);
       return {
         market: firstRow.market,
         date: firstRow.date,
@@ -530,7 +556,7 @@
         microgridId: "-",
         hour: firstRow.hour,
         electricity: group.hasValue
-          ? (isGeneratedMayRow ? roundPower(group.electricity * SELLER_POWER_MULTIPLIER, 5) : roundMwh(group.electricity))
+          ? (isGeneratedRow ? roundPower(group.electricity * SELLER_POWER_MULTIPLIER, 5) : roundMwh(group.electricity))
           : null,
         unit: "MWh",
         updateTime: firstRow.updateTime,
@@ -553,7 +579,7 @@
       return {
         market: firstRow.market,
         date: firstRow.date,
-        electricity: group.hasValue ? roundPower(group.electricity, isMay2026Date(firstRow.date) ? 5 : 3) : null,
+        electricity: group.hasValue ? roundPower(group.electricity, isGeneratedMockDate(firstRow.date) ? 5 : 3) : null,
         unit: "MWh",
         updateTime: firstRow.updateTime,
         publishTime: firstRow.publishTime,
@@ -562,6 +588,59 @@
     });
     generatedRetailDailyRowsCache[marketKey] = dailyRows;
     return cloneValue(dailyRows);
+  }
+
+  function getRetailCompanyMonthlyTotalData(market) {
+    var marketKey = normalizeMarket(market);
+    if (generatedRetailMonthlyRowsCache[marketKey]) {
+      return cloneValue(generatedRetailMonthlyRowsCache[marketKey]);
+    }
+
+    var rows = getRetailCompanyDailyTotalData(marketKey);
+    var monthlyRows;
+    var grouped = {};
+
+    rows.forEach(function eachDailyRow(row) {
+      var monthKey = getMonthKey(row.date);
+      if (MOCK_DATA_MONTHS.indexOf(monthKey) < 0) {
+        return;
+      }
+      if (!grouped[monthKey]) {
+        grouped[monthKey] = {
+          market: row.market,
+          month: monthKey,
+          electricity: 0,
+          dayCount: 0,
+          hasValue: false,
+          unit: "MWh",
+          updateTime: row.updateTime,
+          publishTime: row.publishTime,
+          dataSource: row.dataSource,
+        };
+      }
+      if (typeof row.electricity === "number" && !Number.isNaN(row.electricity)) {
+        grouped[monthKey].electricity += row.electricity;
+        grouped[monthKey].dayCount += 1;
+        grouped[monthKey].hasValue = true;
+      }
+    });
+
+    monthlyRows = MOCK_DATA_MONTHS.map(function mapMonth(monthKey) {
+      var row = grouped[monthKey] || {};
+      return {
+        market: marketKey,
+        month: monthKey,
+        electricity: row.hasValue ? roundPower(row.electricity, 3) : null,
+        averageDailyElectricity: row.hasValue && row.dayCount ? roundPower(row.electricity / row.dayCount, 3) : null,
+        dayCount: row.dayCount || 0,
+        unit: "MWh",
+        updateTime: row.updateTime || getMarketMeta(marketKey).updateTime,
+        publishTime: row.publishTime || getMarketMeta(marketKey).publishTime,
+        dataSource: row.dataSource || getMarketMeta(marketKey).dataSource,
+      };
+    });
+    generatedRetailMonthlyRowsCache[marketKey] = monthlyRows;
+    return cloneValue(monthlyRows);
   }
 
   function getSellerHourlyPowerHistoryRows(market) {
@@ -573,18 +652,18 @@
     var sellerCompany = getSellerCompany(marketKey);
     var dailyMap = {};
     getRetailCompanyDailyTotalData(marketKey).forEach(function eachDailyRow(row) {
-      if (isMay2026Date(row.date)) {
+      if (isGeneratedMockDate(row.date)) {
         dailyMap[row.date] = row.electricity;
       }
     });
 
     var rows = getRetailCompanyHourlyPowerData(marketKey)
-      .filter(function filterMaySellerRow(row) {
-        return isMay2026Date(row.date);
+      .filter(function filterGeneratedSellerRow(row) {
+        return isGeneratedMockDate(row.date);
       })
       .map(function mapSellerHistoryRow(row) {
         return {
-          agentMonth: MAY_2026_MONTH,
+          agentMonth: getMonthKey(row.date),
           sellerCompanyCode: sellerCompany.code,
           sellerCompanyName: sellerCompany.name,
           usageDate: row.date,
@@ -609,12 +688,12 @@
 
     var sellerCompany = getSellerCompany(marketKey);
     var rows = getUserHourlyPowerData(marketKey)
-      .filter(function filterMayUserRow(row) {
-        return isMay2026Date(row.date);
+      .filter(function filterGeneratedUserRow(row) {
+        return isGeneratedMockDate(row.date);
       })
       .map(function mapUserHistoryRow(row) {
         return {
-          agentMonth: MAY_2026_MONTH,
+          agentMonth: getMonthKey(row.date),
           sellerCompanyCode: sellerCompany.code,
           sellerCompanyName: sellerCompany.name,
           powerUserCode: row.userCode,
@@ -640,6 +719,7 @@
     var userRows = getUserHourlyPowerData(marketKey);
     var retailRows = getRetailCompanyHourlyPowerData(marketKey);
     var dailyRows = getRetailCompanyDailyTotalData(marketKey);
+    var monthlyRows = getRetailCompanyMonthlyTotalData(marketKey);
     var fields = [
       "market",
       "date",
@@ -662,6 +742,10 @@
       userRowCount: userRows.length,
       retailHourlyRowCount: retailRows.length,
       dailyRowCount: dailyRows.length,
+      monthlyRowCount: monthlyRows.length,
+      months: monthlyRows.map(function mapMonth(row) {
+        return row.month;
+      }),
       sellerHistoryRowCount: getSellerHourlyPowerHistoryRows(marketKey).length,
       userHistoryRowCount: getUserHourlyPowerHistoryRows(marketKey).length,
       hoursPerUserDay: userRows.reduce(function countByUserDay(result, row) {
@@ -683,6 +767,7 @@
     getUserHourlyPowerData: getUserHourlyPowerData,
     getRetailCompanyHourlyPowerData: getRetailCompanyHourlyPowerData,
     getRetailCompanyDailyTotalData: getRetailCompanyDailyTotalData,
+    getRetailCompanyMonthlyTotalData: getRetailCompanyMonthlyTotalData,
     getSellerHourlyPowerHistoryRows: getSellerHourlyPowerHistoryRows,
     getUserHourlyPowerHistoryRows: getUserHourlyPowerHistoryRows,
     inspectPowerDataAdapter: inspectPowerDataAdapter,

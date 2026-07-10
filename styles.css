@@ -2310,6 +2310,38 @@ a {
   padding: 8px 20px 6px 0;
 }
 
+.echarts-chart-canvas {
+  min-height: 360px;
+  padding: 8px 0 2px;
+}
+
+.echarts-chart {
+  width: 100%;
+  min-height: 320px;
+}
+
+.echarts-chart-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 260px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px dashed var(--line);
+  border-radius: 6px;
+  background: #f8fbff;
+}
+
+.boss-echarts-tooltip {
+  max-width: 360px;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.7;
+}
+
 .chart-canvas-zoomable {
   padding-right: 0;
 }

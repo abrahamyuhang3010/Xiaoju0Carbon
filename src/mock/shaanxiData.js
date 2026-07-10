@@ -330,22 +330,23 @@
   // 陕西原始 96 点数据按周期结束时刻标记，首点为 00:15，末点为 24:00。
   var quarterHours = buildTimeLabels(15, 96, 15);
   var hours = buildTimeLabels(60, 24);
-  var availableDates = buildDateRange("2026-04-26", 56);
+  var availableDates = buildDateRange("2026-04-01", 122);
+  var mockMonths = ["2026-04", "2026-05", "2026-06", "2026-07"];
   var defaultRange = {
-    start: "2026-05-03",
-    end: "2026-05-09",
+    start: "2026-07-25",
+    end: "2026-07-31",
   };
-  var dataUpdatedAt = "2026-05-09 10:41:06";
-  var shaanxiInfoUnitStatusDate = "2026-06-20";
-  var shaanxiInfoUnitStatusUpdatedAt = "2026-06-21 23:00:17";
-  var shaanxiInfoDailyMockDates = buildDateRange("2026-05-09", 43);
+  var dataUpdatedAt = "2026-07-31 10:41:06";
+  var shaanxiInfoUnitStatusDate = "2026-07-31";
+  var shaanxiInfoUnitStatusUpdatedAt = "2026-07-31 23:00:17";
+  var shaanxiInfoDailyMockDates = availableDates.slice();
   var dataSource = "陕西电力交易中心信息披露";
   var shaanxiContractCurveSource = global.BOSS_SHAANXI_CONTRACT_CURVE_SOURCE || {};
   var weightedPriceRows = buildPriceRows(availableDates, 328, "陕西用户侧加权电价口径", buildUpdatedAt(dataUpdatedAt, -16));
   var saleCompanyRows = availableDates.map(buildQuarterlySalesRow);
   var average96Values = averageBySlot(saleCompanyRows, "quarterValues");
   var average24Values = averageBySlot(saleCompanyRows, "converted24Values");
-  var settlementDates = buildDateRange("2026-05-03", 49);
+  var settlementDates = availableDates.slice();
   function expandRowsByShaanxiInfoDates(rows, dateKeys) {
     return shaanxiInfoDailyMockDates.reduce(function accumulateRows(result, date) {
       return result.concat((rows || []).map(function mapRow(row) {
@@ -385,16 +386,23 @@
       });
     });
   });
-  var settlementMonthRows = [
-    { month: "2026-05", enterpriseCode: "SXQY001", enterpriseName: "西安高新补能中心", accountNo: "SX0001", energy: 236400, fee: 10680000, agencyIncome: 258000, status: "已出账" },
-    { month: "2026-05", enterpriseCode: "SXQY002", enterpriseName: "咸阳物流港充电站", accountNo: "SX0002", energy: 224200, fee: 10030000, agencyIncome: 244000, status: "已出账" },
-    { month: "2026-05", enterpriseCode: "SXQY003", enterpriseName: "宝鸡公交能源站", accountNo: "SX0003", energy: 208600, fee: 9360000, agencyIncome: 226000, status: "结算中" },
-    { month: "2026-05", enterpriseCode: "SXQY004", enterpriseName: "渭南产业园综合站", accountNo: "SX0004", energy: 192500, fee: 8640000, agencyIncome: 209000, status: "待确认" },
-    { month: "2026-04", enterpriseCode: "SXQY001", enterpriseName: "西安高新补能中心", accountNo: "SX0001", energy: 228700, fee: 10320000, agencyIncome: 250000, status: "已出账" },
-    { month: "2026-04", enterpriseCode: "SXQY002", enterpriseName: "咸阳物流港充电站", accountNo: "SX0002", energy: 216500, fee: 9720000, agencyIncome: 237000, status: "已出账" },
-    { month: "2026-04", enterpriseCode: "SXQY003", enterpriseName: "宝鸡公交能源站", accountNo: "SX0003", energy: 201300, fee: 9080000, agencyIncome: 220000, status: "已出账" },
-    { month: "2026-04", enterpriseCode: "SXQY004", enterpriseName: "渭南产业园综合站", accountNo: "SX0004", energy: 186900, fee: 8430000, agencyIncome: 204000, status: "已出账" },
-  ];
+  var settlementMonthRows = mockMonths.reduce(function accumulateMonthRows(result, month, monthIndex) {
+    return result.concat(settlementDailyTemplates.map(function mapTemplate(template, templateIndex) {
+      var monthLift = 1 + monthIndex * 0.04;
+      var energy = Math.round((228700 - templateIndex * 13600 + monthIndex * 11300 + templateIndex * 1420) * monthLift);
+      var fee = Math.round(energy * (45.1 + monthIndex * 0.76 + templateIndex * 0.28));
+      return {
+        month: month,
+        enterpriseCode: template.enterpriseCode,
+        enterpriseName: template.enterpriseName,
+        accountNo: template.accountNo,
+        energy: energy,
+        fee: fee,
+        agencyIncome: Math.round(energy * (1.08 + templateIndex * 0.018)),
+        status: month === "2026-07" && templateIndex >= 2 ? (templateIndex === 2 ? "结算中" : "待确认") : "已出账",
+      };
+    }));
+  }, []);
   var retailRelationRows = [
     { userCode: "SXUSER001", userName: "西安高新补能中心", accountNo: "SX0001", microgridName: "西安高新微电网", startDate: "2026-01-01", endDate: "2026-12-31", status: "合作中", sellerCompany: "滴滴电力（陕西）有限公司" },
     { userCode: "SXUSER002", userName: "咸阳物流港充电站", accountNo: "SX0002", microgridName: "-", startDate: "2025-10-01", endDate: "2026-09-30", status: "合作中", sellerCompany: "滴滴电力（陕西）有限公司" },
@@ -437,8 +445,8 @@
     "水电（含抽蓄）总出力预测（日）",
   ];
 
-  var standardDefaultDate = "2026-05-09";
-  var standardDefaultMonth = "2026-05";
+  var standardDefaultDate = "2026-07-31";
+  var standardDefaultMonth = "2026-07";
   function calculateWeightedAverageForPairs(volumes, prices) {
     var totalVolume = volumes.reduce(function accumulate(total, value) {
       return total + Number(value || 0);
@@ -461,7 +469,7 @@
   var shaanxiCurveBuyerUnits = ["全部", "西安高新补能中心", "咸阳物流港充电站", "宝鸡公交能源站", "渭南产业园综合站"];
   var shaanxiCurveContractNames = ["全部", "西高新 5 月滚搓合同", "咸阳港 5 月滚搓合同", "宝鸡公交 5 月滚搓合同", "渭南园区 5 月滚搓合同"];
   var shaanxiRollingContractCurveRows = [];
-  buildDateRange("2026-05-08", 2).forEach(function eachCurveDate(date, dayIndex) {
+  settlementDates.forEach(function eachCurveDate(date, dayIndex) {
     shaanxiCurveContractNames.slice(1).forEach(function eachContractName(contractName, contractIndex) {
       var volume96 = buildWaveValues(15, 96, {
         base: 34 + dayIndex * 1.8 + contractIndex * 3.6,
@@ -499,7 +507,7 @@
   });
 
   var shaanxiRollingTradeOverviewRows = [];
-  buildDateRange("2026-05-08", 2).forEach(function eachTradeDate(date, dayIndex) {
+  settlementDates.forEach(function eachTradeDate(date, dayIndex) {
     var weightedPriceValues = buildWaveValues(60, 24, {
       base: 318.2 + dayIndex * 2.4,
       dayAmplitude: 6.4,
@@ -546,67 +554,47 @@
       parseStatus: ["已解析", "待解析", "解析失败"][index % 3],
     };
   });
-  var shaanxiDeclarationVolumeValues = buildWaveValues(60, 24, {
-    base: 1180,
-    dayAmplitude: 160,
-    peakAmplitude: 280,
+  var shaanxiDeclarationPowerValues = buildWaveValues(15, 96, {
+    base: 218,
+    dayAmplitude: 34,
+    peakAmplitude: 58,
     dayShift: 7,
     peakShift: 14,
     valleyEndHour: 6,
-    valleyOffset: -110,
-    pattern: [-14, 10, 18, -8],
-    integer: true,
+    valleyOffset: -40,
+    pattern: [-4.2, 2.1, 4.8, -1.9],
   });
-  var shaanxiDeclarationPriceValues = buildWaveValues(60, 24, {
-    base: 326,
-    dayAmplitude: 10,
-    peakAmplitude: 18,
-    dayShift: 7,
-    peakShift: 14,
-    pattern: [-1, 0.5, 1.2, -0.3],
+  var shaanxiDeclarationPowerSeries = createSeries("declarePower", "申报电力", quarterHours, shaanxiDeclarationPowerValues, "MW");
+  var shaanxiDayAheadDeclarationRows = quarterHours.map(function mapDeclarationPower(time, index) {
+    return {
+      declarationDate: standardDefaultDate,
+      time: time,
+      powerMw: shaanxiDeclarationPowerValues[index],
+    };
   });
-  var shaanxiDeclarationVolumeSeries = createSeries("declareVolume", "申报电量", hours, shaanxiDeclarationVolumeValues, "MWh", "bar");
-  var shaanxiDeclarationPriceSeries = createSeries("declarePrice", "申报均价", hours, shaanxiDeclarationPriceValues, "元/MWh");
-  var shaanxiDayAheadDeclarationRows = [
-    { declarationDate: standardDefaultDate, declarationTime: "08:00", unitCode: "SX-DA-001", unitName: "关中负荷单元 A", segment: "早峰", declareVolume: 1280, declarePrice: 329.2, status: "已提交", updatedAt: buildUpdatedAt(dataUpdatedAt, -9) },
-    { declarationDate: standardDefaultDate, declarationTime: "09:00", unitCode: "SX-DA-002", unitName: "西安综合单元 B", segment: "早峰", declareVolume: 1346, declarePrice: 333.8, status: "已提交", updatedAt: buildUpdatedAt(dataUpdatedAt, -9) },
-    { declarationDate: standardDefaultDate, declarationTime: "10:00", unitCode: "SX-DA-003", unitName: "咸阳物流单元 C", segment: "平段", declareVolume: 1268, declarePrice: 325.6, status: "已回传", updatedAt: buildUpdatedAt(dataUpdatedAt, -9) },
-    { declarationDate: standardDefaultDate, declarationTime: "12:00", unitCode: "SX-DA-004", unitName: "宝鸡公交单元 D", segment: "平段", declareVolume: 1292, declarePrice: 327.4, status: "已提交", updatedAt: buildUpdatedAt(dataUpdatedAt, -9) },
-    { declarationDate: standardDefaultDate, declarationTime: "14:00", unitCode: "SX-DA-005", unitName: "渭南园区单元 E", segment: "午峰", declareVolume: 1386, declarePrice: 336.5, status: "已回传", updatedAt: buildUpdatedAt(dataUpdatedAt, -9) },
-    { declarationDate: standardDefaultDate, declarationTime: "16:00", unitCode: "SX-DA-006", unitName: "榆林能源单元 F", segment: "午峰", declareVolume: 1432, declarePrice: 339.8, status: "已提交", updatedAt: buildUpdatedAt(dataUpdatedAt, -9) },
-    { declarationDate: standardDefaultDate, declarationTime: "19:00", unitCode: "SX-DA-007", unitName: "汉中商服单元 G", segment: "晚峰", declareVolume: 1518, declarePrice: 344.2, status: "待校验", updatedAt: buildUpdatedAt(dataUpdatedAt, -9) },
-    { declarationDate: standardDefaultDate, declarationTime: "21:00", unitCode: "SX-DA-008", unitName: "延安站网单元 H", segment: "晚峰", declareVolume: 1468, declarePrice: 341.4, status: "已提交", updatedAt: buildUpdatedAt(dataUpdatedAt, -9) },
-  ];
   var shaanxiDayAheadDeclarationPage = createPageData({
     title: "日前申报",
-    description: "陕西交易中心日前申报量价 mock 数据。",
+    description: "陕西交易中心日前申报电力 96 点 mock 数据。",
     updateTime: buildUpdatedAt(dataUpdatedAt, -9),
     dataSource: "陕西电力交易中心日前申报 mock",
     filters: {
       date: standardDefaultDate,
-      granularity: "24h",
+      granularity: "15min",
       primaryTab: "日前申报",
       secondaryTab: "",
     },
     summaryCards: [
-      { label: "申报总电量", value: sum(shaanxiDeclarationVolumeValues), unit: "MWh" },
-      { label: "最高申报价", value: shaanxiDeclarationPriceSeries.max, unit: "元/MWh" },
-      { label: "最低申报价", value: shaanxiDeclarationPriceSeries.min, unit: "元/MWh" },
-      { label: "申报单元数", value: shaanxiDayAheadDeclarationRows.length, unit: "个" },
+      { label: "申报电力峰值", value: shaanxiDeclarationPowerSeries.max, unit: "MW" },
+      { label: "申报电力谷值", value: shaanxiDeclarationPowerSeries.min, unit: "MW" },
+      { label: "申报电力均值", value: shaanxiDeclarationPowerSeries.average, unit: "MW" },
+      { label: "申报点数", value: shaanxiDayAheadDeclarationRows.length, unit: "点" },
     ],
-    chartType: "mixed",
-    chartUnit: "MWh / 元/MWh",
-    chartSeries: [shaanxiDeclarationVolumeSeries, shaanxiDeclarationPriceSeries],
+    chartType: "line",
+    chartUnit: "MW",
+    chartSeries: [shaanxiDeclarationPowerSeries],
     tableColumns: [
-      { key: "declarationDate", title: "申报日期" },
-      { key: "declarationTime", title: "申报时段" },
-      { key: "unitCode", title: "交易单元编码" },
-      { key: "unitName", title: "交易单元名称" },
-      { key: "segment", title: "时段类型" },
-      { key: "declareVolume", title: "申报电量（MWh）" },
-      { key: "declarePrice", title: "申报价格（元/MWh）" },
-      { key: "status", title: "申报状态" },
-      { key: "updatedAt", title: "更新时间" },
+      { key: "time", title: "时刻" },
+      { key: "powerMw", title: "申报电力（MW）" },
     ],
     tableData: shaanxiDayAheadDeclarationRows,
     fileList: buildMockFileList("sx", "dayahead-declaration", standardDefaultDate, 4),
@@ -1054,9 +1042,9 @@
     emptyText: "当前筛选条件下暂无陕西日清算分账单数据。",
   });
   var shaanxiMonthlySettlementSummary = {
-    settlementMonth: "2026-03",
-    settlementBillNo: "SNPX-2026-03-03030",
-    settlementDocumentTitle: "陕西电力交易中心有限公司2026年03月交易结算单",
+    settlementMonth: standardDefaultMonth,
+    settlementBillNo: "SNPX-2026-07-03030",
+    settlementDocumentTitle: "陕西电力交易中心有限公司2026年07月交易结算单",
     retailUserName: "北京小桔新能源汽车科技有限公司（常规企业）",
     buyerSettlementPower: 6025.925,
     buyerContractPower: 3193.288,
@@ -1070,7 +1058,7 @@
     mediumLongTermUsageRatio: null,
     unitRevenue: null,
     dataSource: "陕西交易中心月结算PDF解析",
-    updateTime: "2026-05-09 10:52:48",
+    updateTime: "2026-07-31 10:52:48",
   };
   var shaanxiMonthlySettlementDetails = [
     {
@@ -1250,6 +1238,12 @@
     { monthLabel: "202604", electricityLabel: "电量", monthlyTradePlanPower: 6025.925, settlementPriceOrAverage: 202.995, settlementFee: 1223232.87, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00 },
     { monthLabel: "202604", electricityLabel: "电量", monthlyTradePlanPower: 6025.925, settlementPriceOrAverage: 192.166, settlementFee: 1157975.18, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00, subjectCode: "合计", subjectName: "售电公司月结算合计" },
   ];
+  shaanxiMonthlyPurchaseRows.forEach(function normalizeMonthlyPurchaseRow(row) {
+    row.monthLabel = standardDefaultMonth.replace("-", "");
+  });
+  shaanxiMonthlySaleRows.forEach(function normalizeMonthlySaleRow(row) {
+    row.monthLabel = standardDefaultMonth.replace("-", "");
+  });
   var shaanxiMonthlySettlementData = {
     provinceCode: "sx",
     provinceName: "陕西",
@@ -1281,9 +1275,9 @@
   var shaanxiMonthlySettlementFiles = [
     {
       id: "sx-monthly-pdf-001",
-      fileName: "北京小桔新能源汽车科技有限公司2026-03-01.pdf",
+      fileName: "北京小桔新能源汽车科技有限公司2026-07-01.pdf",
       fileType: "月结算 PDF",
-      publishTime: "2026-04-06 00:00:00",
+      publishTime: "2026-07-31 00:00:00",
       parseStatus: "已解析",
       downloadUrl: "#",
     },
@@ -1309,14 +1303,31 @@
     documentTitle: "售电公司交易结算单",
     emptyText: "当前月份暂无陕西售电公司月结算 mock 数据。",
   });
-  var shaanxiMonthlyConsumerRows = [
-    { month: "2026-05", companyType: "用电企业", companyCode: "SXUSER001", companyName: "西安高新补能中心", accountNo: "SX-U-001", settlementEnergy: 38460, totalFee: 1732000, serviceFee: 41800, deviationFee: 16600, invoiceStatus: "已出账" },
-    { month: "2026-05", companyType: "用电企业", companyCode: "SXUSER002", companyName: "咸阳物流港充电站", accountNo: "SX-U-002", settlementEnergy: 37240, totalFee: 1678000, serviceFee: 40200, deviationFee: 16020, invoiceStatus: "已出账" },
-    { month: "2026-05", companyType: "用电企业", companyCode: "SXUSER003", companyName: "宝鸡公交能源站", accountNo: "SX-U-003", settlementEnergy: 35820, totalFee: 1614000, serviceFee: 38900, deviationFee: 15480, invoiceStatus: "结算中" },
-    { month: "2026-05", companyType: "用电企业", companyCode: "SXUSER004", companyName: "渭南产业园综合站", accountNo: "SX-U-004", settlementEnergy: 34160, totalFee: 1542000, serviceFee: 37400, deviationFee: 14920, invoiceStatus: "待确认" },
-    { month: "2026-05", companyType: "用电企业", companyCode: "SXUSER005", companyName: "榆林交通能源港", accountNo: "SX-U-005", settlementEnergy: 32980, totalFee: 1491000, serviceFee: 36200, deviationFee: 14560, invoiceStatus: "待确认" },
-    { month: "2026-05", companyType: "用电企业", companyCode: "SXUSER006", companyName: "汉中补能站群", accountNo: "SX-U-006", settlementEnergy: 31820, totalFee: 1438000, serviceFee: 35100, deviationFee: 14020, invoiceStatus: "已出账" },
-  ];
+  var shaanxiMonthlyConsumerRows = mockMonths.reduce(function accumulateConsumerRows(result, month, monthIndex) {
+    var templates = [
+      ["SXUSER001", "西安高新补能中心", "SX-U-001", 38460],
+      ["SXUSER002", "咸阳物流港充电站", "SX-U-002", 37240],
+      ["SXUSER003", "宝鸡公交能源站", "SX-U-003", 35820],
+      ["SXUSER004", "渭南产业园综合站", "SX-U-004", 34160],
+      ["SXUSER005", "榆林交通能源港", "SX-U-005", 32980],
+      ["SXUSER006", "汉中补能站群", "SX-U-006", 31820],
+    ];
+    return result.concat(templates.map(function mapConsumer(template, templateIndex) {
+      var settlementEnergy = Math.round(template[3] * (0.95 + monthIndex * 0.032 + templateIndex * 0.003));
+      return {
+        month: month,
+        companyType: "用电企业",
+        companyCode: template[0],
+        companyName: template[1],
+        accountNo: template[2],
+        settlementEnergy: settlementEnergy,
+        totalFee: Math.round(settlementEnergy * (45.6 + monthIndex * 0.84 + templateIndex * 0.18)),
+        serviceFee: Math.round(settlementEnergy * 1.06),
+        deviationFee: Math.round(settlementEnergy * (0.38 + templateIndex * 0.01)),
+        invoiceStatus: month === "2026-07" && templateIndex >= 2 ? (templateIndex < 4 ? "结算中" : "待确认") : "已出账",
+      };
+    }));
+  }, []);
   var shaanxiMonthlyConsumerSeries = createSeries(
     "monthlyConsumerFee",
     "企业月结算总电费",
@@ -2348,15 +2359,10 @@
     integer: true,
   });
   var shaanxiUnifiedDeclarationRows = expandRowsByShaanxiInfoDates(quarterHours.map(function mapDeclarationRow(time, index) {
-    var startMinutes = index * 15;
-    var startTime = pad(Math.floor(startMinutes / 60)) + ":" + pad(startMinutes % 60);
     return {
       date: standardDefaultDate,
-      sequence: index + 1,
-      period: startTime + "-" + time,
-      declarationPeriod: startTime + "-" + time,
+      time: time,
       powerMw: shaanxiUnifiedDeclarationPowerValues[index],
-      updatedAt: buildUpdatedAt(dataUpdatedAt, -9),
     };
   }), ["date"]);
   var shaanxiUnifiedDeclarationPage = createPageData({
@@ -2373,24 +2379,19 @@
     viewType: "lineTable",
     chartTitle: "日前申报电力趋势图",
     chartUnit: "MW",
-    labelKey: "period",
+    labelKey: "time",
     datePickerMode: "single",
     dateLabel: "运行日期",
     seriesDefinitions: [
       { id: "sx-info-dayahead-declaration-power", label: "日前申报电力", color: "#1677FF", valueKey: "powerMw" },
     ],
-    chartSeries: [createSeries("dayAheadDeclarationPower", "日前申报电力", quarterHours.map(function mapQuarter(time, index) {
-      var startMinutes = index * 15;
-      var startTime = pad(Math.floor(startMinutes / 60)) + ":" + pad(startMinutes % 60);
-      return startTime + "-" + time;
-    }), shaanxiUnifiedDeclarationPowerValues, "MW")],
+    chartSeries: [createSeries("dayAheadDeclarationPower", "日前申报电力", quarterHours, shaanxiUnifiedDeclarationPowerValues, "MW")],
     tableColumns: [
-      { key: "sequence", title: "序号" },
-      { key: "period", title: "时段" },
-      { key: "powerMw", title: "电力（MW）" },
+      { key: "time", title: "时刻" },
+      { key: "powerMw", title: "申报电力（MW）" },
     ],
     tableData: shaanxiUnifiedDeclarationRows,
-    tableMinWidth: 720,
+    tableMinWidth: 640,
     emptyText: "当前日期暂无陕西日前申报 mock 数据。",
   });
   var shaanxiInfoUnitStatusRunningPattern = quarterHours.map(function mapRunningStatus() { return 1; });
@@ -2443,6 +2444,28 @@
       return total + row.values[index];
     }, 0);
   });
+  var shaanxiUnifiedMaintenanceCapacityValues = buildWaveValues(15, 96, {
+    base: 2980,
+    dayAmplitude: 260,
+    peakAmplitude: 520,
+    dayShift: 6,
+    peakShift: 13,
+    valleyEndHour: 6,
+    valleyOffset: -180,
+    pattern: [-18, 12, 24, -10],
+    integer: true,
+  });
+  var shaanxiInfoMaintenanceSummaryRows = buildDateRange("2026-07-05", 7).map(function mapMaintenanceSummary(date, index) {
+    var predictedTotals = [6987.04, 7257.04, 7067.04, 3980.6, 3565.6, 3565.6, 3155.6];
+    var predictedUnitTotals = [4217.04, 4387.04, 4107.04, 1690.6, 1545.6, 1545.6, 1085.6];
+    return {
+      date: date,
+      predictedTotalCapacity: predictedTotals[index],
+      predictedUnitTotalCapacity: predictedUnitTotals[index],
+      actualTotalCapacity: index < 5 ? 0 : null,
+      actualUnitTotalCapacity: index < 5 ? 0 : null,
+    };
+  });
   var shaanxiUnifiedUnitStatusPage = createPageData({
     title: "机组检修容量",
     description: "陕西交易中心信息披露页统一结构下的机组状态 mock 数据。",
@@ -2456,33 +2479,29 @@
     },
     viewType: "maintenanceComposite",
     maintenanceChart: {
-      title: "机组在线容量趋势图",
+      title: "机组检修容量趋势图",
       labels: quarterHours.slice(),
       unit: "MW",
       series: [
         {
-          id: "sx-info-unit-online-capacity",
-          label: "在线容量",
+          id: "sx-info-maintenance-capacity",
+          label: "机组检修容量",
           color: "#1677FF",
-          values: shaanxiUnifiedOnlineCapacityValues,
+          values: shaanxiUnifiedMaintenanceCapacityValues,
         },
       ],
     },
     unitStatusTable: {
-      title: "机组状态明细表",
+      title: "机组检修容量明细表",
       columns: [
-        { key: "runDate", title: "机组运行日期" },
-        { key: "disclosureType", title: "披露类型" },
-        { key: "unitId", title: "机组 ID" },
-        { key: "unitName", title: "机组名称" },
-        { key: "operatingStatus", title: "运行状态" },
-      ]
-        .concat(quarterHours.map(function mapTime(time) {
-          return { key: time, title: time };
-        }))
-        .concat([{ key: "updatedAt", title: "更新时间" }]),
-      data: shaanxiUnifiedUnitStatusRows,
-      minWidth: 9240,
+        { key: "date", title: "日期" },
+        { key: "predictedTotalCapacity", title: "预测总容量(MW)" },
+        { key: "predictedUnitTotalCapacity", title: "预测机组总容量(MW)" },
+        { key: "actualTotalCapacity", title: "实际总容量(MW)" },
+        { key: "actualUnitTotalCapacity", title: "实际机组总容量(MW)" },
+      ],
+      data: shaanxiInfoMaintenanceSummaryRows,
+      minWidth: 1280,
     },
     extraTables: [],
     emptyText: "当前日期暂无陕西机组状态 mock 数据。",
@@ -2641,7 +2660,7 @@
     },
     tabs: tabs,
     dataUpdatedAt: dataUpdatedAt,
-    dataPublishTime: "2026-05-09 10:08:00",
+    dataPublishTime: "2026-07-31 10:08:00",
     dataSource: dataSource,
     infoDisclosure: {
       quarterHours: quarterHours,
@@ -2665,8 +2684,8 @@
     settlement: {
       title: "日清月结",
       centerName: "陕西电力交易中心",
-      statusText: "数据更新时间：2026-05-09 10:52:48（陕西交易中心结算任务）",
-      publishTime: "2026-05-09 10:52:48",
+      statusText: "数据更新时间：2026-07-31 10:52:48（陕西交易中心结算任务）",
+      publishTime: "2026-07-31 10:52:48",
       tabs: ["日清算", "月结算"],
       dailyRows: shaanxiDailySettlementRows,
       dailyColumns: settlementDailyColumns,
@@ -2680,8 +2699,8 @@
     retailRelation: {
       title: "零售关系",
       centerName: "陕西电力交易中心",
-      statusText: "数据更新时间：2026-05-09 11:04:26（陕西交易中心零售关系台账）",
-      publishTime: "2026-05-09 10:42:00",
+      statusText: "数据更新时间：2026-07-31 11:04:26（陕西交易中心零售关系台账）",
+      publishTime: "2026-07-31 10:42:00",
       defaultRange: {
         start: "2026-01-01",
         end: "2026-12-31",
@@ -2692,12 +2711,9 @@
     rollingData: {
       title: "滚搓数据",
       centerName: "陕西电力交易中心",
-      statusText: "数据更新时间：2026-05-09 10:44:16（陕西交易中心滚搓任务）",
-      publishTime: "2026-05-09 10:12:00",
-      defaultRange: {
-        start: "2026-05-03",
-        end: "2026-05-09",
-      },
+      statusText: "数据更新时间：2026-07-31 10:44:16（陕西交易中心滚搓任务）",
+      publishTime: "2026-07-31 10:12:00",
+      defaultRange: defaultRange,
       productOptions: rollingDataProducts,
       rows: rollingDataRows,
       contractCurve: {

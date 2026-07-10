@@ -307,18 +307,19 @@
   var hours = buildTimeLabels(60, 24);
   var hunanEnterpriseHours = buildTimeLabels(60, 24, 60);
   var quarterHours = buildTimeLabels(15, 96, 15);
-  var availableDates = buildDateRange("2026-04-26", 56);
+  var availableDates = buildDateRange("2026-04-01", 122);
+  var mockMonths = ["2026-04", "2026-05", "2026-06", "2026-07"];
   var defaultRange = {
-    start: "2026-05-03",
-    end: "2026-05-09",
+    start: "2026-07-25",
+    end: "2026-07-31",
   };
-  var hunanInfoDailyMockDates = buildDateRange("2026-05-09", 43);
-  var dataUpdatedAt = "2026-05-09 10:32:18";
+  var hunanInfoDailyMockDates = availableDates.slice();
+  var dataUpdatedAt = "2026-07-31 10:32:18";
   var dataSource = "湖南电力交易中心信息披露";
   var loadRows = availableDates.map(buildHunanDailyLoadRow);
   var loadAverageValues = averageBySlot(loadRows, "hourlyValues");
   var settlementPriceRows = buildPriceRows(availableDates, 362, "湖南现货统一结算口径", buildUpdatedAt(dataUpdatedAt, -18));
-  var settlementDates = buildDateRange("2026-05-03", 49);
+  var settlementDates = availableDates.slice();
   function expandRowsByHunanInfoDates(rows, dateKeys) {
     return hunanInfoDailyMockDates.reduce(function accumulateRows(result, date) {
       return result.concat((rows || []).map(function mapRow(row) {
@@ -358,16 +359,23 @@
       });
     });
   });
-  var settlementMonthRows = [
-    { month: "2026-05", enterpriseCode: "HNQY001", enterpriseName: "长沙高铁南站补能中心", accountNo: "HN0001", energy: 264800, fee: 12260000, agencyIncome: 298000, status: "已出账" },
-    { month: "2026-05", enterpriseCode: "HNQY002", enterpriseName: "株洲公交充电站群", accountNo: "HN0002", energy: 248100, fee: 11420000, agencyIncome: 276000, status: "已出账" },
-    { month: "2026-05", enterpriseCode: "HNQY003", enterpriseName: "湘潭园区综合能源站", accountNo: "HN0003", energy: 226600, fee: 10370000, agencyIncome: 252000, status: "结算中" },
-    { month: "2026-05", enterpriseCode: "HNQY004", enterpriseName: "岳阳物流港充换电站", accountNo: "HN0004", energy: 209300, fee: 9560000, agencyIncome: 236000, status: "待确认" },
-    { month: "2026-04", enterpriseCode: "HNQY001", enterpriseName: "长沙高铁南站补能中心", accountNo: "HN0001", energy: 251400, fee: 11610000, agencyIncome: 284000, status: "已出账" },
-    { month: "2026-04", enterpriseCode: "HNQY002", enterpriseName: "株洲公交充电站群", accountNo: "HN0002", energy: 236800, fee: 10890000, agencyIncome: 268000, status: "已出账" },
-    { month: "2026-04", enterpriseCode: "HNQY003", enterpriseName: "湘潭园区综合能源站", accountNo: "HN0003", energy: 218900, fee: 10080000, agencyIncome: 247000, status: "已出账" },
-    { month: "2026-04", enterpriseCode: "HNQY004", enterpriseName: "岳阳物流港充换电站", accountNo: "HN0004", energy: 201600, fee: 9280000, agencyIncome: 230000, status: "已出账" },
-  ];
+  var settlementMonthRows = mockMonths.reduce(function accumulateMonthRows(result, month, monthIndex) {
+    return result.concat(settlementDailyTemplates.map(function mapTemplate(template, templateIndex) {
+      var monthLift = 1 + monthIndex * 0.045;
+      var energy = Math.round((251400 + templateIndex * -16400 + monthIndex * 13700 + templateIndex * 1850) * monthLift);
+      var fee = Math.round(energy * (46.2 + monthIndex * 0.8 + templateIndex * 0.35));
+      return {
+        month: month,
+        enterpriseCode: template.enterpriseCode,
+        enterpriseName: template.enterpriseName,
+        accountNo: template.accountNo,
+        energy: energy,
+        fee: fee,
+        agencyIncome: Math.round(energy * (1.12 + templateIndex * 0.02)),
+        status: month === "2026-07" && templateIndex >= 2 ? (templateIndex === 2 ? "结算中" : "待确认") : "已出账",
+      };
+    }));
+  }, []);
   var retailRelationRows = [
     { userCode: "HNUSER001", userName: "长沙高铁南站补能中心", accountNo: "HN0001", microgridName: "长沙南站综合微电网", startDate: "2026-01-01", endDate: "2026-12-31", status: "合作中", sellerCompany: "滴滴电力（湖南）有限公司" },
     { userCode: "HNUSER002", userName: "株洲公交充电站群", accountNo: "HN0002", microgridName: "-", startDate: "2025-12-01", endDate: "2026-11-30", status: "合作中", sellerCompany: "滴滴电力（湖南）有限公司" },
@@ -418,13 +426,13 @@
     "售电公司日用电信息",
   ];
 
-  var standardDefaultDate = "2026-05-09";
-  var standardDefaultMonth = "2026-05";
+  var standardDefaultDate = "2026-07-31";
+  var standardDefaultMonth = "2026-07";
   var hunanRollingTradeProducts = ["全部", "月度双边", "集中竞价", "挂牌交易"];
   var hunanRollingContractPeriods = ["全部", "D+1", "周合约", "月合约"];
   var hunanRollingTradePeriods = ["00:00-04:00", "04:00-08:00", "08:00-16:00", "16:00-24:00"];
   var hunanRollingDetailedRows = [];
-  buildDateRange("2026-05-03", 7).forEach(function eachHunanRollingDate(date, dayIndex) {
+  settlementDates.forEach(function eachHunanRollingDate(date, dayIndex) {
     hunanRollingTradeProducts.slice(1).forEach(function eachTradeProduct(product, productIndex) {
       hunanRollingContractPeriods.slice(1).forEach(function eachContractPeriod(contractPeriod, periodIndex) {
         var period = hunanRollingTradePeriods[(dayIndex + productIndex + periodIndex) % hunanRollingTradePeriods.length];
@@ -569,67 +577,47 @@
     fileList: buildMockFileList("hn", "realtime-node-price", standardDefaultDate, 3),
     emptyText: "当前日期暂无湖南实时节点边际电价 mock 数据。",
   });
-  var hunanDeclarationVolumeValues = buildWaveValues(60, 24, {
-    base: 1280,
-    dayAmplitude: 180,
-    peakAmplitude: 320,
+  var hunanDeclarationPowerValues = buildWaveValues(15, 96, {
+    base: 232,
+    dayAmplitude: 38,
+    peakAmplitude: 68,
     dayShift: 6,
     peakShift: 14,
     valleyEndHour: 6,
-    valleyOffset: -120,
-    pattern: [-16, 12, 24, -10],
-    integer: true,
+    valleyOffset: -46,
+    pattern: [-4.8, 2.4, 5.2, -2.1],
   });
-  var hunanDeclarationPriceValues = buildWaveValues(60, 24, {
-    base: 348,
-    dayAmplitude: 12,
-    peakAmplitude: 22,
-    dayShift: 6,
-    peakShift: 14,
-    pattern: [-1.2, 0.6, 1.4, -0.4],
+  var hunanDeclarationPowerSeries = createSeries("declarePower", "申报电力", quarterHours, hunanDeclarationPowerValues, "MW");
+  var hunanDayAheadDeclarationRows = quarterHours.map(function mapDeclarationPower(time, index) {
+    return {
+      declarationDate: standardDefaultDate,
+      time: time,
+      powerMw: hunanDeclarationPowerValues[index],
+    };
   });
-  var hunanDeclarationVolumeSeries = createSeries("declareVolume", "申报电量", hours, hunanDeclarationVolumeValues, "MWh", "bar");
-  var hunanDeclarationPriceSeries = createSeries("declarePrice", "申报均价", hours, hunanDeclarationPriceValues, "元/MWh");
-  var hunanDayAheadDeclarationRows = [
-    { declarationDate: standardDefaultDate, declarationTime: "08:00", unitCode: "HN-DA-001", unitName: "湘北负荷单元 A", segment: "早峰", declareVolume: 1460, declarePrice: 352.4, status: "已提交", updatedAt: buildUpdatedAt(dataUpdatedAt, -8) },
-    { declarationDate: standardDefaultDate, declarationTime: "09:00", unitCode: "HN-DA-002", unitName: "湘中负荷单元 B", segment: "早峰", declareVolume: 1518, declarePrice: 357.2, status: "已提交", updatedAt: buildUpdatedAt(dataUpdatedAt, -8) },
-    { declarationDate: standardDefaultDate, declarationTime: "10:00", unitCode: "HN-DA-003", unitName: "湘南工商单元 C", segment: "平段", declareVolume: 1396, declarePrice: 344.8, status: "已回传", updatedAt: buildUpdatedAt(dataUpdatedAt, -8) },
-    { declarationDate: standardDefaultDate, declarationTime: "11:00", unitCode: "HN-DA-004", unitName: "长沙枢纽单元 D", segment: "平段", declareVolume: 1422, declarePrice: 347.1, status: "已提交", updatedAt: buildUpdatedAt(dataUpdatedAt, -8) },
-    { declarationDate: standardDefaultDate, declarationTime: "13:00", unitCode: "HN-DA-005", unitName: "岳阳港区单元 E", segment: "午峰", declareVolume: 1584, declarePrice: 361.5, status: "已回传", updatedAt: buildUpdatedAt(dataUpdatedAt, -8) },
-    { declarationDate: standardDefaultDate, declarationTime: "15:00", unitCode: "HN-DA-006", unitName: "株洲工业单元 F", segment: "午峰", declareVolume: 1668, declarePrice: 368.2, status: "已提交", updatedAt: buildUpdatedAt(dataUpdatedAt, -8) },
-    { declarationDate: standardDefaultDate, declarationTime: "19:00", unitCode: "HN-DA-007", unitName: "常德商服单元 G", segment: "晚峰", declareVolume: 1746, declarePrice: 372.9, status: "待校验", updatedAt: buildUpdatedAt(dataUpdatedAt, -8) },
-    { declarationDate: standardDefaultDate, declarationTime: "21:00", unitCode: "HN-DA-008", unitName: "湘潭园区单元 H", segment: "晚峰", declareVolume: 1682, declarePrice: 369.6, status: "已提交", updatedAt: buildUpdatedAt(dataUpdatedAt, -8) },
-  ];
   var hunanDayAheadDeclarationPage = createPageData({
     title: "日前申报",
-    description: "湖南交易中心日前申报量价 mock 数据。",
+    description: "湖南交易中心日前申报电力 96 点 mock 数据。",
     updateTime: buildUpdatedAt(dataUpdatedAt, -8),
     dataSource: "湖南电力交易中心日前申报 mock",
     filters: {
       date: standardDefaultDate,
-      granularity: "24h",
+      granularity: "15min",
       primaryTab: "日前申报",
       secondaryTab: "",
     },
     summaryCards: [
-      { label: "申报总电量", value: sum(hunanDeclarationVolumeValues), unit: "MWh" },
-      { label: "最高申报价", value: hunanDeclarationPriceSeries.max, unit: "元/MWh" },
-      { label: "最低申报价", value: hunanDeclarationPriceSeries.min, unit: "元/MWh" },
-      { label: "申报单元数", value: hunanDayAheadDeclarationRows.length, unit: "个" },
+      { label: "申报电力峰值", value: hunanDeclarationPowerSeries.max, unit: "MW" },
+      { label: "申报电力谷值", value: hunanDeclarationPowerSeries.min, unit: "MW" },
+      { label: "申报电力均值", value: hunanDeclarationPowerSeries.average, unit: "MW" },
+      { label: "申报点数", value: hunanDayAheadDeclarationRows.length, unit: "点" },
     ],
-    chartType: "mixed",
-    chartUnit: "MWh / 元/MWh",
-    chartSeries: [hunanDeclarationVolumeSeries, hunanDeclarationPriceSeries],
+    chartType: "line",
+    chartUnit: "MW",
+    chartSeries: [hunanDeclarationPowerSeries],
     tableColumns: [
-      { key: "declarationDate", title: "申报日期" },
-      { key: "declarationTime", title: "申报时段" },
-      { key: "unitCode", title: "交易单元编码" },
-      { key: "unitName", title: "交易单元名称" },
-      { key: "segment", title: "时段类型" },
-      { key: "declareVolume", title: "申报电量（MWh）" },
-      { key: "declarePrice", title: "申报价格（元/MWh）" },
-      { key: "status", title: "申报状态" },
-      { key: "updatedAt", title: "更新时间" },
+      { key: "time", title: "时刻" },
+      { key: "powerMw", title: "申报电力（MW）" },
     ],
     tableData: hunanDayAheadDeclarationRows,
     fileList: buildMockFileList("hn", "dayahead-declaration", standardDefaultDate, 4),
@@ -968,7 +956,7 @@
   var hunanDailySettlementPage = createPageData({
     title: "日清算",
     description: "湖南交易中心日清算按清分单据结构展示的 24 时段 mock 数据。",
-    updateTime: "2026-05-09 10:46:12",
+    updateTime: "2026-07-31 10:46:12",
     dataSource: "湖南交易中心日清算PDF解析",
     filters: {
       dateRange: {
@@ -991,24 +979,24 @@
         id: "hn-daily-pdf-001",
         fileName: "北京小桔新能源汽车科技有限公司01售电公司日清分结算单.pdf",
         fileType: "日清算 PDF",
-        publishTime: "2026-05-07 17:46:20",
+        publishTime: "2026-07-31 17:46:20",
         parseStatus: "已解析",
         downloadUrl: "#",
       },
     ],
     emptyText: "当前筛选条件下暂无湖南日清算明细 mock 数据。",
     sellerName: "北京小桔新能源汽车科技有限公司",
-    documentTitle: "北京小桔新能源汽车科技有限公司 2026 年 4 月 1 日清分单据",
+    documentTitle: "北京小桔新能源汽车科技有限公司 2026 年 7 月 31 日清分单据",
   });
   var hunanMonthlySettlementSummary = {
-    settlementMonth: "2026-04",
-    settlementBasisNo: "HNPX-2026-04-SD000",
+    settlementMonth: standardDefaultMonth,
+    settlementBasisNo: "HNPX-2026-07-SD000",
     settlementPower: 9902.421,
     contractPower: 5824.700,
     deviationPower: 4077.721,
     settlementFee: -119568.74,
     dataSource: "湖南交易中心月结算PDF解析",
-    updateTime: "2026-05-09 10:46:12",
+    updateTime: "2026-07-31 10:46:12",
   };
   var hunanMonthlySettlementDetails = [
     {
@@ -1127,11 +1115,17 @@
     { monthLabel: "202604", electricityLabel: "电量", tradePlanPower: 9902.421, settlementPriceOrAverage: 348.060, settlementFee: 3446760.14, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00, subjectCode: "小计", subjectName: "售电侧小计" },
     { monthLabel: "202604", electricityLabel: "电量", tradePlanPower: 9902.421, settlementPriceOrAverage: 271.919, settlementFee: 2692655.64, greenPeakEnergy: 0.000, greenPeakPrice: 0.000, greenPeakFee: 0.00, greenHighEnergy: 0.000, greenHighPrice: 0.000, greenHighFee: 0.00, subjectCode: "合计", subjectName: "售电公司月结算合计" },
   ];
+  hunanMonthlyPurchaseRows.forEach(function normalizeMonthlyPurchaseRow(row) {
+    row.monthLabel = standardDefaultMonth.replace("-", "");
+  });
+  hunanMonthlySaleRows.forEach(function normalizeMonthlySaleRow(row) {
+    row.monthLabel = standardDefaultMonth.replace("-", "");
+  });
   var hunanMonthlySettlementData = {
     provinceCode: "hn",
     provinceName: "湖南",
     hasPurchaseSaleSide: true,
-    month: "2026-04",
+    month: standardDefaultMonth,
     updateTime: hunanMonthlySettlementSummary.updateTime,
     updateSource: "PDF解析",
     purchaseSide: {
@@ -1160,7 +1154,7 @@
       id: "hn-monthly-pdf-001",
       fileName: "北京小桔新能源汽车科技有限公司售电公司-核对版结算单.pdf",
       fileType: "月结算 PDF",
-      publishTime: "2026-05-08 11:37:30",
+      publishTime: "2026-07-31 11:37:30",
       parseStatus: "已解析",
       downloadUrl: "#",
     },
@@ -1188,17 +1182,34 @@
     tableData: hunanMonthlySaleRows,
     fileList: hunanMonthlySettlementFiles,
     settlementSummary: hunanMonthlySettlementSummary,
-    statementTitle: "湖南电力交易中心有限公司 2026年4月交易结算单",
+    statementTitle: "湖南电力交易中心有限公司 2026年7月交易结算单",
     emptyText: "当前月份暂无湖南售电公司月结算 mock 数据。",
   });
-  var hunanMonthlyConsumerRows = [
-    { month: "2026-05", companyType: "用电企业", companyCode: "HNUSER001", companyName: "长沙高铁南站补能中心", accountNo: "HN-U-001", settlementEnergy: 42860, totalFee: 1986000, serviceFee: 46800, deviationFee: 18200, invoiceStatus: "已出账" },
-    { month: "2026-05", companyType: "用电企业", companyCode: "HNUSER002", companyName: "株洲公交充电站群", accountNo: "HN-U-002", settlementEnergy: 41320, totalFee: 1918000, serviceFee: 45200, deviationFee: 17600, invoiceStatus: "已出账" },
-    { month: "2026-05", companyType: "用电企业", companyCode: "HNUSER003", companyName: "湘潭园区综合能源站", accountNo: "HN-U-003", settlementEnergy: 39680, totalFee: 1844000, serviceFee: 43800, deviationFee: 16900, invoiceStatus: "结算中" },
-    { month: "2026-05", companyType: "用电企业", companyCode: "HNUSER004", companyName: "岳阳物流港充换电站", accountNo: "HN-U-004", settlementEnergy: 37240, totalFee: 1736000, serviceFee: 41000, deviationFee: 16200, invoiceStatus: "待确认" },
-    { month: "2026-05", companyType: "用电企业", companyCode: "HNUSER005", companyName: "常德公共交通能源站", accountNo: "HN-U-005", settlementEnergy: 35860, totalFee: 1681000, serviceFee: 39800, deviationFee: 15400, invoiceStatus: "待确认" },
-    { month: "2026-05", companyType: "用电企业", companyCode: "HNUSER006", companyName: "郴州换电网络", accountNo: "HN-U-006", settlementEnergy: 34120, totalFee: 1592000, serviceFee: 38200, deviationFee: 14900, invoiceStatus: "已出账" },
-  ];
+  var hunanMonthlyConsumerRows = mockMonths.reduce(function accumulateConsumerRows(result, month, monthIndex) {
+    var templates = [
+      ["HNUSER001", "长沙高铁南站补能中心", "HN-U-001", 42860],
+      ["HNUSER002", "株洲公交充电站群", "HN-U-002", 41320],
+      ["HNUSER003", "湘潭园区综合能源站", "HN-U-003", 39680],
+      ["HNUSER004", "岳阳物流港充换电站", "HN-U-004", 37240],
+      ["HNUSER005", "常德公共交通能源站", "HN-U-005", 35860],
+      ["HNUSER006", "郴州换电网络", "HN-U-006", 34120],
+    ];
+    return result.concat(templates.map(function mapConsumer(template, templateIndex) {
+      var settlementEnergy = Math.round(template[3] * (0.96 + monthIndex * 0.035 + templateIndex * 0.004));
+      return {
+        month: month,
+        companyType: "用电企业",
+        companyCode: template[0],
+        companyName: template[1],
+        accountNo: template[2],
+        settlementEnergy: settlementEnergy,
+        totalFee: Math.round(settlementEnergy * (46.1 + monthIndex * 0.9 + templateIndex * 0.2)),
+        serviceFee: Math.round(settlementEnergy * 1.09),
+        deviationFee: Math.round(settlementEnergy * (0.39 + templateIndex * 0.01)),
+        invoiceStatus: month === "2026-07" && templateIndex >= 2 ? (templateIndex < 4 ? "结算中" : "待确认") : "已出账",
+      };
+    }));
+  }, []);
   var hunanMonthlyConsumerSeries = createSeries(
     "monthlyConsumerFee",
     "企业月结算总电费",
@@ -1956,7 +1967,7 @@
     emptyText: "当前日期暂无湖南节点边际电价 mock 数据。",
   });
   var hunanInfoMockSource = "取数工具";
-  var hunanInfoMockPublishTime = "2026-05-09 09:58:00";
+  var hunanInfoMockPublishTime = "2026-07-31 09:58:00";
   var hunanInfoMockUpdateTime = buildUpdatedAt(dataUpdatedAt, -2);
   var hunanInfoUnitStatusDate = "2026-06-20";
   var hunanInfoUnitStatusUpdatedAt = "2026-06-21 23:00:17";
@@ -2079,6 +2090,17 @@
     hunanInfoMaintenanceCapacityValues,
     "MW",
   );
+  var hunanInfoMaintenanceSummaryRows = buildDateRange("2026-07-05", 7).map(function mapMaintenanceSummary(date, index) {
+    var predictedTotals = [7607.04, 7977.04, 7727.04, 4290.6, 3835.6, 3835.6, 3355.6];
+    var predictedUnitTotals = [4597.04, 4767.04, 4467.04, 1810.6, 1675.6, 1675.6, 1195.6];
+    return {
+      date: date,
+      predictedTotalCapacity: predictedTotals[index],
+      predictedUnitTotalCapacity: predictedUnitTotals[index],
+      actualTotalCapacity: index < 5 ? 0 : null,
+      actualUnitTotalCapacity: index < 5 ? 0 : null,
+    };
+  });
   var hunanInfoMaintenanceScheduleRawRows = [
     [1,"湖南.湘潭B5厂","湖南.湘潭B5厂/20kV.#4机","20kV","2026-04-17 10:49","2026-06-15 18:00"],
     [2,"牛排山风电场","牛排山风电场#23机组","0.6kV","2026-05-07 09:00","2026-05-14 22:00"],
@@ -2212,20 +2234,16 @@
       { label: "检修计划数", value: hunanUnifiedMaintenanceScheduleRows.length, unit: "条" },
     ]),
     unitStatusTable: {
-      title: "机组状态明细表",
+      title: "机组检修容量明细表",
       columns: [
-        { key: "runDate", title: "日期" },
-        { key: "unitCode", title: "机组编码" },
-        { key: "unitName", title: "机组名称" },
-        { key: "installedCapacityMw", title: "装机容量（MW）" },
-        { key: "operatingStatus", title: "运行状态" },
-      ]
-        .concat(hunanInfoDisclosureTimeLabels.map(function mapTime(time) {
-          return { key: time, title: time };
-        }))
-        .concat([{ key: "updatedAt", title: "更新时间" }]),
-      data: hunanUnifiedUnitStatusRows,
-      minWidth: 9300,
+        { key: "date", title: "日期" },
+        { key: "predictedTotalCapacity", title: "预测总容量(MW)" },
+        { key: "predictedUnitTotalCapacity", title: "预测机组总容量(MW)" },
+        { key: "actualTotalCapacity", title: "实际总容量(MW)" },
+        { key: "actualUnitTotalCapacity", title: "实际机组总容量(MW)" },
+      ],
+      data: hunanInfoMaintenanceSummaryRows,
+      minWidth: 1280,
     },
     extraTables: [
       {
@@ -2243,18 +2261,13 @@
       },
     ],
     tableColumns: [
-      { key: "time", title: "时刻" },
-      { key: "maintenanceCapacityMw", title: "机组检修容量（MW）" },
-      { key: "maintenanceUnitCount", title: "检修机组数（台）" },
+      { key: "date", title: "日期" },
+      { key: "predictedTotalCapacity", title: "预测总容量(MW)" },
+      { key: "predictedUnitTotalCapacity", title: "预测机组总容量(MW)" },
+      { key: "actualTotalCapacity", title: "实际总容量(MW)" },
+      { key: "actualUnitTotalCapacity", title: "实际机组总容量(MW)" },
     ],
-    tableData: hunanInfoDisclosureTimeLabels.map(function mapMaintenancePoint(time, index) {
-      return {
-        date: hunanInfoUnitStatusDate,
-        time: time,
-        maintenanceCapacityMw: hunanInfoMaintenanceCapacityValues[index],
-        maintenanceUnitCount: hunanInfoMaintenanceUnitCountValues[index],
-      };
-    }),
+    tableData: hunanInfoMaintenanceSummaryRows,
     emptyText: "当前日期暂无湖南机组检修容量 mock 数据。",
   });
   var hunanInfoPositiveReserveValues = [
@@ -2349,19 +2362,10 @@
     4.692, 4.176, 3.695, 3.533, 3.391, 3.272, 2.959, 2.92, 2.903, 2.676, 2.373, 3.04
   ];
   var hunanUnifiedDeclarationRows = hunanInfoDayAheadDeclarationPowerValues.map(function mapDeclarationRow(value, index) {
-    var startMinutes = index * 15;
-    var endMinutes = startMinutes + 15;
-    var startTime = pad(Math.floor(startMinutes / 60)) + ":" + pad(startMinutes % 60);
-    var endTime = endMinutes === 1440 ? "24:00" : pad(Math.floor(endMinutes / 60)) + ":" + pad(endMinutes % 60);
-
     return {
       date: standardDefaultDate,
-      sequence: index + 1,
-      period: startTime + "-" + endTime,
-      declarationPeriod: startTime + "-" + endTime,
+      time: hunanInfoDisclosureTimeLabels[index],
       powerMw: value,
-      source: hunanInfoMockSource,
-      updatedAt: buildUpdatedAt(dataUpdatedAt, -8),
     };
   });
   var hunanUnifiedDeclarationPage = createPageData({
@@ -2396,20 +2400,19 @@
     viewType: "lineTable",
     chartTitle: "日前申报电力趋势图",
     chartUnit: "MW",
-    labelKey: "period",
+    labelKey: "time",
     datePickerMode: "single",
     dateLabel: "运行日期",
     seriesDefinitions: [
       { id: "hn-info-dayahead-declaration-power", label: "日前申报电力", color: "#1677FF", valueKey: "powerMw" },
     ],
-    chartSeries: [createSeries("dayAheadDeclarationPower", "日前申报电力", hunanUnifiedDeclarationRows.map(function mapRow(row) { return row.period; }), hunanInfoDayAheadDeclarationPowerValues, "MW")],
+    chartSeries: [createSeries("dayAheadDeclarationPower", "日前申报电力", hunanUnifiedDeclarationRows.map(function mapRow(row) { return row.time; }), hunanInfoDayAheadDeclarationPowerValues, "MW")],
     tableColumns: [
-      { key: "sequence", title: "序号" },
-      { key: "period", title: "时段" },
-      { key: "powerMw", title: "电力（MW）" },
+      { key: "time", title: "时刻" },
+      { key: "powerMw", title: "申报电力（MW）" },
     ],
     tableData: hunanUnifiedDeclarationRows,
-    tableMinWidth: 720,
+    tableMinWidth: 640,
     emptyText: "当前日期暂无湖南日前申报 mock 数据。",
   });
   var hunanMarketPageData = {
@@ -2513,7 +2516,7 @@
     },
     tabs: tabs,
     dataUpdatedAt: dataUpdatedAt,
-    dataPublishTime: "2026-05-09 09:58:00",
+    dataPublishTime: "2026-07-31 09:58:00",
     dataSource: dataSource,
     emptyExample: {
       range: {
@@ -2534,8 +2537,8 @@
     settlement: {
       title: "日清月结",
       centerName: "湖南电力交易中心",
-      statusText: "数据更新时间：2026-05-09 10:46:12（湖南交易中心日清算PDF解析）",
-      publishTime: "2026-05-07 17:46:20",
+      statusText: "数据更新时间：2026-07-31 10:46:12（湖南交易中心日清算PDF解析）",
+      publishTime: "2026-07-31 17:46:20",
       tabs: ["日清算", "月结算"],
       dailyRows: settlementDailyRows,
       monthRows: settlementMonthRows,
@@ -2544,8 +2547,8 @@
     retailRelation: {
       title: "零售关系",
       centerName: "湖南电力交易中心",
-      statusText: "数据更新时间：2026-05-09 10:58:40（湖南交易中心零售关系台账）",
-      publishTime: "2026-05-09 10:30:00",
+      statusText: "数据更新时间：2026-07-31 10:58:40（湖南交易中心零售关系台账）",
+      publishTime: "2026-07-31 10:30:00",
       defaultRange: {
         start: "2026-01-01",
         end: "2026-12-31",
@@ -2556,19 +2559,13 @@
     rollingData: {
       title: "滚搓数据",
       centerName: "湖南电力交易中心",
-      statusText: "数据更新时间：2026-05-09 10:39:26（湖南交易中心滚搓任务）",
-      publishTime: "2026-05-09 10:08:00",
-      defaultRange: {
-        start: "2026-05-03",
-        end: "2026-05-09",
-      },
+      statusText: "数据更新时间：2026-07-31 10:39:26（湖南交易中心滚搓任务）",
+      publishTime: "2026-07-31 10:08:00",
+      defaultRange: defaultRange,
       productOptions: rollingDataProducts,
       rows: rollingDataRows,
       longTermTradeResult: {
-        defaultRange: {
-          start: "2026-05-03",
-          end: "2026-05-09",
-        },
+        defaultRange: defaultRange,
         productOptions: hunanRollingTradeProducts,
         contractPeriodOptions: hunanRollingContractPeriods,
         rows: hunanRollingDetailedRows,

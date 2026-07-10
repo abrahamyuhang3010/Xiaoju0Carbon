@@ -97,8 +97,8 @@
 
   function getDefaultSaleCompanyRange() {
     return {
-      start: "2026-05-25",
-      end: "2026-05-29",
+      start: "2026-07-25",
+      end: "2026-07-31",
     };
   }
 
@@ -126,8 +126,8 @@
   function createMarketDisclosureState(pageMock) {
     var tabs = (pageMock && pageMock.tabs) || [];
     var defaultRange = (pageMock && pageMock.defaultRange) || {
-      start: "2026-05-03",
-      end: "2026-05-09",
+      start: "2026-07-25",
+      end: "2026-07-31",
     };
     var defaultDate =
       (pageMock && pageMock.marketPageData && pageMock.marketPageData.defaultDate) ||
@@ -179,18 +179,18 @@
         }
       );
       var defaultEnterpriseRange = {
-        start: "2026-05-29",
-        end: "2026-05-29",
+        start: "2026-07-31",
+        end: "2026-07-31",
       };
       var defaultSaleCompanyRange = getDefaultSaleCompanyRange();
-      var defaultHistoryAgentMonth = "2026-05";
+      var defaultHistoryAgentMonth = "2026-07";
       var defaultSellerHistoryRange = {
-        start: "2026-05-25",
-        end: "2026-05-29",
+        start: "2026-07-25",
+        end: "2026-07-31",
       };
       var defaultUserHistoryRange = {
-        start: "2026-05-29",
-        end: "2026-05-29",
+        start: "2026-07-31",
+        end: "2026-07-31",
       };
       var initialState = {
         currentPageKey: pageKey,
@@ -205,16 +205,16 @@
             { date: "2026-05-10", label: "调休", type: "adjustment" },
           ],
           runtimeRange: {
-            start: "2026-05-08",
-            end: "2026-05-08",
+            start: "2026-07-31",
+            end: "2026-07-31",
           },
           compareRangeDraft: {
-            start: "2026-05-07",
-            end: "2026-05-07",
+            start: "2026-07-30",
+            end: "2026-07-30",
           },
           manualPullRangeDraft: {
-            start: "2026-05-02",
-            end: "2026-05-08",
+            start: "2026-07-25",
+            end: "2026-07-31",
           },
           downloadRangeDraft: {
             start: "",
@@ -278,8 +278,8 @@
           contractCurveDetailTab: "电量明细",
           filters: {
             loadDetailRange: {
-              start: "2026-05-08",
-              end: "2026-05-08",
+              start: "2026-07-31",
+              end: "2026-07-31",
             },
             saleCompanyRange: {
               start: defaultSaleCompanyRange.start,
@@ -311,12 +311,12 @@
             userHistoryAccountNo: "",
             userHistoryMicrogridId: "",
             maintenanceRange: {
-              start: "2026-05-08",
-              end: "2026-05-08",
+              start: "2026-07-31",
+              end: "2026-07-31",
             },
             reserveRange: {
-              start: "2026-05-08",
-              end: "2026-05-08",
+              start: "2026-07-31",
+              end: "2026-07-31",
             },
             saleCompanyName: "全部",
             declarationType: "全部",
@@ -327,12 +327,12 @@
           selectedNode: "全省",
           filters: {
             marketRunRange: {
-              start: (tradeResultMock.defaultRunDate || "2026-05-07"),
-              end: (tradeResultMock.defaultRunDate || "2026-05-07"),
+              start: (tradeResultMock.defaultRunDate || "2026-07-31"),
+              end: (tradeResultMock.defaultRunDate || "2026-07-31"),
             },
             nodeRunRange: {
-              start: (tradeResultMock.defaultRunDate || "2026-05-07"),
-              end: (tradeResultMock.defaultRunDate || "2026-05-07"),
+              start: (tradeResultMock.defaultRunDate || "2026-07-31"),
+              end: (tradeResultMock.defaultRunDate || "2026-07-31"),
             },
             nodeKeyword: "",
           },
@@ -342,8 +342,8 @@
           monthlySide: "购电侧",
           filters: {
             dailyRange: {
-              start: "2026-05-03",
-              end: "2026-05-09",
+              start: (settlementMock.dailyDateRange && settlementMock.dailyDateRange.start) || "2026-07-25",
+              end: (settlementMock.dailyDateRange && settlementMock.dailyDateRange.end) || "2026-07-31",
             },
             dailyUserName: "",
             dailyAccountNo: "",
@@ -352,7 +352,9 @@
             dailyStatementKey: "",
             dailyStatementType: "全部",
             dailyDataType: "全部",
-            monthlyMonth: "2026-05",
+            monthlyMonth:
+              (settlementMock.monthlySettlementData && settlementMock.monthlySettlementData.month) ||
+              "2026-07",
             monthlyUserName: "",
             monthlyAccountNo: "",
             monthlySellerCompanyName: "",
@@ -383,13 +385,13 @@
         rollingData: {
           filters: {
             dateRange: cloneRange(rollingDataMock.defaultRange || {
-              start: "2026-05-03",
-              end: "2026-05-09",
+              start: "2026-07-25",
+              end: "2026-07-31",
             }),
             product: (rollingDataMock.productOptions && rollingDataMock.productOptions[0]) || "全部",
             hunanTradeDateRange: cloneRange((hunanRollingMock.longTermTradeResult && hunanRollingMock.longTermTradeResult.defaultRange) || {
-              start: "2026-05-03",
-              end: "2026-05-09",
+              start: "2026-07-25",
+              end: "2026-07-31",
             }),
             hunanTradeProduct:
               (hunanRollingMock.longTermTradeResult &&
@@ -404,10 +406,10 @@
             shaanxiCurveDate: {
               start:
                 (shaanxiRollingMock.contractCurve && shaanxiRollingMock.contractCurve.defaultDate) ||
-                "2026-05-09",
+                "2026-07-31",
               end:
                 (shaanxiRollingMock.contractCurve && shaanxiRollingMock.contractCurve.defaultDate) ||
-                "2026-05-09",
+                "2026-07-31",
             },
             shaanxiSequenceName:
               (shaanxiRollingMock.contractCurve &&
@@ -437,18 +439,18 @@
             shaanxiTradeDate: {
               start:
                 (shaanxiRollingMock.tradeOverview && shaanxiRollingMock.tradeOverview.defaultDate) ||
-                "2026-05-09",
+                "2026-07-31",
               end:
                 (shaanxiRollingMock.tradeOverview && shaanxiRollingMock.tradeOverview.defaultDate) ||
-                "2026-05-09",
+                "2026-07-31",
             },
           },
         },
         declaration: {
           filters: {
             declarationRange: {
-              start: (declarationMock.defaultDate && declarationMock.defaultDate.start) || "2026-05-09",
-              end: (declarationMock.defaultDate && declarationMock.defaultDate.end) || "2026-05-09",
+              start: (declarationMock.defaultDate && declarationMock.defaultDate.start) || "2026-07-31",
+              end: (declarationMock.defaultDate && declarationMock.defaultDate.end) || "2026-07-31",
             },
             unit: "全部",
             status: "全部",
@@ -463,8 +465,8 @@
             status: (fetchMonitorMock.filters && fetchMonitorMock.filters.statusOptions && fetchMonitorMock.filters.statusOptions[0]) || "全部",
             taskType: (fetchMonitorMock.filters && fetchMonitorMock.filters.taskTypeOptions && fetchMonitorMock.filters.taskTypeOptions[0]) || "全部",
             dateRange: cloneRange((fetchMonitorMock.filters && fetchMonitorMock.filters.defaultRange) || {
-              start: "2026-05-03",
-              end: "2026-05-09",
+              start: "2026-07-25",
+              end: "2026-07-31",
             }),
           },
         },

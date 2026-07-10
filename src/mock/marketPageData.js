@@ -2525,43 +2525,12 @@
       return null;
     }
 
-    var grouped = {};
-    rows.forEach(function eachRow(row) {
-      grouped[row.time] = grouped[row.time] || {
-        time: row.time,
-        volume: 0,
-        totalPrice: 0,
-        count: 0,
-      };
-      grouped[row.time].volume += Number(row.volume || 0);
-      grouped[row.time].totalPrice += Number(row.price || 0);
-      grouped[row.time].count += 1;
-    });
-
-    var summaryRows = Object.keys(grouped)
-      .sort()
-      .map(function mapTime(time) {
-        return {
-          time: time,
-          volume: grouped[time].volume,
-          averagePrice: Number((grouped[time].totalPrice / Math.max(grouped[time].count, 1)).toFixed(1)),
-        };
-      });
-
     var volumeSeries = createSeries(
       "declarationVolume",
       "申报电量",
-      summaryRows.map(function mapRow(row) { return row.time; }),
-      summaryRows.map(function mapRow(row) { return row.volume; }),
+      rows.map(function mapRow(row) { return row.time; }),
+      rows.map(function mapRow(row) { return row.volume; }),
       "MWh",
-      "bar",
-    );
-    var priceSeries = createSeries(
-      "declarationPrice",
-      "申报均价",
-      summaryRows.map(function mapRow(row) { return row.time; }),
-      summaryRows.map(function mapRow(row) { return row.averagePrice; }),
-      "元/MWh",
     );
 
     return {
@@ -2576,22 +2545,17 @@
         secondaryTab: "",
       },
       summaryCards: [
-        { label: "申报记录数", value: rows.length, unit: "条" },
+        { label: "申报点数", value: rows.length, unit: "点" },
         { label: "申报电量峰值", value: volumeSeries.max, unit: "MWh" },
-        { label: "申报均价峰值", value: priceSeries.max, unit: "元/MWh" },
-        { label: "申报均价均值", value: priceSeries.average, unit: "元/MWh" },
+        { label: "申报电量谷值", value: volumeSeries.min, unit: "MWh" },
+        { label: "申报电量均值", value: volumeSeries.average, unit: "MWh" },
       ],
-      chartType: "mixed",
-      chartUnit: "MWh / 元/MWh",
-      chartSeries: [volumeSeries, priceSeries],
+      chartType: "line",
+      chartUnit: "MWh",
+      chartSeries: [volumeSeries],
       tableColumns: [
-        { key: "declarationDate", title: "申报日期" },
-        { key: "unit", title: "交易单元" },
         { key: "time", title: "时刻" },
         { key: "volume", title: "申报电量（MWh）" },
-        { key: "price", title: "申报价格（元/MWh）" },
-        { key: "status", title: "申报状态" },
-        { key: "updatedAt", title: "更新时间" },
       ],
       tableData: cloneValue(rows),
       fileList: createMockFileList("gd-dayahead-declaration", rows[0].declarationDate || "2026-05-09", 3),
@@ -3159,74 +3123,11 @@
   function buildHunanMaintenancePage(bundle) {
     var dataset = getBundleDatasets(bundle).infoMaintenanceComposite || {};
     var unitTable = dataset.unitStatusTable || {};
-    var scheduleTable = dataset.extraTables && dataset.extraTables[0] ? dataset.extraTables[0] : {};
     var maintenanceChart = dataset.maintenanceChart || {};
-    var quarterColumns = (unitTable.columns || []).filter(function filterColumn(column) {
-      return /^\d{2}:\d{2}$/.test(column.key);
-    });
-    var unitBaseColumns = (unitTable.columns || []).filter(function filterColumn(column) {
-      return column.key !== "updatedAt" && !/^\d{2}:\d{2}$/.test(column.key);
-    });
-    if (!unitBaseColumns.length) {
-      unitBaseColumns = [
-        { key: "runDate", title: "日期" },
-        { key: "unitName", title: "机组名称" },
-        { key: "unitCode", title: "机组编码" },
-        { key: "operatingStatus", title: "运行状态" },
-      ];
-    }
-    var unitRows = (unitTable.data || []).map(function mapRow(row) {
-      var nextRow = {};
-
-      unitBaseColumns.forEach(function eachColumn(column) {
-        if (column.key === "operatingStatus") {
-          nextRow[column.key] = createBadgeCell(row.operatingStatus, getUnitStatusTone(row.operatingStatus));
-          return;
-        }
-        nextRow[column.key] = row[column.key];
-      });
-
-      quarterColumns.forEach(function eachColumn(column) {
-        var value = row[column.key];
-        var statusText = "停机";
-        if (row.operatingStatus === "检修") {
-          statusText = "检修";
-        } else if (row.operatingStatus === "备用") {
-          statusText = Number(value || 0) > 0 ? "运行" : "备用";
-        } else if (row.operatingStatus === "受限运行") {
-          statusText = Number(value || 0) > 0 ? "运行" : "停机";
-        } else if (Number(value || 0) > 0) {
-          statusText = "运行";
-        }
-        nextRow[column.key] = createBadgeCell(statusText, getUnitStatusTone(statusText), statusText);
-      });
-
-      nextRow.updatedAt = row.updatedAt;
-      return nextRow;
-    });
-    var scheduleRows = (scheduleTable.data || []).map(function mapRow(row) {
-      var nextRow = cloneValue(row);
-      nextRow.planStatus = createBadgeCell(row.planStatus, getPlanStatusTone(row.planStatus));
-      return nextRow;
-    });
-    var scheduleColumns =
-      scheduleTable.columns && scheduleTable.columns.length
-        ? scheduleTable.columns
-        : [
-            { key: "planDate", title: "检修日期" },
-            { key: "equipmentType", title: "设备类型" },
-            { key: "equipmentName", title: "设备名称" },
-            { key: "stationName", title: "所属厂站" },
-            { key: "startTime", title: "检修开始时间" },
-            { key: "endTime", title: "检修结束时间" },
-            { key: "planStatus", title: "检修状态" },
-            { key: "impactCapacity", title: "影响容量（MW）" },
-            { key: "updatedAt", title: "更新时间" },
-          ];
 
     return {
       title: "机组检修容量",
-      description: "湖南交易中心机组状态与检修计划统一 mock 结构。",
+      description: "湖南交易中心机组检修容量统一 mock 结构。",
       updateTime: dataset.updateTime || bundle.dataUpdatedAt || "",
       publishTime: dataset.publishTime || dataset.dataPublishTime || bundle.dataPublishTime || "",
       dataSource: dataset.dataSource || "湖南电力交易中心机组检修容量",
@@ -3247,23 +3148,12 @@
       },
       chartSeries: cloneValue(dataset.chartSeries || []),
       unitStatusTable: {
-        title: "机组状态明细表",
-        columns: unitBaseColumns
-          .concat(quarterColumns.map(function mapColumn(column) {
-            return { key: column.key, title: column.title };
-          }))
-          .concat([{ key: "updatedAt", title: "更新时间" }]),
-        data: unitRows,
-        minWidth: unitTable.minWidth || 8920,
+        title: unitTable.title || "机组检修容量明细表",
+        columns: cloneValue(unitTable.columns || []),
+        data: cloneValue(unitTable.data || []),
+        minWidth: unitTable.minWidth || 1280,
       },
-      extraTables: [
-        {
-          title: scheduleTable.title || "发输变电设备检修计划（日）",
-          columns: scheduleColumns,
-          data: scheduleRows,
-          minWidth: scheduleTable.minWidth || 1640,
-        },
-      ],
+      extraTables: [],
       emptyText: "当前日期暂无湖南机组检修容量 mock 数据。",
     };
   }
@@ -3628,45 +3518,13 @@
   function buildShaanxiMaintenancePage(bundle) {
     var dataset = getBundleDatasets(bundle).infoUnitStatus || {};
     var unitTable = dataset.unitStatusTable || {};
-    var quarterColumns = (unitTable.columns || []).filter(function filterColumn(column) {
-      return /^\d{2}:\d{2}$/.test(column.key);
-    });
-    var unitRows = (unitTable.data || []).map(function mapRow(row) {
-      var nextRow = {
-        runDate: row.runDate,
-        disclosureType: row.disclosureType,
-        unitId: row.unitId,
-        unitName: row.unitName,
-        operatingStatus: createBadgeCell(
-          row.operatingStatus === "受限运行" ? "异常" : row.operatingStatus,
-          getUnitStatusTone(row.operatingStatus === "受限运行" ? "异常" : row.operatingStatus),
-        ),
-        updatedAt: row.updatedAt,
-      };
-
-      quarterColumns.forEach(function eachColumn(column) {
-        var value = row[column.key];
-        var statusText = "停机";
-        if (row.operatingStatus === "检修") {
-          statusText = "检修";
-        } else if (row.operatingStatus === "备用") {
-          statusText = Number(value || 0) > 0 ? "运行" : "备用";
-        } else if (row.operatingStatus === "受限运行") {
-          statusText = Number(value || 0) > 0 ? "异常" : "停机";
-        } else if (Number(value || 0) > 0) {
-          statusText = "运行";
-        }
-        nextRow[column.key] = createBadgeCell(statusText, getUnitStatusTone(statusText), statusText);
-      });
-
-      return nextRow;
-    });
+    var maintenanceChart = dataset.maintenanceChart || {};
 
     return {
       title: "机组检修容量",
-      description: "陕西交易中心机组状态统一 mock 结构。",
+      description: "陕西交易中心机组检修容量统一 mock 结构。",
       updateTime: dataset.updateTime || bundle.dataUpdatedAt || "",
-      dataSource: dataset.dataSource || "陕西电力交易中心机组状态",
+      dataSource: dataset.dataSource || "陕西电力交易中心机组检修容量",
       filters: {
         tradeCenter: "shaanxi",
         pageType: "infoDisclosure",
@@ -3675,29 +3533,19 @@
       },
       viewType: "maintenanceComposite",
       maintenanceChart: {
-        title: "",
-        labels: [],
-        unit: "MW",
-        series: [],
+        title: maintenanceChart.title || "机组检修容量趋势图",
+        labels: cloneValue(maintenanceChart.labels || []),
+        unit: maintenanceChart.unit || "MW",
+        series: cloneValue(maintenanceChart.series || []),
       },
       unitStatusTable: {
-        title: "机组状态明细表",
-        columns: [
-          { key: "runDate", title: "机组运行日期" },
-          { key: "disclosureType", title: "披露类型" },
-          { key: "unitId", title: "机组 ID" },
-          { key: "unitName", title: "机组名称" },
-          { key: "operatingStatus", title: "运行状态" },
-        ]
-          .concat(quarterColumns.map(function mapColumn(column) {
-            return { key: column.key, title: column.title };
-          }))
-          .concat([{ key: "updatedAt", title: "更新时间" }]),
-        data: unitRows,
-        minWidth: 9240,
+        title: unitTable.title || "机组检修容量明细表",
+        columns: cloneValue(unitTable.columns || []),
+        data: cloneValue(unitTable.data || []),
+        minWidth: unitTable.minWidth || 1280,
       },
       extraTables: [],
-      emptyText: "当前日期暂无陕西机组状态 mock 数据。",
+      emptyText: "当前日期暂无陕西机组检修容量 mock 数据。",
     };
   }
 
@@ -3755,7 +3603,7 @@
         return buildHunanLoadDetailPage(bundle);
       }
       if (secondaryTab === "机组检修容量") {
-        return buildUnavailableLoadInfoSubTabPage("hunan", bundle, secondaryTab);
+        return buildHunanMaintenancePage(bundle);
       }
       if (secondaryTab === "备用信息") {
         return buildHunanReservePage(bundle);
@@ -3780,7 +3628,7 @@
         return buildShaanxiLoadDetailPage(bundle);
       }
       if (secondaryTab === "机组检修容量") {
-        return buildUnavailableLoadInfoSubTabPage("shaanxi", bundle, secondaryTab);
+        return buildShaanxiMaintenancePage(bundle);
       }
       if (secondaryTab === "备用信息") {
         return buildShaanxiReservePage(bundle);

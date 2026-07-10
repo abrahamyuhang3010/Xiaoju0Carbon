@@ -47,6 +47,12 @@
   var renderChartWithMarks = components.renderChartWithMarks || function renderEmpty() {
     return "";
   };
+  var renderEchartsChart = components.renderEchartsChart || function renderEmpty() {
+    return "";
+  };
+  var resetEchartsOptions = components.resetEchartsOptions || function noop() {};
+  var disposeEchartsCharts = components.disposeEchartsCharts || function noop() {};
+  var initEchartsCharts = components.initEchartsCharts || function noop() {};
   var renderDataTablePro = components.renderDataTablePro || function renderEmpty() {
     return "";
   };
@@ -1413,15 +1419,15 @@
 
   function getDefaultEnterprisePowerRange() {
     return {
-      start: "2026-05-29",
-      end: "2026-05-29",
+      start: "2026-07-31",
+      end: "2026-07-31",
     };
   }
 
   function getDefaultSaleCompanyPowerRange() {
     return {
-      start: "2026-05-25",
-      end: "2026-05-29",
+      start: "2026-07-25",
+      end: "2026-07-31",
     };
   }
 
@@ -1448,7 +1454,7 @@
 
     return generatedRows.concat(
       legacyRows.filter(function filterLegacyHistoryRow(row) {
-        return row && row.agentMonth !== "2026-05";
+        return row && (row.agentMonth < "2026-04" || row.agentMonth > "2026-07");
       }),
     );
   }
@@ -1466,7 +1472,7 @@
 
   function getDefaultHistoryAgentMonth(type) {
     var months = getHistoryAgentMonths(type);
-    return months[months.length - 1] || "2026-05";
+    return months[months.length - 1] || "2026-07";
   }
 
   function getDefaultHistoryRange(type, agentMonth) {
@@ -1484,10 +1490,10 @@
       .sort();
 
     if (dates.length) {
-      if (month === "2026-05" && dates.indexOf("2026-05-25") >= 0 && dates.indexOf("2026-05-29") >= 0) {
+      if (month === "2026-07" && dates.indexOf("2026-07-25") >= 0 && dates.indexOf("2026-07-31") >= 0) {
         return {
-          start: type === "user" ? "2026-05-29" : "2026-05-25",
-          end: "2026-05-29",
+          start: type === "user" ? "2026-07-31" : "2026-07-25",
+          end: "2026-07-31",
         };
       }
       return {
@@ -3719,7 +3725,7 @@
     var match = String(statusText || "").match(/^数据更新时间：(.+?)（(.+?)）$/);
     if (!match) {
       return {
-        time: "2026-05-08 11:35:33",
+        time: "2026-07-31 11:35:33",
         source: "取数工具",
         publishTime: normalizeStatusTime(publishTime),
       };
@@ -4654,7 +4660,9 @@
   }
 
   function renderMaintenanceContent() {
+    var infoMock = getInfoMock();
     var rows = getMaintenanceRows();
+    var summaryRows = infoMock.maintenanceSummaryRows || [];
 
     if (!rows.length) {
       return renderInfoEmptyPanel(false);
@@ -4685,9 +4693,15 @@
     });
     var tableHtml = renderDataTablePro({
       tableId: "maintenance-table",
-      columns: ["时刻", "机组检修容量(MW)", "数据来源", "更新时间"],
-      rows: rows.map(function mapRow(row) {
-        return [row.time, formatInteger(row.value), row.source, row.updatedAt];
+      columns: ["日期", "预测总容量(MW)", "预测机组总容量(MW)", "实际总容量(MW)", "实际机组总容量(MW)"],
+      rows: (summaryRows.length ? summaryRows : []).map(function mapRow(row) {
+        return [
+          row.date,
+          formatDisclosureValue(row.predictedTotalCapacity, "MW"),
+          formatDisclosureValue(row.predictedUnitTotalCapacity, "MW"),
+          formatDisclosureValue(row.actualTotalCapacity, "MW"),
+          formatDisclosureValue(row.actualUnitTotalCapacity, "MW"),
+        ];
       }),
       minWidth: 920,
       sortState: getTableSortState("maintenance-table"),
@@ -6638,12 +6652,13 @@
           : pageData.tooltipMode === "declarationBid"
             ? function declarationTooltip(_, index) {
                 var row = rows[index] || {};
+                var powerValue = typeof row.powerMw === "number" ? row.powerMw : row.volumeValue;
+                var powerLabel = row.powerMw !== undefined ? "申报电力" : "申报电量";
                 return [
                   row.operationDate ? "运行日期 " + row.operationDate : "",
-                  row.declarationPeriod ? "申报时段 " + row.declarationPeriod : "",
+                  row.time ? "时刻 " + row.time : row.declarationPeriod ? "申报时段 " + row.declarationPeriod : "",
                   row.declarationType ? "申报类型 " + row.declarationType : "",
-                  "申报电量 " + (typeof row.volumeValue === "number" ? formatDecimal(row.volumeValue) : "--"),
-                  "申报价格 " + (typeof row.priceValue === "number" ? formatDecimal(row.priceValue) : "--"),
+                  powerLabel + " " + (typeof powerValue === "number" ? formatDecimal(powerValue) : "--"),
                 ]
                   .filter(Boolean)
                   .join("\n");
@@ -7015,7 +7030,7 @@
 
   function renderInfoDisclosureMaintenanceCompositeContent(pageData) {
     var unitTable = pageData.unitStatusTable || {};
-    var unitRows = filterInfoDisclosurePageRows(unitTable.data || [], pageData);
+    var unitRows = (unitTable.data || []).slice();
     var maintenanceChart = pageData.maintenanceChart || {};
     var hasChart = Boolean((maintenanceChart.series || []).length && (maintenanceChart.labels || []).length);
     var extraTablesHtml = (pageData.extraTables || [])
@@ -8841,6 +8856,7 @@
   }
 
   function renderMixedBarLineChart(options) {
+    var labels = options.labels || [];
     var hiddenSeries = options.hiddenSeries || {};
     var barSeries = (options.barSeries || []).filter(function filterSeries(series) {
       return !hiddenSeries[series.id];
@@ -8854,7 +8870,7 @@
     var margin = { top: 28, right: 72, bottom: 50, left: 64 };
     var innerWidth = width - margin.left - margin.right;
     var innerHeight = height - margin.top - margin.bottom;
-    var xStep = options.labels.length > 1 ? innerWidth / options.labels.length : innerWidth;
+    var xStep = labels.length > 1 ? innerWidth / labels.length : innerWidth;
     var xLabelEvery = options.xLabelEvery || 1;
     var renderableSeries = (options.barSeries || []).concat(options.lineSeries || []);
     var legendHtml =
@@ -8912,6 +8928,146 @@
         })
       );
     }
+
+    return (
+      legendHtml +
+      renderEchartsChart({
+        chartId: options.chartId,
+        title: options.title || "趋势图",
+        unit: options.leftUnit || "",
+        rightUnit: options.rightUnit || "",
+        height: 360,
+        escapeHtml: escapeHtml,
+        option: {
+          animationDuration: 450,
+          color: visibleSeries.map(function mapSeriesColor(series) {
+            return series.color;
+          }),
+          grid: {
+            top: 34,
+            right: 58,
+            bottom: labels.length > 48 ? 74 : 42,
+            left: 58,
+            containLabel: true,
+          },
+          tooltip: {
+            trigger: "axis",
+            confine: true,
+            appendToBody: true,
+            className: "boss-echarts-tooltip",
+            formatter: function formatMixedTooltip(params) {
+              var dataIndex = params && params.length ? params[0].dataIndex : 0;
+              var label = labels[dataIndex] || "";
+              var tooltip = options.tooltipFormatter
+                ? options.tooltipFormatter(label, dataIndex, visibleSeries)
+                : visibleSeries
+                    .map(function mapTooltipSeries(series) {
+                      var value = series.values[dataIndex];
+                      return series.label + ": " + (typeof value === "number" ? formatDecimal(value) : "--");
+                    })
+                    .join("\n");
+              return escapeHtml(label + "\n" + tooltip).replace(/\n/g, "<br />");
+            },
+          },
+          xAxis: {
+            type: "category",
+            data: labels,
+            axisLabel: {
+              color: "#718096",
+              interval: function showMixedAxisLabel(index) {
+                return index % xLabelEvery === 0 || index === labels.length - 1;
+              },
+            },
+            axisLine: { lineStyle: { color: "#D8E0EC" } },
+            axisTick: { show: false },
+          },
+          yAxis: [
+            {
+              type: "value",
+              name: "",
+              nameTextStyle: { color: "#718096", fontWeight: 700 },
+              axisLabel: { color: "#718096" },
+              splitLine: { lineStyle: { color: "#ECF1F7" } },
+            },
+            {
+              type: "value",
+              name: "",
+              nameTextStyle: { color: "#718096", fontWeight: 700 },
+              axisLabel: { color: "#718096" },
+              splitLine: { show: false },
+            },
+          ],
+          dataZoom:
+            labels.length > 48
+              ? [
+                  { type: "inside", throttle: 40 },
+                  {
+                    type: "slider",
+                    height: 18,
+                    bottom: 16,
+                    borderColor: "#D8E0EC",
+                    fillerColor: "rgba(22, 119, 255, 0.14)",
+                    handleStyle: { color: "#1677FF" },
+                    textStyle: { color: "#718096" },
+                  },
+                ]
+              : [],
+          series: barSeries
+            .map(function mapBarSeries(series) {
+              return {
+                name: series.label,
+                type: "bar",
+                yAxisIndex: 0,
+                data: series.values.map(function mapValue(value) {
+                  return typeof value === "number" && !Number.isNaN(value) ? value : null;
+                }),
+                barMaxWidth: 24,
+                itemStyle: {
+                  color: series.color,
+                  opacity: series.opacity || 0.9,
+                },
+                markLine: {
+                  symbol: "none",
+                  lineStyle: { color: series.color, type: "dashed", opacity: 0.32 },
+                  label: {
+                    formatter: function formatBarAverage(params) {
+                      return "电量均值 " + formatInteger(params.value);
+                    },
+                  },
+                  data: [{ type: "average", name: "电量均值" }],
+                },
+              };
+            })
+            .concat(
+              lineSeries.map(function mapLineSeries(series) {
+                return {
+                  name: series.label,
+                  type: "line",
+                  yAxisIndex: 1,
+                  data: series.values.map(function mapValue(value) {
+                    return typeof value === "number" && !Number.isNaN(value) ? value : null;
+                  }),
+                  showSymbol: labels.length <= 48,
+                  symbolSize: 5,
+                  lineStyle: { width: 2.6 },
+                  itemStyle: { color: series.color },
+                  emphasis: { focus: "series" },
+                  markLine: {
+                    symbol: "none",
+                    lineStyle: { color: series.color, type: "dashed", opacity: 0.32 },
+                    label: {
+                      formatter: function formatLineAverage(params) {
+                        return "电价均值 " + formatDecimal(params.value);
+                      },
+                    },
+                    data: [{ type: "average", name: "电价均值" }],
+                  },
+                };
+              }),
+            ),
+        },
+      })
+    );
     var leftMax = Math.max.apply(null, leftValues.length ? leftValues : [0]);
     var rightMax = Math.max.apply(null, rightValues.length ? rightValues : [0]);
     var roundedLeftMax = Math.ceil((leftMax * 1.15) / 1000) * 1000 || 1000;
@@ -10319,8 +10475,8 @@
     }
 
     return {
-      start: "2026-05-08",
-      end: "2026-05-09",
+      start: "2026-07-25",
+      end: "2026-07-31",
     };
   }
 
@@ -10412,7 +10568,7 @@
       return normalizeSettlementMonth(monthlyData.month);
     }
     var pageData = getSettlementViewPageData("月结算", "售电公司");
-    return (pageData.settlementSummary && pageData.settlementSummary.settlementMonth) || (pageData.filters && pageData.filters.month) || "2026-05";
+    return (pageData.settlementSummary && pageData.settlementSummary.settlementMonth) || (pageData.filters && pageData.filters.month) || "2026-07";
   }
 
   function syncSettlementStateForTradeCenter() {
@@ -10600,7 +10756,7 @@
   }
 
   function getSettlementRecentMonths(selectedMonth, count) {
-    var monthText = String(selectedMonth || "2026-05");
+    var monthText = String(selectedMonth || "2026-07");
     var year = Number(monthText.slice(0, 4));
     var month = Number(monthText.slice(5, 7)) - 1;
     var result = [];
@@ -12183,9 +12339,29 @@
   }
 
   function renderBarChart(options) {
+    var unit = options.unit || "";
+    var chartId =
+      options.chartId ||
+      ("bar-chart-" +
+        String(options.title || unit || "value")
+          .replace(/[^\w-]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .toLowerCase());
+    var labels = options.labels || [];
     var values = (options.values || []).filter(function filterValue(value) {
       return typeof value === "number";
     });
+    var valueFormatter =
+      options.valueFormatter ||
+      function formatBarValue(value) {
+        if (unit === "元") {
+          return formatSignedMoney(value);
+        }
+        if (unit === "元/MWh" || unit === "%" || Math.abs(Number(value) % 1) > 0.001) {
+          return formatDecimal(value);
+        }
+        return formatMoney(value);
+      };
 
     if (!values.length) {
       return renderEmptyState({
@@ -12194,6 +12370,87 @@
         renderIcon: renderIcon,
       });
     }
+
+    return renderEchartsChart({
+      chartId: chartId,
+      title: options.title || "柱状图",
+      unit: unit,
+      height: 320,
+      escapeHtml: escapeHtml,
+      option: {
+        animationDuration: 450,
+        grid: {
+          top: 30,
+          right: 28,
+          bottom: labels.length > 48 ? 70 : 42,
+          left: 58,
+          containLabel: true,
+        },
+        tooltip: {
+          trigger: "axis",
+          confine: true,
+          appendToBody: true,
+          className: "boss-echarts-tooltip",
+          formatter: function formatBarTooltip(params) {
+            var point = params && params.length ? params[0] : {};
+            var label = point.name || "";
+            var value = point.value;
+            return escapeHtml(label + "\n" + valueFormatter(value) + (unit ? " " + unit : "")).replace(/\n/g, "<br />");
+          },
+        },
+        xAxis: {
+          type: "category",
+          data: labels,
+          axisLabel: {
+            color: "#718096",
+            interval: function showBarAxisLabel(index) {
+              var every = options.xLabelEvery || 1;
+              return index % every === 0 || index === labels.length - 1;
+            },
+          },
+          axisLine: { lineStyle: { color: "#D8E0EC" } },
+          axisTick: { show: false },
+        },
+        yAxis: {
+          type: "value",
+          name: "",
+          nameTextStyle: { color: "#718096", fontWeight: 700 },
+          axisLabel: { color: "#718096" },
+          splitLine: { lineStyle: { color: "#ECF1F7" } },
+        },
+        dataZoom:
+          labels.length > 48
+            ? [
+                { type: "inside", throttle: 40 },
+                {
+                  type: "slider",
+                  height: 18,
+                  bottom: 16,
+                  borderColor: "#D8E0EC",
+                  fillerColor: "rgba(22, 119, 255, 0.14)",
+                  handleStyle: { color: "#1677FF" },
+                  textStyle: { color: "#718096" },
+                },
+              ]
+            : [],
+        series: [
+          {
+            name: options.title || "数值",
+            type: "bar",
+            data: (options.values || []).map(function mapBarValue(value) {
+              var numeric = typeof value === "number" && !Number.isNaN(value) ? value : 0;
+              return {
+                value: numeric,
+                itemStyle: {
+                  color: numeric >= 0 ? options.positiveColor || "#23C887" : options.negativeColor || "#FF4D4F",
+                },
+              };
+            }),
+            barMaxWidth: 28,
+          },
+        ],
+      },
+    });
 
     var width = 1040;
     var height = 320;
@@ -15715,32 +15972,16 @@
   function getDeclarationTable() {
     return {
       columns: [
-        { key: "declarationDate", label: "申报日期" },
-        { key: "unit", label: "交易单元" },
         { key: "time", label: "时刻" },
-        { key: "volume", label: "申报电量" },
-        { key: "price", label: "申报电价" },
-        { key: "status", label: "申报状态" },
-        { key: "updatedAt", label: "更新时间" },
-        { key: "actions", label: "操作", sortable: false },
+        { key: "volume", label: "申报电量（MWh）" },
       ],
       rows: getDeclarationRows().map(function mapRow(row) {
         return {
-          declarationDate: row.declarationDate,
-          unit: row.unit,
           time: row.time,
-          volume: formatInteger(row.volume),
-          price: formatDecimal(row.price),
-          status: row.status,
-          updatedAt: row.updatedAt,
-          actions: createTableActionCell("declaration-" + row.unit + "-" + row.time, [
-            { label: "查看详情", action: "view-record-detail" },
-            { label: "下载", action: "open-download" },
-            { label: "模拟申报结果", action: "simulate-declaration-result" },
-          ]),
+          volume: trimFixedNumber(row.volume, 3),
         };
       }),
-      minWidth: 1480,
+      minWidth: 640,
     };
   }
 
@@ -16322,7 +16563,10 @@
 
   function renderApp() {
     var root = document.getElementById("app");
+    disposeEchartsCharts();
+    resetEchartsOptions();
     root.innerHTML = '<div class="app-shell">' + renderTopNav() + '<div class="workspace">' + renderSidebar() + '<main class="content">' + renderContent() + "</main></div>" + renderFloatingTools() + renderOverlays() + "</div>";
+    initEchartsCharts();
   }
 
   function closeAllPanels() {
@@ -16917,8 +17161,8 @@
     if (action === "reset-rolling-data") {
       var rollingMock = getRollingDataMock();
       state.rollingData.filters.dateRange = cloneRange((rollingMock && rollingMock.defaultRange) || {
-        start: "2026-05-03",
-        end: "2026-05-09",
+        start: "2026-07-25",
+        end: "2026-07-31",
       });
       state.rollingData.filters.product = (rollingMock && rollingMock.productOptions && rollingMock.productOptions[0]) || "全部";
       setFlashMessage("滚搓数据筛选已重置。", "info");
@@ -16935,8 +17179,8 @@
     if (action === "reset-rolling-data-hn") {
       var hunanRollingModule = getHunanRollingTradeModule();
       state.rollingData.filters.hunanTradeDateRange = cloneRange((hunanRollingModule && hunanRollingModule.defaultRange) || {
-        start: "2026-05-03",
-        end: "2026-05-09",
+        start: "2026-07-25",
+        end: "2026-07-31",
       });
       state.rollingData.filters.hunanTradeProduct =
         (hunanRollingModule && hunanRollingModule.productOptions && hunanRollingModule.productOptions[0]) || "全部";
@@ -16955,7 +17199,7 @@
     }
     if (action === "reset-rolling-data-sx-curve") {
       var shaanxiCurveModule = getShaanxiContractCurveModule();
-      var defaultCurveDate = (shaanxiCurveModule && shaanxiCurveModule.defaultDate) || "2026-05-09";
+      var defaultCurveDate = (shaanxiCurveModule && shaanxiCurveModule.defaultDate) || "2026-07-31";
       state.rollingData.filters.shaanxiCurveDate = {
         start: defaultCurveDate,
         end: defaultCurveDate,
@@ -16983,7 +17227,7 @@
     }
     if (action === "reset-rolling-data-sx-trade") {
       var shaanxiTradeModule = getShaanxiTradeOverviewModule();
-      var defaultTradeDate = (shaanxiTradeModule && shaanxiTradeModule.defaultDate) || "2026-05-09";
+      var defaultTradeDate = (shaanxiTradeModule && shaanxiTradeModule.defaultDate) || "2026-07-31";
       state.rollingData.filters.shaanxiTradeDate = {
         start: defaultTradeDate,
         end: defaultTradeDate,
@@ -16997,9 +17241,10 @@
     }
     if (action === "reset-declaration") {
       if (!isInfoDisclosurePage(state.currentPageKey)) {
+        var declarationModule = getDeclarationMock();
         state.declaration.filters.declarationRange = {
-          start: "2026-05-09",
-          end: "2026-05-09",
+          start: (declarationModule.defaultDate && declarationModule.defaultDate.start) || "2026-07-31",
+          end: (declarationModule.defaultDate && declarationModule.defaultDate.end) || "2026-07-31",
         };
       }
       state.declaration.filters.unit = "全部";
@@ -17020,8 +17265,8 @@
       state.fetchMonitor.filters.status = (fetchMonitorMock.filters && fetchMonitorMock.filters.statusOptions && fetchMonitorMock.filters.statusOptions[0]) || "全部";
       state.fetchMonitor.filters.taskType = (fetchMonitorMock.filters && fetchMonitorMock.filters.taskTypeOptions && fetchMonitorMock.filters.taskTypeOptions[0]) || "全部";
       state.fetchMonitor.filters.dateRange = cloneRange((fetchMonitorMock.filters && fetchMonitorMock.filters.defaultRange) || {
-        start: "2026-05-03",
-        end: "2026-05-09",
+        start: "2026-07-25",
+        end: "2026-07-31",
       });
       setFlashMessage("取数监控筛选已重置。", "info");
       return true;

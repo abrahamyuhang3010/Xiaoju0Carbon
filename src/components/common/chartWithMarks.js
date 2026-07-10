@@ -30,6 +30,171 @@
       .trim();
   }
 
+  function sanitizeChartId(value) {
+    return String(value || "echarts-chart").replace(/[^\w-]/g, "-");
+  }
+
+  function normalizeSeriesData(values) {
+    return (values || []).map(function mapValue(value) {
+      return isRenderableNumber(value) ? value : null;
+    });
+  }
+
+  function formatTooltipText(value, escapeHtml) {
+    return escapeHtml(String(value || "")).replace(/\n/g, "<br />");
+  }
+
+  function buildAxisLabelInterval(labels, every) {
+    var labelEvery = every || 1;
+    return function showAxisLabel(index) {
+      return index % labelEvery === 0 || index === labels.length - 1;
+    };
+  }
+
+  function createEchartsLineOption(options, visibleSeries, valueFormatter) {
+    var escapeHtml = options.escapeHtml;
+    var labels = options.labels || [];
+    var enableDataZoom = options.enableTimeZoom || labels.length > 48;
+
+    return {
+      animationDuration: 450,
+      color: visibleSeries.map(function mapColor(series) {
+        return series.color;
+      }),
+      grid: {
+        top: 34,
+        right: 36,
+        bottom: enableDataZoom ? 74 : 42,
+        left: 58,
+        containLabel: true,
+      },
+      tooltip: {
+        trigger: "axis",
+        confine: true,
+        appendToBody: true,
+        className: "boss-echarts-tooltip",
+        formatter: function formatTooltip(params) {
+          var dataIndex = params && params.length ? params[0].dataIndex : 0;
+          var label = labels[dataIndex] || "";
+          var tooltip = options.tooltipFormatter
+            ? options.tooltipFormatter(label, dataIndex, visibleSeries)
+            : visibleSeries
+                .map(function mapSeries(series) {
+                  var value = series.values[dataIndex];
+                  return series.label + ": " + formatValue(value, valueFormatter);
+                })
+                .join("\n");
+
+          if (options.tooltipIsHtml) {
+            return tooltip;
+          }
+          return formatTooltipText(label + "\n" + tooltip, escapeHtml);
+        },
+      },
+      xAxis: {
+        type: "category",
+        boundaryGap: false,
+        data: labels,
+        axisLabel: {
+          color: "#718096",
+          interval: buildAxisLabelInterval(labels, options.xLabelEvery),
+        },
+        axisLine: {
+          lineStyle: { color: "#D8E0EC" },
+        },
+        axisTick: { show: false },
+      },
+      yAxis: {
+        type: "value",
+        name: "",
+        nameTextStyle: {
+          color: "#718096",
+          fontWeight: 700,
+          padding: [0, 0, 0, 4],
+        },
+        axisLabel: {
+          color: "#718096",
+          formatter: function formatAxisLabel(value) {
+            return formatValue(value, valueFormatter);
+          },
+        },
+        splitLine: {
+          lineStyle: { color: "#ECF1F7" },
+        },
+      },
+      dataZoom: enableDataZoom
+        ? [
+            {
+              type: "inside",
+              throttle: 40,
+            },
+            {
+              type: "slider",
+              height: 18,
+              bottom: 16,
+              borderColor: "#D8E0EC",
+              fillerColor: "rgba(22, 119, 255, 0.14)",
+              handleStyle: { color: "#1677FF" },
+              textStyle: { color: "#718096" },
+            },
+          ]
+        : [],
+      series: visibleSeries.map(function mapSeries(series) {
+        return {
+          name: series.label,
+          type: "line",
+          data: normalizeSeriesData(series.values),
+          connectNulls: !options.breakOnNull,
+          showSymbol: labels.length <= 48,
+          symbol: "circle",
+          symbolSize: 5,
+          smooth: false,
+          lineStyle: {
+            width: 2.6,
+            type: series.dasharray ? "dashed" : "solid",
+          },
+          itemStyle: {
+            color: series.color,
+          },
+          emphasis: {
+            focus: "series",
+          },
+          markPoint: {
+            symbolSize: 48,
+            label: {
+              formatter: function formatMarkPoint(params) {
+                return params.name === "最大值" ? "最大" : "最小";
+              },
+            },
+            data: [
+              { type: "max", name: "最大值" },
+              { type: "min", name: "最小值" },
+            ],
+          },
+          markLine: {
+            symbol: "none",
+            lineStyle: {
+              color: series.color,
+              type: "dashed",
+              opacity: 0.35,
+            },
+            label: {
+              formatter: function formatAverageMark(params) {
+                return "均值 " + formatValue(params.value, valueFormatter);
+              },
+            },
+            data: [{ type: "average", name: "均值" }],
+          },
+        };
+      }),
+    };
+  }
+
+  function registerEchartsOption(chartId, option) {
+    global.BOSS_ECHARTS_OPTIONS = global.BOSS_ECHARTS_OPTIONS || {};
+    global.BOSS_ECHARTS_OPTIONS[chartId] = option;
+  }
+
   function getAxisBase(maxValue) {
     if (maxValue >= 100000) {
       return 20000;
@@ -70,6 +235,77 @@
   });
 
   global.BOSS_COMPONENTS = global.BOSS_COMPONENTS || {};
+  global.BOSS_COMPONENTS.resetEchartsOptions = function resetEchartsOptions() {
+    global.BOSS_ECHARTS_OPTIONS = {};
+  };
+  global.BOSS_COMPONENTS.disposeEchartsCharts = function disposeEchartsCharts() {
+    var instances = global.BOSS_ECHARTS_INSTANCES || {};
+    Object.keys(instances).forEach(function eachInstance(chartId) {
+      if (instances[chartId] && typeof instances[chartId].dispose === "function") {
+        instances[chartId].dispose();
+      }
+    });
+    global.BOSS_ECHARTS_INSTANCES = {};
+  };
+  global.BOSS_COMPONENTS.renderEchartsChart = function renderEchartsChart(options) {
+    var escapeHtml = options.escapeHtml;
+    var chartId = sanitizeChartId(options.chartId);
+    var height = options.height || 360;
+    registerEchartsOption(chartId, options.option || {});
+
+    return (
+      '<div class="chart-canvas echarts-chart-canvas">' +
+      (options.unit ? '<div class="chart-unit">' + escapeHtml(options.unit) + "</div>" : "") +
+      (options.rightUnit ? '<div class="chart-unit chart-unit-right">' + escapeHtml(options.rightUnit) + "</div>" : "") +
+      '<div class="echarts-chart" data-echarts-chart="' +
+      escapeHtml(chartId) +
+      '" style="height:' +
+      height +
+      'px" role="img" aria-label="' +
+      escapeHtml(options.title || "趋势图") +
+      '"></div></div>'
+    );
+  };
+  global.BOSS_COMPONENTS.initEchartsCharts = function initEchartsCharts() {
+    var charts = Array.from(global.document.querySelectorAll("[data-echarts-chart]"));
+    var optionsMap = global.BOSS_ECHARTS_OPTIONS || {};
+    var instances = global.BOSS_ECHARTS_INSTANCES || {};
+
+    if (!global.echarts) {
+      charts.forEach(function showMissingEcharts(element) {
+        element.innerHTML = '<div class="echarts-chart-error">Apache ECharts 组件加载失败</div>';
+      });
+      return;
+    }
+
+    charts.forEach(function eachChart(element) {
+      var chartId = element.getAttribute("data-echarts-chart");
+      var option = optionsMap[chartId];
+      if (!chartId || !option) {
+        return;
+      }
+      if (instances[chartId] && typeof instances[chartId].dispose === "function") {
+        instances[chartId].dispose();
+      }
+      instances[chartId] = global.echarts.init(element, null, { renderer: "canvas" });
+      instances[chartId].setOption(option, true);
+    });
+
+    global.BOSS_ECHARTS_INSTANCES = instances;
+  };
+
+  if (!global.BOSS_ECHARTS_RESIZE_BOUND) {
+    global.addEventListener("resize", function resizeEchartsCharts() {
+      var instances = global.BOSS_ECHARTS_INSTANCES || {};
+      Object.keys(instances).forEach(function eachInstance(chartId) {
+        if (instances[chartId] && typeof instances[chartId].resize === "function") {
+          instances[chartId].resize();
+        }
+      });
+    });
+    global.BOSS_ECHARTS_RESIZE_BOUND = true;
+  }
+
   global.BOSS_COMPONENTS.renderChartWithMarks = function renderChartWithMarks(options) {
     var escapeHtml = options.escapeHtml;
     var renderEmptyState = options.renderEmptyState;
@@ -157,9 +393,21 @@
     var yTicks = Array.from({ length: 6 }, function createTick(_, index) {
       return Math.round((roundedMax / 5) * index);
     });
-    var xStep = options.labels.length > 1 ? innerWidth / (options.labels.length - 1) : 0;
+    var xStep = (options.labels || []).length > 1 ? innerWidth / ((options.labels || []).length - 1) : 0;
     var avgValue = averageOf(values);
     var valueFormatter = options.valueFormatter;
+
+    return (
+      legendHtml +
+      global.BOSS_COMPONENTS.renderEchartsChart({
+        chartId: options.chartId,
+        title: options.title,
+        unit: options.unit || "",
+        height: 360,
+        escapeHtml: escapeHtml,
+        option: createEchartsLineOption(options, visibleSeries, valueFormatter),
+      })
+    );
 
     function xToPx(index) {
       if (options.labels.length <= 1) {

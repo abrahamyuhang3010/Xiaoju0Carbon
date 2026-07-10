@@ -74,19 +74,25 @@
 
   function buildRetailHourlySeries(dayIndex, baseOffset) {
     return Array.from({ length: 24 }, function createHourValue(_, index) {
+      var monthIndex = Math.min(3, Math.floor(dayIndex / 30));
+      var seasonalFactor = [0.96, 1.01, 1.08, 1.15][monthIndex];
+      var weekendFactor = dayIndex % 7 >= 5 ? 0.93 : 1.02;
       var morning = Math.max(0, Math.sin(((index - 6) / 24) * Math.PI * 2)) * 210;
       var evening = Math.max(0, Math.sin(((index - 13) / 24) * Math.PI * 2)) * 265;
       var valley = index < 6 ? -110 : 0;
-      var base = 820 + baseOffset + dayIndex * 22 + morning + evening + valley + ((index % 4) - 1.5) * 18;
+      var base = (820 + baseOffset * 0.2 + dayIndex * 4.2 + morning + evening + valley + ((index % 4) - 1.5) * 18) * seasonalFactor * weekendFactor;
       return Math.round(base);
     });
   }
 
   function buildEnterpriseHourlySeries(userIndex, dayIndex) {
     return Array.from({ length: 24 }, function createHourValue(_, index) {
+      var monthIndex = Math.min(3, Math.floor(dayIndex / 30));
+      var seasonalFactor = [0.96, 1, 1.07, 1.13][monthIndex];
+      var weekendFactor = dayIndex % 7 >= 5 ? 0.92 : 1.01;
       var daytime = Math.max(0, Math.sin(((index - 7) / 24) * Math.PI * 2)) * (36 + userIndex * 4);
       var peak = Math.max(0, Math.sin(((index - 15) / 24) * Math.PI * 2)) * (52 + dayIndex * 2);
-      var base = 138 + userIndex * 26 + dayIndex * 7 + daytime + peak + ((index % 3) - 1) * 6;
+      var base = (138 + userIndex * 26 + dayIndex * 0.9 + daytime + peak + ((index % 3) - 1) * 6) * seasonalFactor * weekendFactor;
       return Math.round(base);
     });
   }
@@ -477,7 +483,14 @@
     },
   ];
 
-  var dateRange = buildDateRange("2026-05-02", 7);
+  var fullMockDates = buildDateRange("2026-04-01", 122);
+  var mockMonths = ["2026-04", "2026-05", "2026-06", "2026-07"];
+  var latestMockDate = "2026-07-31";
+  var recentMockRange = {
+    start: "2026-07-25",
+    end: "2026-07-31",
+  };
+  var dateRange = fullMockDates;
   var saleCompanyRows = dateRange.map(function mapDate(date, index) {
     var hourlyValues = buildRetailHourlySeries(index, index * 26);
     return {
@@ -688,7 +701,19 @@
       time: time,
       value: maintenanceSeries[index],
       source: index % 2 === 0 ? "调度接口" : "取数工具",
-      updatedAt: "2026-05-09 11:35:33",
+      updatedAt: "2026-07-31 11:35:33",
+    };
+  });
+
+  var maintenanceSummaryRows = buildDateRange("2026-07-05", 7).map(function mapMaintenanceSummary(date, index) {
+    var predictedTotal = [7607.04, 7977.04, 7727.04, 4290.6, 3835.6, 3835.6, 3355.6][index];
+    var predictedUnitTotal = [4597.04, 4767.04, 4467.04, 1810.6, 1675.6, 1675.6, 1195.6][index];
+    return {
+      date: date,
+      predictedTotalCapacity: predictedTotal,
+      predictedUnitTotalCapacity: predictedUnitTotal,
+      actualTotalCapacity: index < 5 ? 0 : null,
+      actualUnitTotalCapacity: index < 5 ? 0 : null,
     };
   });
 
@@ -1088,16 +1113,25 @@
     createGuangdongDailySettlementRow("合计（当期）", "电费", guangdongSettlementFeeValues, guangdongTotalFee),
   ];
 
-  var settlementMonthRows = [
-    { month: "2026-05", enterpriseCode: "GDQY001", enterpriseName: "广州南沙充电网络", accountNo: "H0001", energy: 318600, fee: 14820000, agencyIncome: 362000, status: "已出账" },
-    { month: "2026-05", enterpriseCode: "GDQY002", enterpriseName: "广州番禺公交场站", accountNo: "H0002", energy: 286400, fee: 13280000, agencyIncome: 325000, status: "已出账" },
-    { month: "2026-05", enterpriseCode: "GDQY003", enterpriseName: "佛山顺德站群", accountNo: "H0003", energy: 264200, fee: 12160000, agencyIncome: 296000, status: "结算中" },
-    { month: "2026-05", enterpriseCode: "GDQY004", enterpriseName: "佛山综合补能园区", accountNo: "H0004", energy: 238800, fee: 11090000, agencyIncome: 271000, status: "待确认" },
-    { month: "2026-04", enterpriseCode: "GDQY001", enterpriseName: "广州南沙充电网络", accountNo: "H0001", energy: 302200, fee: 14050000, agencyIncome: 351000, status: "已出账" },
-    { month: "2026-04", enterpriseCode: "GDQY002", enterpriseName: "广州番禺公交场站", accountNo: "H0002", energy: 279100, fee: 12940000, agencyIncome: 319000, status: "已出账" },
-    { month: "2026-04", enterpriseCode: "GDQY003", enterpriseName: "佛山顺德站群", accountNo: "H0003", energy: 252800, fee: 11670000, agencyIncome: 288000, status: "已出账" },
-    { month: "2026-04", enterpriseCode: "GDQY004", enterpriseName: "佛山综合补能园区", accountNo: "H0004", energy: 229600, fee: 10630000, agencyIncome: 266000, status: "已出账" },
-  ];
+  var settlementMonthRows = mockMonths.reduce(function accumulateMonthlyRows(result, month, monthIndex) {
+    var monthFactor = [0.96, 1.01, 1.08, 1.15][monthIndex];
+    return result.concat(
+      enterpriseTemplates.map(function mapTemplate(template, templateIndex) {
+        var energy = Math.round((238800 + (3 - templateIndex) * 24800 + monthIndex * 9200) * monthFactor);
+        var averagePrice = 452 + monthIndex * 7.4 + templateIndex * 2.8;
+        return {
+          month: month,
+          enterpriseCode: "GDQY" + String(templateIndex + 1).padStart(3, "0"),
+          enterpriseName: template.userName,
+          accountNo: template.accountNo,
+          energy: energy,
+          fee: Math.round(energy * averagePrice),
+          agencyIncome: Math.round(energy * (1.08 + monthIndex * 0.04 + templateIndex * 0.02)),
+          status: monthIndex < 2 ? "已出账" : templateIndex < 2 ? "结算中" : "待确认",
+        };
+      }),
+    );
+  }, []);
 
   var guangdongMonthlySettlementGroups = [
     { label: "追补电费", children: ["电量", "电价", "电费"] },
@@ -1212,7 +1246,7 @@
 
   function buildGuangdongMonthlySettlementRows() {
     var row = {
-      monthLabel: "202605",
+      monthLabel: latestMockDate.slice(0, 7).replace("-", ""),
     };
 
     guangdongMonthlySettlementGroups.forEach(function eachGroup(group, groupIndex) {
@@ -1228,9 +1262,9 @@
     provinceCode: "gd",
     provinceName: "广东",
     hasPurchaseSaleSide: false,
-    month: "2026-01",
-    updateTime: "2026-02-09 10:58:26",
-    updateSource: "人工上传",
+    month: latestMockDate.slice(0, 7),
+    updateTime: "2026-07-31 10:58:26",
+    updateSource: "结算任务",
     purchaseSide: {
       summaryCards: [
         { label: "当年实际用电量", value: 326.418, unit: "MWh", digits: 3 },
@@ -1252,53 +1286,49 @@
     { userCode: "GDUSER006", userName: "珠海港区补能中心", accountNo: "H0006", microgridName: "-", startDate: "2024-01-01", endDate: "2025-12-31", status: "已结束", sellerCompany: "滴滴电力（广东）有限公司" },
   ];
 
-  var declarationUnits = ["全部", "交易单元 A", "交易单元 B", "交易单元 C"];
-  var declarationStatuses = ["全部", "未申报", "已申报", "申报成功", "申报失败"];
-  var declarationRows = [];
-  ["交易单元 A", "交易单元 B", "交易单元 C"].forEach(function eachUnit(unit, unitIndex) {
-    hours.forEach(function eachHour(time, hourIndex) {
-      var statusOptions = ["未申报", "已申报", "申报成功", "申报失败"];
-      var status = statusOptions[(hourIndex + unitIndex) % statusOptions.length];
-      declarationRows.push({
-        declarationDate: "2026-05-09",
-        unit: unit,
-        time: time,
-        volume: 1280 + unitIndex * 160 + hourIndex * 12,
-        price: Number((412.6 + unitIndex * 8.5 + hourIndex * 1.8).toFixed(1)),
-        status: status,
-        updatedAt: "2026-05-09 " + time.replace(":00", ":35:12"),
-      });
-    });
+  var declarationUnits = ["全部"];
+  var declarationStatuses = ["全部"];
+  var declarationRows = hours.map(function mapDeclarationRow(time, hourIndex) {
+    var morning = Math.max(0, Math.sin(((hourIndex - 6) / 24) * Math.PI * 2)) * 54;
+    var evening = Math.max(0, Math.sin(((hourIndex - 14) / 24) * Math.PI * 2)) * 82;
+    var valley = hourIndex < 6 ? -42 : 0;
+    return {
+      declarationDate: latestMockDate,
+      time: time,
+      volume: Number((236 + morning + evening + valley + ((hourIndex % 4) - 1.5) * 5.2).toFixed(3)),
+    };
   });
 
   var rollingDataProducts = ["全部", "月内滚搓", "日前平衡", "实时滚动"];
   var rollingDataPeriods = ["00:00-04:00", "04:00-08:00", "08:00-16:00", "16:00-24:00"];
   var rollingDataRows = [];
-  buildDateRange("2026-05-03", 7).forEach(function eachRollingDate(date, dayIndex) {
+  fullMockDates.forEach(function eachRollingDate(date, dayIndex) {
     rollingDataPeriods.forEach(function eachRollingPeriod(period, periodIndex) {
       var product = rollingDataProducts[(periodIndex % (rollingDataProducts.length - 1)) + 1];
+      var monthFactor = [0.96, 1.01, 1.08, 1.15][Math.min(3, Math.floor(dayIndex / 30))];
+      var weekendFactor = dayIndex % 7 >= 5 ? 0.92 : 1.02;
       rollingDataRows.push({
         date: date,
         tradeCenter: "广东电力交易中心",
         product: product,
         period: period,
-        volume: 1820 + dayIndex * 140 + periodIndex * 180,
-        averagePrice: Number((398.6 + dayIndex * 4.2 + periodIndex * 8.6).toFixed(1)),
-        updatedAt: "2026-05-09 11:08:16",
+        volume: Math.round((1820 + dayIndex * 8 + periodIndex * 180) * monthFactor * weekendFactor),
+        averagePrice: Number((398.6 + Math.min(dayIndex, 60) * 0.7 + periodIndex * 8.6 + monthFactor * 12).toFixed(1)),
+        updatedAt: "2026-07-31 11:08:16",
       });
     });
   });
 
   global.BOSS_GUANGDONG_DATA_MOCK = {
-    dataPublishTime: "2026-05-09 10:55:00",
+    dataPublishTime: "2026-07-31 10:55:00",
     infoDisclosure: {
       title: "信息披露",
       centerName: "广东电力交易中心",
-      statusText: "数据更新时间：2026-05-09 11:35:33（取数工具）",
-      publishTime: "2026-05-09 10:55:00",
-      defaultRunDate: "2026-05-08",
-      availableRangeStart: "2026-05-02",
-      availableRangeEnd: "2026-05-08",
+      statusText: "数据更新时间：2026-07-31 11:35:33（取数工具）",
+      publishTime: "2026-07-31 10:55:00",
+      defaultRunDate: latestMockDate,
+      availableRangeStart: fullMockDates[0],
+      availableRangeEnd: latestMockDate,
       hours: hours,
       quarterHours: quarterHours,
       tabs: tabs,
@@ -1313,10 +1343,11 @@
       sellerHourlyPowerHistoryRows: sellerHourlyPowerHistoryRows,
       userHourlyPowerHistoryRows: userHourlyPowerHistoryRows,
       maintenanceRows: maintenanceRows,
+      maintenanceSummaryRows: maintenanceSummaryRows,
       transmissionMaintenancePlanRows: transmissionMaintenancePlanRows,
-      transmissionMaintenancePlanDefaultDate: "2026-05-09",
-      transmissionMaintenancePlanUpdateTime: "2026-05-26 10:46:00",
-      transmissionMaintenancePlanPublishTime: "2026-05-26 10:46:00",
+      transmissionMaintenancePlanDefaultDate: latestMockDate,
+      transmissionMaintenancePlanUpdateTime: "2026-07-31 10:46:00",
+      transmissionMaintenancePlanPublishTime: "2026-07-31 10:46:00",
       reserveRows: reserveRows,
     },
     tradeResult: {
@@ -1335,8 +1366,8 @@
     settlement: {
       title: "日清月结",
       centerName: "广东电力交易中心",
-      statusText: "数据更新时间：2026-05-09 10:58:26（结算任务）",
-      publishTime: "2026-05-09 10:30:00",
+      statusText: "数据更新时间：2026-07-31 10:58:26（结算任务）",
+      publishTime: "2026-07-31 10:30:00",
       tabs: ["日清算", "月结算"],
       dailyColumns: settlementDailyColumns,
       dailyDateRange: {
@@ -1350,8 +1381,8 @@
     retailRelation: {
       title: "零售关系",
       centerName: "广东电力交易中心",
-      statusText: "数据更新时间：2026-05-09 11:16:09（零售关系台账）",
-      publishTime: "2026-05-09 10:50:00",
+      statusText: "数据更新时间：2026-07-31 11:16:09（零售关系台账）",
+      publishTime: "2026-07-31 10:50:00",
       defaultRange: {
         start: "2026-01-01",
         end: "2026-12-31",
@@ -1362,11 +1393,11 @@
     dayAheadDeclaration: {
       title: "日前申报",
       centerName: "广东电力交易中心",
-      statusText: "数据更新时间：2026-05-09 11:22:48（申报回写）",
-      publishTime: "2026-05-09 11:00:00",
+      statusText: "数据更新时间：2026-07-31 11:22:48（申报回写）",
+      publishTime: "2026-07-31 11:00:00",
       defaultDate: {
-        start: "2026-05-09",
-        end: "2026-05-09",
+        start: latestMockDate,
+        end: latestMockDate,
       },
       unitOptions: declarationUnits,
       statusOptions: declarationStatuses,
@@ -1375,12 +1406,9 @@
     rollingData: {
       title: "滚搓数据",
       centerName: "广东电力交易中心",
-      statusText: "数据更新时间：2026-05-09 11:08:16（广东交易中心滚搓任务）",
-      publishTime: "2026-05-09 10:40:00",
-      defaultRange: {
-        start: "2026-05-03",
-        end: "2026-05-09",
-      },
+      statusText: "数据更新时间：2026-07-31 11:08:16（广东交易中心滚搓任务）",
+      publishTime: "2026-07-31 10:40:00",
+      defaultRange: recentMockRange,
       productOptions: rollingDataProducts,
       rows: rollingDataRows,
     },
