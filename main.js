@@ -2955,7 +2955,7 @@
   function renderSaleCompanyUpdateBar(updateInfo) {
     var compareSupported = isSellerTimeSharingCompareEnabled("售电公司分时电量");
     var status = applyInfoUpdateOverride(updateInfo, "售电公司分时电量");
-    var actions = [createMoreUpdateAction("open-seller-time-sharing-update")];
+    var actions = [createUpdateDataAction("open-seller-time-sharing-update")];
 
     if (compareSupported) {
       actions.push({ label: "对比", variant: "ghost", icon: "compare", action: "open-compare" });
@@ -3532,7 +3532,7 @@
       hasCompare: false,
       showTaskEntry: false,
       actions: [
-        createMoreUpdateAction("open-time-sharing-update"),
+        createUpdateDataAction("open-time-sharing-update"),
         createDownloadMenuAction(),
       ],
       escapeHtml: escapeHtml,
@@ -3543,7 +3543,7 @@
   function renderSellerHistoryUpdateBar(updateInfo) {
     var status = applyInfoUpdateOverride(updateInfo, INFO_DISCLOSURE_SELLER_HISTORY_TAB);
     var actions = [
-      createMoreUpdateAction("open-seller-time-sharing-update"),
+      createUpdateDataAction("open-seller-time-sharing-update"),
       { label: "对比", variant: "ghost", icon: "compare", action: "open-compare" },
       createDownloadMenuAction(),
     ];
@@ -3569,7 +3569,7 @@
       hasCompare: false,
       showTaskEntry: false,
       actions: [
-        createMoreUpdateAction("open-time-sharing-update"),
+        createUpdateDataAction("open-time-sharing-update"),
         createDownloadMenuAction(),
       ],
       escapeHtml: escapeHtml,
@@ -4133,14 +4133,12 @@
     );
   }
 
-  function createMoreUpdateAction(action) {
+  function createUpdateDataAction(action) {
     return {
-      label: "更多",
+      label: "更新数据",
       variant: "ghost",
-      icon: "ellipsis",
-      action: "more",
-      asMenu: true,
-      menuItems: [{ label: "更新数据", action: action || "open-manual-update" }],
+      icon: "refresh",
+      action: action || "open-manual-update",
     };
   }
 
@@ -4156,16 +4154,15 @@
   function renderDownloadOnlyBar(status, withCompare, options) {
     var actions = [];
     var resolvedOptions = options || {};
-    if (resolvedOptions.updateAsMore) {
-      actions.push(createMoreUpdateAction("open-manual-update"));
-    } else if (resolvedOptions.withMore) {
-      actions.push({ label: "更多", variant: "ghost", icon: "ellipsis", action: "open-manual-update" });
+    var hasLeadingUpdateAction = resolvedOptions.updateAsMore || resolvedOptions.withMore;
+    if (hasLeadingUpdateAction) {
+      actions.push(createUpdateDataAction("open-manual-update"));
     }
     if (withCompare) {
       actions.push({ label: "对比", variant: "ghost", icon: "compare", action: "open-compare" });
     }
-    if (!resolvedOptions.updateAsMore) {
-      actions.push({ label: "更新数据", variant: "ghost", icon: "refresh", action: "open-manual-update" });
+    if (!hasLeadingUpdateAction) {
+      actions.push(createUpdateDataAction("open-manual-update"));
     }
     actions.push({ label: "下载", variant: "primary", icon: "download", action: "open-download" });
 
@@ -4258,7 +4255,7 @@
   }
 
   function renderInfoDataUpdateBar(status) {
-    var actions = [createMoreUpdateAction("open-manual-update")];
+    var actions = [createUpdateDataAction("open-manual-update")];
     if (getActiveInfoTab() === "负荷信息") {
       actions.push({ label: "对比", variant: "ghost", icon: "compare", action: "open-compare" });
     }
@@ -4794,7 +4791,7 @@
       isInfoDisclosureCompareEnabledByConfig(activeTab);
 
     if (activeTab !== "备用信息" && activeTab !== "全省统一出清价" && activeTab !== "火电竞价空间") {
-      actions.push(createMoreUpdateAction("open-manual-update"));
+      actions.push(createUpdateDataAction("open-manual-update"));
     }
 
     if (canCompare) {
@@ -8348,7 +8345,7 @@
       hasCompare: state.ui.hasCompare,
       showTaskEntry: true,
       actions: [
-        { label: "更多", variant: "ghost", icon: "ellipsis", action: "open-manual-update" },
+        createUpdateDataAction("open-manual-update"),
         { label: "对比", variant: "ghost", icon: "compare", action: "open-compare" },
         { label: "下载", variant: "primary", icon: "download", action: "open-download" },
       ],
@@ -11943,12 +11940,7 @@
       escapeHtml((data && (data.updateSource || data.dataSource)) || "--") +
       "）</span></div>" +
       '<div class="status-actions monthly-settlement-actions">' +
-      '<div class="monthly-more-dropdown">' +
-      '<button class="ghost-btn monthly-more-trigger" type="button">' +
-      "<span>更多</span></button>" +
-      '<div class="monthly-more-menu">' +
-      '<button type="button" class="monthly-more-menu-item" data-ui-action="open-manual-update">更新数据</button>' +
-      "</div></div>" +
+      renderUiActionButton("更新数据", "ghost", "open-manual-update") +
       '<button class="primary-btn" data-ui-action="open-download">' +
       "<span>下载</span></button>" +
       "</div></section>"
@@ -15044,7 +15036,7 @@
       hasCompare: state.ui.hasCompare,
       showTaskEntry: true,
       actions: [
-        { label: "更多", variant: "ghost", icon: "ellipsis", action: "open-manual-update" },
+        createUpdateDataAction("open-manual-update"),
         { label: "对比", variant: "ghost", icon: "compare", action: "open-compare" },
         { label: "下载", variant: "primary", icon: "download", action: "open-download" },
       ],
