@@ -299,6 +299,44 @@
     target.end = "2026-07-31";
   }
 
+  function supplementNestedDefaultRanges(value, seen) {
+    if (!value || typeof value !== "object") {
+      return;
+    }
+    if (seen.indexOf(value) >= 0) {
+      return;
+    }
+    seen.push(value);
+
+    if (value.defaultRange && typeof value.defaultRange === "object") {
+      applyJulyDefaultRange(value.defaultRange);
+    }
+    if (value.availableRange && typeof value.availableRange === "object") {
+      applyJulyDefaultRange(value.availableRange);
+    }
+    if (value.dailyDateRange && typeof value.dailyDateRange === "object") {
+      applyJulyDefaultRange(value.dailyDateRange);
+    }
+    if (value.filters && typeof value.filters === "object") {
+      if (value.filters.dateRange && typeof value.filters.dateRange === "object") {
+        applyJulyDefaultRange(value.filters.dateRange);
+      }
+      if (typeof value.filters.date === "string" && getDatePart(value.filters.date)) {
+        value.filters.date = "2026-07-31";
+      }
+    }
+    if (typeof value.defaultDate === "string" && getDatePart(value.defaultDate)) {
+      value.defaultDate = "2026-07-31";
+    }
+    if (value.defaultDate && typeof value.defaultDate === "object" && ("start" in value.defaultDate || "end" in value.defaultDate)) {
+      applyJulyDefaultRange(value.defaultDate, "single");
+    }
+
+    Object.keys(value).forEach(function walkNestedDefaultRange(key) {
+      supplementNestedDefaultRanges(value[key], seen);
+    });
+  }
+
   function addTradeVolumeAliases(points) {
     (points || []).forEach(function addAlias(point) {
       if (!point || typeof point !== "object") {
@@ -346,16 +384,19 @@
     var fetchMonitor = appMocks.fetchMonitor || {};
     var operationRecord = appMocks.operationRecord || {};
 
-    if (guangdong) {
-      guangdong.defaultRange = {
-        start: "2026-07-01",
-        end: "2026-07-31",
-      };
-      guangdong.availableRange = {
-        start: "2026-07-01",
-        end: "2026-07-31",
-      };
-    }
+    ["guangdong", "hunan", "shaanxi"].forEach(function updateTradeCenterDefaults(centerKey) {
+      supplementNestedDefaultRanges(appMocks[centerKey], []);
+      if (appMocks[centerKey]) {
+        appMocks[centerKey].defaultRange = {
+          start: "2026-07-01",
+          end: "2026-07-31",
+        };
+        appMocks[centerKey].availableRange = {
+          start: "2026-07-01",
+          end: "2026-07-31",
+        };
+      }
+    });
 
     if (guangdong.tradeResult) {
       guangdong.tradeResult.defaultRunDate = "2026-07-31";
