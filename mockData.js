@@ -299,6 +299,46 @@
     target.end = "2026-07-31";
   }
 
+  function addTradeVolumeAliases(points) {
+    (points || []).forEach(function addAlias(point) {
+      if (!point || typeof point !== "object") {
+        return;
+      }
+      if (point.dayaheadVolume === undefined && point.dayAheadVolume !== undefined) {
+        point.dayaheadVolume = point.dayAheadVolume;
+      }
+      if (point.realtimeVolume === undefined && point.realTimeVolume !== undefined) {
+        point.realtimeVolume = point.realTimeVolume;
+      }
+    });
+  }
+
+  function supplementGuangdongTradeVolumeRows(tradeResult, julyDates) {
+    var tradingResultByDate = (tradeResult && tradeResult.tradingResultByDate) || {};
+    var sourceDates = Object.keys(tradingResultByDate);
+    var sourceDataset = sourceDates.length ? tradingResultByDate[sourceDates[0]] : null;
+    var sourcePoints = (sourceDataset && sourceDataset.points) || [];
+
+    if (!tradeResult || !sourcePoints.length) {
+      return;
+    }
+
+    tradeResult.hourlyRows = julyDates.reduce(function buildRows(rows, date) {
+      return rows.concat(
+        sourcePoints.slice(0, 24).map(function mapPoint(point) {
+          return {
+            date: date,
+            time: point.time,
+            dayaheadVolume: point.dayaheadVolume !== undefined ? point.dayaheadVolume : point.dayAheadVolume,
+            realtimeVolume: point.realtimeVolume !== undefined ? point.realtimeVolume : point.realTimeVolume,
+            dayAheadVolume: point.dayAheadVolume,
+            realTimeVolume: point.realTimeVolume,
+          };
+        }),
+      );
+    }, []);
+  }
+
   function updateKnownMockDefaults(appMocks, julyDates) {
     var guangdong = appMocks.guangdong || {};
     var simulation = appMocks.simulation || {};
@@ -306,11 +346,34 @@
     var fetchMonitor = appMocks.fetchMonitor || {};
     var operationRecord = appMocks.operationRecord || {};
 
+    if (guangdong) {
+      guangdong.defaultRange = {
+        start: "2026-07-01",
+        end: "2026-07-31",
+      };
+      guangdong.availableRange = {
+        start: "2026-07-01",
+        end: "2026-07-31",
+      };
+    }
+
     if (guangdong.tradeResult) {
       guangdong.tradeResult.defaultRunDate = "2026-07-31";
       guangdong.tradeResult.availableRunDates = julyDates.slice();
+      guangdong.tradeResult.defaultRange = {
+        start: "2026-07-01",
+        end: "2026-07-31",
+      };
+      guangdong.tradeResult.availableRange = {
+        start: "2026-07-01",
+        end: "2026-07-31",
+      };
       supplementDateDictionary(guangdong.tradeResult.nodePriceByDate, julyDates);
       supplementDateDictionary(guangdong.tradeResult.tradingResultByDate, julyDates);
+      Object.keys(guangdong.tradeResult.tradingResultByDate || {}).forEach(function addGuangdongTradeAliases(dateKey) {
+        addTradeVolumeAliases((guangdong.tradeResult.tradingResultByDate[dateKey] || {}).points);
+      });
+      supplementGuangdongTradeVolumeRows(guangdong.tradeResult, julyDates);
     }
 
     if (guangdong.settlement && guangdong.settlement.dailyDateRange) {
@@ -374,6 +437,7 @@
         if (dataset.publishTime) {
           dataset.publishTime = replaceLeadingDate(dataset.publishTime, "2026-07-31");
         }
+        addTradeVolumeAliases(dataset.points);
       });
     }
 
