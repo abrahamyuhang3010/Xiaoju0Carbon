@@ -3,8 +3,8 @@
   "title": "数据监控",
   "subtitle": "展示当前交易中心各项市场数据的实时状态。",
   "status": {
-    "expectedCount": 84,
-    "normalCount": 50,
+    "expectedCount": 88,
+    "normalCount": 54,
     "fetchAbnormalCount": 16,
     "qualityAbnormalCount": 21,
     "p0Count": 29,
@@ -116,7 +116,7 @@
       "qualityStatus": "待校验",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日11:40",
+      "warningTime": "D日 11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 10:01",
       "nextFetchAt": "2026-06-17 11:40",
@@ -180,7 +180,7 @@
       "qualityStatus": "待校验",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:09",
       "nextFetchAt": "2026-06-17 11:40",
@@ -242,7 +242,7 @@
       "qualityStatus": "数据为空",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日11:40",
+      "warningTime": "D日 11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:17",
       "nextFetchAt": "2026-06-17 11:40",
@@ -306,7 +306,7 @@
       "qualityStatus": "数据不完整",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:25",
       "nextFetchAt": "2026-06-17 11:40",
@@ -375,7 +375,7 @@
       "qualityStatus": "数据未更新",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:33",
       "nextFetchAt": "2026-06-17 11:40",
@@ -435,7 +435,7 @@
       "qualityStatus": "未配置",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日11:40",
+      "warningTime": "D日 11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:28",
       "nextFetchAt": "2026-06-17 11:40",
@@ -492,7 +492,7 @@
       "qualityStatus": "数据不完整",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日11:40",
+      "warningTime": "D日 11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:31",
       "nextFetchAt": "2026-06-17 11:40",
@@ -554,7 +554,7 @@
       "qualityStatus": "数据未更新",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:39",
       "nextFetchAt": "2026-06-17 11:40",
@@ -611,7 +611,7 @@
       "qualityStatus": "数值异常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日11:40",
+      "warningTime": "D日 11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:02",
       "nextFetchAt": "2026-06-17 11:40",
@@ -673,7 +673,7 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:10",
       "nextFetchAt": "2026-06-17 11:40",
@@ -735,7 +735,7 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:18",
       "nextFetchAt": "2026-06-17 11:40",
@@ -796,7 +796,7 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日11:40",
+      "warningTime": "D日 11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:26",
       "nextFetchAt": "2026-06-17 11:40",
@@ -853,7 +853,7 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日11:40",
+      "warningTime": "D日 11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:34",
       "nextFetchAt": "2026-06-17 11:40",
@@ -910,7 +910,7 @@
       "qualityStatus": "数值异常",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日11:40",
+      "warningTime": "D日 11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:41",
       "nextFetchAt": "2026-06-17 11:40",
@@ -967,7 +967,7 @@
       "qualityStatus": "正常",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:04",
       "nextFetchAt": "2026-06-17 11:40",
@@ -1028,7 +1028,7 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日11:40",
+      "warningTime": "D日 11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:12",
       "nextFetchAt": "2026-06-17 11:40",
@@ -1089,7 +1089,7 @@
       "qualityStatus": "待校验",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:20",
       "nextFetchAt": "2026-06-17 11:40",
@@ -1146,7 +1146,7 @@
       "qualityStatus": "待校验",
       "timePoint": "1h",
       "outputTime": "D日 出 D-4日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-4日 ～ D-10日",
       "lastSuccessAt": "2026-06-15 17:13",
       "nextFetchAt": "2026-06-17 18:30",
@@ -1203,7 +1203,7 @@
       "qualityStatus": "待校验",
       "timePoint": "1h",
       "outputTime": "D日 出 D-4日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-4日 ～ D-10日",
       "lastSuccessAt": "2026-06-16 17:21",
       "nextFetchAt": "2026-06-17 18:30",
@@ -1260,7 +1260,7 @@
       "qualityStatus": "正常",
       "timePoint": "1h",
       "outputTime": "D日 出 D-4日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "",
       "lastSuccessAt": "2026-06-16 17:34",
       "nextFetchAt": "2026-06-17 18:30",
@@ -1317,7 +1317,7 @@
       "qualityStatus": "正常",
       "timePoint": "1h",
       "outputTime": "D日 出 D-4日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "",
       "lastSuccessAt": "2026-06-16 17:36",
       "nextFetchAt": "2026-06-17 18:30",
@@ -1377,7 +1377,7 @@
       "qualityStatus": "数据为空",
       "timePoint": "1h",
       "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:29",
       "nextFetchAt": "2026-06-17 18:30",
@@ -1436,7 +1436,7 @@
       "qualityStatus": "数据不完整",
       "timePoint": "1h",
       "outputTime": "D日 出 D-2日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-2日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:37",
       "nextFetchAt": "2026-06-17 18:30",
@@ -1495,7 +1495,7 @@
       "qualityStatus": "数据未更新",
       "timePoint": "1h",
       "outputTime": "D日 出 D-5日",
-      "warningTime": "D+1日09:00",
+      "warningTime": "D+1日 09:00",
       "valueRange": "D-9日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:00",
       "nextFetchAt": "2026-06-17 18:30",
@@ -1554,7 +1554,7 @@
       "qualityStatus": "数值异常",
       "timePoint": "1h",
       "outputTime": "D日 出 D-5日",
-      "warningTime": "D+1日09:00",
+      "warningTime": "D+1日 09:00",
       "valueRange": "D-9日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:08",
       "nextFetchAt": "2026-06-17 18:30",
@@ -1610,7 +1610,7 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 17:00 出 D+1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:16",
       "nextFetchAt": "2026-06-17 18:30",
@@ -1666,7 +1666,7 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 16:00 出 D+1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:24",
       "nextFetchAt": "2026-06-17 18:30",
@@ -1722,7 +1722,7 @@
       "qualityStatus": "正常",
       "timePoint": "1h",
       "outputTime": "D日 13:00 出 D+1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D+1日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:32",
       "nextFetchAt": "2026-06-17 18:30",
@@ -1778,7 +1778,7 @@
       "qualityStatus": "正常",
       "timePoint": "1h",
       "outputTime": "D日 出 D-6日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-10日 ～ D-6日",
       "lastSuccessAt": "2026-06-16 17:40",
       "nextFetchAt": "2026-06-17 18:30",
@@ -1834,7 +1834,7 @@
       "qualityStatus": "正常",
       "timePoint": "1M",
       "outputTime": "M月12日 出 M-1月",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "M-1月 ～ M-1月",
       "lastSuccessAt": "2026-06-04 17:03",
       "nextFetchAt": "2026-07-15 18:30",
@@ -1890,7 +1890,7 @@
       "qualityStatus": "正常",
       "timePoint": "1M",
       "outputTime": "M月12日 出 M-1月",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "M-1月 ～ M-1月",
       "lastSuccessAt": "2026-06-04 17:11",
       "nextFetchAt": "2026-07-15 18:30",
@@ -1946,7 +1946,7 @@
       "qualityStatus": "待校验",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:36",
       "nextFetchAt": "2026-06-17 11:40",
@@ -2001,7 +2001,7 @@
       "qualityStatus": "数据为空",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:44",
       "nextFetchAt": "2026-06-17 11:40",
@@ -2056,7 +2056,7 @@
       "qualityStatus": "待校验",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日11:40",
+      "warningTime": "D日 11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 10:07",
       "nextFetchAt": "2026-06-17 11:40",
@@ -2111,7 +2111,7 @@
       "qualityStatus": "待校验",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:15",
       "nextFetchAt": "2026-06-17 11:40",
@@ -2145,7 +2145,7 @@
       "id": "dm-036",
       "tradeCenter": "广东",
       "tradeCenterName": "广东交易中心",
-      "businessModule": "无（后台数据）",
+      "businessModule": "信息披露-负荷信息-发输变电设备检修计划",
       "dataItem": "输变电设备检修计划执行情况",
       "sourceDataItem": "输变电设备检修计划执行情况",
       "dataType": "实际",
@@ -2153,7 +2153,7 @@
       "dataChildren": [],
       "isCollected": "✅",
       "targetRowNumber": 37,
-      "targetInternalKey": "广东|输变电设备检修计划执行情况|无（后台数据）|37",
+      "targetInternalKey": "广东|输变电设备检修计划执行情况|信息披露-负荷信息-发输变电设备检修计划|37",
       "targetDuplicateIndex": 1,
       "excelSourceRowNumbers": [
         37
@@ -2166,7 +2166,7 @@
       "qualityStatus": "数据为空",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:23",
       "nextFetchAt": "2026-06-17 11:40",
@@ -2188,7 +2188,9 @@
       "remark": "获取检修日期与查询日期范围存在重合的数据",
       "namingRule": "-",
       "categoryPath": [
-        "后台数据"
+        "信息披露",
+        "负荷信息",
+        "发输变电设备检修计划"
       ],
       "timeline": [
         "2026-06-16 10:23 最近一次数据成功入库",
@@ -2221,7 +2223,7 @@
       "qualityStatus": "正常",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日11:40",
+      "warningTime": "D日 11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:42",
       "nextFetchAt": "2026-06-17 11:40",
@@ -2276,7 +2278,7 @@
       "qualityStatus": "正常",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日11:40",
+      "warningTime": "D日 11:40",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:05",
       "nextFetchAt": "2026-06-17 11:40",
@@ -2330,12 +2332,12 @@
       "fetchStatus": "数据未取回",
       "qualityStatus": "待校验",
       "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
+      "outputTime": "D日 09:00 出 D+1日",
+      "warningTime": "D日 11:40",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 17:22",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 09:00、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-系统负荷预测（日）",
       "fetchExceptionType": "数据未取回",
       "fetchExceptionAt": "2026-06-16 18:30",
@@ -2388,11 +2390,11 @@
       "qualityStatus": "待校验",
       "timePoint": "15min",
       "outputTime": "D日 12:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:30",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-实际负荷",
       "fetchExceptionType": "数据未取回",
       "fetchExceptionAt": "2026-06-16 18:30",
@@ -2444,12 +2446,12 @@
       "fetchStatus": "正常",
       "qualityStatus": "数据为空",
       "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
+      "outputTime": "D日 09:00 出 D+1日",
+      "warningTime": "D日 11:40",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:38",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 09:00、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-新能源总出力预测（日）",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2505,11 +2507,11 @@
       "qualityStatus": "数据不完整",
       "timePoint": "15min",
       "outputTime": "D日 12:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:01",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-新能源总出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2563,12 +2565,12 @@
       "fetchStatus": "数据未取回",
       "qualityStatus": "数据未更新",
       "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
+      "outputTime": "D日 09:00 出 D+1日",
+      "warningTime": "D日 11:40",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:09",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 09:00、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-水电（含抽蓄）总出力预测（日）",
       "fetchExceptionType": "数据未取回",
       "fetchExceptionAt": "-",
@@ -2623,11 +2625,11 @@
       "qualityStatus": "数值异常",
       "timePoint": "15min",
       "outputTime": "D日 12:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:17",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-水电（含抽蓄）总出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2681,12 +2683,12 @@
       "fetchStatus": "正常",
       "qualityStatus": "正常",
       "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
+      "outputTime": "D日 09:00 出 D+1日",
+      "warningTime": "D日 11:40",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:41",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 09:00、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-发电总出力预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2741,11 +2743,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 12:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-7日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:04",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-发电总出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2799,12 +2801,12 @@
       "fetchStatus": "正常",
       "qualityStatus": "正常",
       "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
+      "outputTime": "D日 09:00 出 D+1日",
+      "warningTime": "D日 11:40",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:12",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 09:00、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-非市场机组总出力预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2857,11 +2859,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 12:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:20",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-非市场机组总出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2917,12 +2919,12 @@
       "fetchStatus": "正常",
       "qualityStatus": "正常",
       "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
+      "outputTime": "D日 09:00 出 D+1日",
+      "warningTime": "D日 11:40",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:25",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 09:00、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-省间联络线输电曲线预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2977,11 +2979,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 12:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:33",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-省间联络线输电情况",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3016,7 +3018,7 @@
       "businessModule": "信息披露-负荷信息-机组状态",
       "dataItem": "机组状态",
       "sourceDataItem": "机组状态",
-      "dataType": "-",
+      "dataType": "实际",
       "dataParent": "机组状态",
       "dataChildren": [],
       "isCollected": "-",
@@ -3034,11 +3036,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 17:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-2日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:39",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 17:00、18:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-电网运行-机组状态",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3073,7 +3075,7 @@
       "businessModule": "信息披露-负荷信息-备用信息",
       "dataItem": "系统备用信息",
       "sourceDataItem": "系统备用信息",
-      "dataType": "-",
+      "dataType": "实际",
       "dataParent": "系统备用信息",
       "dataChildren": [
         "负备用",
@@ -3094,11 +3096,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 17:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-2日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:18",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 17:00、18:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-电网运行-系统备用信息",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3151,11 +3153,11 @@
       "qualityStatus": "正常",
       "timePoint": "1D",
       "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:26",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 09:00、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-供需与约束-约束信息-发输变电设备检修计划（日）",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3210,11 +3212,11 @@
       "qualityStatus": "待校验",
       "timePoint": "15min",
       "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 17:28",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-日前节点边际电价",
       "fetchExceptionType": "数据未取回",
       "fetchExceptionAt": "2026-06-16 18:30",
@@ -3268,11 +3270,11 @@
       "qualityStatus": "待校验",
       "timePoint": "15min",
       "outputTime": "D日 12:00 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:36",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-实时节点边际电价",
       "fetchExceptionType": "数据未取回",
       "fetchExceptionAt": "2026-06-16 18:30",
@@ -3324,11 +3326,11 @@
       "qualityStatus": "数据为空",
       "timePoint": "1h",
       "outputTime": "D日 12:00 出 D日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:44",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-日前用户侧统一结算价格",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3380,11 +3382,11 @@
       "qualityStatus": "数据不完整",
       "timePoint": "1h",
       "outputTime": "D日 出 D-4日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-3日 ～ D日",
       "lastSuccessAt": "2026-06-16 17:07",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-实时用户侧统一结算价格",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3436,11 +3438,11 @@
       "qualityStatus": "正常",
       "timePoint": "1h",
       "outputTime": "D日 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-3日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:31",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-日前用户侧24点出清电量",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3492,11 +3494,11 @@
       "qualityStatus": "数据未更新",
       "timePoint": "1h",
       "outputTime": "D日 出 D-2日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-2日 ～ D-2日",
       "lastSuccessAt": "2026-06-16 17:15",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-用户用电信息查询-日用电信息（现货）",
       "fetchExceptionType": "数据未取回",
       "fetchExceptionAt": "-",
@@ -3549,7 +3551,7 @@
       "qualityStatus": "数值异常",
       "timePoint": "15min",
       "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:23",
       "nextFetchAt": "2026-06-17 18:30",
@@ -3587,7 +3589,7 @@
       "businessModule": "日清月结-日清算结果",
       "dataItem": "日清算",
       "sourceDataItem": "日清算",
-      "dataType": "-",
+      "dataType": "实际",
       "dataParent": "日清算",
       "dataChildren": [],
       "isCollected": "-",
@@ -3605,11 +3607,11 @@
       "qualityStatus": "正常",
       "timePoint": "1h",
       "outputTime": "D日 出 D-6日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-6日 ～ D-4日，取所在月份",
       "lastSuccessAt": "2026-06-16 17:02",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "结算-结算单查询",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3643,7 +3645,7 @@
       "businessModule": "日清月结-月结算结果",
       "dataItem": "月结算-售电公司",
       "sourceDataItem": "月结算-售电公司",
-      "dataType": "-",
+      "dataType": "实际",
       "dataParent": "月结算-售电公司",
       "dataChildren": [],
       "isCollected": "-",
@@ -3661,11 +3663,11 @@
       "qualityStatus": "正常",
       "timePoint": "1M",
       "outputTime": "M月10日 出 M-1月",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-6日 ～ D-4日，取所在月份",
       "lastSuccessAt": "2026-06-04 17:10",
       "nextFetchAt": "2026-07-15 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "结算-结算单查询-售电公司",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3716,12 +3718,12 @@
       "fetchStatus": "正常",
       "qualityStatus": "正常",
       "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
+      "outputTime": "D日 09:00 出 D+1日",
+      "warningTime": "D日 11:40",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 17:01",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:50、09:05、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-系统负荷预测（日）",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3774,11 +3776,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:09",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-实际负荷",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3830,12 +3832,12 @@
       "fetchStatus": "正常",
       "qualityStatus": "正常",
       "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
+      "outputTime": "D日 09:00 出 D+1日",
+      "warningTime": "D日 11:40",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:17",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:50、09:05、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-发电总出力预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3888,11 +3890,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:25",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-发电总出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3944,12 +3946,12 @@
       "fetchStatus": "正常",
       "qualityStatus": "正常",
       "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
+      "outputTime": "D日 09:00 出 D+1日",
+      "warningTime": "D日 11:40",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:33",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:50、09:05、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-非市场机组总出力预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4002,11 +4004,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:41",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-非市场机组总出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4062,12 +4064,12 @@
       "fetchStatus": "正常",
       "qualityStatus": "正常",
       "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
+      "outputTime": "D日 09:00 出 D+1日",
+      "warningTime": "D日 11:40",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:04",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:50、09:05、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-新能源总出力预测（日）",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4124,11 +4126,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:12",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-新能源总出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4180,12 +4182,12 @@
       "fetchStatus": "正常",
       "qualityStatus": "正常",
       "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
+      "outputTime": "D日 09:00 出 D+1日",
+      "warningTime": "D日 11:40",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:20",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:50、09:05、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-水电（含抽蓄）出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4238,11 +4240,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:28",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-水电（含抽蓄）出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4296,12 +4298,12 @@
       "fetchStatus": "正常",
       "qualityStatus": "正常",
       "timePoint": "15min",
-      "outputTime": "D日 出 D+1日",
-      "warningTime": "D日18:30",
+      "outputTime": "D日 09:00 出 D+1日",
+      "warningTime": "D日 11:40",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:36",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:50、09:05、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-省间联络线输电曲线预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4354,11 +4356,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:44",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、08:40、08:50、09:00、09:10、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货- 省间联络线输电情况",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4393,7 +4395,7 @@
       "businessModule": "信息披露-负荷信息-机组状态",
       "dataItem": "机组状态",
       "sourceDataItem": "机组状态",
-      "dataType": "-",
+      "dataType": "实际",
       "dataParent": "机组状态",
       "dataChildren": [],
       "isCollected": "-",
@@ -4411,11 +4413,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 出 D日",
-      "warningTime": "D日11:40",
+      "warningTime": "D日 11:40",
       "valueRange": "D-1日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:02",
       "nextFetchAt": "2026-06-17 11:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-综合查询-电网运行-机组状态",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4450,7 +4452,7 @@
       "businessModule": "信息披露-负荷信息-备用信息",
       "dataItem": "系统备用信息",
       "sourceDataItem": "系统备用信息",
-      "dataType": "-",
+      "dataType": "实际",
       "dataParent": "系统备用信息",
       "dataChildren": [],
       "isCollected": "-",
@@ -4468,11 +4470,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-7日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:26",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 14:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-系统备用信息",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4507,7 +4509,7 @@
       "businessModule": "信息披露-交易结果",
       "dataItem": "用户侧加权电价（日前）",
       "sourceDataItem": "用户侧加权电价（日前）",
-      "dataType": "日前；实时",
+      "dataType": "日前",
       "dataParent": "用户侧加权电价（日前）",
       "dataChildren": [],
       "isCollected": "✅",
@@ -4529,7 +4531,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 17:07",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "现货交易-用户侧加权电价",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4563,7 +4565,7 @@
       "businessModule": "信息披露-交易结果",
       "dataItem": "用户侧加权电价（实时）",
       "sourceDataItem": "用户侧加权电价（实时）",
-      "dataType": "日前；实时",
+      "dataType": "实时",
       "dataParent": "用户侧加权电价（实时）",
       "dataChildren": [],
       "isCollected": "✅",
@@ -4581,11 +4583,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-3日 ～ D-1日",
       "lastSuccessAt": "2026-06-15 17:07",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:50、09:05、10:00、12:00、14:00、23:00",
       "pageAddress": "现货交易-用户侧加权电价",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4637,11 +4639,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 出 D-2日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-5日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:15",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 06:00、08:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-售电公司日电量",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4694,11 +4696,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:23",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 14:00",
+      "fetchToolTimeliness": "每日 14:00、16:00",
       "pageAddress": "现货交易-现货申报_用电侧",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4750,11 +4752,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 出 D日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-7日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:31",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 14:00",
+      "fetchToolTimeliness": "每日 08:50、14:00",
       "pageAddress": "信息披露-综合查询-市场运营-交易组织及出清-现货市场申报、出清信息-日前现货市场节点边际电价（日）",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4806,11 +4808,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 出 D-1日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-7日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:39",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 14:00",
+      "fetchToolTimeliness": "每日 08:50、14:00",
       "pageAddress": "信息披露-综合查询-市场运营-交易组织及出清-现货市场申报、出清信息-实时现货市场节点边际电价（日）",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4838,13 +4840,237 @@
       ]
     },
     {
+      "id": "dm-085",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-中长期合同曲线",
+      "dataItem": "中长期合同曲线明细",
+      "sourceDataItem": "中长期合同曲线明细",
+      "dataType": "实际",
+      "dataParent": "中长期合同曲线明细",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 1,
+      "targetInternalKey": "陕西|中长期合同曲线明细|信息披露-中长期合同曲线|1",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        1
+      ],
+      "excelMatchKey": "陕西|中长期合同曲线明细|1",
+      "fileFormat": "-",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D日",
+      "warningTime": "D日 18:30",
+      "valueRange": "D日 ～ D+10日",
+      "lastSuccessAt": "2026-06-15 17:07",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 14:00",
+      "pageAddress": "我的合同-中长期合同曲线-中长期合同曲线明细",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:30",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "-",
+      "remark": "交易中心N日申报后即有数据",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "中长期合同曲线"
+      ],
+      "timeline": [
+        "2026-06-15 17:07 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-086",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-中长期合同曲线",
+      "dataItem": "中长期合同曲线汇总",
+      "sourceDataItem": "中长期合同曲线汇总",
+      "dataType": "实际",
+      "dataParent": "中长期合同曲线汇总",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 2,
+      "targetInternalKey": "陕西|中长期合同曲线汇总|信息披露-中长期合同曲线|2",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        2
+      ],
+      "excelMatchKey": "陕西|中长期合同曲线汇总|2",
+      "fileFormat": "-",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "15min",
+      "outputTime": "D日 出 D日",
+      "warningTime": "D日 18:30",
+      "valueRange": "D日 ～ D+10日",
+      "lastSuccessAt": "2026-06-15 17:07",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 14:00",
+      "pageAddress": "我的合同-中长期合同曲线-中长期合同曲线汇总",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:30",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "-",
+      "remark": "交易中心N日申报后即有数据",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "中长期合同曲线"
+      ],
+      "timeline": [
+        "2026-06-15 17:07 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-087",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-交易总体情况",
+      "dataItem": "中长期批发市场净合同加权均价",
+      "sourceDataItem": "中长期批发市场净合同加权均价",
+      "dataType": "实际",
+      "dataParent": "中长期批发市场净合同加权均价",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 3,
+      "targetInternalKey": "陕西|中长期批发市场净合同加权均价|信息披露-交易总体情况|3",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        3
+      ],
+      "excelMatchKey": "陕西|中长期批发市场净合同加权均价|3",
+      "fileFormat": "-",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "1h",
+      "outputTime": "不定时",
+      "warningTime": "D日 18:30",
+      "valueRange": "",
+      "lastSuccessAt": "2026-06-15 17:07",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "每日 14:00",
+      "pageAddress": "信息披露-综合查询-市场运营-交易组织及出清-交易总体情况（交易）",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:30",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "-",
+      "remark": "仅取【中长期批发市场净合同加权均价】一个表格；市场不定时发布，需要每日查询是否有更新运行日期文件",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "交易总体情况"
+      ],
+      "timeline": [
+        "2026-06-15 17:07 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
+      "id": "dm-088",
+      "tradeCenter": "陕西",
+      "tradeCenterName": "陕西交易中心",
+      "businessModule": "信息披露-零售用户结算情况",
+      "dataItem": "批发购电分时均价",
+      "sourceDataItem": "批发购电分时均价",
+      "dataType": "实际",
+      "dataParent": "批发购电分时均价",
+      "dataChildren": [],
+      "isCollected": "✅",
+      "targetRowNumber": 4,
+      "targetInternalKey": "陕西|批发购电分时均价|信息披露-零售用户结算情况|4",
+      "targetDuplicateIndex": 1,
+      "excelSourceRowNumbers": [
+        4
+      ],
+      "excelMatchKey": "陕西|批发购电分时均价|4",
+      "fileFormat": "-",
+      "downloadFile": "-",
+      "collectorStatus": "normal",
+      "fetchStatus": "正常",
+      "qualityStatus": "正常",
+      "timePoint": "1h",
+      "outputTime": "M月 出 M-1月",
+      "warningTime": "D日 18:30",
+      "valueRange": "M-1月",
+      "lastSuccessAt": "2026-06-15 17:07",
+      "nextFetchAt": "2026-06-17 18:30",
+      "fetchToolTimeliness": "M月1日起，每日 14:00，取到即止",
+      "pageAddress": "信息披露-综合查询-市场运营-结算信息-结算总体情况及分类构成情况（月）",
+      "fetchExceptionType": "-",
+      "fetchExceptionAt": "-",
+      "fetchNotified": "否",
+      "fetchProcessStatus": "-",
+      "checkAt": "2026-06-16 18:30",
+      "checkRules": "非空、完整性、更新时效、数值边界",
+      "qualityExceptionType": "-",
+      "qualityNotified": "否",
+      "qualityProcessStatus": "-",
+      "processStatus": "-",
+      "notified": "否",
+      "warningThreshold": "-",
+      "priority": "-",
+      "remark": "交易中心文件命名有变更：2026年2月及之前：售电公司M月批发购电分时均价，2026年3月及之后：零售用户结算情况；2026年3月及之后的文件，仅取【批发购电分时均价】一个表格",
+      "namingRule": "-",
+      "categoryPath": [
+        "信息披露",
+        "零售用户结算情况"
+      ],
+      "timeline": [
+        "2026-06-15 17:07 最近一次数据成功入库",
+        "2026-06-16 18:30 取数、解析与入库流程完成",
+        "2026-06-16 18:40 数据质量校验通过"
+      ]
+    },
+    {
       "id": "dm-083",
       "tradeCenter": "陕西",
       "tradeCenterName": "陕西交易中心",
       "businessModule": "日清月结-日清算结果",
       "dataItem": "日清算",
       "sourceDataItem": "日清算",
-      "dataType": "-",
+      "dataType": "实际",
       "dataParent": "日清算",
       "dataChildren": [],
       "isCollected": "-",
@@ -4862,11 +5088,11 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 出 D-6日",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "D-10日 ～ D-6日",
       "lastSuccessAt": "2026-06-16 17:10",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 17:00、18:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "我的结算-用户侧日清分账单",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4900,7 +5126,7 @@
       "businessModule": "日清月结-月结算结果",
       "dataItem": "月结算-售电公司",
       "sourceDataItem": "月结算-售电公司",
-      "dataType": "-",
+      "dataType": "实际",
       "dataParent": "月结算-售电公司",
       "dataChildren": [],
       "isCollected": "-",
@@ -4918,11 +5144,11 @@
       "qualityStatus": "正常",
       "timePoint": "1M",
       "outputTime": "M月9日 出 M-1月",
-      "warningTime": "D日18:30",
+      "warningTime": "D日 18:30",
       "valueRange": "M-1月",
       "lastSuccessAt": "2026-06-04 17:18",
       "nextFetchAt": "2026-07-15 18:30",
-      "fetchToolTimeliness": "M月15日起，每日 17:00、18:00、23:00，取到即止",
+      "fetchToolTimeliness": "M月15日起，每日 10:00、12:00、14:00、23:00，取到即止",
       "pageAddress": "我的结算-结算单确认（新）-用电侧-售电公司交易结算单",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4954,147 +5180,7 @@
     "广东": [
       {
         "label": "全部",
-        "path": [],
-        "children": [
-          {
-            "label": "信息披露",
-            "path": [
-              "信息披露"
-            ],
-            "children": [
-              {
-                "label": "交易结果",
-                "path": [
-                  "信息披露",
-                  "交易结果"
-                ]
-              },
-              {
-                "label": "出清电量",
-                "path": [
-                  "信息披露",
-                  "出清电量"
-                ]
-              },
-              {
-                "label": "分时电量",
-                "path": [
-                  "信息披露",
-                  "分时电量"
-                ],
-                "children": [
-                  {
-                    "label": "售电公司分时电量",
-                    "path": [
-                      "信息披露",
-                      "分时电量",
-                      "售电公司分时电量"
-                    ]
-                  },
-                  {
-                    "label": "售电公司分时电量历史回溯",
-                    "path": [
-                      "信息披露",
-                      "分时电量",
-                      "售电公司分时电量历史回溯"
-                    ]
-                  },
-                  {
-                    "label": "用电企业分时电量",
-                    "path": [
-                      "信息披露",
-                      "分时电量",
-                      "用电企业分时电量"
-                    ]
-                  },
-                  {
-                    "label": "用电企业分时电量历史回溯",
-                    "path": [
-                      "信息披露",
-                      "分时电量",
-                      "用电企业分时电量历史回溯"
-                    ]
-                  }
-                ]
-              },
-              {
-                "label": "日前申报",
-                "path": [
-                  "信息披露",
-                  "日前申报"
-                ]
-              },
-              {
-                "label": "节点电价",
-                "path": [
-                  "信息披露",
-                  "节点电价"
-                ]
-              },
-              {
-                "label": "负荷信息",
-                "path": [
-                  "信息披露",
-                  "负荷信息"
-                ],
-                "children": [
-                  {
-                    "label": "备用信息",
-                    "path": [
-                      "信息披露",
-                      "负荷信息",
-                      "备用信息"
-                    ]
-                  },
-                  {
-                    "label": "机组检修容量",
-                    "path": [
-                      "信息披露",
-                      "负荷信息",
-                      "机组检修容量"
-                    ]
-                  },
-                  {
-                    "label": "负荷信息",
-                    "path": [
-                      "信息披露",
-                      "负荷信息",
-                      "负荷信息"
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "label": "日清月结",
-            "path": [
-              "日清月结"
-            ],
-            "children": [
-              {
-                "label": "日清算结果",
-                "path": [
-                  "日清月结",
-                  "日清算结果"
-                ]
-              },
-              {
-                "label": "月结算结果",
-                "path": [
-                  "日清月结",
-                  "月结算结果"
-                ]
-              }
-            ]
-          },
-          {
-            "label": "后台数据",
-            "path": [
-              "后台数据"
-            ]
-          }
-        ]
+        "path": []
       },
       {
         "label": "信息披露",
@@ -5179,6 +5265,14 @@
             ],
             "children": [
               {
+                "label": "发输变电设备检修计划",
+                "path": [
+                  "信息披露",
+                  "负荷信息",
+                  "发输变电设备检修计划"
+                ]
+              },
+              {
                 "label": "备用信息",
                 "path": [
                   "信息披露",
@@ -5238,126 +5332,7 @@
     "湖南": [
       {
         "label": "全部",
-        "path": [],
-        "children": [
-          {
-            "label": "信息披露",
-            "path": [
-              "信息披露"
-            ],
-            "children": [
-              {
-                "label": "交易结果",
-                "path": [
-                  "信息披露",
-                  "交易结果"
-                ]
-              },
-              {
-                "label": "分时电量",
-                "path": [
-                  "信息披露",
-                  "分时电量"
-                ],
-                "children": [
-                  {
-                    "label": "用电企业分时电量",
-                    "path": [
-                      "信息披露",
-                      "分时电量",
-                      "用电企业分时电量"
-                    ]
-                  }
-                ]
-              },
-              {
-                "label": "日前申报",
-                "path": [
-                  "信息披露",
-                  "日前申报"
-                ]
-              },
-              {
-                "label": "节点电价",
-                "path": [
-                  "信息披露",
-                  "节点电价"
-                ]
-              },
-              {
-                "label": "负荷信息",
-                "path": [
-                  "信息披露",
-                  "负荷信息"
-                ],
-                "children": [
-                  {
-                    "label": "发输变电设备检修计划",
-                    "path": [
-                      "信息披露",
-                      "负荷信息",
-                      "发输变电设备检修计划"
-                    ]
-                  },
-                  {
-                    "label": "备用信息",
-                    "path": [
-                      "信息披露",
-                      "负荷信息",
-                      "备用信息"
-                    ]
-                  },
-                  {
-                    "label": "机组状态",
-                    "path": [
-                      "信息披露",
-                      "负荷信息",
-                      "机组状态"
-                    ]
-                  },
-                  {
-                    "label": "省间联络",
-                    "path": [
-                      "信息披露",
-                      "负荷信息",
-                      "省间联络"
-                    ]
-                  },
-                  {
-                    "label": "负荷信息",
-                    "path": [
-                      "信息披露",
-                      "负荷信息",
-                      "负荷信息"
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "label": "日清月结",
-            "path": [
-              "日清月结"
-            ],
-            "children": [
-              {
-                "label": "日清算结果",
-                "path": [
-                  "日清月结",
-                  "日清算结果"
-                ]
-              },
-              {
-                "label": "月结算结果",
-                "path": [
-                  "日清月结",
-                  "月结算结果"
-                ]
-              }
-            ]
-          }
-        ]
+        "path": []
       },
       {
         "label": "信息披露",
@@ -5480,118 +5455,7 @@
     "陕西": [
       {
         "label": "全部",
-        "path": [],
-        "children": [
-          {
-            "label": "信息披露",
-            "path": [
-              "信息披露"
-            ],
-            "children": [
-              {
-                "label": "交易结果",
-                "path": [
-                  "信息披露",
-                  "交易结果"
-                ]
-              },
-              {
-                "label": "分时电量",
-                "path": [
-                  "信息披露",
-                  "分时电量"
-                ],
-                "children": [
-                  {
-                    "label": "用电企业分时电量",
-                    "path": [
-                      "信息披露",
-                      "分时电量",
-                      "用电企业分时电量"
-                    ]
-                  }
-                ]
-              },
-              {
-                "label": "日前申报",
-                "path": [
-                  "信息披露",
-                  "日前申报"
-                ]
-              },
-              {
-                "label": "节点电价",
-                "path": [
-                  "信息披露",
-                  "节点电价"
-                ]
-              },
-              {
-                "label": "负荷信息",
-                "path": [
-                  "信息披露",
-                  "负荷信息"
-                ],
-                "children": [
-                  {
-                    "label": "备用信息",
-                    "path": [
-                      "信息披露",
-                      "负荷信息",
-                      "备用信息"
-                    ]
-                  },
-                  {
-                    "label": "机组状态",
-                    "path": [
-                      "信息披露",
-                      "负荷信息",
-                      "机组状态"
-                    ]
-                  },
-                  {
-                    "label": "省间联络",
-                    "path": [
-                      "信息披露",
-                      "负荷信息",
-                      "省间联络"
-                    ]
-                  },
-                  {
-                    "label": "负荷信息",
-                    "path": [
-                      "信息披露",
-                      "负荷信息",
-                      "负荷信息"
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "label": "日清月结",
-            "path": [
-              "日清月结"
-            ],
-            "children": [
-              {
-                "label": "日清算结果",
-                "path": [
-                  "日清月结",
-                  "日清算结果"
-                ]
-              },
-              {
-                "label": "月结算结果",
-                "path": [
-                  "日清月结",
-                  "月结算结果"
-                ]
-              }
-            ]
-          }
-        ]
+        "path": []
       },
       {
         "label": "信息披露",
@@ -5676,6 +5540,27 @@
                   "负荷信息"
                 ]
               }
+            ]
+          },
+          {
+            "label": "中长期合同曲线",
+            "path": [
+              "信息披露",
+              "中长期合同曲线"
+            ]
+          },
+          {
+            "label": "交易总体情况",
+            "path": [
+              "信息披露",
+              "交易总体情况"
+            ]
+          },
+          {
+            "label": "零售用户结算情况",
+            "path": [
+              "信息披露",
+              "零售用户结算情况"
             ]
           }
         ]
