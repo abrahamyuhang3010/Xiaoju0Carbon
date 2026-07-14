@@ -303,6 +303,12 @@
     if (!value || typeof value !== "object") {
       return;
     }
+    // Config fields (defaultRange/availableRange/dailyDateRange/filters/defaultDate) only
+    // live as named object properties, never inside arrays of data rows. Recursing into
+    // arrays would walk the ~250k cloned July rows for nothing, so stop at arrays.
+    if (Array.isArray(value)) {
+      return;
+    }
     if (seen.indexOf(value) >= 0) {
       return;
     }
