@@ -59,8 +59,9 @@
             label: "仿真平台",
             toggleKey: "simulationExpanded",
             children: [
-              { label: "现货交易仿真", pageKey: "spot-trading-simulation" },
+              { label: "现货仿真回测", pageKey: "spot-trading-simulation" },
               { label: "现货模拟交易", pageKey: "spot-mock-trading" },
+              { label: "交易决策分析", pageKey: "simulation-decision-analysis" },
             ],
           },
           {

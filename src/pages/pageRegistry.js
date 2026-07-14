@@ -94,8 +94,16 @@
   addPage({
     key: "spot-trading-simulation",
     hash: "spot-trading-simulation",
-    title: "现货交易仿真",
+    title: "现货仿真回测",
     viewType: "spot-trading-simulation",
+    sidebarTrail: ["saleExpanded", "simulationExpanded"],
+  });
+
+  addPage({
+    key: "simulation-decision-analysis",
+    hash: "simulation-decision-analysis",
+    title: "交易决策分析",
+    viewType: "simulation-decision-analysis",
     sidebarTrail: ["saleExpanded", "simulationExpanded"],
   });
 

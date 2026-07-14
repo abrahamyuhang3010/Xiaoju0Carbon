@@ -1792,10 +1792,13 @@
       return state.operationRecord.filters.auditRange;
     }
     if (id === "spot-trading-simulation-range") {
-      return state.spotTradingSimulation.filters.backtestRange;
+      return state.spotMockTrading.filters.tradeRange;
     }
     if (id === "spot-mock-trading-range") {
       return state.spotMockTrading.filters.tradeRange;
+    }
+    if (id === "mock-trading-detail-date") {
+      return state.spotMockTrading.detailDate || { start: "2026-04-30", end: "2026-04-30" };
     }
     if (id === "day-ahead-load-prediction-date") {
       return state.dayAheadLoadPrediction.filters.predictionDate;
@@ -1859,9 +1862,11 @@
     } else if (id === "audit-record-range") {
       state.operationRecord.filters.auditRange = cloneRange(range);
     } else if (id === "spot-trading-simulation-range") {
-      state.spotTradingSimulation.filters.backtestRange = cloneRange(range);
+      state.spotMockTrading.filters.tradeRange = cloneRange(range);
     } else if (id === "spot-mock-trading-range") {
       state.spotMockTrading.filters.tradeRange = cloneRange(range);
+    } else if (id === "mock-trading-detail-date") {
+      state.spotMockTrading.detailDate = cloneRange(range);
     } else if (id === "day-ahead-load-prediction-date") {
       state.dayAheadLoadPrediction.filters.predictionDate = cloneRange(range);
     } else if (id === "spot-price-prediction-date") {
@@ -2164,6 +2169,9 @@
           end: state.settlement.filters.monthlyMonth + "-28",
         };
       }
+      if (state.settlement.activeTab === "零售用户结算情况") {
+        return getSettlementRetailMonthRange();
+      }
       return state.settlement.filters.dailyRange;
     }
     if (state.currentPageKey === "rolling-data") {
@@ -2220,6 +2228,9 @@
           return "月结算-" + getMonthlySettlementActiveSide(monthlyData);
         }
         return "月结算";
+      }
+      if (state.settlement.activeTab === "零售用户结算情况") {
+        return "批发购电分时均价";
       }
       return state.settlement.activeTab;
     }
@@ -5066,8 +5077,9 @@
         .join("");
     }
 
+    var scopeClass = settings.scopeClass ? " " + settings.scopeClass : "";
     return (
-      '<aside class="chart-tree single-metric-tree load-info-tree-nav">' +
+      '<aside class="chart-tree single-metric-tree load-info-tree-nav' + scopeClass + '">' +
       renderItems(flatItems, 0) +
       "</aside>"
     );
@@ -5385,10 +5397,17 @@
 
   function renderInfoDisclosureSingleMetricLoadContent(pageData) {
     var selectedItem = getSingleMetricLoadSelectedItem(pageData);
-    var useLoadInfoTreeNav =
-      getActiveInfoPrimaryTab() === "负荷信息";
+    var activePrimaryTab = getActiveInfoPrimaryTab();
+    var activeSecondaryTab = getActiveInfoSecondaryTab();
+    var useLoadInfoTreeNav = activePrimaryTab === "负荷信息";
+    // 仅对“负荷信息-负荷信息”“负荷信息-省间联络”两个二级 tab 启用样式规范化作用域，
+    // 其余走 load-info-tree-nav 的页面（如节点电价图例树、负荷详情等）保持原样不动。
+    var isScopedLoadInfoTree =
+      useLoadInfoTreeNav &&
+      (activeSecondaryTab === "负荷信息" || activeSecondaryTab === "省间联络");
     var sidebarHtml = renderSingleMetricLoadSidebar((pageData && pageData.sidebarGroups) || [], selectedItem && selectedItem.id, {
       useLoadInfoTreeNav: useLoadInfoTreeNav,
+      scopeClass: isScopedLoadInfoTree ? "load-info-tree-nav--scoped" : "",
     });
     var metricConfig = selectedItem && pageData && pageData.metrics ? pageData.metrics[selectedItem.id] : null;
 
@@ -10584,6 +10603,11 @@
 
     state.settlement.centerKey = centerKey;
 
+    var settlementTabs = (getSettlementMock().tabs || []);
+    if (settlementTabs.indexOf(state.settlement.activeTab) < 0) {
+      state.settlement.activeTab = settlementTabs[0] || "日清算";
+    }
+
     var secondaryOptions = getSettlementSecondaryOptions();
     state.settlement.secondaryTab =
       centerKey === "guangdong"
@@ -10606,6 +10630,8 @@
     state.settlement.filters.monthlyEnterpriseName = "";
     state.settlement.filters.monthlyEnterpriseAccountNo = "";
     state.settlement.monthlySide = "购电侧";
+    state.settlement.filters.retailMonth = getSettlementDefaultMonth();
+    state.settlement.retailUpdatedAt = "";
     clearMonthlyRetailFilters();
   }
 
@@ -14142,226 +14168,349 @@
     );
   }
 
-  function getSimulationRiskCell(riskStatus) {
-    var toneMap = {
-      稳健: "success",
-      关注: "warning",
-      预警: "danger",
-    };
-    return createBadgeCell(riskStatus, toneMap[riskStatus] || "default");
+  // ============ 仿真平台：现货仿真回测 / 现货模拟交易 / 交易决策分析 ============
+  // 依据录屏还原，仅作用于仿真平台三个页面，不改动其它页面。
+
+  function getSimulationTradeCenterKey() {
+    return (state.simulation && state.simulation.tradeCenterKey) || "guangdong";
   }
 
-  function getSpotTradingSimulationRecords() {
-    var filters = state.spotTradingSimulation.filters;
-    return (simulationMock.spotTradingSimulation && simulationMock.spotTradingSimulation.records
-      ? simulationMock.spotTradingSimulation.records
-      : []
-    ).filter(function filterRecord(record) {
-      return (
-        matchesOption(record.tradeCenter, filters.tradeCenter) &&
-        matchesOption(record.strategyName, filters.strategyName) &&
-        isDateWithinRange(record.date, filters.backtestRange)
-      );
+  function getSimulationCenterData() {
+    var key = getSimulationTradeCenterKey();
+    return simulationMock.getCenterData ? simulationMock.getCenterData(key) : {};
+  }
+
+  function getSimulationTradeCenterOptions() {
+    return (simulationMock.tradeCenters || []).map(function mapCenter(center) {
+      return center.name;
     });
   }
 
-  function getSpotTradingSimulationSeries(records) {
-    return aggregateByDate(records, "profit");
+  function getSimulationSelectedTradeCenterName() {
+    var key = getSimulationTradeCenterKey();
+    var center = (simulationMock.tradeCenters || []).find(function findCenter(c) { return c.key === key; });
+    return center ? center.name : "广东电力交易中心";
   }
 
-  function getSpotTradingSimulationSummaryCards(records) {
-    var dailySeries = getSpotTradingSimulationSeries(records);
-    var cumulativeProfit = dailySeries.length ? dailySeries[dailySeries.length - 1].cumulativeValue : 0;
-    var averageDailyProfit = dailySeries.length ? cumulativeProfit / dailySeries.length : 0;
-    var winRate = dailySeries.length
-      ? (dailySeries.filter(function filterItem(item) {
-          return item.dailyValue > 0;
-        }).length /
-          dailySeries.length) *
-        100
-      : 0;
-    var maxDrawdown = calculateMaxDrawdown(
-      dailySeries.map(function mapItem(item) {
-        return item.cumulativeValue;
-      }),
-    );
-    var riskStatus = maxDrawdown >= 12 ? "预警" : maxDrawdown >= 7 ? "关注" : "稳健";
+  function renderSimulationTradeCenterSelector() {
+    var components = global.BOSS_COMPONENTS || {};
+    var renderTradeCenterSelector = components.renderTradeCenterSelector || function empty() { return ""; };
+    return renderTradeCenterSelector({
+      selected: getSimulationSelectedTradeCenterName(),
+      options: getSimulationTradeCenterOptions(),
+      isOpen: state.ui.tradeCenterOpen,
+      escapeHtml: escapeHtml,
+      renderIcon: renderIcon,
+    });
+  }
 
+  function getSimulationBacktestRecords() {
+    var data = getSimulationCenterData();
+    var records = (data.simulationBacktest && data.simulationBacktest.records) || [];
+    var strategy = state.spotTradingSimulation.filters.strategy;
+    return records.filter(function filterRecord(record) {
+      return matchesOption(record.strategyName, strategy);
+    });
+  }
+
+  function getSimulationBacktestSummaryCards(records) {
+    if (!records.length) {
+      return [
+        { label: "总收益", value: "0", unit: "元" },
+        { label: "度电收益", value: "0", unit: "" },
+        { label: "收益达成率", value: "0%", unit: "" },
+        { label: "最大单日亏损", value: "0", unit: "元" },
+        { label: "Sharpe", value: "0", unit: "" },
+      ];
+    }
+    var totalProfit = records.reduce(function sum(acc, r) { return acc + r.totalProfit; }, 0);
+    var perKwh = records.reduce(function sum(acc, r) { return acc + r.perKwhProfit; }, 0) / records.length;
+    var achievement = records.reduce(function sum(acc, r) { return acc + r.achievementRate; }, 0) / records.length;
+    var maxLoss = records.reduce(function min(acc, r) { return Math.min(acc, r.maxLoss); }, 0);
+    var sharpe = records.reduce(function sum(acc, r) { return acc + r.sharpe; }, 0) / records.length;
     return [
-      { label: "累计收益", value: formatMoney(cumulativeProfit), unit: "元" },
-      { label: "平均日收益", value: formatMoney(Math.round(averageDailyProfit)), unit: "元" },
-      { label: "最大回撤", value: formatPercent(maxDrawdown, 1), unit: "" },
-      { label: "胜率", value: formatPercent(winRate, 1), unit: "" },
-      { label: "风险状态", value: riskStatus, unit: "" },
+      { label: "总收益", value: formatMoney(totalProfit), unit: "元" },
+      { label: "度电收益", value: formatDecimal(perKwh), unit: "" },
+      { label: "收益达成率", value: formatPercent(achievement, 1), unit: "" },
+      { label: "最大单日亏损", value: formatSignedMoney(maxLoss), unit: "元" },
+      { label: "Sharpe", value: formatDecimal(sharpe), unit: "" },
     ];
   }
 
-  function renderSpotTradingSimulationTrendChart(records) {
-    var dailySeries = getSpotTradingSimulationSeries(records);
-    return renderChartWithMarks({
-      chartId: "spot-trading-simulation-trend",
-      title: "策略收益趋势图",
-      unit: "元",
-      labels: dailySeries.map(function mapItem(item) {
-        return item.date.slice(5);
-      }),
-      series: [
-        {
-          id: "cumulative-profit",
-          label: "累计收益",
-          color: "#1677FF",
-          values: dailySeries.map(function mapItem(item) {
-            return item.cumulativeValue;
-          }),
-        },
-      ],
-      xLabelEvery: dailySeries.length > 7 ? 2 : 1,
-      hiddenSeries: getChartHiddenState("spot-trading-simulation-trend"),
-      tooltipFormatter: function tooltipFormatter(label, index) {
-        var record = dailySeries[index];
-        return "日期: " + label + "\n累计收益: " + formatMoney(record.cumulativeValue) + " 元";
-      },
-      escapeHtml: escapeHtml,
-      renderIcon: renderIcon,
-      renderEmptyState: renderEmptyState,
-    });
-  }
-
-  function renderSpotTradingSimulationProfitChart(records) {
-    var dailySeries = getSpotTradingSimulationSeries(records);
-    return renderBarChart({
-      labels: dailySeries.map(function mapItem(item) {
-        return item.date.slice(5);
-      }),
-      values: dailySeries.map(function mapItem(item) {
-        return item.dailyValue;
-      }),
-      unit: "元",
-      positiveColor: "#23C887",
-      negativeColor: "#FF4D4F",
-      xLabelEvery: dailySeries.length > 7 ? 2 : 1,
-    });
-  }
-
-  function getSpotTradingSimulationTable() {
+  function getSimulationBacktestTable() {
+    var records = getSimulationBacktestRecords();
     return {
       columns: [
-        { key: "date", label: "日期" },
         { key: "strategyName", label: "策略名称" },
-        { key: "predictedLoad", label: "预测负荷" },
-        { key: "predictedPrice", label: "预测电价" },
-        { key: "declaredVolume", label: "申报电量" },
-        { key: "tradedVolume", label: "成交电量" },
-        { key: "profit", label: "收益" },
-        { key: "returnRate", label: "收益率" },
-        { key: "riskStatus", label: "风险状态" },
+        { key: "strategyVersion", label: "策略版本" },
+        { key: "backtestRange", label: "回测日期" },
+        { key: "totalProfit", label: "总收益(元)" },
+        { key: "perKwhProfit", label: "度电收益" },
+        { key: "achievementRate", label: "收益达成率" },
+        { key: "sharpe", label: "Sharpe" },
+        { key: "maxLoss", label: "最大亏损金额(元)" },
+        { key: "lossDays", label: "亏损天数" },
+        { key: "winRate", label: "胜率" },
+        { key: "backtestRuns", label: "回测" },
         { key: "actions", label: "操作", sortable: false },
       ],
-      rows: getSpotTradingSimulationRecords().map(function mapRecord(record) {
+      rows: records.map(function mapRecord(record) {
         return {
-          date: record.date,
           strategyName: record.strategyName,
-          predictedLoad: formatMoney(record.predictedLoad),
-          predictedPrice: formatDecimal(record.predictedPrice),
-          declaredVolume: formatMoney(record.declaredVolume),
-          tradedVolume: formatMoney(record.tradedVolume),
-          profit: createStyledCell(formatSignedMoney(record.profit), record.profit >= 0 ? "table-positive" : "table-negative", record.profit),
-          returnRate: createStyledCell(formatSignedNumber(record.returnRate, 1) + "%", record.returnRate >= 0 ? "table-positive" : "table-negative", record.returnRate),
-          riskStatus: getSimulationRiskCell(record.riskStatus),
+          strategyVersion: record.strategyVersion,
+          backtestRange: record.backtestRange.start.slice(5).replace("-", ".") + " - " + record.backtestRange.end.slice(5).replace("-", "."),
+          totalProfit: createStyledCell(formatMoney(record.totalProfit), record.totalProfit >= 0 ? "table-positive" : "table-negative", record.totalProfit),
+          perKwhProfit: formatDecimal(record.perKwhProfit),
+          achievementRate: formatPercent(record.achievementRate, 1),
+          sharpe: formatDecimal(record.sharpe),
+          maxLoss: createStyledCell(formatSignedMoney(record.maxLoss), "table-negative", record.maxLoss),
+          lossDays: String(record.lossDays),
+          winRate: formatPercent(record.winRate, 1),
+          backtestRuns: String(record.backtestRuns),
           actions: createTableActionCell(record.id, [
-            { label: "查看详情", action: "view-record-detail" },
-            { label: "下载结果", action: "open-download" },
+            { label: "趋势", action: "view-simulation-trend" },
+            { label: "明细", action: "view-simulation-detail" },
+            { label: "删除", action: "delete-simulation-backtest" },
           ]),
         };
       }),
-      minWidth: 1460,
+      minWidth: 1480,
     };
   }
 
-  function renderSpotTradingSimulationPage() {
-    var page = simulationMock.spotTradingSimulation || {};
-    var records = getSpotTradingSimulationRecords();
-
+  function renderSimulationBacktestListPage() {
+    var page = simulationMock.simulationBacktest || {};
+    var records = getSimulationBacktestRecords();
     return (
-      '<div class="page-stack">' +
-      '<section class="page-header"><div class="page-title-block"><h1>' +
-      escapeHtml(page.title || "现货交易仿真") +
-      '</h1><div class="page-description">' +
-      escapeHtml(page.subtitle || "") +
-      "</div></div></section>" +
+      '<div class="page-stack simulation-page">' +
+      '<section class="page-header page-header-market-disclosure"><div class="page-title-block"><h1>' +
+      escapeHtml(page.title || "现货仿真回测") +
+      '</h1></div>' +
+      renderSimulationTradeCenterSelector() +
+      "</section>" +
       '<section class="panel info-filter-panel"><div class="info-filter-fields">' +
       renderBoundSelectFilter(
-        "交易中心",
-        state.spotTradingSimulation.filters.tradeCenter,
-        (page.filters && page.filters.tradeCenterOptions) || [],
-        "tradeCenter",
+        "交易策略",
+        state.spotTradingSimulation.filters.strategy,
+        page.filterStrategyOptions || [],
+        "strategy",
         "spotTradingSimulation",
         "filter-select-native",
       ) +
-      renderBoundSelectFilter(
-        "策略名称",
-        state.spotTradingSimulation.filters.strategyName,
-        (page.filters && page.filters.strategyOptions) || [],
-        "strategyName",
-        "spotTradingSimulation",
-        "filter-select-native",
-      ) +
-      '<div class="info-filter-field"><span class="filter-label">回测周期：</span>' +
-      renderInfoDatePicker("spot-trading-simulation-range", "range") +
-      '</div></div><div class="info-filter-actions">' +
-      renderUiActionButton("重置", "ghost", "reset-spot-trading-simulation") +
-      renderUiActionButton("查询", "primary", "query-spot-trading-simulation") +
-      "</div></section>" +
-      renderSimpleStatusBar(page.status) +
-      renderSectionHeading("策略收益概览", "聚合展示累计收益、平均日收益、最大回撤、胜率与风险状态") +
-      renderSummaryCards(getSpotTradingSimulationSummaryCards(records), "summary-card-grid-5") +
-      renderChartSection("策略收益趋势图", renderSpotTradingSimulationTrendChart(records)) +
-      renderChartSection("每日盈亏柱状图", renderSpotTradingSimulationProfitChart(records)) +
-      renderSectionTable("spot-trading-simulation-table", getSpotTradingSimulationTable()) +
+      '</div><div class="info-filter-actions">' +
+      renderUiActionButton("新增仿真回测", "primary", "create-simulation-backtest") +
+      '</div></section>' +
+      renderSectionHeading(page.sectionTitle || "现货仿真回测记录", page.subtitle || "") +
+      renderSummaryCards(getSimulationBacktestSummaryCards(records), "summary-card-grid-5") +
+      renderSectionTable("spot-trading-simulation-table", getSimulationBacktestTable()) +
       "</div>"
     );
   }
 
-  function getSpotMockTradingRecords() {
-    var filters = state.spotMockTrading.filters;
-    return (simulationMock.spotMockTrading && simulationMock.spotMockTrading.records ? simulationMock.spotMockTrading.records : []).filter(function filterRecord(record) {
-      return matchesOption(record.strategy, filters.strategy, "请选择交易策略") && isDateWithinRange(record.date, filters.tradeRange);
+  function getSimulationBacktestDetail(recordId) {
+    var data = getSimulationCenterData();
+    var details = (data.simulationBacktest && data.simulationBacktest.details) || {};
+    return details[recordId];
+  }
+
+  function getSimulationBacktestRecord(recordId) {
+    var records = ((getSimulationCenterData().simulationBacktest || {}).records) || [];
+    return records.find(function find(r) { return r.id === recordId; });
+  }
+
+  function renderSimulationBacktestMetrics(metrics) {
+    var rows = [
+      [
+        { label: "策略收益(元)", value: formatMoney(metrics.strategyProfit) },
+        { label: "度电收益(厘)", value: formatDecimal(metrics.perKwhProfit) },
+        { label: "收益达成率", value: formatPercent(metrics.achievementRate, 1) },
+        { label: "胜率", value: formatPercent(metrics.winRate, 1) },
+        { label: "交易成功率", value: formatPercent(metrics.tradeSuccessRate, 1) },
+        { label: "成功收益率", value: formatPercent(metrics.successProfitRate, 1) },
+        { label: "失败损失率", value: formatPercent(metrics.failureLossRate, 1) },
+      ],
+      [
+        { label: "度电收益Sharpe", value: formatDecimal(metrics.perKwhSharpe) },
+        { label: "Sharpe", value: formatDecimal(metrics.sharpe) },
+        { label: "最大单日亏损(元)", value: formatSignedMoney(metrics.maxDailyLoss) },
+        { label: "最大连续亏损天数", value: String(metrics.maxContinuousLossDays) },
+        { label: "加权负荷预测准确率", value: formatPercent(metrics.weightedLoadForecastAccuracy, 1) },
+        { label: "加权偏差预测准确率", value: formatPercent(metrics.weightedDeviationForecastAccuracy, 1) },
+        { label: "", value: "" },
+      ],
+    ];
+    return rows.map(function mapRow(row) {
+      return (
+        '<div class="simulation-metric-row">' +
+        row.map(function mapCell(cell) {
+          return (
+            '<div class="simulation-metric-cell' + (cell.label ? "" : " simulation-metric-cell-empty") + '">' +
+            '<div class="simulation-metric-label">' + escapeHtml(cell.label) + "</div>" +
+            '<div class="simulation-metric-value">' + escapeHtml(cell.value) + "</div>" +
+            "</div>"
+          );
+        }).join("") +
+        "</div>"
+      );
+    }).join("");
+  }
+
+  function renderSimulationBacktestDetailHeader(record, metrics, title) {
+    var titles = simulationMock.detailTitles || {};
+    return (
+      '<div class="page-stack simulation-page">' +
+      '<section class="page-header"><div class="page-title-block"><h1>' +
+      escapeHtml(title || titles.backtestTrend || "现货仿真趋势分析") +
+      '</h1><div class="page-description simulation-detail-subtitle">' +
+      escapeHtml(record.strategyName + " | " + record.strategyVersion + " | " + record.backtestRange.start + " ~ " + record.backtestRange.end) +
+      "</div></div>" +
+      '<button class="ghost-btn simulation-back-btn" data-ui-action="back-simulation-list">返回列表</button>' +
+      "</section>" +
+      '<section class="panel simulation-metric-panel">' +
+      renderSimulationBacktestMetrics(metrics) +
+      "</section>"
+    );
+  }
+
+  function renderSimulationBacktestTrendChart(detail) {
+    var series = detail.dailySeries || [];
+    return renderChartWithMarks({
+      chartId: "simulation-backtest-trend",
+      title: "累计收益",
+      unit: "元",
+      labels: series.map(function mapItem(item) { return item.date; }),
+      series: [
+        {
+          id: "backtest-cumulative",
+          label: detail.record ? (detail.record.strategyName + "-" + detail.record.strategyVersion) : "累计收益",
+          color: "#1677FF",
+          values: series.map(function mapItem(item) { return item.cumulative; }),
+        },
+      ],
+      xLabelEvery: series.length > 7 ? 2 : 1,
+      hiddenSeries: getChartHiddenState("simulation-backtest-trend"),
+      escapeHtml: escapeHtml,
+      renderIcon: renderIcon,
+      renderEmptyState: renderEmptyState,
     });
   }
 
-  function getSpotMockTradingStatusCell(status) {
-    var toneMap = {
-      待执行: "default",
-      执行中: "processing",
-      已完成: "success",
-      失败: "danger",
-    };
-    return createBadgeCell(status, toneMap[status] || "default");
+  function renderSimulationBacktestTrendPage() {
+    var recordId = state.simulation.activeRecordId;
+    var record = getSimulationBacktestRecord(recordId);
+    var detail = getSimulationBacktestDetail(recordId);
+    if (!record || !detail) {
+      return renderSimulationBacktestListPage();
+    }
+    return (
+      renderSimulationBacktestDetailHeader(record, detail.metrics) +
+      renderChartSection("累计收益", renderSimulationBacktestTrendChart({ record: record, dailySeries: detail.dailySeries }), "可点击右上「添加对比」叠加其它策略曲线") +
+      '<section class="panel simulation-compare-actions"><button class="ghost-btn" data-ui-action="add-simulation-compare">+ 添加对比</button></section>' +
+      "</div>"
+    );
   }
 
-  function renderSpotMockTradingTrendChart(records) {
-    var dailySeries = aggregateByDate(records, "dailyProfit");
+  function getSimulationBacktestDetailTable(detail) {
+    var rows = detail.detailRows || [];
+    return {
+      columns: [
+        { key: "index", label: "第N次" },
+        { key: "tradeDate", label: "交易日期" },
+        { key: "result", label: "交易结果" },
+        { key: "successProfit", label: "成功收益(元)" },
+        { key: "successRate", label: "成功率" },
+        { key: "failureLossRate", label: "失败损失率" },
+        { key: "dayaheadPrice", label: "日前电价" },
+        { key: "realtimePrice", label: "实时电价" },
+        { key: "priceForecast", label: "电价预测" },
+        { key: "spread", label: "价差" },
+        { key: "loadForecastAccuracy", label: "负荷预测准确率" },
+        { key: "profit", label: "收益" },
+      ],
+      rows: rows.map(function mapRow(row) {
+        return {
+          index: String(row.index),
+          tradeDate: row.tradeDate,
+          result: createBadgeCell(row.result, row.result === "成功" ? "success" : "danger"),
+          successProfit: createStyledCell(formatSignedMoney(row.successProfit), row.successProfit >= 0 ? "table-positive" : "table-negative", row.successProfit),
+          successRate: formatPercent(row.successRate, 1),
+          failureLossRate: formatPercent(row.failureLossRate, 1),
+          dayaheadPrice: formatDecimal(row.dayaheadPrice),
+          realtimePrice: formatDecimal(row.realtimePrice),
+          priceForecast: createBadgeCell(row.priceForecast, row.priceForecast === "正确" ? "success" : "danger"),
+          spread: formatDecimal(row.spread),
+          loadForecastAccuracy: formatPercent(row.loadForecastAccuracy, 1),
+          profit: formatDecimal(row.profit),
+        };
+      }),
+      minWidth: 1320,
+    };
+  }
+
+  function renderSimulationBacktestDetailPage() {
+    var titles = simulationMock.detailTitles || {};
+    var recordId = state.simulation.activeRecordId;
+    var record = getSimulationBacktestRecord(recordId);
+    var detail = getSimulationBacktestDetail(recordId);
+    if (!record || !detail) {
+      return renderSimulationBacktestListPage();
+    }
+    return (
+      renderSimulationBacktestDetailHeader(record, detail.metrics, titles.backtestDetail || "现货仿真明细数据") +
+      renderSectionTable("simulation-backtest-detail-table", getSimulationBacktestDetailTable(detail)) +
+      "</div>"
+    );
+  }
+
+  function renderSpotTradingSimulationPage() {
+    var view = (state.simulation && state.simulation.activeView) || "list";
+    if (view === "trend") return renderSimulationBacktestTrendPage();
+    if (view === "detail") return renderSimulationBacktestDetailPage();
+    return renderSimulationBacktestListPage();
+  }
+
+  // ============ 现货模拟交易 ============
+
+  function getSpotMockTradingRecords() {
+    var data = getSimulationCenterData();
+    var records = (data.spotMockTrading && data.spotMockTrading.records) || [];
+    var strategy = state.spotMockTrading.filters.strategy;
+    return records.filter(function filterRecord(record) {
+      return matchesOption(record.name, strategy);
+    });
+  }
+
+  function getSpotMockTradingProfitAnalysis() {
+    var data = getSimulationCenterData();
+    return (data.spotMockTrading && data.spotMockTrading.profitAnalysis) || { labels: [], series: [] };
+  }
+
+  function renderSpotMockTradingTrendChart() {
+    var analysis = getSpotMockTradingProfitAnalysis();
+    var labels = analysis.labels || [];
+    var series = (analysis.series || []).map(function mapSeries(s) {
+      return {
+        id: s.id,
+        label: s.label + (s.version ? "-" + s.version : ""),
+        color: s.color,
+        values: (s.values || []).map(function mapItem(item) { return item.cumulative; }),
+      };
+    });
     return renderChartWithMarks({
       chartId: "spot-mock-trading-trend",
-      title: "累计收益趋势图",
+      title: "累计收益",
       unit: "元",
-      labels: dailySeries.map(function mapItem(item) {
-        return item.date.slice(5);
-      }),
-      series: [
-        {
-          id: "mock-cumulative-profit",
-          label: "累计收益",
-          color: "#1677FF",
-          values: dailySeries.map(function mapItem(item) {
-            return item.cumulativeValue;
-          }),
-        },
-      ],
+      labels: labels,
+      series: series,
+      xLabelEvery: labels.length > 7 ? 2 : 1,
       hiddenSeries: getChartHiddenState("spot-mock-trading-trend"),
       tooltipFormatter: function tooltipFormatter(label, index) {
-        var record = dailySeries[index];
-        return "日期: " + label + "\n累计收益: " + formatMoney(record.cumulativeValue) + " 元";
+        var lines = [label];
+        (analysis.series || []).forEach(function eachSeries(s) {
+          var v = s.values && s.values[index] ? s.values[index].cumulative : 0;
+          lines.push(s.label + (s.version ? "-" + s.version : "") + ": " + formatMoney(v) + " 元");
+        });
+        return lines.join("\n");
       },
       escapeHtml: escapeHtml,
       renderIcon: renderIcon,
@@ -14369,86 +14518,134 @@
     });
   }
 
-  function renderSpotMockTradingProfitChart(records) {
-    var dailySeries = aggregateByDate(records, "dailyProfit");
-    return renderBarChart({
-      labels: dailySeries.map(function mapItem(item) {
-        return item.date.slice(5);
-      }),
-      values: dailySeries.map(function mapItem(item) {
-        return item.dailyValue;
-      }),
+  function renderSpotMockTradingDailyChart() {
+    var analysis = getSpotMockTradingProfitAnalysis();
+    var labels = analysis.labels || [];
+    var series = (analysis.series || []).map(function mapSeries(s) {
+      return {
+        id: s.id,
+        label: s.label + (s.version ? "-" + s.version : ""),
+        color: s.color,
+        values: (s.values || []).map(function mapItem(item) { return item.daily; }),
+      };
+    });
+    return renderChartWithMarks({
+      chartId: "spot-mock-trading-daily",
+      title: "每日收益",
       unit: "元",
-      positiveColor: "#23C887",
-      negativeColor: "#FF4D4F",
+      labels: labels,
+      series: series,
+      xLabelEvery: labels.length > 7 ? 2 : 1,
+      hiddenSeries: getChartHiddenState("spot-mock-trading-daily"),
+      escapeHtml: escapeHtml,
+      renderIcon: renderIcon,
+      renderEmptyState: renderEmptyState,
     });
   }
 
   function getSpotMockTradingTable() {
-    return {
-      columns: [
-        { key: "date", label: "日期" },
-        { key: "strategy", label: "交易策略" },
-        { key: "predictedVolume", label: "预测电量" },
-        { key: "predictedPrice", label: "预测电价" },
-        { key: "declaredVolume", label: "申报电量" },
-        { key: "tradedVolume", label: "成交电量" },
-        { key: "dailyProfit", label: "当日收益" },
-        { key: "cumulativeProfit", label: "累计收益" },
-        { key: "status", label: "状态" },
+    var records = getSpotMockTradingRecords();
+    var tableView = (state.simulation && state.simulation.mockTradingTableView) || "after";
+    var columns, rows;
+    if (tableView === "recent") {
+      columns = [
+        { key: "name", label: "交易策略" },
+        { key: "onlineVersion", label: "在线版本" },
+        { key: "d14", label: "近14天收益(元)" },
+        { key: "d14Rate", label: "近14天收益达成率" },
+        { key: "month", label: "本月收益(元)" },
+        { key: "monthRate", label: "本月收益达成率" },
+        { key: "lastMonth", label: "上月收益(元)" },
+        { key: "lastMonthRate", label: "上月收益达成率" },
+        { key: "createdAt", label: "创建时间" },
         { key: "actions", label: "操作", sortable: false },
-      ],
-      rows: getSpotMockTradingRecords().map(function mapRecord(record) {
+      ];
+      rows = records.map(function mapRecord(record) {
         return {
-          date: record.date,
-          strategy: record.strategy,
-          predictedVolume: formatMoney(record.predictedVolume),
-          predictedPrice: formatDecimal(record.predictedPrice),
-          declaredVolume: formatMoney(record.declaredVolume),
-          tradedVolume: formatMoney(record.tradedVolume),
-          dailyProfit: createStyledCell(formatSignedMoney(record.dailyProfit), record.dailyProfit >= 0 ? "table-positive" : "table-negative", record.dailyProfit),
-          cumulativeProfit: createStyledCell(formatSignedMoney(record.cumulativeProfit), record.cumulativeProfit >= 0 ? "table-positive" : "table-negative", record.cumulativeProfit),
-          status: getSpotMockTradingStatusCell(record.status),
+          name: record.name,
+          onlineVersion: record.onlineVersion,
+          d14: createStyledCell(formatSignedMoney(record.d14), record.d14 >= 0 ? "table-positive" : "table-negative", record.d14),
+          d14Rate: formatPercent(record.d14Rate, 0),
+          month: createStyledCell(formatSignedMoney(record.month), record.month >= 0 ? "table-positive" : "table-negative", record.month),
+          monthRate: formatPercent(record.monthRate, 0),
+          lastMonth: createStyledCell(formatSignedMoney(record.lastMonth), record.lastMonth >= 0 ? "table-positive" : "table-negative", record.lastMonth),
+          lastMonthRate: formatPercent(record.lastMonthRate, 0),
+          createdAt: record.createdAt,
           actions: createTableActionCell(record.id, [
-            { label: "查看详情", action: "view-record-detail" },
-            { label: "重新执行", action: "retry-mock-trading" },
-            { label: "下载", action: "open-download" },
+            { label: "明细", action: "view-mock-trading-detail" },
+            { label: "版本设置", action: "open-version-setting" },
+            { label: "删除", action: "delete-mock-trading" },
           ]),
         };
-      }),
-      minWidth: 1500,
-    };
+      });
+    } else {
+      columns = [
+        { key: "name", label: "交易策略" },
+        { key: "onlineVersion", label: "在线版本" },
+        { key: "onlineDate", label: "上线日期" },
+        { key: "afterTotal", label: "上线后累计收益(元)" },
+        { key: "afterRate", label: "上线后收益达成率" },
+        { key: "d3", label: "近3天收益(元)" },
+        { key: "d3Rate", label: "近3天收益达成率" },
+        { key: "d7", label: "近7天收益(元)" },
+        { key: "d7Rate", label: "近7天收益达成率" },
+        { key: "actions", label: "操作", sortable: false },
+      ];
+      rows = records.map(function mapRecord(record) {
+        return {
+          name: record.name,
+          onlineVersion: record.onlineVersion,
+          onlineDate: record.onlineDate,
+          afterTotal: createStyledCell(formatSignedMoney(record.afterTotal), record.afterTotal >= 0 ? "table-positive" : "table-negative", record.afterTotal),
+          afterRate: formatPercent(record.afterRate, 0),
+          d3: createStyledCell(formatSignedMoney(record.d3), record.d3 >= 0 ? "table-positive" : "table-negative", record.d3),
+          d3Rate: formatPercent(record.d3Rate, 0),
+          d7: createStyledCell(formatSignedMoney(record.d7), record.d7 >= 0 ? "table-positive" : "table-negative", record.d7),
+          d7Rate: formatPercent(record.d7Rate, 0),
+          actions: createTableActionCell(record.id, [
+            { label: "明细", action: "view-mock-trading-detail" },
+            { label: "版本设置", action: "open-version-setting" },
+            { label: "删除", action: "delete-mock-trading" },
+          ]),
+        };
+      });
+    }
+    return { columns: columns, rows: rows, minWidth: 1500 };
+  }
+
+  function renderSpotMockTradingTableViews() {
+    var views = (simulationMock.spotMockTrading && simulationMock.spotMockTrading.tableViews) || [];
+    var active = (state.simulation && state.simulation.mockTradingTableView) || "after";
+    return (
+      '<div class="simulation-table-views">' +
+      views.map(function mapView(view) {
+        return (
+          '<button class="simulation-table-view-tab ' + (view.key === active ? "active" : "") + '" data-ui-action="switch-mock-trading-view" data-view="' + escapeHtml(view.key) + '">' +
+          escapeHtml(view.label) +
+          "</button>"
+        );
+      }).join("") +
+      "</div>"
+    );
   }
 
   function renderSimulationPage() {
-    var simulationPage = simulationMock.spotMockTrading || {};
-    var notification = simulationMock.notification || {};
-    var records = getSpotMockTradingRecords();
-
+    var view = (state.simulation && state.simulation.activeView) || "list";
+    if (view === "mockDetail") return renderSpotMockTradingDetailPage();
+    var page = simulationMock.spotMockTrading || {};
+    var analysis = getSpotMockTradingProfitAnalysis();
     return (
       '<div class="page-stack simulation-page">' +
-      (state.simulation.permissionVisible
-        ? renderPermissionNotification({
-            title: notification.title || "权限认证",
-            path: notification.path || "/sale/sim/record/pageQuery",
-            message: notification.message || "权限不足，点击下方角色申请：",
-            actionText: notification.actionText || "数字能源平台超级管理员",
-            closeAction: "dismiss-permission",
-            escapeHtml: escapeHtml,
-            renderIcon: renderIcon,
-          })
-        : "") +
-      '<section class="page-header"><div class="page-title-block"><h1>' +
-      escapeHtml(simulationPage.marketLabel || "广东电力市场") +
-      '</h1><div class="page-description">' +
-      escapeHtml(simulationPage.subtitle || "") +
-      "</div></div>" +
-      renderActionButton(simulationPage.cta || "新建模拟交易", "primary", "plus", "action-btn") +
-      '</section><section class="panel simulation-filter-panel"><div class="simulation-filters">' +
+      '<section class="page-header page-header-market-disclosure"><div class="page-title-block"><h1>' +
+      escapeHtml(page.title || "现货模拟交易") +
+      '</h1></div>' +
+      renderSimulationTradeCenterSelector() +
+      "</section>" +
+      '<section class="panel simulation-filter-panel"><div class="simulation-filters">' +
       renderBoundSelectFilter(
         "交易策略",
         state.spotMockTrading.filters.strategy,
-        (simulationPage.filters && simulationPage.filters.strategyOptions) || [],
+        page.filterStrategyOptions || [],
         "strategy",
         "spotMockTrading",
         "filter-select-native",
@@ -14463,17 +14660,210 @@
         escapeHtml: escapeHtml,
         renderIcon: renderIcon,
       }) +
-      '</div></div><div class="status-actions">' +
-      renderUiActionButton("重置", "ghost", "reset-spot-mock-trading") +
-      renderUiActionButton("查询", "primary", "query-spot-mock-trading") +
+      '</div></div></section>' +
+      '<section class="panel chart-panel chart-panel-plain"><div class="chart-main chart-main-plain">' +
+      '<div class="simulation-section-head"><div class="simulation-section-title">策略收益分析</div>' +
+      '<div class="simulation-section-actions">' +
+      '<button class="ghost-btn" data-ui-action="switch-mock-trading-version">版本切换</button>' +
+      '<button class="primary-btn" data-ui-action="create-mock-trading">新建模拟交易</button>' +
+      "</div></div>" +
+      '<div class="simulation-chart-note">' + escapeHtml(analysis.dataNote || "") + "</div>" +
+      renderSpotMockTradingTrendChart() +
+      renderSpotMockTradingDailyChart() +
       "</div></section>" +
-      renderSimpleStatusBar(simulationPage.status) +
-      renderChartSection("累计收益趋势图", renderSpotMockTradingTrendChart(records)) +
-      renderChartSection("每日盈亏柱状图", renderSpotMockTradingProfitChart(records)) +
-      renderSectionTable("spot-mock-trading-table", getSpotMockTradingTable()) +
+      '<section class="panel chart-panel chart-panel-plain"><div class="chart-main chart-main-plain">' +
+      '<div class="simulation-section-head"><div class="simulation-section-title">模拟交易列表</div>' +
+      renderSpotMockTradingTableViews() +
+      "</div>" +
+      renderDataTablePro({
+        tableId: "spot-mock-trading-table",
+        columns: getSpotMockTradingTable().columns,
+        rows: getSpotMockTradingTable().rows,
+        minWidth: 1500,
+        sortState: getTableSortState("spot-mock-trading-table"),
+        escapeHtml: escapeHtml,
+        renderIcon: renderIcon,
+        renderEmptyState: renderEmptyState,
+      }) +
+      "</div></section>" +
       "</div>"
     );
   }
+
+  function renderSpotMockTradingDetailPage() {
+    var titles = simulationMock.detailTitles || {};
+    var data = getSimulationCenterData();
+    var rows = (data.spotMockTrading && data.spotMockTrading.detailRows) || [];
+    var table = {
+      columns: [
+        { key: "strategyName", label: "策略名称" },
+        { key: "strategyVersion", label: "策略版本" },
+        { key: "tradeDate", label: "交易日期" },
+        { key: "index", label: "第N次" },
+        { key: "result", label: "交易结果" },
+        { key: "successProfit", label: "成功收益(元)" },
+        { key: "successRate", label: "成功率" },
+        { key: "failureLossRate", label: "失败损失率" },
+        { key: "dayaheadPrice", label: "日前电价" },
+        { key: "realtimePrice", label: "实时电价" },
+        { key: "priceForecast", label: "电价预测" },
+        { key: "spread", label: "价差" },
+        { key: "forecastLoad", label: "预测负荷" },
+        { key: "actualLoad", label: "实际负荷" },
+        { key: "loadForecastAccuracy", label: "负荷预测准确率" },
+        { key: "profit", label: "收益" },
+      ],
+      rows: rows.map(function mapRow(row) {
+        return {
+          strategyName: row.strategyName,
+          strategyVersion: row.strategyVersion,
+          tradeDate: row.tradeDate,
+          index: String(row.index),
+          result: createBadgeCell(row.result, row.result === "成功" ? "success" : "danger"),
+          successProfit: createStyledCell(formatSignedMoney(row.successProfit), row.successProfit >= 0 ? "table-positive" : "table-negative", row.successProfit),
+          successRate: formatPercent(row.successRate, 1),
+          failureLossRate: formatPercent(row.failureLossRate, 1),
+          dayaheadPrice: formatDecimal(row.dayaheadPrice),
+          realtimePrice: formatDecimal(row.realtimePrice),
+          priceForecast: createBadgeCell(row.priceForecast, row.priceForecast === "正确" ? "success" : "danger"),
+          spread: formatDecimal(row.spread),
+          forecastLoad: formatDecimal(row.forecastLoad),
+          actualLoad: formatDecimal(row.actualLoad),
+          loadForecastAccuracy: formatPercent(row.loadForecastAccuracy, 1),
+          profit: formatDecimal(row.profit),
+        };
+      }),
+      minWidth: 1680,
+    };
+    return (
+      '<div class="page-stack simulation-page">' +
+      '<section class="page-header"><div class="page-title-block"><h1>' +
+      escapeHtml(titles.mockTradingDetail || "现货模拟交易明细数据") +
+      '</h1></div><button class="ghost-btn simulation-back-btn" data-ui-action="back-simulation-list">返回列表</button></section>' +
+      '<section class="panel info-filter-panel"><div class="info-filter-fields">' +
+      '<div class="info-filter-field"><span class="filter-label">交易日期：</span>' +
+      renderStandardDatePicker({
+        id: "mock-trading-detail-date",
+        mode: "single",
+        range: getPickerDisplayRange("mock-trading-detail-date"),
+        isOpen: state.ui.activeDatePickerId === "mock-trading-detail-date",
+        holidays: state.ui.holidays,
+        escapeHtml: escapeHtml,
+        renderIcon: renderIcon,
+      }) +
+      '</div></div></section>' +
+      renderSectionTable("spot-mock-trading-detail-table", table) +
+      "</div>"
+    );
+  }
+
+  // ============ 交易决策分析 ============
+
+  function renderSimulationDecisionAnalysisPage() {
+    var page = simulationMock.decisionAnalysis || {};
+    var data = getSimulationCenterData();
+    var analysis = data.decisionAnalysis || { summary: [], series: [], labels: [] };
+    var summary = analysis.summary || [];
+    var labels = analysis.labels || [];
+    var series = (analysis.series || []).map(function mapSeries(s) {
+      return {
+        id: s.id,
+        label: s.label + (s.version ? "-" + s.version : ""),
+        color: s.color,
+        values: (s.values || []).map(function mapItem(item) { return item.cumulative; }),
+      };
+    });
+    var summaryTable = {
+      columns: [
+        { key: "strategyName", label: "交易策略" },
+        { key: "onlineVersion", label: "在线版本" },
+        { key: "afterTotal", label: "上线后累计收益(元)" },
+        { key: "afterRate", label: "上线后收益达成率" },
+        { key: "d14", label: "近14天收益(元)" },
+        { key: "d14Rate", label: "近14天收益达成率" },
+        { key: "recommendation", label: "决策建议" },
+      ],
+      rows: summary.map(function mapItem(item) {
+        return {
+          strategyName: item.strategyName,
+          onlineVersion: item.onlineVersion,
+          afterTotal: createStyledCell(formatSignedMoney(item.afterTotal), item.afterTotal >= 0 ? "table-positive" : "table-negative", item.afterTotal),
+          afterRate: formatPercent(item.afterRate, 0),
+          d14: createStyledCell(formatSignedMoney(item.d14), item.d14 >= 0 ? "table-positive" : "table-negative", item.d14),
+          d14Rate: formatPercent(item.d14Rate, 0),
+          recommendation: createBadgeCell(item.recommendation, item.recommendation === "建议保持" ? "success" : item.recommendation === "关注" ? "warning" : "danger"),
+        };
+      }),
+      minWidth: 1180,
+    };
+    return (
+      '<div class="page-stack simulation-page">' +
+      '<section class="page-header page-header-market-disclosure"><div class="page-title-block"><h1>' +
+      escapeHtml(page.title || "交易决策分析") +
+      '</h1></div>' +
+      renderSimulationTradeCenterSelector() +
+      "</section>" +
+      renderSimpleStatusBar(page.status) +
+      renderSectionHeading("策略收益对比", page.subtitle || "多策略累计收益趋势对比") +
+      '<section class="panel chart-panel chart-panel-plain"><div class="chart-main chart-main-plain">' +
+      renderChartWithMarks({
+        chartId: "simulation-decision-trend",
+        title: "累计收益对比",
+        unit: "元",
+        labels: labels,
+        series: series,
+        xLabelEvery: labels.length > 7 ? 2 : 1,
+        hiddenSeries: getChartHiddenState("simulation-decision-trend"),
+        escapeHtml: escapeHtml,
+        renderIcon: renderIcon,
+        renderEmptyState: renderEmptyState,
+      }) +
+      "</div></section>" +
+      renderSectionTable("simulation-decision-table", summaryTable) +
+      "</div>"
+    );
+  }
+
+  // ============ 版本设置弹窗 ============
+
+  function renderVersionSettingOverlay() {
+    if (!state.simulation || !state.simulation.versionSettingVisible) {
+      return "";
+    }
+    var data = getSimulationCenterData();
+    var versions = (data.spotMockTrading && data.spotMockTrading.versions) || {};
+    var versionInfo = versions[state.simulation.versionSettingStrategyId] || {};
+    var titles = simulationMock.detailTitles || {};
+    var versionList = versionInfo.versionList || [];
+    return (
+      '<div class="drawer-overlay version-setting-overlay">' +
+      '<aside class="drawer-panel version-setting-panel" role="dialog" aria-modal="true">' +
+      '<div class="drawer-header"><strong>' + escapeHtml(titles.versionSetting || "版本设置") + "</strong>" +
+      '<button class="notification-close" data-ui-action="close-version-setting">' +
+      renderIcon("close", "notification-close-icon") +
+      "</button></div>" +
+      '<div class="drawer-body version-setting-body">' +
+      '<div class="version-setting-field"><label>策略名称</label><div class="version-setting-value">' + escapeHtml(versionInfo.strategyName || "-") + "</div></div>" +
+      '<div class="version-setting-field"><label>* 在线版本</label><div class="version-setting-value version-setting-online">' + escapeHtml(versionInfo.onlineVersion || "-") + "</div></div>" +
+      '<div class="version-setting-version-list">' +
+      versionList.map(function mapVersion(v) {
+        return (
+          '<div class="version-setting-version-item">' +
+          '<span class="version-setting-version-no">' + escapeHtml(v.version) + "</span>" +
+          '<span class="version-setting-version-status ' + (v.status === "在线" ? "success" : "default") + '">' + escapeHtml(v.status) + "</span>" +
+          '<span class="version-setting-version-time">' + escapeHtml(v.updatedAt) + "</span>" +
+          "</div>"
+        );
+      }).join("") +
+      "</div>" +
+      '<div class="version-setting-actions">' +
+      '<button class="ghost-btn" data-ui-action="close-version-setting">取消</button>' +
+      '<button class="primary-btn" data-ui-action="save-version-setting">确定</button>' +
+      "</div>" +
+      "</div></aside></div>"
+    );
+  }
+
 
   function getDayAheadLoadDataset() {
     var filters = state.dayAheadLoadPrediction.filters;
@@ -15025,6 +15415,10 @@
       }
     }
 
+    if (getSelectedTradeCenterKey() === "shaanxi" && activeTab === "零售用户结算情况") {
+      return renderSettlementRetailSettlementView(settlementMock);
+    }
+
     if (activeTab === "月结算") {
       return (
         renderMarketPageHeader(settlementMock.title || "日清月结", renderSettlementPageTabs(settlementMock.tabs || [], activeTab), {
@@ -15044,6 +15438,94 @@
       renderSettlementFilterBar() +
       renderDownloadOnlyBar(status, false, { updateAsMore: getSelectedTradeCenterKey() === "hunan" || getSelectedTradeCenterKey() === "shaanxi" }) +
       renderUnifiedSettlementContent() +
+      "</div>"
+    );
+  }
+
+  function getSettlementRetailMonth() {
+    var month = state.settlement.filters.retailMonth;
+    if (!month || !/^\d{4}-\d{2}$/.test(month)) {
+      month = getSettlementDefaultMonth();
+      state.settlement.filters.retailMonth = month;
+    }
+    return month;
+  }
+
+  function getSettlementRetailMonthRange() {
+    var month = getSettlementRetailMonth();
+    var parts = month.split("-");
+    var daysInMonth = new Date(Number(parts[0]), Number(parts[1]), 0).getDate();
+    return {
+      start: month + "-01",
+      end: month + "-" + String(daysInMonth).padStart(2, "0"),
+    };
+  }
+
+  function renderSettlementRetailSettlementFilterBar(pageData) {
+    var fieldsHtml = renderMonthFilter(
+      "结算月份",
+      getSettlementRetailMonth(),
+      "retailMonth",
+      "settlement",
+    );
+
+    return (
+      '<section class="panel info-filter-panel"><div class="info-filter-fields">' +
+      fieldsHtml +
+      '</div><div class="info-filter-actions">' +
+      renderUiActionButton("重置", "ghost", "reset-settlement-retail") +
+      renderUiActionButton("查询", "primary", "query-settlement-retail") +
+      "</div></section>"
+    );
+  }
+
+  function renderSettlementRetailSettlementTable(pageData) {
+    var range = getSettlementRetailMonthRange();
+    var rows = filterInfoDisclosurePageRows(pageData.tableData || [], pageData, range);
+    var columns = pageData.tableColumns || [];
+    var tableId =
+      "settlement-retail-settlement-table-" + getSelectedTradeCenterKey();
+    var tableTitle = pageData.tableTitle || pageData.title || "批发购电分时均价";
+
+    if (!columns.length || !rows.length) {
+      return renderInfoUnsupportedEmptyState(pageData.emptyText || "当前月份暂无陕西批发购电分时均价数据。");
+    }
+
+    return renderInfoDisclosureDataTablePanel(
+      tableTitle,
+      tableId,
+      buildInfoDisclosureTableConfig(columns, rows, pageData.tableMinWidth),
+      { enableColumnDrag: true },
+    );
+  }
+
+  function getSettlementRetailSecondaryTab() {
+    var secondaryTab = "批发购电分时均价";
+    if (state.settlement.secondaryTab !== secondaryTab) {
+      state.settlement.secondaryTab = secondaryTab;
+    }
+    return secondaryTab;
+  }
+
+  function renderSettlementRetailSettlementView(settlementMock) {
+    var activeTab = state.settlement.activeTab;
+    var secondaryTab = getSettlementRetailSecondaryTab();
+    var pageData = getSettlementViewPageData(activeTab, secondaryTab);
+
+    var status = {
+      time: state.settlement.retailUpdatedAt || (pageData && pageData.updateTime) || "",
+      source: (pageData && pageData.dataSource) || "批发购电分时均价",
+      publishTime: getPagePublishTime(pageData) || getModulePublishTime(settlementMock),
+    };
+
+    return (
+      renderMarketPageHeader(settlementMock.title || "日清月结", renderSettlementPageTabs(settlementMock.tabs || [], activeTab), {
+        tradeCenterOptions: SETTLEMENT_TRADE_CENTER_OPTIONS,
+        secondaryTabsHtml: '<div class="secondary-tabs">' + renderSecondaryTabs(["批发购电分时均价"], secondaryTab) + "</div>",
+      }) +
+      renderSettlementRetailSettlementFilterBar(pageData) +
+      renderDownloadOnlyBar(status, false, { updateAsMore: true }) +
+      renderSettlementRetailSettlementTable(pageData) +
       "</div>"
     );
   }
@@ -16501,6 +16983,7 @@
       renderDataMonitorDetailDrawerOverlay() +
       renderDataMonitorIgnoreConfirmOverlay() +
       renderDisclosureTimeDrawerOverlay() +
+      renderVersionSettingOverlay() +
       renderFlashMessage()
     );
   }
@@ -16545,6 +17028,9 @@
     }
     if (currentPage.viewType === "spot-mock-trading") {
       return renderSimulationPage();
+    }
+    if (currentPage.viewType === "simulation-decision-analysis") {
+      return renderSimulationDecisionAnalysisPage();
     }
     if (currentPage.viewType === "day-ahead-load-prediction") {
       return renderDayAheadLoadPredictionPage();
@@ -17131,6 +17617,17 @@
       setFlashMessage("月结算筛选已重置。", "info");
       return true;
     }
+    if (action === "query-settlement-retail") {
+      state.settlement.retailUpdatedAt = formatDateTime(new Date());
+      setFlashMessage("已按结算月份刷新陕西批发购电分时均价。", "success");
+      return true;
+    }
+    if (action === "reset-settlement-retail") {
+      state.settlement.filters.retailMonth = getSettlementDefaultMonth();
+      state.settlement.retailUpdatedAt = "";
+      setFlashMessage("批发购电分时均价筛选已重置。", "info");
+      return true;
+    }
     if (action === "query-retail-relation") {
       setFlashMessage("已更新零售关系列表。", "success");
       return true;
@@ -17486,35 +17983,16 @@
       return true;
     }
     if (action === "query-spot-trading-simulation") {
-      if (!isRangeValid(state.spotTradingSimulation.filters.backtestRange)) {
-        setFlashMessage("请选择有效的回测周期。", "info");
-        return true;
-      }
-      setFlashMessage("已刷新现货交易仿真结果。", "success");
+      setFlashMessage("已刷新现货仿真回测结果。", "success");
       return true;
     }
     if (action === "reset-spot-trading-simulation") {
-      state.spotTradingSimulation.filters.tradeCenter =
-        (simulationMock.spotTradingSimulation &&
-          simulationMock.spotTradingSimulation.filters &&
-          simulationMock.spotTradingSimulation.filters.tradeCenterOptions &&
-          simulationMock.spotTradingSimulation.filters.tradeCenterOptions[0]) ||
+      state.spotTradingSimulation.filters.strategy =
+        (simulationMock.simulationBacktest &&
+          simulationMock.simulationBacktest.filterStrategyOptions &&
+          simulationMock.simulationBacktest.filterStrategyOptions[0]) ||
         "全部";
-      state.spotTradingSimulation.filters.strategyName =
-        (simulationMock.spotTradingSimulation &&
-          simulationMock.spotTradingSimulation.filters &&
-          simulationMock.spotTradingSimulation.filters.strategyOptions &&
-          simulationMock.spotTradingSimulation.filters.strategyOptions[0]) ||
-        "全部";
-      state.spotTradingSimulation.filters.backtestRange = cloneRange(
-        (simulationMock.spotTradingSimulation &&
-          simulationMock.spotTradingSimulation.filters &&
-          simulationMock.spotTradingSimulation.filters.defaultRange) || {
-          start: "2026-05-03",
-          end: "2026-05-09",
-        },
-      );
-      setFlashMessage("现货交易仿真筛选已重置。", "info");
+      setFlashMessage("现货仿真回测筛选已重置。", "info");
       return true;
     }
     if (action === "query-spot-mock-trading") {
@@ -17528,19 +18006,80 @@
     if (action === "reset-spot-mock-trading") {
       state.spotMockTrading.filters.strategy =
         (simulationMock.spotMockTrading &&
-          simulationMock.spotMockTrading.filters &&
-          simulationMock.spotMockTrading.filters.strategyOptions &&
-          simulationMock.spotMockTrading.filters.strategyOptions[0]) ||
-        "请选择交易策略";
+          simulationMock.spotMockTrading.filterStrategyOptions &&
+          simulationMock.spotMockTrading.filterStrategyOptions[0]) ||
+        "全部";
       state.spotMockTrading.filters.tradeRange = cloneRange(
-        (simulationMock.spotMockTrading &&
-          simulationMock.spotMockTrading.filters &&
-          simulationMock.spotMockTrading.filters.defaultRange) || {
-          start: "2026-05-06",
-          end: "2026-05-09",
+        (simulationMock.spotMockTrading && simulationMock.spotMockTrading.defaultRange) || {
+          start: "2026-06-30",
+          end: "2026-07-14",
         },
       );
       setFlashMessage("现货模拟交易筛选已重置。", "info");
+      return true;
+    }
+    if (action === "view-simulation-trend") {
+      state.simulation.activeView = "trend";
+      state.simulation.activeRecordId = target.getAttribute("data-record-id") || "";
+      return true;
+    }
+    if (action === "view-simulation-detail") {
+      state.simulation.activeView = "detail";
+      state.simulation.activeRecordId = target.getAttribute("data-record-id") || "";
+      return true;
+    }
+    if (action === "view-mock-trading-detail") {
+      state.simulation.activeView = "mockDetail";
+      state.simulation.activeRecordId = target.getAttribute("data-record-id") || "";
+      return true;
+    }
+    if (action === "back-simulation-list") {
+      state.simulation.activeView = "list";
+      state.simulation.activeRecordId = "";
+      return true;
+    }
+    if (action === "switch-mock-trading-view") {
+      state.simulation.mockTradingTableView = target.getAttribute("data-view") || "after";
+      return true;
+    }
+    if (action === "switch-mock-trading-version") {
+      setFlashMessage("版本切换：请选择需对比的策略版本。", "info");
+      return true;
+    }
+    if (action === "add-simulation-compare") {
+      setFlashMessage("已添加对比策略曲线。", "success");
+      return true;
+    }
+    if (action === "create-simulation-backtest") {
+      setFlashMessage("新增仿真回测：请选择策略与回测周期。", "info");
+      return true;
+    }
+    if (action === "create-mock-trading") {
+      setFlashMessage("新建模拟交易：请填写交易策略与周期。", "info");
+      return true;
+    }
+    if (action === "delete-simulation-backtest") {
+      setFlashMessage("仿真回测记录已删除。", "success");
+      return true;
+    }
+    if (action === "delete-mock-trading") {
+      setFlashMessage("模拟交易记录已删除。", "success");
+      return true;
+    }
+    if (action === "open-version-setting") {
+      state.simulation.versionSettingVisible = true;
+      state.simulation.versionSettingStrategyId = "";
+      var versionStrategyId = target.getAttribute("data-record-id") || "";
+      state.simulation.versionSettingStrategyId = versionStrategyId;
+      return true;
+    }
+    if (action === "close-version-setting") {
+      state.simulation.versionSettingVisible = false;
+      return true;
+    }
+    if (action === "save-version-setting") {
+      state.simulation.versionSettingVisible = false;
+      setFlashMessage("版本设置已保存。", "success");
       return true;
     }
     if (action === "query-day-ahead-load-prediction") {
@@ -17798,6 +18337,17 @@
         renderApp();
         return;
       }
+      if (state.currentPageKey === "spot-trading-simulation" || state.currentPageKey === "spot-mock-trading" || state.currentPageKey === "simulation-decision-analysis") {
+        var simCenterKey = getTradeCenterKeyByName(selectedTradeCenter);
+        state.simulation.tradeCenterKey = simCenterKey || "guangdong";
+        state.simulation.activeView = "list";
+        state.simulation.activeRecordId = "";
+        state.ui.tradeCenterOpen = false;
+        state.ui.activeDatePickerId = null;
+        state.ui.datePickerDrafts = {};
+        renderApp();
+        return;
+      }
       var nextTradeCenterKey = getTradeCenterDataPageKey(selectedTradeCenter);
       var nextMarketState = state.marketDisclosure.pages && state.marketDisclosure.pages[nextTradeCenterKey];
       var selectedCenterKey = getTradeCenterKeyByName(selectedTradeCenter);
@@ -17892,6 +18442,12 @@
       if (state.currentPageKey === "gd-settlement" && getSelectedTradeCenterKey() !== "guangdong" && state.settlement.activeTab === "月结算") {
         state.settlement.secondaryTab = secondaryTabButton.getAttribute("data-secondary-tab");
         state.ui.downloadDataType = "月结算-" + state.settlement.secondaryTab;
+        renderApp();
+        return;
+      }
+      if (state.currentPageKey === "gd-settlement" && state.settlement.activeTab === "零售用户结算情况") {
+        state.settlement.secondaryTab = secondaryTabButton.getAttribute("data-secondary-tab");
+        state.ui.downloadDataType = getCurrentDownloadType();
         renderApp();
         return;
       }

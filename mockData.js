@@ -430,13 +430,12 @@
       applyJulyDefaultRange(guangdong.dayAheadDeclaration.defaultDate, "single");
     }
 
-    if (simulation.spotTradingSimulation) {
-      simulation.spotTradingSimulation.status.updatedAt = "2026-07-31 09:58:00";
-      applyJulyDefaultRange(simulation.spotTradingSimulation.filters.defaultRange);
+    if (simulation.simulationBacktest) {
+      simulation.simulationBacktest.status.updatedAt = "2026-07-31 09:58:00";
     }
     if (simulation.spotMockTrading) {
       simulation.spotMockTrading.status.updatedAt = "2026-07-31 10:16:00";
-      applyJulyDefaultRange(simulation.spotMockTrading.filters.defaultRange);
+      // 模拟交易筛选周期保持录屏中的 06-30 ~ 07-14，不随全局 7 月统一
     }
 
     if (algorithm.dayAheadLoadPrediction) {
@@ -526,6 +525,6 @@
     reserveForecast: appMocks.guangdong.infoDisclosure.reserveForecast,
     reserveActual: appMocks.guangdong.infoDisclosure.reserveActual,
     reserveRows: appMocks.guangdong.infoDisclosure.reserveRows,
-    notification: appMocks.simulation.notification,
+    notification: appMocks.simulation.notification || {},
   };
 })(window);

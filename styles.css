@@ -1994,6 +1994,41 @@ a {
   line-height: 1.25;
 }
 
+/* 作用域样式：仅作用于“负荷信息-负荷信息”“负荷信息-省间联络”两个二级 tab 的指标树，
+   把原本硬编码的颜色统一到设计 token，并规范选中态，使其与其余列表规范一致。
+   节点电价/出清电量等共用 load-info-tree-nav 的图例树不带此作用域类，保持原样。 */
+.load-info-tree-nav--scoped .load-info-tree-nav__item.metric-row {
+  color: var(--text);
+}
+
+.load-info-tree-nav--scoped .load-info-tree-nav__item.metric-row:hover,
+.load-info-tree-nav--scoped .load-info-tree-nav__item.metric-row.active,
+.load-info-tree-nav--scoped .load-info-tree-nav__item.metric-row.active-parent {
+  color: var(--blue);
+}
+
+.load-info-tree-nav--scoped .load-info-tree-nav__item.metric-row.active {
+  background: var(--blue-soft);
+  border-radius: var(--radius-sm);
+}
+
+.load-info-tree-nav--scoped .load-info-tree-nav__node::before {
+  background: var(--line);
+}
+
+.load-info-tree-nav--scoped .load-info-tree-nav__leaf-icon,
+.load-info-tree-nav--scoped .load-info-tree-nav__toggle {
+  color: var(--text-soft);
+  background: var(--card);
+}
+
+.load-info-tree-nav--scoped .load-info-tree-nav__item--active .load-info-tree-nav__leaf-icon,
+.load-info-tree-nav--scoped .load-info-tree-nav__item--active-parent .load-info-tree-nav__leaf-icon,
+.load-info-tree-nav--scoped .load-info-tree-nav__item:hover .load-info-tree-nav__leaf-icon,
+.load-info-tree-nav--scoped .load-info-tree-nav__item:hover .load-info-tree-nav__toggle {
+  color: var(--blue);
+}
+
 .chart-main {
   display: flex;
   flex-direction: column;
@@ -4720,6 +4755,207 @@ a {
   place-items: center;
   color: #98a5b8;
   font-size: 13px;
+}
+
+/* ============ 仿真平台专属样式（现货仿真回测 / 现货模拟交易 / 交易决策分析） ============ */
+.simulation-detail-subtitle {
+  margin-top: 4px;
+  color: var(--text-soft);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.simulation-back-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.simulation-metric-panel {
+  padding: 16px 22px;
+}
+
+.simulation-metric-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.simulation-metric-row + .simulation-metric-row {
+  margin-top: 12px;
+}
+
+.simulation-metric-cell {
+  min-width: 0;
+  padding: 10px 12px;
+  background: var(--bg-soft);
+  border-radius: var(--radius-sm);
+}
+
+.simulation-metric-cell-empty {
+  background: transparent;
+}
+
+.simulation-metric-label {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.simulation-metric-value {
+  margin-top: 6px;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.simulation-compare-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 22px 16px;
+}
+
+.simulation-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 0 12px;
+}
+
+.simulation-section-title {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.simulation-section-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.simulation-chart-note {
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  background: var(--blue-soft);
+  border-radius: var(--radius-sm);
+  color: var(--text-soft);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.simulation-table-views {
+  display: flex;
+  gap: 8px;
+}
+
+.simulation-table-view-tab {
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--text-soft);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.simulation-table-view-tab.active {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+
+/* 版本设置弹窗 */
+.version-setting-overlay {
+  z-index: 60;
+}
+
+.version-setting-panel {
+  width: 420px;
+  max-width: 90vw;
+}
+
+.version-setting-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px;
+}
+
+.version-setting-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.version-setting-field label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.version-setting-value {
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg-soft);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.version-setting-online {
+  border-color: var(--blue);
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+
+.version-setting-version-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.version-setting-version-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.version-setting-version-no {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.version-setting-version-status {
+  padding: 1px 8px;
+  border-radius: 99px;
+  font-size: 12px;
+}
+
+.version-setting-version-status.success {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+.version-setting-version-status.default {
+  background: var(--bg-soft);
+  color: var(--muted);
+}
+
+.version-setting-version-time {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.version-setting-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 .permission-notification {

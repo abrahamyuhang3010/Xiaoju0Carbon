@@ -1566,6 +1566,8 @@
       { key: "contractType", title: "合同类型", width: 170 },
       { key: "sellerUserName", title: "售方用户名称", width: 220 },
       { key: "sellerUnitName", title: "售方单元名称", width: 280 },
+      { key: "buyerUserName", title: "购方用户名称", width: 220 },
+      { key: "buyerUnitName", title: "购方单元名称", width: 280 },
     ].concat(
       getContractCurveDetailLabels().map(function mapLabel(label, index) {
         return { key: "slot" + index, title: label + "（" + unit + "）", width: 104 };
@@ -1614,6 +1616,22 @@
       fieldKey: "contractCurveSellerUnitName",
       rowKey: "sellerUnitName",
       placeholder: "请输入售方单元名称",
+      widthClass: "filter-input-wide",
+    },
+    {
+      type: "text",
+      label: "购方用户名称",
+      fieldKey: "contractCurveBuyerUserName",
+      rowKey: "buyerUserName",
+      placeholder: "请输入购方用户名称",
+      widthClass: "filter-input-wide",
+    },
+    {
+      type: "text",
+      label: "购方单元名称",
+      fieldKey: "contractCurveBuyerUnitName",
+      rowKey: "buyerUnitName",
+      placeholder: "请输入购方单元名称",
       widthClass: "filter-input-wide",
     },
   ];
@@ -1675,6 +1693,8 @@
       contractNames: getContractCurveUniqueOptions(shaanxiContractCurveFilterRows, "contractName"),
       sellerUserNames: getContractCurveUniqueOptions(shaanxiContractCurveFilterRows, "sellerUserName"),
       sellerUnitNames: getContractCurveUniqueOptions(shaanxiContractCurveFilterRows, "sellerUnitName"),
+      buyerUserNames: getContractCurveUniqueOptions(shaanxiContractCurveFilterRows, "buyerUserName"),
+      buyerUnitNames: getContractCurveUniqueOptions(shaanxiContractCurveFilterRows, "buyerUnitName"),
     },
     detailTabs: ["电量明细", "电价明细"],
     detailTables: {
@@ -1683,14 +1703,14 @@
         unit: "MWh",
         columns: buildContractCurveDetailColumns("MWh"),
         rows: shaanxiContractCurveDetailVolumeRows,
-        minWidth: 12380,
+        minWidth: 12880,
       },
       "电价明细": {
         title: "电价明细",
         unit: "元/MWh",
         columns: buildContractCurveDetailColumns("元/MWh"),
         rows: shaanxiContractCurveDetailPriceRows,
-        minWidth: 12380,
+        minWidth: 12880,
       },
     },
     fileList: buildMockFileList("sx", "contract-curve-detail", shaanxiContractCurveDetailDate, 1),
@@ -2643,6 +2663,12 @@
               "用电企业": "monthlySettlementConsumer",
             },
           },
+          "零售用户结算情况": {
+            defaultDatasetKey: "infoRetailSettlementHourlyPrice",
+            secondaryTabs: {
+              "批发购电分时均价": "infoRetailSettlementHourlyPrice",
+            },
+          },
         },
       },
     },
@@ -2686,7 +2712,7 @@
       centerName: "陕西电力交易中心",
       statusText: "数据更新时间：2026-07-31 10:52:48（陕西交易中心结算任务）",
       publishTime: "2026-07-31 10:52:48",
-      tabs: ["日清算", "月结算"],
+      tabs: ["日清算", "月结算", "零售用户结算情况"],
       dailyRows: shaanxiDailySettlementRows,
       dailyColumns: settlementDailyColumns,
       dailyDateRange: {

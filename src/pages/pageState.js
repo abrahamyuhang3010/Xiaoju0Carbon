@@ -340,6 +340,7 @@
         settlement: {
           activeTab: (settlementMock.tabs && settlementMock.tabs[0]) || "日清算",
           monthlySide: "购电侧",
+          retailUpdatedAt: "",
           filters: {
             dailyRange: {
               start: (settlementMock.dailyDateRange && settlementMock.dailyDateRange.start) || "2026-07-25",
@@ -352,6 +353,7 @@
             dailyStatementKey: "",
             dailyStatementType: "全部",
             dailyDataType: "全部",
+            retailMonth: "2026-07",
             monthlyMonth:
               (settlementMock.monthlySettlementData && settlementMock.monthlySettlementData.month) ||
               "2026-07",
@@ -457,7 +459,13 @@
           },
         },
         simulation: {
-          permissionVisible: true,
+          tradeCenterKey: (simulationMock.defaultCenterKey) || "guangdong",
+          activeView: "list",
+          activeRecordId: "",
+          compareStrategyIds: new Set(),
+          versionSettingVisible: false,
+          versionSettingStrategyId: "",
+          mockTradingTableView: "after",
         },
         fetchMonitor: {
           filters: {
@@ -508,40 +516,25 @@
         },
         spotTradingSimulation: {
           filters: {
-            tradeCenter: (simulationMock.spotTradingSimulation &&
-              simulationMock.spotTradingSimulation.filters &&
-              simulationMock.spotTradingSimulation.filters.tradeCenterOptions &&
-              simulationMock.spotTradingSimulation.filters.tradeCenterOptions[0]) ||
+            strategy:
+              (simulationMock.simulationBacktest &&
+                simulationMock.simulationBacktest.filterStrategyOptions &&
+                simulationMock.simulationBacktest.filterStrategyOptions[0]) ||
               "全部",
-            strategyName: (simulationMock.spotTradingSimulation &&
-              simulationMock.spotTradingSimulation.filters &&
-              simulationMock.spotTradingSimulation.filters.strategyOptions &&
-              simulationMock.spotTradingSimulation.filters.strategyOptions[0]) ||
-              "全部",
-            backtestRange: cloneRange(
-              (simulationMock.spotTradingSimulation &&
-                simulationMock.spotTradingSimulation.filters &&
-                simulationMock.spotTradingSimulation.filters.defaultRange) || {
-                start: "2026-05-03",
-                end: "2026-05-09",
-              },
-            ),
           },
         },
         spotMockTrading: {
           filters: {
             strategy:
               (simulationMock.spotMockTrading &&
-                simulationMock.spotMockTrading.filters &&
-                simulationMock.spotMockTrading.filters.strategyOptions &&
-                simulationMock.spotMockTrading.filters.strategyOptions[0]) ||
-              "请选择交易策略",
+                simulationMock.spotMockTrading.filterStrategyOptions &&
+                simulationMock.spotMockTrading.filterStrategyOptions[0]) ||
+              "全部",
             tradeRange: cloneRange(
               (simulationMock.spotMockTrading &&
-                simulationMock.spotMockTrading.filters &&
-                simulationMock.spotMockTrading.filters.defaultRange) || {
-                start: "2026-05-06",
-                end: "2026-05-09",
+                simulationMock.spotMockTrading.defaultRange) || {
+                start: "2026-06-30",
+                end: "2026-07-14",
               },
             ),
           },
@@ -634,8 +627,12 @@
         state.dataMonitor.filters = state.dataMonitor.filters || {};
         state.dataMonitor.filters.categoryPath = [];
       }
-      if (pageKey === "spot-mock-trading") {
-        state.simulation.permissionVisible = true;
+      if (pageKey === "spot-mock-trading" || pageKey === "spot-trading-simulation" || pageKey === "simulation-decision-analysis") {
+        state.simulation = state.simulation || {};
+        state.simulation.activeView = "list";
+        state.simulation.activeRecordId = "";
+        state.simulation.compareStrategyIds = new Set();
+        state.simulation.versionSettingVisible = false;
       }
     },
     navigate: function navigate(state, pageKey, registry, location) {
