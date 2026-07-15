@@ -15521,7 +15521,7 @@
     return (
       renderMarketPageHeader(settlementMock.title || "日清月结", renderSettlementPageTabs(settlementMock.tabs || [], activeTab), {
         tradeCenterOptions: SETTLEMENT_TRADE_CENTER_OPTIONS,
-        secondaryTabsHtml: '<div class="secondary-tabs">' + renderSecondaryTabs(["批发购电分时均价"], secondaryTab) + "</div>",
+        secondaryTabsHtml: renderSecondaryTabs(["批发购电分时均价"], secondaryTab),
       }) +
       renderSettlementRetailSettlementFilterBar(pageData) +
       renderDownloadOnlyBar(status, false, { updateAsMore: true }) +
