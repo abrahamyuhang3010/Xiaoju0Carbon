@@ -817,6 +817,25 @@
     );
   });
 
+  // 发输变电设备检修预测信息：按运行日期汇总当日预测检修元件，字段为序号/日期/元件名称/电压等级。
+  var transmissionMaintenanceForecastRows = [];
+  var transmissionMaintenanceForecastIndexes = [1, 4, 8, 12, 17, 21, 26, 33, 39, 41];
+  var transmissionMaintenanceForecastDates = buildDateRange("2026-07-25", 7);
+  var transmissionMaintenanceForecastSequence = 0;
+
+  transmissionMaintenanceForecastDates.forEach(function eachForecastDate(date) {
+    transmissionMaintenanceForecastIndexes.forEach(function eachForecastIndex(rawIndex) {
+      var rawRow = transmissionMaintenancePlanRawRows[rawIndex] || transmissionMaintenancePlanRawRows[rawIndex % transmissionMaintenancePlanRawRows.length];
+      transmissionMaintenanceForecastSequence += 1;
+      transmissionMaintenanceForecastRows.push({
+        date: date,
+        sequence: transmissionMaintenanceForecastSequence,
+        equipmentName: rawRow[2],
+        voltageLevel: transmissionVoltageLevels[rawIndex % transmissionVoltageLevels.length],
+      });
+    });
+  });
+
   var reservePositiveForecast = interpolateAnchors(96, {
     0: 10340,
     8: 8260,
@@ -1345,6 +1364,7 @@
       maintenanceRows: maintenanceRows,
       maintenanceSummaryRows: maintenanceSummaryRows,
       transmissionMaintenancePlanRows: transmissionMaintenancePlanRows,
+      transmissionMaintenanceForecastRows: transmissionMaintenanceForecastRows,
       transmissionMaintenancePlanDefaultDate: latestMockDate,
       transmissionMaintenancePlanUpdateTime: "2026-07-31 10:46:00",
       transmissionMaintenancePlanPublishTime: "2026-07-31 10:46:00",

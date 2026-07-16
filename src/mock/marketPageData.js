@@ -296,6 +296,8 @@
         baseMinWidth: options.baseTableMinWidth || "",
         minWidth: options.tableMinWidth || Math.max(920, columns.length * 148),
       },
+      detailTabs: cloneValue(options.detailTabs || []),
+      forecastTable: cloneValue(options.forecastTable || null),
       fileList: cloneValue(options.fileList || []),
       emptyText: options.emptyText || DEFAULT_EMPTY_TEXT,
     };
@@ -1820,6 +1822,21 @@
       baseTableMinWidth: 1040,
       compareMode: "dateMerge",
       compareMergeKeys: ["plantName", "equipmentName", "voltageLevel"],
+      detailTabs: [
+        "发输变电设备检修实际信息",
+        "发输变电设备检修预测信息",
+      ],
+      forecastTable: {
+        tabKey: "transmissionMaintenancePlanForecast",
+        columns: [
+          { key: "sequence", title: "序号" },
+          { key: "date", title: "日期" },
+          { key: "equipmentName", title: "元件名称" },
+          { key: "voltageLevel", title: "电压等级" },
+        ],
+        rows: cloneValue(info.transmissionMaintenanceForecastRows || []),
+        minWidth: 760,
+      },
       fileList: [
         {
           id: "gd-transmission-maintenance-plan-source",

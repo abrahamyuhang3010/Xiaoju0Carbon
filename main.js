@@ -99,6 +99,12 @@
   var INFO_DISCLOSURE_CONTRACT_CURVE_TAB = "中长期合同曲线";
   var INFO_DISCLOSURE_CONTRACT_CURVE_DETAIL_TAB = "中长期合同曲线明细";
   var INFO_DISCLOSURE_CONTRACT_CURVE_DETAIL_TABS = ["电量明细", "电价明细"];
+  var INFO_DISCLOSURE_TRANSMISSION_MAINTENANCE_TAB = "发输变电设备检修计划";
+  var INFO_DISCLOSURE_TRANSMISSION_MAINTENANCE_DETAIL_TABS = [
+    "发输变电设备检修实际信息",
+    "发输变电设备检修预测信息",
+  ];
+  var INFO_DISCLOSURE_TRANSMISSION_MAINTENANCE_FORECAST_TAB = "发输变电设备检修预测信息";
   var HISTORY_RETRACE_SCOPE_TEXT = "当前数据为历史回溯口径，按所选代理月份对应的实际代理用户清单统计，与常规分时电量页面的数据口径可能存在差异。";
   var TIME_SHARING_HOUR_LABELS = Array.from({ length: 24 }, function createTimeSharingHour(_, index) {
     return String(index).padStart(2, "0") + ":00";
@@ -4129,6 +4135,73 @@
     );
   }
 
+  function isTransmissionMaintenancePlanPage(pageData) {
+    return (
+      getActiveInfoTab() === INFO_DISCLOSURE_TRANSMISSION_MAINTENANCE_TAB &&
+      Boolean(pageData && pageData.detailTabs && pageData.detailTabs.length)
+    );
+  }
+
+  function getTransmissionMaintenanceDetailTab(pageData) {
+    var tabs = (pageData && pageData.detailTabs) || INFO_DISCLOSURE_TRANSMISSION_MAINTENANCE_DETAIL_TABS;
+    if (tabs.indexOf(state.info.transmissionMaintenanceDetailTab) >= 0) {
+      return state.info.transmissionMaintenanceDetailTab;
+    }
+    state.info.transmissionMaintenanceDetailTab = tabs[0] || INFO_DISCLOSURE_TRANSMISSION_MAINTENANCE_DETAIL_TABS[0];
+    return state.info.transmissionMaintenanceDetailTab;
+  }
+
+  function renderTransmissionMaintenanceTertiaryTabs(pageData) {
+    if (!isTransmissionMaintenancePlanPage(pageData)) {
+      return "";
+    }
+
+    var tabs = (pageData && pageData.detailTabs) || INFO_DISCLOSURE_TRANSMISSION_MAINTENANCE_DETAIL_TABS;
+    var activeTab = getTransmissionMaintenanceDetailTab(pageData);
+    return (
+      '<div class="tertiary-tabs">' +
+      tabs
+        .map(function mapTab(tab) {
+          var isActive = tab === activeTab;
+          return (
+            '<button type="button" class="tertiary-tab ' +
+            (isActive ? "active" : "") +
+            '" data-transmission-maintenance-detail-tab="' +
+            escapeHtml(tab) +
+            '"' +
+            (isActive ? ' aria-pressed="true"' : "") +
+            ">" +
+            escapeHtml(tab) +
+            "</button>"
+          );
+        })
+        .join("") +
+      "</div>"
+    );
+  }
+
+  function renderTransmissionMaintenanceForecastTable(pageData) {
+    var forecastTable = (pageData && pageData.forecastTable) || {};
+    var columns = forecastTable.columns || [];
+    var rows = filterInfoDisclosurePageRows(forecastTable.rows || [], pageData);
+    var tableId =
+      "info-disclosure-dynamic-table-" +
+      getSelectedTradeCenterKey() +
+      "-" +
+      String(forecastTable.tabKey || "transmissionMaintenancePlanForecast");
+
+    if (!columns.length || !rows.length) {
+      return renderInfoUnsupportedEmptyState(pageData.emptyText || INFO_DISCLOSURE_EMPTY_MESSAGE);
+    }
+
+    return renderInfoDisclosureDataTablePanel(
+      pageData.tableTitle || pageData.title,
+      tableId,
+      buildInfoDisclosureTableConfig(columns, rows, forecastTable.minWidth, {}),
+      { enableColumnDrag: true },
+    );
+  }
+
   function renderInfoContractCurveDetailFilterBar(pageData) {
     var filterFieldsHtml = renderUnifiedInfoDisclosureBusinessFilterFields(pageData);
     var actionsHtml = filterFieldsHtml
@@ -7326,6 +7399,12 @@
       return renderInfoDisclosureProfileTableContent(pageData);
     }
     if (pageData.viewType === "disclosureTable") {
+      if (
+        isTransmissionMaintenancePlanPage(pageData) &&
+        getTransmissionMaintenanceDetailTab(pageData) === INFO_DISCLOSURE_TRANSMISSION_MAINTENANCE_FORECAST_TAB
+      ) {
+        return renderTransmissionMaintenanceForecastTable(pageData);
+      }
       return renderInfoDisclosureDynamicTableContent(pageData);
     }
     if (pageData.viewType === "maintenanceComposite") {
@@ -8209,6 +8288,7 @@
         : "";
     var useShaanxiContractCurveDetailLayout = isShaanxiInfoContractCurveDetailPage(pageData);
     var tertiaryTabsHtml = useShaanxiContractCurveDetailLayout ? "" : renderInfoContractCurveTertiaryTabs(pageData);
+    var transmissionMaintenanceTertiaryTabsHtml = renderTransmissionMaintenanceTertiaryTabs(pageData);
 
     return (
       '<div class="page-stack">' +
@@ -8233,6 +8313,7 @@
           "</div>" +
           secondaryTabsHtml +
           tertiaryTabsHtml +
+          transmissionMaintenanceTertiaryTabsHtml +
           "</section>"
         : "") +
       renderInfoDisclosureFilterBar() +
@@ -18465,6 +18546,19 @@
     if (contractCurveDetailTabButton) {
       state.info.contractCurveDetailTab = contractCurveDetailTabButton.getAttribute("data-info-contract-curve-detail-tab");
       state.ui.hasCompare = false;
+      state.ui.downloadDataType = getCurrentDownloadType();
+      renderApp();
+      return;
+    }
+
+    var transmissionMaintenanceDetailTabButton = event.target.closest("[data-transmission-maintenance-detail-tab]");
+    if (transmissionMaintenanceDetailTabButton) {
+      var nextTransmissionMaintenanceDetailTab = transmissionMaintenanceDetailTabButton.getAttribute("data-transmission-maintenance-detail-tab");
+      state.info.transmissionMaintenanceDetailTab = nextTransmissionMaintenanceDetailTab;
+      // 预测信息表无对比日合并，切换到该 tab 时关闭对比，避免残留对比态影响渲染
+      if (nextTransmissionMaintenanceDetailTab === INFO_DISCLOSURE_TRANSMISSION_MAINTENANCE_FORECAST_TAB) {
+        state.ui.hasCompare = false;
+      }
       state.ui.downloadDataType = getCurrentDownloadType();
       renderApp();
       return;

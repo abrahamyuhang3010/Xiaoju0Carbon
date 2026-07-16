@@ -276,6 +276,7 @@
           companyQueryAt: 0,
           enterpriseQueryAt: 0,
           contractCurveDetailTab: "电量明细",
+          transmissionMaintenanceDetailTab: "发输变电设备检修实际信息",
           filters: {
             loadDetailRange: {
               start: "2026-07-31",
