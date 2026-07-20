@@ -270,6 +270,12 @@
     }
 
     Object.keys(value).forEach(function walkKey(key) {
+      // 滚搓数据的 dailyMarket/multiDay 为行情看板结构（曲线 series、K线等），
+      // 其 series 对象含 date 字段会被 supplementRowsToJuly 误判为待补齐的行数组，
+      // 因此整体跳过，不递归补齐。
+      if (key === "dailyMarket" || key === "multiDay") {
+        return;
+      }
       walkMockArrays(value[key], path ? path + "." + key : key, julyDates, seen);
     });
   }

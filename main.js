@@ -1727,6 +1727,7 @@
       id === "trade-node-runtime" ||
       id === "rolling-data-sx-curve-date" ||
       id === "rolling-data-sx-trade-date" ||
+      id === "rolling-trade-date" ||
       id === "declaration-date" ||
       id === "day-ahead-load-prediction-date" ||
       id === "spot-price-prediction-date"
@@ -1781,6 +1782,10 @@
     }
     if (id === "rolling-data-sx-trade-date") {
       return state.rollingData.filters.shaanxiTradeDate;
+    }
+    if (id === "rolling-trade-date") {
+      var rollingTradeDate = state.rollingData.tradeDate || "2026-07-17";
+      return { start: rollingTradeDate, end: rollingTradeDate };
     }
     if (id === "retail-cooperation-range") {
       return state.retailRelation.filters.cooperationRange;
@@ -1857,6 +1862,9 @@
       state.rollingData.filters.shaanxiCurveDate = cloneRange(range);
     } else if (id === "rolling-data-sx-trade-date") {
       state.rollingData.filters.shaanxiTradeDate = cloneRange(range);
+    } else if (id === "rolling-trade-date") {
+      state.rollingData.tradeDate = range.start || state.rollingData.tradeDate;
+      rebuildRollingDailyMarket();
     } else if (id === "retail-cooperation-range") {
       state.retailRelation.filters.cooperationRange = cloneRange(range);
     } else if (id === "declaration-date") {
@@ -14066,9 +14074,12 @@
       { key: "fetchStatus", label: "取数状态", width: 128 },
       { key: "qualityStatus", label: "质量状态", width: 128 },
       { key: "outputTime", label: "产出时间", width: 168 },
-      { key: "warningTime", label: "预警时间", width: 128 },
-      { key: "valueRange", label: "取值范围", width: 140 },
-      { key: "fetchToolTimeliness", label: "取数工具时效", width: 212 },
+      { key: "routineFetchTimeliness", label: "常规取数时效", width: 196 },
+      { key: "routineFetchValueRange", label: "常规取数范围", width: 140 },
+      { key: "routineWarningTime", label: "常规预警时间", width: 128 },
+      { key: "tradeFetchTimeliness", label: "交易取数时效", width: 140 },
+      { key: "tradeFetchValueRange", label: "交易取数范围", width: 128 },
+      { key: "tradeWarningTime", label: "交易预警时间", width: 128 },
       { key: "remark", label: "备注", width: 220 },
       { key: "actions", label: "操作", sortable: false, width: 112, fixedRight: true },
     ];
@@ -14084,9 +14095,12 @@
           fetchStatus: createDataMonitorStatusCell(record, "fetch"),
           qualityStatus: createDataMonitorStatusCell(record, "quality"),
           outputTime: createDataMonitorTextCell(record.outputTime),
-          warningTime: createDataMonitorTextCell(record.warningTime),
-          valueRange: createDataMonitorTextCell(record.valueRange),
-          fetchToolTimeliness: createDataMonitorTextCell(record.fetchToolTimeliness),
+          routineFetchTimeliness: createDataMonitorTextCell(record.routineFetchTimeliness),
+          routineFetchValueRange: createDataMonitorTextCell(record.routineFetchValueRange),
+          routineWarningTime: createDataMonitorTextCell(record.routineWarningTime),
+          tradeFetchTimeliness: createDataMonitorTextCell(record.tradeFetchTimeliness),
+          tradeFetchValueRange: createDataMonitorTextCell(record.tradeFetchValueRange),
+          tradeWarningTime: createDataMonitorTextCell(record.tradeWarningTime),
           remark: createDataMonitorTextCell(record.remark || ""),
           actions: createTableActionCell(record.id, actions),
         };
@@ -16462,25 +16476,469 @@
     );
   }
 
+  function getRollingDailyMarketMock() {
+    return (getRollingDataMock() || {}).dailyMarket || null;
+  }
+
+  function getRollingMultiDayMock() {
+    return (getRollingDataMock() || {}).multiDay || null;
+  }
+
+  function rebuildRollingDailyMarket() {
+    var bundle = getRollingDataMock();
+    if (!bundle || !bundle.dailyMarket) {
+      return;
+    }
+    var lib = global.BOSS_ROLLING_MARKET;
+    if (!lib || !lib.buildRollingDailyMarket) {
+      return;
+    }
+    var tradeDate = state.rollingData.tradeDate || bundle.dailyMarket.tradeDate;
+    var basePrice = bundle.dailyMarket.price ? bundle.dailyMarket.price.seller.mean : 340;
+    var cap = 350;
+    var baseVolume = bundle.dailyMarket.volume ? bundle.dailyMarket.volume.seller.mean : 60;
+    bundle.dailyMarket = lib.buildRollingDailyMarket(tradeDate, basePrice, cap, Math.round(baseVolume));
+  }
+
+  function getRollingPrimaryTabs() {
+    return getRollingDataMock().primaryTabs || ["单日行情", "多日行情"];
+  }
+
+  function getRollingActiveView() {
+    var tabs = getRollingPrimaryTabs();
+    var current = state.rollingData.activeView;
+    return tabs.indexOf(current) >= 0 ? current : tabs[0];
+  }
+
+  function getRollingDailySubTabs() {
+    return getRollingDataMock().dailySubTabs || ["买卖价格", "买卖电量", "滚搓行情"];
+  }
+
+  function getRollingActiveSubView() {
+    var tabs = getRollingDailySubTabs();
+    var current = state.rollingData.activeSubView;
+    return tabs.indexOf(current) >= 0 ? current : tabs[0];
+  }
+
+  function renderRollingDimensionSwitch() {
+    var bundle = getRollingDataMock() || {};
+    var dimensionOptions = bundle.dimensionOptions || ["时间维度", "日维度"];
+    var activeDimension = state.rollingData.dimension || dimensionOptions[0];
+    var timeSlots = [];
+    for (var slot = 1; slot <= 24; slot++) {
+      var label = (slot < 10 ? "0" : "") + slot;
+      var isActive = state.rollingData.activeTimeSlot === label;
+      timeSlots.push(
+        '<button type="button" class="time-slot-pill ' +
+          (isActive ? "active" : "") +
+          '" data-rolling-time-slot="' +
+          escapeHtml(label) +
+          '">' +
+          escapeHtml(label) +
+          "</button>",
+      );
+    }
+
+    var dimensionHtml = dimensionOptions
+      .map(function mapDimension(option) {
+        var isActive = option === activeDimension;
+        return (
+          '<button type="button" class="dimension-pill ' +
+          (isActive ? "active" : "") +
+          '" data-rolling-dimension="' +
+          escapeHtml(option) +
+          '">' +
+          escapeHtml(option) +
+          "</button>"
+        );
+      })
+      .join("");
+
+    var tradeDateRange = (function buildTradeDateRange() {
+      var tradeDate = state.rollingData.tradeDate || "2026-07-17";
+      return { start: tradeDate, end: tradeDate };
+    })();
+
+    return (
+      '<section class="panel rolling-control-bar">' +
+      '<div class="rolling-control-row">' +
+      '<div class="rolling-dimension-switch">' +
+      dimensionHtml +
+      "</div>" +
+      '<div class="rolling-time-slot-bar">' +
+      timeSlots.join("") +
+      "</div>" +
+      '<div class="rolling-trade-date">' +
+      renderStandardDatePicker({
+        id: "rolling-trade-date",
+        mode: "single",
+        range: tradeDateRange,
+        isOpen: state.ui.activeDatePickerId === "rolling-trade-date",
+        holidays: state.ui.holidays || [],
+        escapeHtml: escapeHtml,
+        renderIcon: renderIcon,
+      }) +
+      "</div>" +
+      "</div>" +
+      "</section>"
+    );
+  }
+
+  function buildRollingTransposedTable(dates, summary, metrics) {
+    var columns = [{ key: "indicator", label: "指标", fixed: "left", width: 110 }];
+    dates.forEach(function eachDate(date) {
+      columns.push({ key: date, label: date.slice(5), width: 130 });
+    });
+    var rows = metrics.map(function mapMetric(metric) {
+      var row = { indicator: metric.label };
+      dates.forEach(function eachDate(date) {
+        var cell = summary[date] ? summary[date][metric.key] : "--";
+        row[date] = typeof cell === "number" ? cell : "--";
+      });
+      return row;
+    });
+    return {
+      tableId: "rolling-transposed-table",
+      columns: columns,
+      rows: rows,
+      minWidth: 110 + dates.length * 130,
+      sortState: getTableSortState("rolling-transposed-table"),
+      columnOrder: getTableColumnOrder("rolling-transposed-table"),
+      enableColumnDrag: false,
+      escapeHtml: escapeHtml,
+      renderIcon: renderIcon,
+      renderEmptyState: renderEmptyState,
+    };
+  }
+
+  function renderRollingBuySellPriceView() {
+    var daily = getRollingDailyMarketMock();
+    if (!daily) {
+      return renderEmptyState({ message: "暂无买卖价格数据", escapeHtml: escapeHtml, renderIcon: renderIcon });
+    }
+    var dates = daily.rollingDates;
+    var summary = (daily.price && daily.price.summary) || {};
+    var metrics = [
+      { key: "sellerPriceMean", label: "卖方均值" },
+      { key: "buyerPriceMean", label: "买方均值" },
+      { key: "priceHigh", label: "最高" },
+      { key: "priceLow", label: "最低" },
+    ];
+    var tableConfig = buildRollingTransposedTable(dates, summary, metrics);
+
+    var sellerSeries = (daily.price.seller.series || []).map(function mapSeries(series) {
+      return { id: "seller-" + series.date, label: "卖方 " + series.date.slice(5), color: series.color, values: series.values };
+    });
+    var buyerSeries = (daily.price.buyer.series || []).map(function mapSeries(series) {
+      return { id: "buyer-" + series.date, label: "买方 " + series.date.slice(5), color: series.color, values: series.values };
+    });
+
+    var priceChartHtml = renderChartWithMarks({
+      chartId: "rolling-price-curve",
+      title: "买卖价格曲线",
+      unit: "元/MWh",
+      labels: daily.timeLabels,
+      series: sellerSeries.concat(buyerSeries),
+      hiddenSeries: getChartHiddenState("rolling-price-curve"),
+      enableTimeZoom: true,
+      zoomPointWidth: 22,
+      xLabelEvery: 2,
+      tooltipFormatter: function formatPriceTooltip(label, index, seriesList) {
+        var lines = [label];
+        seriesList.forEach(function each(series) {
+          var value = series.values[index];
+          lines.push(series.label + "：" + (typeof value === "number" ? formatDecimal(value) : "--"));
+        });
+        return lines.join("\n");
+      },
+      escapeHtml: escapeHtml,
+      renderIcon: renderIcon,
+      renderEmptyState: renderEmptyState,
+    });
+
+    return (
+      renderChartSection("买卖价格", priceChartHtml, "4个交易日卖方/买方价格均值与分时曲线") +
+      renderChartSection(
+        "买卖价格明细",
+        renderDataTablePro(tableConfig),
+        "指标行 × 交易日列",
+      )
+    );
+  }
+
+  function renderRollingBuySellVolumeView() {
+    var daily = getRollingDailyMarketMock();
+    if (!daily) {
+      return renderEmptyState({ message: "暂无买卖电量数据", escapeHtml: escapeHtml, renderIcon: renderIcon });
+    }
+    var dates = daily.rollingDates;
+    var summary = (daily.volume && daily.volume.summary) || {};
+    var metrics = [
+      { key: "sellerVolumeMean", label: "卖方均值" },
+      { key: "buyerVolumeMean", label: "买方均值" },
+      { key: "volumeHigh", label: "最高" },
+      { key: "volumeLow", label: "最低" },
+    ];
+    var tableConfig = buildRollingTransposedTable(dates, summary, metrics);
+
+    var sellerSeries = (daily.volume.seller.series || []).map(function mapSeries(series) {
+      return { id: "vol-seller-" + series.date, label: "卖方 " + series.date.slice(5), color: series.color, values: series.values };
+    });
+    var buyerSeries = (daily.volume.buyer.series || []).map(function mapSeries(series) {
+      return { id: "vol-buyer-" + series.date, label: "买方 " + series.date.slice(5), color: series.color, values: series.values };
+    });
+
+    var volumeChartHtml = renderChartWithMarks({
+      chartId: "rolling-volume-curve",
+      title: "买卖电量曲线",
+      unit: "MWh",
+      labels: daily.timeLabels,
+      series: sellerSeries.concat(buyerSeries),
+      hiddenSeries: getChartHiddenState("rolling-volume-curve"),
+      enableTimeZoom: true,
+      zoomPointWidth: 22,
+      xLabelEvery: 2,
+      tooltipFormatter: function formatVolumeTooltip(label, index, seriesList) {
+        var lines = [label];
+        seriesList.forEach(function each(series) {
+          var value = series.values[index];
+          lines.push(series.label + "：" + (typeof value === "number" ? formatDecimal(value) : "--"));
+        });
+        return lines.join("\n");
+      },
+      escapeHtml: escapeHtml,
+      renderIcon: renderIcon,
+      renderEmptyState: renderEmptyState,
+    });
+
+    return (
+      renderChartSection("买卖电量", volumeChartHtml, "4个交易日卖方/买方电量均值与分时曲线") +
+      renderChartSection("买卖电量明细", renderDataTablePro(tableConfig), "指标行 × 交易日列")
+    );
+  }
+
+  function renderRollingMarketView() {
+    var daily = getRollingDailyMarketMock();
+    if (!daily || !daily.rolling) {
+      return renderEmptyState({ message: "暂无滚搓行情数据", escapeHtml: escapeHtml, renderIcon: renderIcon });
+    }
+    var metricOptions = getRollingDataMock().rollingMetricOptions || ["成交电量", "成交价格"];
+    var activeMetric = state.rollingData.activeRollingMetric || metricOptions[0];
+    var metricButtons = metricOptions
+      .map(function mapMetric(option) {
+        var isActive = option === activeMetric;
+        return (
+          '<button type="button" class="secondary-tab ' +
+          (isActive ? "active" : "") +
+          '" data-rolling-metric-toggle="' +
+          escapeHtml(option) +
+          '"' +
+          (isActive ? ' aria-pressed="true"' : "") +
+          ">" +
+          escapeHtml(option) +
+          "</button>"
+        );
+      })
+      .join("");
+
+    var chartHtml = "";
+    var subtitle = "";
+    if (activeMetric === "成交电量") {
+      var tradeVolume = daily.rolling.tradeVolume;
+      chartHtml = renderBarChart({
+        chartId: "rolling-market-volume",
+        labels: daily.timeLabels,
+        values: tradeVolume.values,
+        unit: "MWh",
+        xLabelEvery: 2,
+      });
+      subtitle = "当日累计成交电量 " + formatDecimal(tradeVolume.total) + " MWh";
+    } else {
+      var tradePrice = daily.rolling.tradePrice;
+      chartHtml = renderChartWithMarks({
+        chartId: "rolling-market-price",
+        title: "成交价格",
+        unit: "元/MWh",
+        labels: daily.timeLabels,
+        series: [{ id: "trade-price", label: "成交价格", color: "#FF7A45", values: tradePrice.values }],
+        hideLegend: true,
+        enableTimeZoom: true,
+        zoomPointWidth: 22,
+        xLabelEvery: 2,
+        tooltipFormatter: function formatTradePriceTooltip(label, index, seriesList) {
+          var value = seriesList[0].values[index];
+          return label + "\n成交价格：" + (typeof value === "number" ? formatDecimal(value) : "--");
+        },
+        escapeHtml: escapeHtml,
+        renderIcon: renderIcon,
+        renderEmptyState: renderEmptyState,
+      });
+      subtitle = "成交价格 " + formatDecimal(tradePrice.latest) + " 元/MWh";
+    }
+
+    return (
+      '<section class="panel chart-panel chart-panel-plain">' +
+      '<div class="chart-main chart-main-plain">' +
+      renderSectionHeading("滚搓行情", subtitle) +
+      '<div class="secondary-tabs">' +
+      metricButtons +
+      "</div>" +
+      chartHtml +
+      "</div></section>"
+    );
+  }
+
+  function renderRollingDailyMarketView() {
+    var subView = getRollingActiveSubView();
+    if (subView === "买卖电量") {
+      return renderRollingBuySellVolumeView();
+    }
+    if (subView === "滚搓行情") {
+      return renderRollingMarketView();
+    }
+    return renderRollingBuySellPriceView();
+  }
+
+  function renderKlineChart(options) {
+    var dates = options.dates || [];
+    var klineSeries = options.klineSeries || [];
+    var avgSeries = options.avgSeries || [];
+    var colors = options.colors || { up: "#FA541C", down: "#52C41A", avg: "#1677FF" };
+
+    var candleData = klineSeries.map(function map(point) {
+      return [point.open, point.close, point.low, point.high];
+    });
+
+    var echartsOption = {
+      tooltip: {
+        trigger: "axis",
+        axisPointer: { type: "cross" },
+        formatter: function formatKlineTooltip(params) {
+          if (!params || !params.length) {
+            return "";
+          }
+          var dataIndex = params[0].dataIndex;
+          var point = klineSeries[dataIndex] || {};
+          var avg = avgSeries[dataIndex];
+          var lines = [point.date || ""];
+          lines.push("开盘价：" + formatDecimal(point.open));
+          lines.push("收盘价：" + formatDecimal(point.close));
+          lines.push("最低价：" + formatDecimal(point.low));
+          lines.push("最高价：" + formatDecimal(point.high));
+          if (typeof avg === "number") {
+            lines.push("平均价：" + formatDecimal(avg));
+          }
+          return lines.join("<br/>");
+        },
+      },
+      grid: { left: 64, right: 38, top: 30, bottom: 50 },
+      xAxis: {
+        type: "category",
+        data: dates.map(function map(date) {
+          return date.slice(5);
+        }),
+        axisLabel: { interval: 0, rotate: 30 },
+      },
+      yAxis: { type: "value", scale: true, name: "元/MWh" },
+      series: [
+        {
+          type: "candlestick",
+          data: candleData,
+          itemStyle: { color: colors.up, color0: colors.down, borderColor: colors.up, borderColor0: colors.down },
+        },
+        {
+          name: "均价",
+          type: "line",
+          data: avgSeries,
+          symbol: "none",
+          smooth: false,
+          lineStyle: { width: 1.5, color: colors.avg },
+        },
+      ],
+    };
+
+    return renderEchartsChart({
+      chartId: options.chartId,
+      option: echartsOption,
+      height: 380,
+      title: options.title,
+      escapeHtml: escapeHtml,
+    });
+  }
+
+  function renderRollingMultiDayView() {
+    var multiDay = getRollingMultiDayMock();
+    if (!multiDay) {
+      return renderEmptyState({ message: "暂无多日行情数据", escapeHtml: escapeHtml, renderIcon: renderIcon });
+    }
+    var dates = multiDay.weeklyDates || [];
+    var kline = multiDay.kline || [];
+    var avgSeries = kline.map(function map(point) {
+      return point.avg;
+    });
+
+    var klineHtml = renderKlineChart({
+      chartId: "rolling-kline",
+      title: "电价K线",
+      dates: dates,
+      klineSeries: kline,
+      avgSeries: avgSeries,
+    });
+
+    var volumeValues = (multiDay.volume || []).map(function map(point) {
+      return point.volume;
+    });
+    var volumeHtml = renderBarChart({
+      chartId: "rolling-multi-volume",
+      labels: dates.map(function map(date) {
+        return date.slice(5);
+      }),
+      values: volumeValues,
+      unit: "MWh",
+      xLabelEvery: 1,
+    });
+
+    return (
+      renderChartSection("多日行情", klineHtml, "周粒度电价K线（开盘/收盘/最低/最高/均价）") +
+      renderChartSection("交易量", volumeHtml, "周粒度交易量")
+    );
+  }
+
   function renderRollingDataPage() {
     var rollingMock = getRollingDataMock();
     var status = parseInfoStatus(rollingMock.statusText, getModulePublishTime(rollingMock));
     var selectedTradeCenter = state.ui.selectedTradeCenter;
+    var activeView = getRollingActiveView();
+    var primaryTabsHtml = renderPageTabs(getRollingPrimaryTabs(), activeView);
+    var secondaryTabsHtml =
+      activeView === "单日行情"
+        ? '<div class="secondary-tabs">' +
+          renderSecondaryTabs(getRollingDailySubTabs(), getRollingActiveSubView()) +
+          "</div>"
+        : "";
+    var headerOptions = { secondaryTabsHtml: secondaryTabsHtml };
+
+    function renderRollingBody() {
+      if (activeView === "多日行情") {
+        return renderRollingMultiDayView();
+      }
+      return renderRollingDimensionSwitch() + renderRollingDailyMarketView();
+    }
 
     if (selectedTradeCenter === "湖南电力交易中心") {
       return (
-        renderMarketPageHeader(rollingMock.title || "滚搓数据", "") +
-        renderHunanRollingFilterBar() +
+        renderMarketPageHeader(rollingMock.title || "滚搓数据", primaryTabsHtml, headerOptions) +
         renderRollingDataUpdateBar(status) +
-        renderHunanRollingContent() +
+        renderRollingBody() +
         "</div>"
       );
     }
 
     if (selectedTradeCenter === "陕西电力交易中心") {
       return (
-        renderMarketPageHeader(rollingMock.title || "滚搓数据", "") +
+        renderMarketPageHeader(rollingMock.title || "滚搓数据", primaryTabsHtml, headerOptions) +
         renderRollingDataUpdateBar(status) +
+        renderRollingBody() +
         renderShaanxiContractCurveFilterBar() +
         renderShaanxiContractCurveContent() +
         renderShaanxiTradeOverviewFilterBar() +
@@ -16491,25 +16949,17 @@
 
     if (selectedTradeCenter !== "广东电力交易中心") {
       return (
-        renderMarketPageHeader(rollingMock.title || "滚搓数据", "") +
+        renderMarketPageHeader(rollingMock.title || "滚搓数据", primaryTabsHtml, headerOptions) +
         renderRollingDataUpdateBar(status) +
-        renderTradeCenterPageEmptyPanel(INFO_DISCLOSURE_EMPTY_MESSAGE) +
+        renderRollingBody() +
         "</div>"
       );
     }
 
-    var rows = getRollingDataRows();
-    var hasData = Boolean((rollingMock.rows || []).length);
-    var hasVisibleRows = rows.length > 0;
-
     return (
-      renderMarketPageHeader(rollingMock.title || "滚搓数据", "") +
-      renderRollingDataFilterBar() +
+      renderMarketPageHeader(rollingMock.title || "滚搓数据", primaryTabsHtml, headerOptions) +
       renderRollingDataUpdateBar(status) +
-      (hasData && hasVisibleRows
-        ? renderChartSection("滚搓交易趋势", renderRollingDataChart(rows), "柱状为成交电量，折线为成交均价") +
-          renderSectionTable("rolling-data-table", getRollingDataTable())
-        : renderTradeCenterPageEmptyPanel()) +
+      renderRollingBody() +
       "</div>"
     );
   }
@@ -16750,6 +17200,55 @@
     return '<div class="data-monitor-status-field-group">' + renderDataMonitorDetailItemList(items) + "</div>";
   }
 
+  function renderDataMonitorFetchRecordsSection(record) {
+    var records = Array.isArray(record.fetchRecords) ? record.fetchRecords.slice() : [];
+    records.sort(function sortByEndDesc(a, b) {
+      return (b.endAt || "").localeCompare(a.endAt || "");
+    });
+    var latest = records.slice(0, 5);
+    var headHtml = ["取数任务类型", "任务开始时间", "任务结束时间"]
+      .map(function mapHead(label) {
+        return "<th>" + escapeHtml(label) + "</th>";
+      })
+      .join("");
+    var bodyHtml = latest.length
+      ? latest
+          .map(function mapRow(row) {
+            return (
+              "<tr>" +
+              '<td><span class="table-cell-text">' +
+              escapeHtml(row.taskType || "-") +
+              "</span></td>" +
+              '<td><span class="table-cell-text">' +
+              escapeHtml(row.startAt || "-") +
+              "</span></td>" +
+              '<td><span class="table-cell-text">' +
+              escapeHtml(row.endAt || "-") +
+              "</span></td>" +
+              "</tr>"
+            );
+          })
+          .join("")
+      : "";
+    var tableHtml = latest.length
+      ? '<div class="table-wrap data-monitor-fetch-records-wrap"><table class="data-table data-monitor-fetch-records-table"><thead><tr>' +
+        headHtml +
+        "</tr></thead><tbody>" +
+        bodyHtml +
+        "</tbody></table></div>"
+      : renderEmptyState({
+          escapeHtml: escapeHtml,
+          renderIcon: renderIcon,
+          message: "暂无取数记录",
+        });
+    return (
+      '<section class="data-monitor-detail-section data-monitor-fetch-records-section"><div class="data-monitor-detail-section-title">取数记录</div>' +
+      '<div class="data-monitor-fetch-records-meta">最近 5 条取数任务，按任务结束时间倒序</div>' +
+      tableHtml +
+      "</section>"
+    );
+  }
+
   function getDataMonitorCollectorExceptionAt(record) {
     return isDataMonitorCollectorAbnormal(record) ? record.fetchExceptionAt : "-";
   }
@@ -16787,9 +17286,12 @@
       renderDataMonitorDetailSection("取数配置", [
         { label: "时间点位", value: record.timePoint },
         { label: "产出时间", value: record.outputTime },
-        { label: "预警时间", value: record.warningTime },
-        { label: "取值范围", value: record.valueRange },
-        { label: "取数工具时效", value: record.fetchToolTimeliness, wide: true },
+        { label: "常规取数时效", value: record.routineFetchTimeliness, wide: true },
+        { label: "常规取数范围", value: record.routineFetchValueRange },
+        { label: "常规预警时间", value: record.routineWarningTime },
+        { label: "交易取数时效", value: record.tradeFetchTimeliness, wide: true },
+        { label: "交易取数范围", value: record.tradeFetchValueRange },
+        { label: "交易预警时间", value: record.tradeWarningTime },
         { label: "交易中心页面地址", value: record.pageAddress, wide: true },
       ]) +
       '<section class="data-monitor-detail-section"><div class="data-monitor-detail-section-title">当前状态</div><div class="data-monitor-current-status-grid">' +
@@ -16818,6 +17320,7 @@
           "</div>",
       ) +
       "</div></section>" +
+      renderDataMonitorFetchRecordsSection(record) +
       "</div></aside></div>"
     );
   }
@@ -18520,6 +19023,12 @@
 
     var secondaryTabButton = event.target.closest("[data-secondary-tab]");
     if (secondaryTabButton) {
+      if (state.currentPageKey === "rolling-data" && state.rollingData.activeView === "单日行情") {
+        state.rollingData.activeSubView = secondaryTabButton.getAttribute("data-secondary-tab");
+        state.ui.downloadDataType = "滚搓数据-" + state.rollingData.activeSubView;
+        renderApp();
+        return;
+      }
       if (state.currentPageKey === "gd-settlement" && getSelectedTradeCenterKey() !== "guangdong" && state.settlement.activeTab === "月结算") {
         state.settlement.secondaryTab = secondaryTabButton.getAttribute("data-secondary-tab");
         state.ui.downloadDataType = "月结算-" + state.settlement.secondaryTab;
@@ -18611,6 +19120,27 @@
       return;
     }
 
+    var rollingTimeSlot = event.target.closest("[data-rolling-time-slot]");
+    if (rollingTimeSlot) {
+      state.rollingData.activeTimeSlot = rollingTimeSlot.getAttribute("data-rolling-time-slot");
+      renderApp();
+      return;
+    }
+
+    var rollingDimension = event.target.closest("[data-rolling-dimension]");
+    if (rollingDimension) {
+      state.rollingData.dimension = rollingDimension.getAttribute("data-rolling-dimension");
+      renderApp();
+      return;
+    }
+
+    var rollingMetricToggle = event.target.closest("[data-rolling-metric-toggle]");
+    if (rollingMetricToggle) {
+      state.rollingData.activeRollingMetric = rollingMetricToggle.getAttribute("data-rolling-metric-toggle");
+      renderApp();
+      return;
+    }
+
     var pageTabButton = event.target.closest("[data-page-tab]");
     if (pageTabButton) {
       var nextTab = pageTabButton.getAttribute("data-page-tab");
@@ -18621,6 +19151,13 @@
         getMarketDisclosureState().activeTab = nextTab;
       } else if (state.currentPageKey === "gd-settlement") {
         state.settlement.activeTab = nextTab;
+      } else if (state.currentPageKey === "rolling-data") {
+        state.rollingData.activeView = nextTab;
+        if (nextTab !== "单日行情") {
+          state.rollingData.activeSubView = "";
+        } else if (!state.rollingData.activeSubView) {
+          state.rollingData.activeSubView = "买卖价格";
+        }
       }
       state.ui.downloadDataType = getCurrentDownloadType();
       renderApp();

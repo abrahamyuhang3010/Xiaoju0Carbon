@@ -146,6 +146,39 @@
         "2026-06-15 10:01 最近一次数据成功入库",
         "2026-06-16 11:40 命中取数状态：数据未取回",
         "2026-06-16 18:40 数据质量校验待触发"
+      ],
+      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-15 09:53:20",
+          "endAt": "2026-06-15 10:01:17"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 09:52:13",
+          "endAt": "2026-06-14 10:01:17"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 09:51:06",
+          "endAt": "2026-06-13 10:01:17"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 09:50:59",
+          "endAt": "2026-06-12 10:01:17"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-11 09:49:52",
+          "endAt": "2026-06-11 10:01:17"
+        }
       ]
     },
     {
@@ -210,6 +243,39 @@
         "2026-06-16 10:09 最近一次数据成功入库",
         "2026-06-16 11:40 命中取数状态：数据未取回",
         "2026-06-16 18:40 数据质量校验待触发"
+      ],
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:01:17",
+          "endAt": "2026-06-16 10:09:13"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:00:10",
+          "endAt": "2026-06-15 10:09:13"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 09:59:02",
+          "endAt": "2026-06-14 10:09:13"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 09:58:55",
+          "endAt": "2026-06-13 10:09:13"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 09:57:48",
+          "endAt": "2026-06-12 10:09:13"
+        }
       ]
     },
     {
@@ -272,6 +338,39 @@
         "2026-06-16 10:17 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数据为空"
+      ],
+      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:09:13",
+          "endAt": "2026-06-16 10:17:09"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:08:06",
+          "endAt": "2026-06-15 10:17:09"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:07:59",
+          "endAt": "2026-06-14 10:17:09"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:06:52",
+          "endAt": "2026-06-13 10:17:09"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:05:45",
+          "endAt": "2026-06-12 10:17:09"
+        }
       ]
     },
     {
@@ -336,6 +435,39 @@
         "2026-06-16 10:25 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数据不完整"
+      ],
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:17:09",
+          "endAt": "2026-06-16 10:25:05"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:16:02",
+          "endAt": "2026-06-15 10:25:05"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:15:55",
+          "endAt": "2026-06-14 10:25:05"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:14:48",
+          "endAt": "2026-06-13 10:25:05"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:13:41",
+          "endAt": "2026-06-12 10:25:05"
+        }
       ]
     },
     {
@@ -405,6 +537,39 @@
         "2026-06-16 10:33 最近一次数据成功入库",
         "- 命中取数状态：数据未取回",
         "2026-06-16 18:40 命中数据质量异常：数据未更新"
+      ],
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:25:05",
+          "endAt": "2026-06-16 10:33:01"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:24:58",
+          "endAt": "2026-06-15 10:33:01"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:23:51",
+          "endAt": "2026-06-14 10:33:01"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:22:44",
+          "endAt": "2026-06-13 10:33:01"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:21:37",
+          "endAt": "2026-06-12 10:33:01"
+        }
       ]
     },
     {
@@ -465,6 +630,39 @@
         "2026-06-16 10:28 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 当前数据项未配置质量校验规则"
+      ],
+      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:20:30",
+          "endAt": "2026-06-16 10:28:26"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:19:23",
+          "endAt": "2026-06-15 10:28:26"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:18:16",
+          "endAt": "2026-06-14 10:28:26"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:17:09",
+          "endAt": "2026-06-13 10:28:26"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:16:02",
+          "endAt": "2026-06-12 10:28:26"
+        }
       ]
     },
     {
@@ -522,6 +720,39 @@
         "2026-06-16 10:31 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数据不完整"
+      ],
+      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:23:51",
+          "endAt": "2026-06-16 10:31:47"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:22:44",
+          "endAt": "2026-06-15 10:31:47"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:21:37",
+          "endAt": "2026-06-14 10:31:47"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:20:30",
+          "endAt": "2026-06-13 10:31:47"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:19:23",
+          "endAt": "2026-06-12 10:31:47"
+        }
       ]
     },
     {
@@ -584,6 +815,39 @@
         "2026-06-16 10:39 最近一次数据成功入库",
         "- 命中取数状态：数据未取回",
         "2026-06-16 18:40 命中数据质量异常：数据未更新"
+      ],
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:31:47",
+          "endAt": "2026-06-16 10:39:43"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:30:40",
+          "endAt": "2026-06-15 10:39:43"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:29:33",
+          "endAt": "2026-06-14 10:39:43"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:28:26",
+          "endAt": "2026-06-13 10:39:43"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:27:19",
+          "endAt": "2026-06-12 10:39:43"
+        }
       ]
     },
     {
@@ -641,6 +905,39 @@
         "2026-06-16 10:02 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数值异常"
+      ],
+      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 09:54:27",
+          "endAt": "2026-06-16 10:02:24"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 09:53:20",
+          "endAt": "2026-06-15 10:02:24"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 09:52:13",
+          "endAt": "2026-06-14 10:02:24"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 09:51:06",
+          "endAt": "2026-06-13 10:02:24"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 09:50:59",
+          "endAt": "2026-06-12 10:02:24"
+        }
       ]
     },
     {
@@ -703,6 +1000,39 @@
         "2026-06-16 10:10 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:02:24",
+          "endAt": "2026-06-16 10:10:20"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:01:17",
+          "endAt": "2026-06-15 10:10:20"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:00:10",
+          "endAt": "2026-06-14 10:10:20"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 09:59:02",
+          "endAt": "2026-06-13 10:10:20"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 09:58:55",
+          "endAt": "2026-06-12 10:10:20"
+        }
       ]
     },
     {
@@ -765,6 +1095,39 @@
         "2026-06-16 10:18 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:10:20",
+          "endAt": "2026-06-16 10:18:16"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:09:13",
+          "endAt": "2026-06-15 10:18:16"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:08:06",
+          "endAt": "2026-06-14 10:18:16"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:07:59",
+          "endAt": "2026-06-13 10:18:16"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:06:52",
+          "endAt": "2026-06-12 10:18:16"
+        }
       ]
     },
     {
@@ -826,6 +1189,39 @@
         "2026-06-16 10:26 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:18:16",
+          "endAt": "2026-06-16 10:26:12"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:17:09",
+          "endAt": "2026-06-15 10:26:12"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:16:02",
+          "endAt": "2026-06-14 10:26:12"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:15:55",
+          "endAt": "2026-06-13 10:26:12"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:14:48",
+          "endAt": "2026-06-12 10:26:12"
+        }
       ]
     },
     {
@@ -883,6 +1279,39 @@
         "2026-06-16 10:34 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:26:12",
+          "endAt": "2026-06-16 10:34:08"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:25:05",
+          "endAt": "2026-06-15 10:34:08"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:24:58",
+          "endAt": "2026-06-14 10:34:08"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:23:51",
+          "endAt": "2026-06-13 10:34:08"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:22:44",
+          "endAt": "2026-06-12 10:34:08"
+        }
       ]
     },
     {
@@ -940,6 +1369,39 @@
         "2026-06-16 10:41 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数值异常"
+      ],
+      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:33:01",
+          "endAt": "2026-06-16 10:41:57"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:32:54",
+          "endAt": "2026-06-15 10:41:57"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:31:47",
+          "endAt": "2026-06-14 10:41:57"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:30:40",
+          "endAt": "2026-06-13 10:41:57"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:29:33",
+          "endAt": "2026-06-12 10:41:57"
+        }
       ]
     },
     {
@@ -997,6 +1459,39 @@
         "2026-06-16 10:04 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 09:56:41",
+          "endAt": "2026-06-16 10:04:38"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 09:55:34",
+          "endAt": "2026-06-15 10:04:38"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 09:54:27",
+          "endAt": "2026-06-14 10:04:38"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 09:53:20",
+          "endAt": "2026-06-13 10:04:38"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 09:52:13",
+          "endAt": "2026-06-12 10:04:38"
+        }
       ]
     },
     {
@@ -1058,6 +1553,39 @@
         "2026-06-16 10:12 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:04:38",
+          "endAt": "2026-06-16 10:12:34"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:03:31",
+          "endAt": "2026-06-15 10:12:34"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:02:24",
+          "endAt": "2026-06-14 10:12:34"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:01:17",
+          "endAt": "2026-06-13 10:12:34"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:00:10",
+          "endAt": "2026-06-12 10:12:34"
+        }
       ]
     },
     {
@@ -1119,6 +1647,39 @@
         "2026-06-16 10:20 最近一次数据成功入库",
         "2026-06-16 18:20 取数任务已发起，当前仍在执行",
         "2026-06-16 18:40 数据质量校验待触发"
+      ],
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:12:34",
+          "endAt": "2026-06-16 10:20:30"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:11:27",
+          "endAt": "2026-06-15 10:20:30"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:10:20",
+          "endAt": "2026-06-14 10:20:30"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:09:13",
+          "endAt": "2026-06-13 10:20:30"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:08:06",
+          "endAt": "2026-06-12 10:20:30"
+        }
       ]
     },
     {
@@ -1176,6 +1737,39 @@
         "2026-06-15 17:13 最近一次数据成功入库",
         "2026-06-16 18:30 命中取数状态：数据未取回",
         "2026-06-16 18:40 数据质量校验待触发"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-4日 ～ D-10日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-15 17:05:52",
+          "endAt": "2026-06-15 17:13:48"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:04:45",
+          "endAt": "2026-06-14 17:13:48"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:03:38",
+          "endAt": "2026-06-13 17:13:48"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:02:31",
+          "endAt": "2026-06-12 17:13:48"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-11 17:01:24",
+          "endAt": "2026-06-11 17:13:48"
+        }
       ]
     },
     {
@@ -1233,6 +1827,39 @@
         "2026-06-16 17:21 最近一次数据成功入库",
         "2026-06-16 18:30 命中取数状态：数据未取回",
         "2026-06-16 18:40 数据质量校验待触发"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-4日 ～ D-10日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:13:48",
+          "endAt": "2026-06-16 17:21:44"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:12:41",
+          "endAt": "2026-06-15 17:21:44"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:11:34",
+          "endAt": "2026-06-14 17:21:44"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:10:27",
+          "endAt": "2026-06-13 17:21:44"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:09:20",
+          "endAt": "2026-06-12 17:21:44"
+        }
       ]
     },
     {
@@ -1279,7 +1906,7 @@
       "notified": "否",
       "warningThreshold": "环比阈值：同一时段较上一日±60%；同比阈值：同一时段较去年同期±100%；历史回溯按代理月份校验完整性",
       "priority": "P0",
-      "remark": "全量回刷：D-4至2025年1月1日；补取数据：D-4至D-10；M月19日、20日07:00分别执行两次全量回刷任务，21日前完成；20日后每日补取一次最新数据",
+      "remark": "全量回刷：D-4至2025年1月1日；补取数据：D-4至D-10；M月19日、20日08:30 分别执行两次全量回刷任务，21日前完成；20日后每日补取一次最新数据",
       "namingRule": "-",
       "categoryPath": [
         "信息披露",
@@ -1290,6 +1917,39 @@
         "2026-06-16 17:34 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:42 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "",
+      "routineFetchValueRange": "",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:26:19",
+          "endAt": "2026-06-16 17:34:15"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:25:12",
+          "endAt": "2026-06-15 17:34:15"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:24:05",
+          "endAt": "2026-06-14 17:34:15"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:23:58",
+          "endAt": "2026-06-13 17:34:15"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:22:51",
+          "endAt": "2026-06-12 17:34:15"
+        }
       ]
     },
     {
@@ -1336,7 +1996,7 @@
       "notified": "否",
       "warningThreshold": "环比阈值：同一时段较上一日±60%；同比阈值：同一时段较去年同期±100%；历史回溯按代理月份校验完整性",
       "priority": "P0",
-      "remark": "全量回刷：D-4至2025年1月1日；补取数据：D-4至D-10；M月19日、20日07:00分别执行两次全量回刷任务，21日前完成；20日后每日补取一次最新数据",
+      "remark": "全量回刷：D-4至2025年1月1日；补取数据：D-4至D-10；M月19日、20日08:30 分别执行两次全量回刷任务，21日前完成；20日后每日补取一次最新数据",
       "namingRule": "-",
       "categoryPath": [
         "信息披露",
@@ -1347,6 +2007,39 @@
         "2026-06-16 17:36 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:44 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "",
+      "routineFetchValueRange": "",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:28:33",
+          "endAt": "2026-06-16 17:36:29"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:27:26",
+          "endAt": "2026-06-15 17:36:29"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:26:19",
+          "endAt": "2026-06-14 17:36:29"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:25:12",
+          "endAt": "2026-06-13 17:36:29"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:24:05",
+          "endAt": "2026-06-12 17:36:29"
+        }
       ]
     },
     {
@@ -1406,6 +2099,39 @@
         "2026-06-16 17:29 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数据为空"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D日 ～ D+1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:21:44",
+          "endAt": "2026-06-16 17:29:40"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:20:37",
+          "endAt": "2026-06-15 17:29:40"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:19:30",
+          "endAt": "2026-06-14 17:29:40"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:18:23",
+          "endAt": "2026-06-13 17:29:40"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:17:16",
+          "endAt": "2026-06-12 17:29:40"
+        }
       ]
     },
     {
@@ -1465,6 +2191,39 @@
         "2026-06-16 17:37 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数据不完整"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-2日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:29:40",
+          "endAt": "2026-06-16 17:37:36"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:28:33",
+          "endAt": "2026-06-15 17:37:36"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:27:26",
+          "endAt": "2026-06-14 17:37:36"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:26:19",
+          "endAt": "2026-06-13 17:37:36"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:25:12",
+          "endAt": "2026-06-12 17:37:36"
+        }
       ]
     },
     {
@@ -1524,6 +2283,39 @@
         "2026-06-16 17:00 最近一次数据成功入库",
         "- 命中取数状态：数据未取回",
         "2026-06-16 18:40 命中数据质量异常：数据未更新"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-9日 ～ D+1日",
+      "routineWarningTime": "D+1日 09:00",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 16:52:20",
+          "endAt": "2026-06-16 17:00:17"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 16:51:13",
+          "endAt": "2026-06-15 17:00:17"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 16:50:06",
+          "endAt": "2026-06-14 17:00:17"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 16:49:59",
+          "endAt": "2026-06-13 17:00:17"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 16:48:52",
+          "endAt": "2026-06-12 17:00:17"
+        }
       ]
     },
     {
@@ -1583,6 +2375,39 @@
         "2026-06-16 17:08 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数值异常"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-9日 ～ D+1日",
+      "routineWarningTime": "D+1日 09:00",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:00:17",
+          "endAt": "2026-06-16 17:08:13"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 16:59:09",
+          "endAt": "2026-06-15 17:08:13"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 16:58:02",
+          "endAt": "2026-06-14 17:08:13"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 16:57:55",
+          "endAt": "2026-06-13 17:08:13"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 16:56:48",
+          "endAt": "2026-06-12 17:08:13"
+        }
       ]
     },
     {
@@ -1639,6 +2464,39 @@
         "2026-06-16 17:16 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 16:00、18:00、20:00、22:00、23:00、23:30",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:08:13",
+          "endAt": "2026-06-16 17:16:09"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:07:06",
+          "endAt": "2026-06-15 17:16:09"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:06:59",
+          "endAt": "2026-06-14 17:16:09"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:05:52",
+          "endAt": "2026-06-13 17:16:09"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:04:45",
+          "endAt": "2026-06-12 17:16:09"
+        }
       ]
     },
     {
@@ -1695,6 +2553,39 @@
         "2026-06-16 17:24 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 16:00、18:00、20:00、22:00、23:00、23:30",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:16:09",
+          "endAt": "2026-06-16 17:24:05"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:15:02",
+          "endAt": "2026-06-15 17:24:05"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:14:55",
+          "endAt": "2026-06-14 17:24:05"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:13:48",
+          "endAt": "2026-06-13 17:24:05"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:12:41",
+          "endAt": "2026-06-12 17:24:05"
+        }
       ]
     },
     {
@@ -1751,6 +2642,39 @@
         "2026-06-16 17:32 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D+1日 ～ D+1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:24:05",
+          "endAt": "2026-06-16 17:32:01"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:23:58",
+          "endAt": "2026-06-15 17:32:01"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:22:51",
+          "endAt": "2026-06-14 17:32:01"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:21:44",
+          "endAt": "2026-06-13 17:32:01"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:20:37",
+          "endAt": "2026-06-12 17:32:01"
+        }
       ]
     },
     {
@@ -1807,6 +2731,39 @@
         "2026-06-16 17:40 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 22:00",
+      "routineFetchValueRange": "D-10日 ～ D-6日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:32:01",
+          "endAt": "2026-06-16 17:40:57"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:31:54",
+          "endAt": "2026-06-15 17:40:57"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:30:47",
+          "endAt": "2026-06-14 17:40:57"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:29:40",
+          "endAt": "2026-06-13 17:40:57"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:28:33",
+          "endAt": "2026-06-12 17:40:57"
+        }
       ]
     },
     {
@@ -1863,6 +2820,39 @@
         "2026-06-04 17:03 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "M月15日起，每日 20:00、21:00、22:00，取到即止",
+      "routineFetchValueRange": "M-1月 ～ M-1月",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-04 16:55:41",
+          "endAt": "2026-06-04 17:03:38"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-03 16:54:34",
+          "endAt": "2026-06-03 17:03:38"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-02 16:53:27",
+          "endAt": "2026-06-02 17:03:38"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-01 16:52:20",
+          "endAt": "2026-06-01 17:03:38"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-05-31 16:51:13",
+          "endAt": "2026-05-31 17:03:38"
+        }
       ]
     },
     {
@@ -1919,6 +2909,39 @@
         "2026-06-04 17:11 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "M月15日起，每日 20:00、21:00、22:00，取到即止",
+      "routineFetchValueRange": "M-1月 ～ M-1月",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-04 17:03:38",
+          "endAt": "2026-06-04 17:11:34"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-03 17:02:31",
+          "endAt": "2026-06-03 17:11:34"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-02 17:01:24",
+          "endAt": "2026-06-02 17:11:34"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-01 17:00:17",
+          "endAt": "2026-06-01 17:11:34"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-05-31 16:59:09",
+          "endAt": "2026-05-31 17:11:34"
+        }
       ]
     },
     {
@@ -1974,6 +2997,39 @@
         "2026-06-16 10:36 最近一次数据成功入库",
         "- 命中取数状态：数据未取回",
         "2026-06-16 18:40 数据质量校验待触发"
+      ],
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:28:26",
+          "endAt": "2026-06-16 10:36:22"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:27:19",
+          "endAt": "2026-06-15 10:36:22"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:26:12",
+          "endAt": "2026-06-14 10:36:22"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:25:05",
+          "endAt": "2026-06-13 10:36:22"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:24:58",
+          "endAt": "2026-06-12 10:36:22"
+        }
       ]
     },
     {
@@ -2029,6 +3085,39 @@
         "2026-06-16 10:44 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数据为空"
+      ],
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:36:22",
+          "endAt": "2026-06-16 10:44:18"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:35:15",
+          "endAt": "2026-06-15 10:44:18"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:34:08",
+          "endAt": "2026-06-14 10:44:18"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:33:01",
+          "endAt": "2026-06-13 10:44:18"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:32:54",
+          "endAt": "2026-06-12 10:44:18"
+        }
       ]
     },
     {
@@ -2084,6 +3173,39 @@
         "2026-06-15 10:07 最近一次数据成功入库",
         "2026-06-16 11:40 命中取数状态：数据未取回",
         "2026-06-16 18:40 数据质量校验待触发"
+      ],
+      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-15 09:59:02",
+          "endAt": "2026-06-15 10:07:59"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 09:58:55",
+          "endAt": "2026-06-14 10:07:59"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 09:57:48",
+          "endAt": "2026-06-13 10:07:59"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 09:56:41",
+          "endAt": "2026-06-12 10:07:59"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-11 09:55:34",
+          "endAt": "2026-06-11 10:07:59"
+        }
       ]
     },
     {
@@ -2139,6 +3261,39 @@
         "2026-06-16 10:15 最近一次数据成功入库",
         "2026-06-16 11:40 命中取数状态：数据未取回",
         "2026-06-16 18:40 数据质量校验待触发"
+      ],
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:07:59",
+          "endAt": "2026-06-16 10:15:55"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:06:52",
+          "endAt": "2026-06-15 10:15:55"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:05:45",
+          "endAt": "2026-06-14 10:15:55"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:04:38",
+          "endAt": "2026-06-13 10:15:55"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:03:31",
+          "endAt": "2026-06-12 10:15:55"
+        }
       ]
     },
     {
@@ -2196,6 +3351,39 @@
         "2026-06-16 10:23 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数据为空"
+      ],
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:15:55",
+          "endAt": "2026-06-16 10:23:51"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:14:48",
+          "endAt": "2026-06-15 10:23:51"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:13:41",
+          "endAt": "2026-06-14 10:23:51"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:12:34",
+          "endAt": "2026-06-13 10:23:51"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:11:27",
+          "endAt": "2026-06-12 10:23:51"
+        }
       ]
     },
     {
@@ -2251,6 +3439,39 @@
         "2026-06-16 10:42 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 10:34:08",
+          "endAt": "2026-06-16 10:42:04"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 10:33:01",
+          "endAt": "2026-06-15 10:42:04"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 10:32:54",
+          "endAt": "2026-06-14 10:42:04"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 10:31:47",
+          "endAt": "2026-06-13 10:42:04"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 10:30:40",
+          "endAt": "2026-06-12 10:42:04"
+        }
       ]
     },
     {
@@ -2306,6 +3527,39 @@
         "2026-06-16 10:05 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchValueRange": "D-6日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 09:57:48",
+          "endAt": "2026-06-16 10:05:45"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 09:56:41",
+          "endAt": "2026-06-15 10:05:45"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 09:55:34",
+          "endAt": "2026-06-14 10:05:45"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 09:54:27",
+          "endAt": "2026-06-13 10:05:45"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 09:53:20",
+          "endAt": "2026-06-12 10:05:45"
+        }
       ]
     },
     {
@@ -2337,7 +3591,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 17:22",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 09:00、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-系统负荷预测（日）",
       "fetchExceptionType": "数据未取回",
       "fetchExceptionAt": "2026-06-16 18:30",
@@ -2363,6 +3617,39 @@
         "2026-06-15 17:22 最近一次数据成功入库",
         "2026-06-16 18:30 命中取数状态：数据未取回",
         "2026-06-16 18:40 数据质量校验待触发"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "每日 09:10",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-15 17:14:55",
+          "endAt": "2026-06-15 17:22:51"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-14 17:13:48",
+          "endAt": "2026-06-14 17:22:51"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-13 17:12:41",
+          "endAt": "2026-06-13 17:22:51"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-12 17:11:34",
+          "endAt": "2026-06-12 17:22:51"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-11 17:10:27",
+          "endAt": "2026-06-11 17:22:51"
+        }
       ]
     },
     {
@@ -2394,7 +3681,7 @@
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:30",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-实际负荷",
       "fetchExceptionType": "数据未取回",
       "fetchExceptionAt": "2026-06-16 18:30",
@@ -2420,6 +3707,39 @@
         "2026-06-16 17:30 最近一次数据成功入库",
         "2026-06-16 18:30 命中取数状态：数据未取回",
         "2026-06-16 18:40 数据质量校验待触发"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-4日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "每日 08:50",
+      "tradeFetchValueRange": "D-1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:22:51",
+          "endAt": "2026-06-16 17:30:47"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:21:44",
+          "endAt": "2026-06-15 17:30:47"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:20:37",
+          "endAt": "2026-06-14 17:30:47"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:19:30",
+          "endAt": "2026-06-13 17:30:47"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:18:23",
+          "endAt": "2026-06-12 17:30:47"
+        }
       ]
     },
     {
@@ -2451,7 +3771,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:38",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 09:00、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-新能源总出力预测（日）",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2477,6 +3797,39 @@
         "2026-06-16 17:38 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数据为空"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "每日 09:10",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:30:47",
+          "endAt": "2026-06-16 17:38:43"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:29:40",
+          "endAt": "2026-06-15 17:38:43"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:28:33",
+          "endAt": "2026-06-14 17:38:43"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:27:26",
+          "endAt": "2026-06-13 17:38:43"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:26:19",
+          "endAt": "2026-06-12 17:38:43"
+        }
       ]
     },
     {
@@ -2511,7 +3864,7 @@
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:01",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-新能源总出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2537,6 +3890,39 @@
         "2026-06-16 17:01 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数据不完整"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-4日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "每日 08:50",
+      "tradeFetchValueRange": "D-1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 16:53:27",
+          "endAt": "2026-06-16 17:01:24"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 16:52:20",
+          "endAt": "2026-06-15 17:01:24"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 16:51:13",
+          "endAt": "2026-06-14 17:01:24"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 16:50:06",
+          "endAt": "2026-06-13 17:01:24"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 16:49:59",
+          "endAt": "2026-06-12 17:01:24"
+        }
       ]
     },
     {
@@ -2570,7 +3956,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:09",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 09:00、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-水电（含抽蓄）总出力预测（日）",
       "fetchExceptionType": "数据未取回",
       "fetchExceptionAt": "-",
@@ -2596,6 +3982,39 @@
         "2026-06-16 17:09 最近一次数据成功入库",
         "- 命中取数状态：数据未取回",
         "2026-06-16 18:40 命中数据质量异常：数据未更新"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "每日 09:10",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:01:24",
+          "endAt": "2026-06-16 17:09:20"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:00:17",
+          "endAt": "2026-06-15 17:09:20"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 16:59:09",
+          "endAt": "2026-06-14 17:09:20"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 16:58:02",
+          "endAt": "2026-06-13 17:09:20"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 16:57:55",
+          "endAt": "2026-06-12 17:09:20"
+        }
       ]
     },
     {
@@ -2629,7 +4048,7 @@
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:17",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-水电（含抽蓄）总出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2655,6 +4074,39 @@
         "2026-06-16 17:17 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数值异常"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-4日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "每日 08:50",
+      "tradeFetchValueRange": "D-1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:09:20",
+          "endAt": "2026-06-16 17:17:16"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:08:13",
+          "endAt": "2026-06-15 17:17:16"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:07:06",
+          "endAt": "2026-06-14 17:17:16"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:06:59",
+          "endAt": "2026-06-13 17:17:16"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:05:52",
+          "endAt": "2026-06-12 17:17:16"
+        }
       ]
     },
     {
@@ -2688,7 +4140,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:41",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 09:00、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-发电总出力预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2714,6 +4166,39 @@
         "2026-06-16 17:41 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "每日 09:10",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:33:08",
+          "endAt": "2026-06-16 17:41:04"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:32:01",
+          "endAt": "2026-06-15 17:41:04"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:31:54",
+          "endAt": "2026-06-14 17:41:04"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:30:47",
+          "endAt": "2026-06-13 17:41:04"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:29:40",
+          "endAt": "2026-06-12 17:41:04"
+        }
       ]
     },
     {
@@ -2747,7 +4232,7 @@
       "valueRange": "D-7日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:04",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-发电总出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2773,6 +4258,39 @@
         "2026-06-16 17:04 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-7日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "每日 08:50",
+      "tradeFetchValueRange": "D-1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 16:56:48",
+          "endAt": "2026-06-16 17:04:45"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 16:55:41",
+          "endAt": "2026-06-15 17:04:45"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 16:54:34",
+          "endAt": "2026-06-14 17:04:45"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 16:53:27",
+          "endAt": "2026-06-13 17:04:45"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 16:52:20",
+          "endAt": "2026-06-12 17:04:45"
+        }
       ]
     },
     {
@@ -2806,7 +4324,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:12",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 09:00、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-非市场机组总出力预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2832,6 +4350,39 @@
         "2026-06-16 17:12 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "每日 09:10",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:04:45",
+          "endAt": "2026-06-16 17:12:41"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:03:38",
+          "endAt": "2026-06-15 17:12:41"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:02:31",
+          "endAt": "2026-06-14 17:12:41"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:01:24",
+          "endAt": "2026-06-13 17:12:41"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:00:17",
+          "endAt": "2026-06-12 17:12:41"
+        }
       ]
     },
     {
@@ -2863,7 +4414,7 @@
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:20",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-非市场机组总出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2889,6 +4440,39 @@
         "2026-06-16 17:20 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-4日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "每日 08:50",
+      "tradeFetchValueRange": "D-1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:12:41",
+          "endAt": "2026-06-16 17:20:37"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:11:34",
+          "endAt": "2026-06-15 17:20:37"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:10:27",
+          "endAt": "2026-06-14 17:20:37"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:09:20",
+          "endAt": "2026-06-13 17:20:37"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:08:13",
+          "endAt": "2026-06-12 17:20:37"
+        }
       ]
     },
     {
@@ -2924,7 +4508,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:25",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 09:00、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-预测信息-省间联络线输电曲线预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2950,6 +4534,39 @@
         "2026-06-16 17:25 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "每日 09:10",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:17:16",
+          "endAt": "2026-06-16 17:25:12"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:16:09",
+          "endAt": "2026-06-15 17:25:12"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:15:02",
+          "endAt": "2026-06-14 17:25:12"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:14:55",
+          "endAt": "2026-06-13 17:25:12"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:13:48",
+          "endAt": "2026-06-12 17:25:12"
+        }
       ]
     },
     {
@@ -2983,7 +4600,7 @@
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:33",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-运行信息-省间联络线输电情况",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3009,6 +4626,39 @@
         "2026-06-16 17:33 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-4日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "每日 08:50",
+      "tradeFetchValueRange": "D-1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:25:12",
+          "endAt": "2026-06-16 17:33:08"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:24:05",
+          "endAt": "2026-06-15 17:33:08"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:23:58",
+          "endAt": "2026-06-14 17:33:08"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:22:51",
+          "endAt": "2026-06-13 17:33:08"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:21:44",
+          "endAt": "2026-06-12 17:33:08"
+        }
       ]
     },
     {
@@ -3040,7 +4690,7 @@
       "valueRange": "D-2日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:39",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-电网运行-机组状态",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3066,6 +4716,39 @@
         "2026-06-16 17:39 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-2日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:31:54",
+          "endAt": "2026-06-16 17:39:50"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:30:47",
+          "endAt": "2026-06-15 17:39:50"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:29:40",
+          "endAt": "2026-06-14 17:39:50"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:28:33",
+          "endAt": "2026-06-13 17:39:50"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:27:26",
+          "endAt": "2026-06-12 17:39:50"
+        }
       ]
     },
     {
@@ -3100,7 +4783,7 @@
       "valueRange": "D-2日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:18",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-电网运行-系统备用信息",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3126,6 +4809,39 @@
         "2026-06-16 17:18 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-2日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:10:27",
+          "endAt": "2026-06-16 17:18:23"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:09:20",
+          "endAt": "2026-06-15 17:18:23"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:08:13",
+          "endAt": "2026-06-14 17:18:23"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:07:06",
+          "endAt": "2026-06-13 17:18:23"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:06:59",
+          "endAt": "2026-06-12 17:18:23"
+        }
       ]
     },
     {
@@ -3157,7 +4873,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:26",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 09:00、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-供需与约束-约束信息-发输变电设备检修计划（日）",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3183,6 +4899,39 @@
         "2026-06-16 17:26 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:18:23",
+          "endAt": "2026-06-16 17:26:19"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:17:16",
+          "endAt": "2026-06-15 17:26:19"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:16:09",
+          "endAt": "2026-06-14 17:26:19"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:15:02",
+          "endAt": "2026-06-13 17:26:19"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:14:55",
+          "endAt": "2026-06-12 17:26:19"
+        }
       ]
     },
     {
@@ -3216,7 +4965,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 17:28",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-日前节点边际电价",
       "fetchExceptionType": "数据未取回",
       "fetchExceptionAt": "2026-06-16 18:30",
@@ -3241,6 +4990,39 @@
         "2026-06-15 17:28 最近一次数据成功入库",
         "2026-06-16 18:30 命中取数状态：数据未取回",
         "2026-06-16 18:40 数据质量校验待触发"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "每日 09:10",
+      "tradeFetchValueRange": "D-1日 ～ D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-15 17:20:37",
+          "endAt": "2026-06-15 17:28:33"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-14 17:19:30",
+          "endAt": "2026-06-14 17:28:33"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-13 17:18:23",
+          "endAt": "2026-06-13 17:28:33"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-12 17:17:16",
+          "endAt": "2026-06-12 17:28:33"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-11 17:16:09",
+          "endAt": "2026-06-11 17:28:33"
+        }
       ]
     },
     {
@@ -3274,7 +5056,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:36",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-实时节点边际电价",
       "fetchExceptionType": "数据未取回",
       "fetchExceptionAt": "2026-06-16 18:30",
@@ -3299,6 +5081,39 @@
         "2026-06-16 17:36 最近一次数据成功入库",
         "2026-06-16 18:30 命中取数状态：数据未取回",
         "2026-06-16 18:40 数据质量校验待触发"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "每日 08:50",
+      "tradeFetchValueRange": "D-1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:28:33",
+          "endAt": "2026-06-16 17:36:29"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:27:26",
+          "endAt": "2026-06-15 17:36:29"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:26:19",
+          "endAt": "2026-06-14 17:36:29"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:25:12",
+          "endAt": "2026-06-13 17:36:29"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:24:05",
+          "endAt": "2026-06-12 17:36:29"
+        }
       ]
     },
     {
@@ -3330,7 +5145,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:44",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-日前用户侧统一结算价格",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3355,6 +5170,39 @@
         "2026-06-16 17:44 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数据为空"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "每日 09:10",
+      "tradeFetchValueRange": "D日 ～ D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:36:29",
+          "endAt": "2026-06-16 17:44:25"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:35:22",
+          "endAt": "2026-06-15 17:44:25"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:34:15",
+          "endAt": "2026-06-14 17:44:25"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:33:08",
+          "endAt": "2026-06-13 17:44:25"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:32:01",
+          "endAt": "2026-06-12 17:44:25"
+        }
       ]
     },
     {
@@ -3386,7 +5234,7 @@
       "valueRange": "D-3日 ～ D日",
       "lastSuccessAt": "2026-06-16 17:07",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-实时用户侧统一结算价格",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3411,6 +5259,39 @@
         "2026-06-16 17:07 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数据不完整"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "每日 08:50",
+      "tradeFetchValueRange": "D-4日 ～ D-1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 16:59:09",
+          "endAt": "2026-06-16 17:07:06"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 16:58:02",
+          "endAt": "2026-06-15 17:07:06"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 16:57:55",
+          "endAt": "2026-06-14 17:07:06"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 16:56:48",
+          "endAt": "2026-06-13 17:07:06"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 16:55:41",
+          "endAt": "2026-06-12 17:07:06"
+        }
       ]
     },
     {
@@ -3442,7 +5323,7 @@
       "valueRange": "D-3日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:31",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-信息披露查询-现货及辅助服务-省内现货-现货市场申报出清信息-日前用户侧24点出清电量",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3467,6 +5348,39 @@
         "2026-06-16 17:31 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:23:58",
+          "endAt": "2026-06-16 17:31:54"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:22:51",
+          "endAt": "2026-06-15 17:31:54"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:21:44",
+          "endAt": "2026-06-14 17:31:54"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:20:37",
+          "endAt": "2026-06-13 17:31:54"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:19:30",
+          "endAt": "2026-06-12 17:31:54"
+        }
       ]
     },
     {
@@ -3498,7 +5412,7 @@
       "valueRange": "D-2日 ～ D-2日",
       "lastSuccessAt": "2026-06-16 17:15",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-用户用电信息查询-日用电信息（现货）",
       "fetchExceptionType": "数据未取回",
       "fetchExceptionAt": "-",
@@ -3524,6 +5438,39 @@
         "2026-06-16 17:15 最近一次数据成功入库",
         "- 命中取数状态：数据未取回",
         "2026-06-16 18:40 命中数据质量异常：数据未更新"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-2日 ～ D-2日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:07:06",
+          "endAt": "2026-06-16 17:15:02"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:06:59",
+          "endAt": "2026-06-15 17:15:02"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:05:52",
+          "endAt": "2026-06-14 17:15:02"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:04:45",
+          "endAt": "2026-06-13 17:15:02"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:03:38",
+          "endAt": "2026-06-12 17:15:02"
+        }
       ]
     },
     {
@@ -3580,6 +5527,39 @@
         "2026-06-16 17:23 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数值异常"
+      ],
+      "routineFetchTimeliness": "每日 14:00、16:00",
+      "routineFetchValueRange": "D日 ～ D+1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:15:02",
+          "endAt": "2026-06-16 17:23:58"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:14:55",
+          "endAt": "2026-06-15 17:23:58"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:13:48",
+          "endAt": "2026-06-14 17:23:58"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:12:41",
+          "endAt": "2026-06-13 17:23:58"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:11:34",
+          "endAt": "2026-06-12 17:23:58"
+        }
       ]
     },
     {
@@ -3636,6 +5616,39 @@
         "2026-06-16 17:02 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-6日 ～ D-4日，取所在月份",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 16:54:34",
+          "endAt": "2026-06-16 17:02:31"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 16:53:27",
+          "endAt": "2026-06-15 17:02:31"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 16:52:20",
+          "endAt": "2026-06-14 17:02:31"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 16:51:13",
+          "endAt": "2026-06-13 17:02:31"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 16:50:06",
+          "endAt": "2026-06-12 17:02:31"
+        }
       ]
     },
     {
@@ -3692,6 +5705,39 @@
         "2026-06-04 17:10 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-6日 ～ D-4日，取所在月份",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-04 17:02:31",
+          "endAt": "2026-06-04 17:10:27"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-03 17:01:24",
+          "endAt": "2026-06-03 17:10:27"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-02 17:00:17",
+          "endAt": "2026-06-02 17:10:27"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-01 16:59:09",
+          "endAt": "2026-06-01 17:10:27"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-05-31 16:58:02",
+          "endAt": "2026-05-31 17:10:27"
+        }
       ]
     },
     {
@@ -3723,7 +5769,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 17:01",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:50、09:05、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-系统负荷预测（日）",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3749,6 +5795,39 @@
         "2026-06-15 17:01 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-15 16:53:27",
+          "endAt": "2026-06-15 17:01:24"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-14 16:52:20",
+          "endAt": "2026-06-14 17:01:24"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-13 16:51:13",
+          "endAt": "2026-06-13 17:01:24"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-12 16:50:06",
+          "endAt": "2026-06-12 17:01:24"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-11 16:49:59",
+          "endAt": "2026-06-11 17:01:24"
+        }
       ]
     },
     {
@@ -3780,7 +5859,7 @@
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:09",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-实际负荷",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3806,6 +5885,39 @@
         "2026-06-16 17:09 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-4日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:01:24",
+          "endAt": "2026-06-16 17:09:20"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:00:17",
+          "endAt": "2026-06-15 17:09:20"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 16:59:09",
+          "endAt": "2026-06-14 17:09:20"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 16:58:02",
+          "endAt": "2026-06-13 17:09:20"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 16:57:55",
+          "endAt": "2026-06-12 17:09:20"
+        }
       ]
     },
     {
@@ -3837,7 +5949,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:17",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:50、09:05、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-发电总出力预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3863,6 +5975,39 @@
         "2026-06-16 17:17 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:09:20",
+          "endAt": "2026-06-16 17:17:16"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:08:13",
+          "endAt": "2026-06-15 17:17:16"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:07:06",
+          "endAt": "2026-06-14 17:17:16"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:06:59",
+          "endAt": "2026-06-13 17:17:16"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:05:52",
+          "endAt": "2026-06-12 17:17:16"
+        }
       ]
     },
     {
@@ -3894,7 +6039,7 @@
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:25",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-发电总出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3920,6 +6065,39 @@
         "2026-06-16 17:25 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-4日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:17:16",
+          "endAt": "2026-06-16 17:25:12"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:16:09",
+          "endAt": "2026-06-15 17:25:12"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:15:02",
+          "endAt": "2026-06-14 17:25:12"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:14:55",
+          "endAt": "2026-06-13 17:25:12"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:13:48",
+          "endAt": "2026-06-12 17:25:12"
+        }
       ]
     },
     {
@@ -3951,7 +6129,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:33",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:50、09:05、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-非市场机组总出力预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3977,6 +6155,39 @@
         "2026-06-16 17:33 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:25:12",
+          "endAt": "2026-06-16 17:33:08"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:24:05",
+          "endAt": "2026-06-15 17:33:08"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:23:58",
+          "endAt": "2026-06-14 17:33:08"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:22:51",
+          "endAt": "2026-06-13 17:33:08"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:21:44",
+          "endAt": "2026-06-12 17:33:08"
+        }
       ]
     },
     {
@@ -4008,7 +6219,7 @@
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:41",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-非市场机组总出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4034,6 +6245,39 @@
         "2026-06-16 17:41 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-4日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:33:08",
+          "endAt": "2026-06-16 17:41:04"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:32:01",
+          "endAt": "2026-06-15 17:41:04"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:31:54",
+          "endAt": "2026-06-14 17:41:04"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:30:47",
+          "endAt": "2026-06-13 17:41:04"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:29:40",
+          "endAt": "2026-06-12 17:41:04"
+        }
       ]
     },
     {
@@ -4069,7 +6313,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:04",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:50、09:05、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-新能源总出力预测（日）",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4095,6 +6339,39 @@
         "2026-06-16 17:04 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 16:56:48",
+          "endAt": "2026-06-16 17:04:45"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 16:55:41",
+          "endAt": "2026-06-15 17:04:45"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 16:54:34",
+          "endAt": "2026-06-14 17:04:45"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 16:53:27",
+          "endAt": "2026-06-13 17:04:45"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 16:52:20",
+          "endAt": "2026-06-12 17:04:45"
+        }
       ]
     },
     {
@@ -4130,7 +6407,7 @@
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:12",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-新能源总出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4156,6 +6433,39 @@
         "2026-06-16 17:12 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-4日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:04:45",
+          "endAt": "2026-06-16 17:12:41"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:03:38",
+          "endAt": "2026-06-15 17:12:41"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:02:31",
+          "endAt": "2026-06-14 17:12:41"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:01:24",
+          "endAt": "2026-06-13 17:12:41"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:00:17",
+          "endAt": "2026-06-12 17:12:41"
+        }
       ]
     },
     {
@@ -4187,7 +6497,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:20",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:50、09:05、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-水电（含抽蓄）出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4213,6 +6523,39 @@
         "2026-06-16 17:20 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:12:41",
+          "endAt": "2026-06-16 17:20:37"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:11:34",
+          "endAt": "2026-06-15 17:20:37"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:10:27",
+          "endAt": "2026-06-14 17:20:37"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:09:20",
+          "endAt": "2026-06-13 17:20:37"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:08:13",
+          "endAt": "2026-06-12 17:20:37"
+        }
       ]
     },
     {
@@ -4244,7 +6587,7 @@
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:28",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-水电（含抽蓄）出力",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4270,6 +6613,39 @@
         "2026-06-16 17:28 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-4日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:20:37",
+          "endAt": "2026-06-16 17:28:33"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:19:30",
+          "endAt": "2026-06-15 17:28:33"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:18:23",
+          "endAt": "2026-06-14 17:28:33"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:17:16",
+          "endAt": "2026-06-13 17:28:33"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:16:09",
+          "endAt": "2026-06-12 17:28:33"
+        }
       ]
     },
     {
@@ -4303,7 +6679,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:36",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:50、09:05、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-省间联络线输电曲线预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4329,6 +6705,39 @@
         "2026-06-16 17:36 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:28:33",
+          "endAt": "2026-06-16 17:36:29"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:27:26",
+          "endAt": "2026-06-15 17:36:29"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:26:19",
+          "endAt": "2026-06-14 17:36:29"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:25:12",
+          "endAt": "2026-06-13 17:36:29"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:24:05",
+          "endAt": "2026-06-12 17:36:29"
+        }
       ]
     },
     {
@@ -4360,7 +6769,7 @@
       "valueRange": "D-4日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:44",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货- 省间联络线输电情况",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4386,6 +6795,39 @@
         "2026-06-16 17:44 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-4日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:36:29",
+          "endAt": "2026-06-16 17:44:25"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:35:22",
+          "endAt": "2026-06-15 17:44:25"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:34:15",
+          "endAt": "2026-06-14 17:44:25"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:33:08",
+          "endAt": "2026-06-13 17:44:25"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:32:01",
+          "endAt": "2026-06-12 17:44:25"
+        }
       ]
     },
     {
@@ -4417,7 +6859,7 @@
       "valueRange": "D-1日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:02",
       "nextFetchAt": "2026-06-17 11:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-综合查询-电网运行-机组状态",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4443,6 +6885,39 @@
         "2026-06-16 10:02 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-1日 ～ D日",
+      "routineWarningTime": "D日 11:40",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 09:54:27",
+          "endAt": "2026-06-16 10:02:24"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 09:53:20",
+          "endAt": "2026-06-15 10:02:24"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 09:52:13",
+          "endAt": "2026-06-14 10:02:24"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 09:51:06",
+          "endAt": "2026-06-13 10:02:24"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 09:50:59",
+          "endAt": "2026-06-12 10:02:24"
+        }
       ]
     },
     {
@@ -4474,7 +6949,7 @@
       "valueRange": "D-7日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:26",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-省内现货-系统备用信息",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4500,6 +6975,39 @@
         "2026-06-16 17:26 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-7日 ～ D+1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:18:23",
+          "endAt": "2026-06-16 17:26:19"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:17:16",
+          "endAt": "2026-06-15 17:26:19"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:16:09",
+          "endAt": "2026-06-14 17:26:19"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:15:02",
+          "endAt": "2026-06-13 17:26:19"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:14:55",
+          "endAt": "2026-06-12 17:26:19"
+        }
       ]
     },
     {
@@ -4531,7 +7039,7 @@
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 17:07",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "现货交易-用户侧加权电价",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4556,6 +7064,39 @@
         "2026-06-15 17:07 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D+1日",
+      "routineWarningTime": "D+1日09:00",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-15 16:59:09",
+          "endAt": "2026-06-15 17:07:06"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-14 16:58:02",
+          "endAt": "2026-06-14 17:07:06"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-13 16:57:55",
+          "endAt": "2026-06-13 17:07:06"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-12 16:56:48",
+          "endAt": "2026-06-12 17:07:06"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-11 16:55:41",
+          "endAt": "2026-06-11 17:07:06"
+        }
       ]
     },
     {
@@ -4587,7 +7128,7 @@
       "valueRange": "D-3日 ～ D-1日",
       "lastSuccessAt": "2026-06-15 17:07",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:50、09:05、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "现货交易-用户侧加权电价",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4612,6 +7153,39 @@
         "2026-06-15 17:07 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-3日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-15 16:59:09",
+          "endAt": "2026-06-15 17:07:06"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 16:58:02",
+          "endAt": "2026-06-14 17:07:06"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 16:57:55",
+          "endAt": "2026-06-13 17:07:06"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 16:56:48",
+          "endAt": "2026-06-12 17:07:06"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-11 16:55:41",
+          "endAt": "2026-06-11 17:07:06"
+        }
       ]
     },
     {
@@ -4643,7 +7217,7 @@
       "valueRange": "D-5日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:15",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:30、10:00、12:00、14:00、23:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-售电公司日电量",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4669,6 +7243,39 @@
         "2026-06-16 17:15 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-5日 ～ D-1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:07:06",
+          "endAt": "2026-06-16 17:15:02"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:06:59",
+          "endAt": "2026-06-15 17:15:02"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:05:52",
+          "endAt": "2026-06-14 17:15:02"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 17:04:45",
+          "endAt": "2026-06-13 17:15:02"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 17:03:38",
+          "endAt": "2026-06-12 17:15:02"
+        }
       ]
     },
     {
@@ -4725,6 +7332,39 @@
         "2026-06-16 17:23 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 14:00、16:00",
+      "routineFetchValueRange": "D日 ～ D+1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:15:02",
+          "endAt": "2026-06-16 17:23:58"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:14:55",
+          "endAt": "2026-06-15 17:23:58"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:13:48",
+          "endAt": "2026-06-14 17:23:58"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:12:41",
+          "endAt": "2026-06-13 17:23:58"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:11:34",
+          "endAt": "2026-06-12 17:23:58"
+        }
       ]
     },
     {
@@ -4756,7 +7396,7 @@
       "valueRange": "D-7日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:31",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:50、14:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-综合查询-市场运营-交易组织及出清-现货市场申报、出清信息-日前现货市场节点边际电价（日）",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4781,6 +7421,39 @@
         "2026-06-16 17:31 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-7日 ～ D+1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "D日 ～ D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:23:58",
+          "endAt": "2026-06-16 17:31:54"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:22:51",
+          "endAt": "2026-06-15 17:31:54"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:21:44",
+          "endAt": "2026-06-14 17:31:54"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:20:37",
+          "endAt": "2026-06-13 17:31:54"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:19:30",
+          "endAt": "2026-06-12 17:31:54"
+        }
       ]
     },
     {
@@ -4812,7 +7485,7 @@
       "valueRange": "D-7日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:39",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 08:50、14:00",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "信息披露-综合查询-市场运营-交易组织及出清-现货市场申报、出清信息-实时现货市场节点边际电价（日）",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -4837,6 +7510,39 @@
         "2026-06-16 17:39 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-7日 ～ D+1日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "D+1日",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:31:54",
+          "endAt": "2026-06-16 17:39:50"
+        },
+        {
+          "taskType": "交易取数",
+          "startAt": "2026-06-15 17:30:47",
+          "endAt": "2026-06-15 17:39:50"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 17:29:40",
+          "endAt": "2026-06-14 17:39:50"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 17:28:33",
+          "endAt": "2026-06-13 17:39:50"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 17:27:26",
+          "endAt": "2026-06-12 17:39:50"
+        }
       ]
     },
     {
@@ -4893,6 +7599,39 @@
         "2026-06-15 17:07 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 14:00",
+      "routineFetchValueRange": "D日 ～ D+10日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-15 16:59:09",
+          "endAt": "2026-06-15 17:07:06"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 16:58:02",
+          "endAt": "2026-06-14 17:07:06"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 16:57:55",
+          "endAt": "2026-06-13 17:07:06"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 16:56:48",
+          "endAt": "2026-06-12 17:07:06"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-11 16:55:41",
+          "endAt": "2026-06-11 17:07:06"
+        }
       ]
     },
     {
@@ -4949,6 +7688,39 @@
         "2026-06-15 17:07 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 14:00",
+      "routineFetchValueRange": "D日 ～ D+10日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-15 16:59:09",
+          "endAt": "2026-06-15 17:07:06"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 16:58:02",
+          "endAt": "2026-06-14 17:07:06"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 16:57:55",
+          "endAt": "2026-06-13 17:07:06"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 16:56:48",
+          "endAt": "2026-06-12 17:07:06"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-11 16:55:41",
+          "endAt": "2026-06-11 17:07:06"
+        }
       ]
     },
     {
@@ -5005,6 +7777,39 @@
         "2026-06-15 17:07 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 14:00",
+      "routineFetchValueRange": "",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-15 16:59:09",
+          "endAt": "2026-06-15 17:07:06"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 16:58:02",
+          "endAt": "2026-06-14 17:07:06"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 16:57:55",
+          "endAt": "2026-06-13 17:07:06"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 16:56:48",
+          "endAt": "2026-06-12 17:07:06"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-11 16:55:41",
+          "endAt": "2026-06-11 17:07:06"
+        }
       ]
     },
     {
@@ -5036,7 +7841,7 @@
       "valueRange": "M-1月",
       "lastSuccessAt": "2026-06-15 17:07",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "M月1日起，每日 14:00，取到即止",
+      "fetchToolTimeliness": "每日 14:00",
       "pageAddress": "信息披露-综合查询-市场运营-结算信息-结算总体情况及分类构成情况（月）",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -5062,6 +7867,39 @@
         "2026-06-15 17:07 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 14:00",
+      "routineFetchValueRange": "M-1月",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-15 16:59:09",
+          "endAt": "2026-06-15 17:07:06"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-14 16:58:02",
+          "endAt": "2026-06-14 17:07:06"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-13 16:57:55",
+          "endAt": "2026-06-13 17:07:06"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-12 16:56:48",
+          "endAt": "2026-06-12 17:07:06"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-11 16:55:41",
+          "endAt": "2026-06-11 17:07:06"
+        }
       ]
     },
     {
@@ -5118,6 +7956,39 @@
         "2026-06-16 17:10 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "D-10日 ～ D-6日",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-16 17:02:31",
+          "endAt": "2026-06-16 17:10:27"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-15 17:01:24",
+          "endAt": "2026-06-15 17:10:27"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-14 17:00:17",
+          "endAt": "2026-06-14 17:10:27"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-13 16:59:09",
+          "endAt": "2026-06-13 17:10:27"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-12 16:58:02",
+          "endAt": "2026-06-12 17:10:27"
+        }
       ]
     },
     {
@@ -5149,7 +8020,7 @@
       "valueRange": "M-1月",
       "lastSuccessAt": "2026-06-04 17:18",
       "nextFetchAt": "2026-07-15 18:30",
-      "fetchToolTimeliness": "M月15日起，每日 10:00、12:00、14:00、23:00，取到即止",
+      "fetchToolTimeliness": "每日 10:00、12:00、14:00、23:00",
       "pageAddress": "我的结算-结算单确认（新）-用电侧-售电公司交易结算单",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -5174,6 +8045,39 @@
         "2026-06-04 17:18 最近一次数据成功入库",
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
+      ],
+      "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
+      "routineFetchValueRange": "M-1月",
+      "routineWarningTime": "D日 18:30",
+      "tradeFetchTimeliness": "",
+      "tradeFetchValueRange": "",
+      "tradeWarningTime": "",
+      "fetchRecords": [
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-04 17:10:27",
+          "endAt": "2026-06-04 17:18:23"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-06-03 17:09:20",
+          "endAt": "2026-06-03 17:18:23"
+        },
+        {
+          "taskType": "人工上传",
+          "startAt": "2026-06-02 17:08:13",
+          "endAt": "2026-06-02 17:18:23"
+        },
+        {
+          "taskType": "常规取数",
+          "startAt": "2026-06-01 17:07:06",
+          "endAt": "2026-06-01 17:18:23"
+        },
+        {
+          "taskType": "系统拉取",
+          "startAt": "2026-05-31 17:06:59",
+          "endAt": "2026-05-31 17:18:23"
+        }
       ]
     }
   ],

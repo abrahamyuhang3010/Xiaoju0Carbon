@@ -412,6 +412,14 @@
   ];
   var rollingDataProducts = ["全部", "月内滚搓", "日前平衡", "实时滚动"];
   var rollingDataPeriods = ["00:00-04:00", "04:00-08:00", "08:00-16:00", "16:00-24:00"];
+  // 滚搓数据：单日行情 + 多日行情（按录屏还原，基础电价陕西 ~310）
+  var rollingMarketLib = (window.BOSS_ROLLING_MARKET || {});
+  var rollingDailyMarket = rollingMarketLib.buildRollingDailyMarket
+    ? rollingMarketLib.buildRollingDailyMarket("2026-07-17", 310, 350, 55)
+    : {};
+  var rollingMultiDay = rollingMarketLib.buildRollingMultiDay
+    ? rollingMarketLib.buildRollingMultiDay(310, 350)
+    : {};
   var rollingDataRows = [];
   settlementDates.forEach(function eachRollingDate(date, dayIndex) {
     rollingDataPeriods.forEach(function eachRollingPeriod(period, periodIndex) {
@@ -2756,6 +2764,12 @@
         rows: shaanxiRollingTradeOverviewRows,
         fileList: shaanxiRollingTradeOverviewFiles,
       },
+      dailyMarket: rollingDailyMarket,
+      multiDay: rollingMultiDay,
+      primaryTabs: ["单日行情", "多日行情"],
+      dailySubTabs: ["买卖价格", "买卖电量", "滚搓行情"],
+      rollingMetricOptions: ["成交电量", "成交价格"],
+      dimensionOptions: ["时间维度", "日维度"],
     },
     marketPageData: shaanxiMarketPageData,
     modules: {

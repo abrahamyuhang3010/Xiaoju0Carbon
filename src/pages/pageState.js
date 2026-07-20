@@ -386,6 +386,15 @@
           },
         },
         rollingData: {
+          activeView: (rollingDataMock.primaryTabs && rollingDataMock.primaryTabs[0]) || "单日行情",
+          activeSubView: (rollingDataMock.dailySubTabs && rollingDataMock.dailySubTabs[0]) || "买卖价格",
+          activeTimeSlot: "01",
+          activeRollingMetric:
+            (rollingDataMock.rollingMetricOptions && rollingDataMock.rollingMetricOptions[0]) || "成交电量",
+          dimension:
+            (rollingDataMock.dimensionOptions && rollingDataMock.dimensionOptions[0]) || "时间维度",
+          tradeDate:
+            (rollingDataMock.dailyMarket && rollingDataMock.dailyMarket.tradeDate) || "2026-07-17",
           filters: {
             dateRange: cloneRange(rollingDataMock.defaultRange || {
               start: "2026-07-25",

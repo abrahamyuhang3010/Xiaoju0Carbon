@@ -448,6 +448,15 @@
       });
     });
   });
+  // 滚搓数据：单日行情 + 多日行情（按录屏滚搓数据.mov 还原）
+  // 基础电价/电量基数：湖南 ~340 / 广东 ~430 / 陕西 ~310
+  var rollingMarketLib = (global.BOSS_ROLLING_MARKET || {});
+  var rollingDailyMarket = rollingMarketLib.buildRollingDailyMarket
+    ? rollingMarketLib.buildRollingDailyMarket("2026-07-17", 340, 350, 60)
+    : {};
+  var rollingMultiDay = rollingMarketLib.buildRollingMultiDay
+    ? rollingMarketLib.buildRollingMultiDay(340, 350)
+    : {};
   var hunanGenerationOutputValues = buildWaveValues(60, 24, {
     base: 22380,
     dayAmplitude: 780,
@@ -2570,6 +2579,12 @@
         contractPeriodOptions: hunanRollingContractPeriods,
         rows: hunanRollingDetailedRows,
       },
+      dailyMarket: rollingDailyMarket,
+      multiDay: rollingMultiDay,
+      primaryTabs: ["单日行情", "多日行情"],
+      dailySubTabs: ["买卖价格", "买卖电量", "滚搓行情"],
+      rollingMetricOptions: ["成交电量", "成交价格"],
+      dimensionOptions: ["时间维度", "日维度"],
     },
     marketPageData: hunanMarketPageData,
     modules: {
