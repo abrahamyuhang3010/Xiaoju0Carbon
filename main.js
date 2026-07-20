@@ -17200,13 +17200,26 @@
     return '<div class="data-monitor-status-field-group">' + renderDataMonitorDetailItemList(items) + "</div>";
   }
 
+  function getDataMonitorFetchRecordStatusTone(status) {
+    if (status === "成功") {
+      return "success";
+    }
+    if (status === "失败") {
+      return "error";
+    }
+    if (status === "执行中") {
+      return "processing";
+    }
+    return "default";
+  }
+
   function renderDataMonitorFetchRecordsSection(record) {
     var records = Array.isArray(record.fetchRecords) ? record.fetchRecords.slice() : [];
     records.sort(function sortByEndDesc(a, b) {
       return (b.endAt || "").localeCompare(a.endAt || "");
     });
     var latest = records.slice(0, 5);
-    var headHtml = ["取数任务类型", "任务开始时间", "任务结束时间"]
+    var headHtml = ["取数任务类型", "任务开始时间", "任务结束时间", "任务状态"]
       .map(function mapHead(label) {
         return "<th>" + escapeHtml(label) + "</th>";
       })
@@ -17224,6 +17237,11 @@
               "</span></td>" +
               '<td><span class="table-cell-text">' +
               escapeHtml(row.endAt || "-") +
+              "</span></td>" +
+              '<td><span class="data-monitor-fetch-record-status-tag data-monitor-fetch-record-status-tag-' +
+              getDataMonitorFetchRecordStatusTone(row.taskStatus) +
+              '">' +
+              escapeHtml(row.taskStatus || "-") +
               "</span></td>" +
               "</tr>"
             );
