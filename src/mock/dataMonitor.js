@@ -120,7 +120,7 @@
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 10:01",
       "nextFetchAt": "2026-06-17 11:40",
-      "fetchToolTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "fetchToolTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "pageAddress": "现货交易（新）-披露中心-信息披露查询-预测",
       "fetchExceptionType": "数据未取回",
       "fetchExceptionAt": "2026-06-16 11:40",
@@ -147,11 +147,11 @@
         "2026-06-16 11:40 命中取数状态：数据未取回",
         "2026-06-16 18:40 数据质量校验待触发"
       ],
-      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
+      "tradeFetchValueRange": "D+1日 ～ D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -218,7 +218,7 @@
       "qualityStatus": "待校验",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:09",
       "nextFetchAt": "2026-06-17 11:40",
@@ -251,7 +251,7 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D日 18:30",
+      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
       "tradeWarningTime": "",
@@ -322,7 +322,7 @@
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:17",
       "nextFetchAt": "2026-06-17 11:40",
-      "fetchToolTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "fetchToolTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "pageAddress": "现货交易（新）-披露中心-信息披露查询-预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -349,11 +349,11 @@
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数据为空"
       ],
-      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
+      "tradeFetchValueRange": "D+1日 ～ D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -420,7 +420,7 @@
       "qualityStatus": "数据不完整",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:25",
       "nextFetchAt": "2026-06-17 11:40",
@@ -453,7 +453,7 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D日 18:30",
+      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
       "tradeWarningTime": "",
@@ -724,7 +724,7 @@
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:31",
       "nextFetchAt": "2026-06-17 11:40",
-      "fetchToolTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "fetchToolTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "pageAddress": "现货交易（新）-披露中心-信息披露查询-预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -751,11 +751,11 @@
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数据不完整"
       ],
-      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
+      "tradeFetchValueRange": "D+1日 ～ D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -820,7 +820,7 @@
       "qualityStatus": "数据未更新",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:39",
       "nextFetchAt": "2026-06-17 11:40",
@@ -853,7 +853,7 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D日 18:30",
+      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
       "tradeWarningTime": "",
@@ -919,7 +919,7 @@
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:02",
       "nextFetchAt": "2026-06-17 11:40",
-      "fetchToolTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "fetchToolTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "pageAddress": "现货交易（新）-披露中心-信息披露查询-预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -946,11 +946,11 @@
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数值异常"
       ],
-      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
+      "tradeFetchValueRange": "D+1日 ～ D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -1015,7 +1015,7 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:10",
       "nextFetchAt": "2026-06-17 11:40",
@@ -1048,7 +1048,7 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D日 18:30",
+      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
       "tradeWarningTime": "",
@@ -1115,7 +1115,7 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:18",
       "nextFetchAt": "2026-06-17 11:40",
@@ -1148,7 +1148,7 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D日 18:30",
+      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
       "tradeWarningTime": "",
@@ -1218,7 +1218,7 @@
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:26",
       "nextFetchAt": "2026-06-17 11:40",
-      "fetchToolTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "fetchToolTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "pageAddress": "现货交易（新）-披露中心-信息披露查询-预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -1245,11 +1245,11 @@
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
       ],
-      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
+      "tradeFetchValueRange": "D+1日 ～ D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -1313,7 +1313,7 @@
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:34",
       "nextFetchAt": "2026-06-17 11:40",
-      "fetchToolTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "fetchToolTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "pageAddress": "现货交易（新）-披露中心-信息披露查询-预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -1340,11 +1340,11 @@
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
       ],
-      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
+      "tradeFetchValueRange": "D+1日 ～ D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -1408,7 +1408,7 @@
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:41",
       "nextFetchAt": "2026-06-17 11:40",
-      "fetchToolTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "fetchToolTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "pageAddress": "现货交易（新）-披露中心-信息披露查询-预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -1435,11 +1435,11 @@
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 命中数据质量异常：数值异常"
       ],
-      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
+      "tradeFetchValueRange": "D+1日 ～ D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -1499,7 +1499,7 @@
       "qualityStatus": "正常",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:04",
       "nextFetchAt": "2026-06-17 11:40",
@@ -1532,7 +1532,7 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D日 18:30",
+      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
       "tradeWarningTime": "",
@@ -1602,7 +1602,7 @@
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:12",
       "nextFetchAt": "2026-06-17 11:40",
-      "fetchToolTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "fetchToolTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "pageAddress": "现货交易（新）-披露中心-信息披露查询-预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -1629,11 +1629,11 @@
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
       ],
-      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
+      "tradeFetchValueRange": "D+1日 ～ D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -1697,7 +1697,7 @@
       "qualityStatus": "待校验",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:20",
       "nextFetchAt": "2026-06-17 11:40",
@@ -1730,7 +1730,7 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D日 18:30",
+      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
       "tradeWarningTime": "",
@@ -2369,7 +2369,7 @@
       "qualityStatus": "数据未更新",
       "timePoint": "1h",
       "outputTime": "D日 出 D-5日",
-      "warningTime": "D+1日 09:00",
+      "warningTime": "D+1日10:00",
       "valueRange": "D-9日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:00",
       "nextFetchAt": "2026-06-17 18:30",
@@ -2401,7 +2401,7 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-9日 ～ D+1日",
-      "routineWarningTime": "D+1日 09:00",
+      "routineWarningTime": "D+1日10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
       "tradeWarningTime": "",
@@ -2466,7 +2466,7 @@
       "qualityStatus": "数值异常",
       "timePoint": "1h",
       "outputTime": "D日 出 D-5日",
-      "warningTime": "D+1日 09:00",
+      "warningTime": "D+1日10:00",
       "valueRange": "D-9日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:08",
       "nextFetchAt": "2026-06-17 18:30",
@@ -2498,7 +2498,7 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-9日 ～ D+1日",
-      "routineWarningTime": "D+1日 09:00",
+      "routineWarningTime": "D+1日10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
       "tradeWarningTime": "",
@@ -2752,7 +2752,7 @@
       "valueRange": "D+1日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:32",
       "nextFetchAt": "2026-06-17 18:30",
-      "fetchToolTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "fetchToolTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "pageAddress": "现货交易-组织中心-日前交易申报管理-用电侧申报查询",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -2778,7 +2778,7 @@
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
       ],
-      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D+1日 ～ D+1日",
       "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
@@ -3124,7 +3124,7 @@
       "qualityStatus": "待校验",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:36",
       "nextFetchAt": "2026-06-17 11:40",
@@ -3155,7 +3155,7 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D日 18:30",
+      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
       "tradeWarningTime": "",
@@ -3217,7 +3217,7 @@
       "qualityStatus": "数据为空",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:44",
       "nextFetchAt": "2026-06-17 11:40",
@@ -3248,7 +3248,7 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D日 18:30",
+      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
       "tradeWarningTime": "",
@@ -3314,7 +3314,7 @@
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 10:07",
       "nextFetchAt": "2026-06-17 11:40",
-      "fetchToolTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "fetchToolTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "pageAddress": "现货交易（新）-披露中心-信息披露查询-预测",
       "fetchExceptionType": "数据未取回",
       "fetchExceptionAt": "2026-06-16 11:40",
@@ -3339,11 +3339,11 @@
         "2026-06-16 11:40 命中取数状态：数据未取回",
         "2026-06-16 18:40 数据质量校验待触发"
       ],
-      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
+      "tradeFetchValueRange": "D+1日 ～ D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -3403,7 +3403,7 @@
       "qualityStatus": "待校验",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:15",
       "nextFetchAt": "2026-06-17 11:40",
@@ -3434,7 +3434,7 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D日 18:30",
+      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
       "tradeWarningTime": "",
@@ -3496,7 +3496,7 @@
       "qualityStatus": "数据为空",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D-1日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-6日 ～ D日",
       "lastSuccessAt": "2026-06-16 10:23",
       "nextFetchAt": "2026-06-17 11:40",
@@ -3529,7 +3529,7 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D日 18:30",
+      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
       "tradeWarningTime": "",
@@ -3595,7 +3595,7 @@
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:42",
       "nextFetchAt": "2026-06-17 11:40",
-      "fetchToolTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "fetchToolTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "pageAddress": "现货交易（新）-披露中心-信息披露查询-预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3620,11 +3620,11 @@
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
       ],
-      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
+      "tradeFetchValueRange": "D+1日 ～ D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -3688,7 +3688,7 @@
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:05",
       "nextFetchAt": "2026-06-17 11:40",
-      "fetchToolTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "fetchToolTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "pageAddress": "现货交易（新）-披露中心-信息披露查询-预测",
       "fetchExceptionType": "-",
       "fetchExceptionAt": "-",
@@ -3713,11 +3713,11 @@
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 数据质量校验通过"
       ],
-      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
+      "tradeFetchValueRange": "D+1日 ～ D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -3812,7 +3812,7 @@
       "routineFetchValueRange": "D-3日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 09:10",
-      "tradeFetchValueRange": "D+1日",
+      "tradeFetchValueRange": "D+1日 ～D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -3907,7 +3907,7 @@
       "routineFetchValueRange": "D-4日 ～ D-1日",
       "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 08:50",
-      "tradeFetchValueRange": "D-1日",
+      "tradeFetchValueRange": "D-1日 ～ D-1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -4002,7 +4002,7 @@
       "routineFetchValueRange": "D-3日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 09:10",
-      "tradeFetchValueRange": "D+1日",
+      "tradeFetchValueRange": "D+1日 ～D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -4100,7 +4100,7 @@
       "routineFetchValueRange": "D-4日 ～ D-1日",
       "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 08:50",
-      "tradeFetchValueRange": "D-1日",
+      "tradeFetchValueRange": "D-1日 ～ D-1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -4197,7 +4197,7 @@
       "routineFetchValueRange": "D-3日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 09:10",
-      "tradeFetchValueRange": "D+1日",
+      "tradeFetchValueRange": "D+1日 ～D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -4294,7 +4294,7 @@
       "routineFetchValueRange": "D-4日 ～ D-1日",
       "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 08:50",
-      "tradeFetchValueRange": "D-1日",
+      "tradeFetchValueRange": "D-1日 ～ D-1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -4391,7 +4391,7 @@
       "routineFetchValueRange": "D-3日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 09:10",
-      "tradeFetchValueRange": "D+1日",
+      "tradeFetchValueRange": "D+1日 ～D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -4488,7 +4488,7 @@
       "routineFetchValueRange": "D-7日 ～ D-1日",
       "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 08:50",
-      "tradeFetchValueRange": "D-1日",
+      "tradeFetchValueRange": "D-1日 ～ D-1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -4585,7 +4585,7 @@
       "routineFetchValueRange": "D-3日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 09:10",
-      "tradeFetchValueRange": "D+1日",
+      "tradeFetchValueRange": "D+1日 ～D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -4680,7 +4680,7 @@
       "routineFetchValueRange": "D-4日 ～ D-1日",
       "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 08:50",
-      "tradeFetchValueRange": "D-1日",
+      "tradeFetchValueRange": "D-1日 ～ D-1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -4779,7 +4779,7 @@
       "routineFetchValueRange": "D-3日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 09:10",
-      "tradeFetchValueRange": "D+1日",
+      "tradeFetchValueRange": "D+1日 ～D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -4876,7 +4876,7 @@
       "routineFetchValueRange": "D-4日 ～ D-1日",
       "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 08:50",
-      "tradeFetchValueRange": "D-1日",
+      "tradeFetchValueRange": "D-1日 ～ D-1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -5356,7 +5356,7 @@
       "routineFetchValueRange": "D-3日 ～ D+1日",
       "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 08:50",
-      "tradeFetchValueRange": "D-1日",
+      "tradeFetchValueRange": "D-1日 ～ D-1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -6109,8 +6109,8 @@
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "D+1日",
+      "tradeFetchTimeliness": "每日 8:50、9:05",
+      "tradeFetchValueRange": "D+1日 ～D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -6204,8 +6204,8 @@
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
       "routineWarningTime": "D日 18:30",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 8:30",
+      "tradeFetchValueRange": "D-1日 ～ D-1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -6299,8 +6299,8 @@
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "D+1日",
+      "tradeFetchTimeliness": "每日 8:50、9:05",
+      "tradeFetchValueRange": "D+1日 ～D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -6394,8 +6394,8 @@
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
       "routineWarningTime": "D日 18:30",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 8:30",
+      "tradeFetchValueRange": "D-1日 ～ D-1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -6489,8 +6489,8 @@
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "D+1日",
+      "tradeFetchTimeliness": "每日 8:50、9:05",
+      "tradeFetchValueRange": "D+1日 ～D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -6584,8 +6584,8 @@
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
       "routineWarningTime": "D日 18:30",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 8:30",
+      "tradeFetchValueRange": "D-1日 ～ D-1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -6683,8 +6683,8 @@
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "D+1日",
+      "tradeFetchTimeliness": "每日 8:50、9:05",
+      "tradeFetchValueRange": "D+1日 ～D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -6782,8 +6782,8 @@
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
       "routineWarningTime": "D日 18:30",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 8:30",
+      "tradeFetchValueRange": "D-1日 ～ D-1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -6877,8 +6877,8 @@
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "D+1日",
+      "tradeFetchTimeliness": "每日 8:50、9:05",
+      "tradeFetchValueRange": "D+1日 ～D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -6973,7 +6973,7 @@
       "routineFetchValueRange": "D-4日 ～ D-1日",
       "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchValueRange": "D-1日 ～ D-1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -7069,8 +7069,8 @@
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
       "routineWarningTime": "D日 11:40",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "D+1日",
+      "tradeFetchTimeliness": "每日 8:50、9:05",
+      "tradeFetchValueRange": "D+1日 ～D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -7164,8 +7164,8 @@
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
       "routineWarningTime": "D日 18:30",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 8:30",
+      "tradeFetchValueRange": "D-1日 ～ D-1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -7448,8 +7448,8 @@
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
       "routineWarningTime": "D+1日09:00",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "D+1日",
+      "tradeFetchTimeliness": "每日 8:50、9:05",
+      "tradeFetchValueRange": "D+1日 ～D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -7542,8 +7542,8 @@
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D-1日",
       "routineWarningTime": "D日 18:30",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
+      "tradeFetchTimeliness": "每日 8:30",
+      "tradeFetchValueRange": "D-1日 ～ D-1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
@@ -7825,7 +7825,7 @@
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-7日 ～ D+1日",
       "routineWarningTime": "D日 18:30",
-      "tradeFetchTimeliness": "",
+      "tradeFetchTimeliness": "每日 8:50、9:05",
       "tradeFetchValueRange": "D日 ～ D+1日",
       "tradeWarningTime": "",
       "fetchRecords": [
@@ -7919,8 +7919,8 @@
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-7日 ～ D+1日",
       "routineWarningTime": "D日 18:30",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "D+1日",
+      "tradeFetchTimeliness": "每日 8:30",
+      "tradeFetchValueRange": "D-1日 ～ D-1日",
       "tradeWarningTime": "",
       "fetchRecords": [
         {
