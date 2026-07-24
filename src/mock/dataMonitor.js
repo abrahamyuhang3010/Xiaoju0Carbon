@@ -52,14 +52,9 @@
     "qualityStatusOptions": [
       "全部",
       "正常",
-      "未配置",
-      "待校验",
-      "校验中",
-      "校验失败",
-      "数据未更新",
+      "文件解析失败",
       "数据为空",
-      "数据不完整",
-      "数值异常"
+      "数据不完整"
     ],
     "processStatusOptions": [
       "全部",
@@ -113,10 +108,10 @@
       "downloadFile": "信息披露查询预测信息(2026-03-07)(1).xlsx",
       "collectorStatus": "abnormal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "待校验",
+      "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日 11:50",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 10:01",
       "nextFetchAt": "2026-06-17 11:40",
@@ -149,13 +144,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
       "tradeFetchValueRange": "D+1日 ～ D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 09:53:20",
           "endAt": "2026-06-15 10:01:17",
           "taskStatus": "执行中"
@@ -173,7 +166,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 09:50:59",
           "endAt": "2026-06-12 10:01:17",
           "taskStatus": "成功"
@@ -215,7 +208,7 @@
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "待校验",
+      "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D+1日 10:00",
@@ -251,13 +244,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:01:17",
           "endAt": "2026-06-16 10:09:13",
           "taskStatus": "执行中"
@@ -275,7 +266,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 09:58:55",
           "endAt": "2026-06-13 10:09:13",
           "taskStatus": "成功"
@@ -318,7 +309,7 @@
       "qualityStatus": "数据为空",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日 11:50",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:17",
       "nextFetchAt": "2026-06-17 11:40",
@@ -351,13 +342,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
       "tradeFetchValueRange": "D+1日 ～ D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:09:13",
           "endAt": "2026-06-16 10:17:09",
           "taskStatus": "执行中"
@@ -375,7 +364,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:06:52",
           "endAt": "2026-06-13 10:17:09",
           "taskStatus": "成功"
@@ -453,13 +442,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:17:09",
           "endAt": "2026-06-16 10:25:05",
           "taskStatus": "执行中"
@@ -477,7 +464,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:14:48",
           "endAt": "2026-06-13 10:25:05",
           "taskStatus": "成功"
@@ -524,7 +511,7 @@
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "数据未更新",
+      "qualityStatus": "数据为空",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D日 18:30",
@@ -560,13 +547,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:25:05",
           "endAt": "2026-06-16 10:33:01",
           "taskStatus": "执行中"
@@ -584,7 +569,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:22:44",
           "endAt": "2026-06-13 10:33:01",
           "taskStatus": "成功"
@@ -622,10 +607,10 @@
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "正常",
-      "qualityStatus": "未配置",
+      "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:28",
       "nextFetchAt": "2026-06-17 11:40",
@@ -656,15 +641,13 @@
         "2026-06-16 18:30 取数、解析与入库流程完成",
         "2026-06-16 18:40 当前数据项未配置质量校验规则"
       ],
-      "routineFetchTimeliness": "每日 11:00、11:30、11:35、11:40、12:00、14:00、16:00、18:00、20:00、22:00",
+      "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:20:30",
           "endAt": "2026-06-16 10:28:26",
           "taskStatus": "执行中"
@@ -682,7 +665,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:17:09",
           "endAt": "2026-06-13 10:28:26",
           "taskStatus": "成功"
@@ -720,7 +703,7 @@
       "qualityStatus": "数据不完整",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日 11:50",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:31",
       "nextFetchAt": "2026-06-17 11:40",
@@ -753,13 +736,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
       "tradeFetchValueRange": "D+1日 ～ D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:23:51",
           "endAt": "2026-06-16 10:31:47",
           "taskStatus": "执行中"
@@ -777,7 +758,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:20:30",
           "endAt": "2026-06-13 10:31:47",
           "taskStatus": "成功"
@@ -817,7 +798,7 @@
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "数据未更新",
+      "qualityStatus": "数据为空",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D+1日 10:00",
@@ -853,13 +834,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:31:47",
           "endAt": "2026-06-16 10:39:43",
           "taskStatus": "执行中"
@@ -877,7 +856,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:28:26",
           "endAt": "2026-06-13 10:39:43",
           "taskStatus": "成功"
@@ -912,10 +891,10 @@
       "downloadFile": "信息披露查询预测信息(2026-03-07)(1).xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "正常",
-      "qualityStatus": "数值异常",
+      "qualityStatus": "数据不完整",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日 11:50",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:02",
       "nextFetchAt": "2026-06-17 11:40",
@@ -948,13 +927,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
       "tradeFetchValueRange": "D+1日 ～ D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 09:54:27",
           "endAt": "2026-06-16 10:02:24",
           "taskStatus": "执行中"
@@ -972,7 +949,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 09:51:06",
           "endAt": "2026-06-13 10:02:24",
           "taskStatus": "成功"
@@ -1048,13 +1025,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:02:24",
           "endAt": "2026-06-16 10:10:20",
           "taskStatus": "执行中"
@@ -1072,7 +1047,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 09:59:02",
           "endAt": "2026-06-13 10:10:20",
           "taskStatus": "成功"
@@ -1148,13 +1123,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:10:20",
           "endAt": "2026-06-16 10:18:16",
           "taskStatus": "执行中"
@@ -1172,7 +1145,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:07:59",
           "endAt": "2026-06-13 10:18:16",
           "taskStatus": "成功"
@@ -1214,7 +1187,7 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日 11:50",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:26",
       "nextFetchAt": "2026-06-17 11:40",
@@ -1247,13 +1220,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
       "tradeFetchValueRange": "D+1日 ～ D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:18:16",
           "endAt": "2026-06-16 10:26:12",
           "taskStatus": "执行中"
@@ -1271,7 +1242,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:15:55",
           "endAt": "2026-06-13 10:26:12",
           "taskStatus": "成功"
@@ -1309,7 +1280,7 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日 11:50",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:34",
       "nextFetchAt": "2026-06-17 11:40",
@@ -1342,13 +1313,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
       "tradeFetchValueRange": "D+1日 ～ D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:26:12",
           "endAt": "2026-06-16 10:34:08",
           "taskStatus": "执行中"
@@ -1366,7 +1335,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:23:51",
           "endAt": "2026-06-13 10:34:08",
           "taskStatus": "成功"
@@ -1401,10 +1370,10 @@
       "downloadFile": "信息披露查询预测信息(2026-03-07)(1).xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "正常",
-      "qualityStatus": "数值异常",
+      "qualityStatus": "数据不完整",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日 11:50",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:41",
       "nextFetchAt": "2026-06-17 11:40",
@@ -1437,13 +1406,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
       "tradeFetchValueRange": "D+1日 ～ D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:33:01",
           "endAt": "2026-06-16 10:41:57",
           "taskStatus": "执行中"
@@ -1461,7 +1428,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:30:40",
           "endAt": "2026-06-13 10:41:57",
           "taskStatus": "成功"
@@ -1532,13 +1499,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 09:56:41",
           "endAt": "2026-06-16 10:04:38",
           "taskStatus": "执行中"
@@ -1556,7 +1521,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 09:53:20",
           "endAt": "2026-06-13 10:04:38",
           "taskStatus": "成功"
@@ -1598,7 +1563,7 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日 11:50",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:12",
       "nextFetchAt": "2026-06-17 11:40",
@@ -1631,13 +1596,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
       "tradeFetchValueRange": "D+1日 ～ D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:04:38",
           "endAt": "2026-06-16 10:12:34",
           "taskStatus": "执行中"
@@ -1655,7 +1618,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:01:17",
           "endAt": "2026-06-13 10:12:34",
           "taskStatus": "成功"
@@ -1694,7 +1657,7 @@
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
       "collectorStatus": "running",
       "fetchStatus": "取数中",
-      "qualityStatus": "待校验",
+      "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D+1日 10:00",
@@ -1730,13 +1693,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:12:34",
           "endAt": "2026-06-16 10:20:30",
           "taskStatus": "执行中"
@@ -1754,7 +1715,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:09:13",
           "endAt": "2026-06-13 10:20:30",
           "taskStatus": "成功"
@@ -1789,10 +1750,10 @@
       "downloadFile": "售电公司分时电量列表2026-03-0615_24_21.xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "待校验",
+      "qualityStatus": "正常",
       "timePoint": "1h",
       "outputTime": "D日 出 D-4日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-4日 ～ D-10日",
       "lastSuccessAt": "2026-06-15 17:13",
       "nextFetchAt": "2026-06-17 18:30",
@@ -1825,13 +1786,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-4日 ～ D-10日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:05:52",
           "endAt": "2026-06-15 17:13:48",
           "taskStatus": "执行中"
@@ -1849,7 +1808,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:02:31",
           "endAt": "2026-06-12 17:13:48",
           "taskStatus": "成功"
@@ -1884,10 +1843,10 @@
       "downloadFile": "售电公司分时计量点详情列表2026-03-0615_25_21.xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "待校验",
+      "qualityStatus": "正常",
       "timePoint": "1h",
       "outputTime": "D日 出 D-4日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-4日 ～ D-10日",
       "lastSuccessAt": "2026-06-16 17:21",
       "nextFetchAt": "2026-06-17 18:30",
@@ -1920,13 +1879,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-4日 ～ D-10日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:13:48",
           "endAt": "2026-06-16 17:21:44",
           "taskStatus": "执行中"
@@ -1944,7 +1901,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:10:27",
           "endAt": "2026-06-13 17:21:44",
           "taskStatus": "成功"
@@ -1982,7 +1939,7 @@
       "qualityStatus": "正常",
       "timePoint": "1h",
       "outputTime": "D日 出 D-4日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "",
       "lastSuccessAt": "2026-06-16 17:34",
       "nextFetchAt": "2026-06-17 18:30",
@@ -2015,13 +1972,11 @@
       ],
       "routineFetchTimeliness": "",
       "routineFetchValueRange": "",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:26:19",
           "endAt": "2026-06-16 17:34:15",
           "taskStatus": "执行中"
@@ -2039,7 +1994,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:23:58",
           "endAt": "2026-06-13 17:34:15",
           "taskStatus": "成功"
@@ -2077,7 +2032,7 @@
       "qualityStatus": "正常",
       "timePoint": "1h",
       "outputTime": "D日 出 D-4日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "",
       "lastSuccessAt": "2026-06-16 17:36",
       "nextFetchAt": "2026-06-17 18:30",
@@ -2110,13 +2065,11 @@
       ],
       "routineFetchTimeliness": "",
       "routineFetchValueRange": "",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:28:33",
           "endAt": "2026-06-16 17:36:29",
           "taskStatus": "执行中"
@@ -2134,7 +2087,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:25:12",
           "endAt": "2026-06-13 17:36:29",
           "taskStatus": "成功"
@@ -2175,7 +2128,7 @@
       "qualityStatus": "数据为空",
       "timePoint": "1h",
       "outputTime": "D日 出 D日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:29",
       "nextFetchAt": "2026-06-17 18:30",
@@ -2207,13 +2160,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D日 ～ D+1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:21:44",
           "endAt": "2026-06-16 17:29:40",
           "taskStatus": "执行中"
@@ -2231,7 +2182,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:18:23",
           "endAt": "2026-06-13 17:29:40",
           "taskStatus": "成功"
@@ -2272,7 +2223,7 @@
       "qualityStatus": "数据不完整",
       "timePoint": "1h",
       "outputTime": "D日 出 D-2日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-2日 ～ D-1日",
       "lastSuccessAt": "2026-06-16 17:37",
       "nextFetchAt": "2026-06-17 18:30",
@@ -2304,13 +2255,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-2日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:29:40",
           "endAt": "2026-06-16 17:37:36",
           "taskStatus": "执行中"
@@ -2328,7 +2277,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:26:19",
           "endAt": "2026-06-13 17:37:36",
           "taskStatus": "成功"
@@ -2366,7 +2315,7 @@
       "downloadFile": "实际运行结果(2026-03-06) (1).xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "数据未更新",
+      "qualityStatus": "数据为空",
       "timePoint": "1h",
       "outputTime": "D日 出 D-5日",
       "warningTime": "D+1日10:00",
@@ -2401,13 +2350,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-9日 ～ D+1日",
-      "routineWarningTime": "D+1日10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 16:52:20",
           "endAt": "2026-06-16 17:00:17",
           "taskStatus": "执行中"
@@ -2425,7 +2372,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 16:49:59",
           "endAt": "2026-06-13 17:00:17",
           "taskStatus": "成功"
@@ -2463,7 +2410,7 @@
       "downloadFile": "同日前交易结果在同一个文件",
       "collectorStatus": "normal",
       "fetchStatus": "正常",
-      "qualityStatus": "数值异常",
+      "qualityStatus": "数据不完整",
       "timePoint": "1h",
       "outputTime": "D日 出 D-5日",
       "warningTime": "D+1日10:00",
@@ -2498,13 +2445,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-9日 ～ D+1日",
-      "routineWarningTime": "D+1日10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:00:17",
           "endAt": "2026-06-16 17:08:13",
           "taskStatus": "执行中"
@@ -2522,7 +2467,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 16:57:55",
           "endAt": "2026-06-13 17:08:13",
           "taskStatus": "成功"
@@ -2560,7 +2505,7 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 17:00 出 D+1日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:16",
       "nextFetchAt": "2026-06-17 18:30",
@@ -2592,13 +2537,11 @@
       ],
       "routineFetchTimeliness": "每日 16:00、18:00、20:00、22:00、23:00、23:30",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:08:13",
           "endAt": "2026-06-16 17:16:09",
           "taskStatus": "执行中"
@@ -2616,7 +2559,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:05:52",
           "endAt": "2026-06-13 17:16:09",
           "taskStatus": "成功"
@@ -2654,7 +2597,7 @@
       "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 16:00 出 D+1日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-3日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:24",
       "nextFetchAt": "2026-06-17 18:30",
@@ -2686,13 +2629,11 @@
       ],
       "routineFetchTimeliness": "每日 16:00、18:00、20:00、22:00、23:00、23:30",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:16:09",
           "endAt": "2026-06-16 17:24:05",
           "taskStatus": "执行中"
@@ -2710,7 +2651,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:13:48",
           "endAt": "2026-06-13 17:24:05",
           "taskStatus": "成功"
@@ -2748,7 +2689,7 @@
       "qualityStatus": "正常",
       "timePoint": "1h",
       "outputTime": "D日 13:00 出 D+1日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D日 19:00",
       "valueRange": "D+1日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 17:32",
       "nextFetchAt": "2026-06-17 18:30",
@@ -2780,13 +2721,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D+1日 ～ D+1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:24:05",
           "endAt": "2026-06-16 17:32:01",
           "taskStatus": "执行中"
@@ -2804,7 +2743,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:21:44",
           "endAt": "2026-06-13 17:32:01",
           "taskStatus": "成功"
@@ -2842,7 +2781,7 @@
       "qualityStatus": "正常",
       "timePoint": "1h",
       "outputTime": "D日 出 D-6日",
-      "warningTime": "D日 18:30",
+      "warningTime": "D+1日 10:00",
       "valueRange": "D-10日 ～ D-6日",
       "lastSuccessAt": "2026-06-16 17:40",
       "nextFetchAt": "2026-06-17 18:30",
@@ -2874,13 +2813,11 @@
       ],
       "routineFetchTimeliness": "每日 22:00",
       "routineFetchValueRange": "D-10日 ～ D-6日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:32:01",
           "endAt": "2026-06-16 17:40:57",
           "taskStatus": "执行中"
@@ -2898,7 +2835,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:29:40",
           "endAt": "2026-06-13 17:40:57",
           "taskStatus": "成功"
@@ -2936,7 +2873,7 @@
       "qualityStatus": "正常",
       "timePoint": "1M",
       "outputTime": "M月12日 出 M-1月",
-      "warningTime": "D日 18:30",
+      "warningTime": "D日 19:00",
       "valueRange": "M-1月 ～ M-1月",
       "lastSuccessAt": "2026-06-04 17:03",
       "nextFetchAt": "2026-07-15 18:30",
@@ -2968,13 +2905,11 @@
       ],
       "routineFetchTimeliness": "M月15日起，每日 20:00、21:00、22:00，取到即止",
       "routineFetchValueRange": "M-1月 ～ M-1月",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-04 16:55:41",
           "endAt": "2026-06-04 17:03:38",
           "taskStatus": "执行中"
@@ -2992,7 +2927,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-01 16:52:20",
           "endAt": "2026-06-01 17:03:38",
           "taskStatus": "成功"
@@ -3030,7 +2965,7 @@
       "qualityStatus": "正常",
       "timePoint": "1M",
       "outputTime": "M月12日 出 M-1月",
-      "warningTime": "D日 18:30",
+      "warningTime": "D日 19:00",
       "valueRange": "M-1月 ～ M-1月",
       "lastSuccessAt": "2026-06-04 17:11",
       "nextFetchAt": "2026-07-15 18:30",
@@ -3062,13 +2997,11 @@
       ],
       "routineFetchTimeliness": "M月15日起，每日 20:00、21:00、22:00，取到即止",
       "routineFetchValueRange": "M-1月 ～ M-1月",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-04 17:03:38",
           "endAt": "2026-06-04 17:11:34",
           "taskStatus": "执行中"
@@ -3086,7 +3019,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-01 17:00:17",
           "endAt": "2026-06-01 17:11:34",
           "taskStatus": "成功"
@@ -3121,7 +3054,7 @@
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
       "collectorStatus": "abnormal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "待校验",
+      "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D+1日 10:00",
@@ -3155,13 +3088,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:28:26",
           "endAt": "2026-06-16 10:36:22",
           "taskStatus": "执行中"
@@ -3179,7 +3110,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:25:05",
           "endAt": "2026-06-13 10:36:22",
           "taskStatus": "成功"
@@ -3248,13 +3179,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:36:22",
           "endAt": "2026-06-16 10:44:18",
           "taskStatus": "执行中"
@@ -3272,7 +3201,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:33:01",
           "endAt": "2026-06-13 10:44:18",
           "taskStatus": "成功"
@@ -3307,10 +3236,10 @@
       "downloadFile": "信息披露查询预测信息(2026-03-07)(1).xlsx",
       "collectorStatus": "abnormal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "待校验",
+      "qualityStatus": "正常",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日 11:50",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-15 10:07",
       "nextFetchAt": "2026-06-17 11:40",
@@ -3341,13 +3270,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
       "tradeFetchValueRange": "D+1日 ～ D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 09:59:02",
           "endAt": "2026-06-15 10:07:59",
           "taskStatus": "执行中"
@@ -3365,7 +3292,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 09:56:41",
           "endAt": "2026-06-12 10:07:59",
           "taskStatus": "成功"
@@ -3400,7 +3327,7 @@
       "downloadFile": "信息披露查询实际信息(2026-03-05)(1).xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "待校验",
+      "qualityStatus": "正常",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D-1日",
       "warningTime": "D+1日 10:00",
@@ -3434,13 +3361,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:07:59",
           "endAt": "2026-06-16 10:15:55",
           "taskStatus": "执行中"
@@ -3458,7 +3383,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:04:38",
           "endAt": "2026-06-13 10:15:55",
           "taskStatus": "成功"
@@ -3529,13 +3454,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D日",
-      "routineWarningTime": "D+1日 10:00",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:15:55",
           "endAt": "2026-06-16 10:23:51",
           "taskStatus": "执行中"
@@ -3553,7 +3476,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:12:34",
           "endAt": "2026-06-13 10:23:51",
           "taskStatus": "成功"
@@ -3591,7 +3514,7 @@
       "qualityStatus": "正常",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日 11:50",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:42",
       "nextFetchAt": "2026-06-17 11:40",
@@ -3622,13 +3545,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
       "tradeFetchValueRange": "D+1日 ～ D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 10:34:08",
           "endAt": "2026-06-16 10:42:04",
           "taskStatus": "执行中"
@@ -3646,7 +3567,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 10:31:47",
           "endAt": "2026-06-13 10:42:04",
           "taskStatus": "成功"
@@ -3684,7 +3605,7 @@
       "qualityStatus": "正常",
       "timePoint": "1D",
       "outputTime": "D日11:00 出 D+1日",
-      "warningTime": "D日 11:40",
+      "warningTime": "D日 11:50",
       "valueRange": "D-6日 ～ D+1日",
       "lastSuccessAt": "2026-06-16 10:05",
       "nextFetchAt": "2026-06-17 11:40",
@@ -3715,13 +3636,11 @@
       ],
       "routineFetchTimeliness": "每日 12:00、14:00、16:00、18:00、20:00、22:00",
       "routineFetchValueRange": "D-6日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 11:30、11:35、11:40",
       "tradeFetchValueRange": "D+1日 ～ D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 09:57:48",
           "endAt": "2026-06-16 10:05:45",
           "taskStatus": "执行中"
@@ -3739,7 +3658,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 09:54:27",
           "endAt": "2026-06-13 10:05:45",
           "taskStatus": "成功"
@@ -3774,7 +3693,7 @@
       "downloadFile": "5.1.______【事前日】系统负荷预测-日.xlsx",
       "collectorStatus": "abnormal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "待校验",
+      "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 09:00 出 D+1日",
       "warningTime": "D日 11:40",
@@ -3810,19 +3729,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 09:10",
       "tradeFetchValueRange": "D+1日 ～D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:14:55",
           "endAt": "2026-06-15 17:22:51",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-14 17:13:48",
           "endAt": "2026-06-14 17:22:51",
           "taskStatus": "成功"
@@ -3840,7 +3757,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-11 17:10:27",
           "endAt": "2026-06-11 17:22:51",
           "taskStatus": "成功"
@@ -3869,7 +3786,7 @@
       "downloadFile": "8.6._【事后】实际负荷.xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "待校验",
+      "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 12:00 出 D-1日",
       "warningTime": "D日 18:30",
@@ -3905,19 +3822,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 08:50",
       "tradeFetchValueRange": "D-1日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:22:51",
           "endAt": "2026-06-16 17:30:47",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:21:44",
           "endAt": "2026-06-15 17:30:47",
           "taskStatus": "成功"
@@ -3935,7 +3850,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:18:23",
           "endAt": "2026-06-12 17:30:47",
           "taskStatus": "成功"
@@ -4000,19 +3915,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 09:10",
       "tradeFetchValueRange": "D+1日 ～D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:30:47",
           "endAt": "2026-06-16 17:38:43",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:29:40",
           "endAt": "2026-06-15 17:38:43",
           "taskStatus": "成功"
@@ -4030,7 +3943,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:26:19",
           "endAt": "2026-06-12 17:38:43",
           "taskStatus": "成功"
@@ -4098,19 +4011,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 08:50",
       "tradeFetchValueRange": "D-1日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 16:53:27",
           "endAt": "2026-06-16 17:01:24",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 16:52:20",
           "endAt": "2026-06-15 17:01:24",
           "taskStatus": "成功"
@@ -4128,7 +4039,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 16:49:59",
           "endAt": "2026-06-12 17:01:24",
           "taskStatus": "成功"
@@ -4159,7 +4070,7 @@
       "downloadFile": "5.9._【事前】水电（含抽蓄）总出力预测-日 (5).xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "数据未更新",
+      "qualityStatus": "数据为空",
       "timePoint": "15min",
       "outputTime": "D日 09:00 出 D+1日",
       "warningTime": "D日 11:40",
@@ -4195,19 +4106,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 09:10",
       "tradeFetchValueRange": "D+1日 ～D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:01:24",
           "endAt": "2026-06-16 17:09:20",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:00:17",
           "endAt": "2026-06-15 17:09:20",
           "taskStatus": "成功"
@@ -4225,7 +4134,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 16:57:55",
           "endAt": "2026-06-12 17:09:20",
           "taskStatus": "成功"
@@ -4256,7 +4165,7 @@
       "downloadFile": "8.5._【事后】水电（含抽蓄）总出力 (1).xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "正常",
-      "qualityStatus": "数值异常",
+      "qualityStatus": "数据不完整",
       "timePoint": "15min",
       "outputTime": "D日 12:00 出 D-1日",
       "warningTime": "D日 18:30",
@@ -4292,19 +4201,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 08:50",
       "tradeFetchValueRange": "D-1日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:09:20",
           "endAt": "2026-06-16 17:17:16",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:08:13",
           "endAt": "2026-06-15 17:17:16",
           "taskStatus": "成功"
@@ -4322,7 +4229,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:05:52",
           "endAt": "2026-06-12 17:17:16",
           "taskStatus": "成功"
@@ -4389,19 +4296,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 09:10",
       "tradeFetchValueRange": "D+1日 ～D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:33:08",
           "endAt": "2026-06-16 17:41:04",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:32:01",
           "endAt": "2026-06-15 17:41:04",
           "taskStatus": "成功"
@@ -4419,7 +4324,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:29:40",
           "endAt": "2026-06-12 17:41:04",
           "taskStatus": "成功"
@@ -4486,19 +4391,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-7日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 08:50",
       "tradeFetchValueRange": "D-1日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 16:56:48",
           "endAt": "2026-06-16 17:04:45",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 16:55:41",
           "endAt": "2026-06-15 17:04:45",
           "taskStatus": "成功"
@@ -4516,7 +4419,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 16:52:20",
           "endAt": "2026-06-12 17:04:45",
           "taskStatus": "成功"
@@ -4583,19 +4486,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 09:10",
       "tradeFetchValueRange": "D+1日 ～D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:04:45",
           "endAt": "2026-06-16 17:12:41",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:03:38",
           "endAt": "2026-06-15 17:12:41",
           "taskStatus": "成功"
@@ -4613,7 +4514,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:00:17",
           "endAt": "2026-06-12 17:12:41",
           "taskStatus": "成功"
@@ -4678,19 +4579,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 08:50",
       "tradeFetchValueRange": "D-1日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:12:41",
           "endAt": "2026-06-16 17:20:37",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:11:34",
           "endAt": "2026-06-15 17:20:37",
           "taskStatus": "成功"
@@ -4708,7 +4607,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:08:13",
           "endAt": "2026-06-12 17:20:37",
           "taskStatus": "成功"
@@ -4777,19 +4676,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 09:10",
       "tradeFetchValueRange": "D+1日 ～D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:17:16",
           "endAt": "2026-06-16 17:25:12",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:16:09",
           "endAt": "2026-06-15 17:25:12",
           "taskStatus": "成功"
@@ -4807,7 +4704,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:13:48",
           "endAt": "2026-06-12 17:25:12",
           "taskStatus": "成功"
@@ -4874,19 +4771,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 08:50",
       "tradeFetchValueRange": "D-1日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:25:12",
           "endAt": "2026-06-16 17:33:08",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:24:05",
           "endAt": "2026-06-15 17:33:08",
           "taskStatus": "成功"
@@ -4904,7 +4799,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:21:44",
           "endAt": "2026-06-12 17:33:08",
           "taskStatus": "成功"
@@ -4969,13 +4864,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-2日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:31:54",
           "endAt": "2026-06-16 17:39:50",
           "taskStatus": "执行中"
@@ -4993,7 +4886,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:28:33",
           "endAt": "2026-06-13 17:39:50",
           "taskStatus": "成功"
@@ -5067,13 +4960,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-2日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:10:27",
           "endAt": "2026-06-16 17:18:23",
           "taskStatus": "执行中"
@@ -5091,7 +4982,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:07:06",
           "endAt": "2026-06-13 17:18:23",
           "taskStatus": "成功"
@@ -5162,13 +5053,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:18:23",
           "endAt": "2026-06-16 17:26:19",
           "taskStatus": "执行中"
@@ -5186,7 +5075,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:15:02",
           "endAt": "2026-06-13 17:26:19",
           "taskStatus": "成功"
@@ -5223,7 +5112,7 @@
       "downloadFile": "6.3._【事后】日前节点边际电价.xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "待校验",
+      "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 出 D+1日",
       "warningTime": "D日 18:30",
@@ -5258,19 +5147,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 09:10",
       "tradeFetchValueRange": "D-1日 ～ D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:20:37",
           "endAt": "2026-06-15 17:28:33",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-14 17:19:30",
           "endAt": "2026-06-14 17:28:33",
           "taskStatus": "成功"
@@ -5288,7 +5175,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-11 17:16:09",
           "endAt": "2026-06-11 17:28:33",
           "taskStatus": "成功"
@@ -5319,7 +5206,7 @@
       "downloadFile": "6.4._【事后】实时节点边际电价 (1).xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "待校验",
+      "qualityStatus": "正常",
       "timePoint": "15min",
       "outputTime": "D日 12:00 出 D-1日",
       "warningTime": "D日 18:30",
@@ -5354,19 +5241,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 08:50",
       "tradeFetchValueRange": "D-1日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:28:33",
           "endAt": "2026-06-16 17:36:29",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:27:26",
           "endAt": "2026-06-15 17:36:29",
           "taskStatus": "成功"
@@ -5384,7 +5269,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:24:05",
           "endAt": "2026-06-12 17:36:29",
           "taskStatus": "成功"
@@ -5448,19 +5333,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 09:10",
       "tradeFetchValueRange": "D日 ～ D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:36:29",
           "endAt": "2026-06-16 17:44:25",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:35:22",
           "endAt": "2026-06-15 17:44:25",
           "taskStatus": "成功"
@@ -5478,7 +5361,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:32:01",
           "endAt": "2026-06-12 17:44:25",
           "taskStatus": "成功"
@@ -5542,19 +5425,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 08:50",
       "tradeFetchValueRange": "D-4日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 16:59:09",
           "endAt": "2026-06-16 17:07:06",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 16:58:02",
           "endAt": "2026-06-15 17:07:06",
           "taskStatus": "成功"
@@ -5572,7 +5453,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 16:55:41",
           "endAt": "2026-06-12 17:07:06",
           "taskStatus": "成功"
@@ -5636,13 +5517,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:23:58",
           "endAt": "2026-06-16 17:31:54",
           "taskStatus": "执行中"
@@ -5660,7 +5539,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:20:37",
           "endAt": "2026-06-13 17:31:54",
           "taskStatus": "成功"
@@ -5695,7 +5574,7 @@
       "downloadFile": "现货日用电信息-售电公司_REPORT0 (4).xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "数据未取回",
-      "qualityStatus": "数据未更新",
+      "qualityStatus": "数据为空",
       "timePoint": "1h",
       "outputTime": "D日 出 D-2日",
       "warningTime": "D日 18:30",
@@ -5731,13 +5610,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-2日 ～ D-2日",
-      "routineWarningTime": "D日 18:30",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
+      "tradeFetchTimeliness": "每日 08:50",
+      "tradeFetchValueRange": "D-2日 ～ D-2日",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:07:06",
           "endAt": "2026-06-16 17:15:02",
           "taskStatus": "执行中"
@@ -5755,7 +5632,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:04:45",
           "endAt": "2026-06-13 17:15:02",
           "taskStatus": "成功"
@@ -5790,7 +5667,7 @@
       "downloadFile": "电能量申报数据 (1).xlsx",
       "collectorStatus": "normal",
       "fetchStatus": "正常",
-      "qualityStatus": "数值异常",
+      "qualityStatus": "数据不完整",
       "timePoint": "15min",
       "outputTime": "D日 出 D+1日",
       "warningTime": "D日 18:30",
@@ -5825,13 +5702,11 @@
       ],
       "routineFetchTimeliness": "每日 14:00、16:00",
       "routineFetchValueRange": "D日 ～ D+1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:15:02",
           "endAt": "2026-06-16 17:23:58",
           "taskStatus": "执行中"
@@ -5849,7 +5724,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:12:41",
           "endAt": "2026-06-13 17:23:58",
           "taskStatus": "成功"
@@ -5919,13 +5794,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-6日 ～ D-4日，取所在月份",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 16:54:34",
           "endAt": "2026-06-16 17:02:31",
           "taskStatus": "执行中"
@@ -5943,7 +5816,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 16:51:13",
           "endAt": "2026-06-13 17:02:31",
           "taskStatus": "成功"
@@ -6013,13 +5886,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-6日 ～ D-4日，取所在月份",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-04 17:02:31",
           "endAt": "2026-06-04 17:10:27",
           "taskStatus": "执行中"
@@ -6037,7 +5908,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-01 16:59:09",
           "endAt": "2026-06-01 17:10:27",
           "taskStatus": "成功"
@@ -6108,19 +5979,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 8:50、9:05",
       "tradeFetchValueRange": "D+1日 ～D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 16:53:27",
           "endAt": "2026-06-15 17:01:24",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-14 16:52:20",
           "endAt": "2026-06-14 17:01:24",
           "taskStatus": "成功"
@@ -6138,7 +6007,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-11 16:49:59",
           "endAt": "2026-06-11 17:01:24",
           "taskStatus": "成功"
@@ -6203,13 +6072,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 8:30",
       "tradeFetchValueRange": "D-1日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:01:24",
           "endAt": "2026-06-16 17:09:20",
           "taskStatus": "执行中"
@@ -6227,7 +6094,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 16:58:02",
           "endAt": "2026-06-13 17:09:20",
           "taskStatus": "成功"
@@ -6298,19 +6165,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 8:50、9:05",
       "tradeFetchValueRange": "D+1日 ～D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:09:20",
           "endAt": "2026-06-16 17:17:16",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:08:13",
           "endAt": "2026-06-15 17:17:16",
           "taskStatus": "成功"
@@ -6328,7 +6193,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:05:52",
           "endAt": "2026-06-12 17:17:16",
           "taskStatus": "成功"
@@ -6393,13 +6258,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 8:30",
       "tradeFetchValueRange": "D-1日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:17:16",
           "endAt": "2026-06-16 17:25:12",
           "taskStatus": "执行中"
@@ -6417,7 +6280,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:14:55",
           "endAt": "2026-06-13 17:25:12",
           "taskStatus": "成功"
@@ -6488,19 +6351,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 8:50、9:05",
       "tradeFetchValueRange": "D+1日 ～D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:25:12",
           "endAt": "2026-06-16 17:33:08",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:24:05",
           "endAt": "2026-06-15 17:33:08",
           "taskStatus": "成功"
@@ -6518,7 +6379,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:21:44",
           "endAt": "2026-06-12 17:33:08",
           "taskStatus": "成功"
@@ -6583,13 +6444,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 8:30",
       "tradeFetchValueRange": "D-1日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:33:08",
           "endAt": "2026-06-16 17:41:04",
           "taskStatus": "执行中"
@@ -6607,7 +6466,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:30:47",
           "endAt": "2026-06-13 17:41:04",
           "taskStatus": "成功"
@@ -6682,19 +6541,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 8:50、9:05",
       "tradeFetchValueRange": "D+1日 ～D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 16:56:48",
           "endAt": "2026-06-16 17:04:45",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 16:55:41",
           "endAt": "2026-06-15 17:04:45",
           "taskStatus": "成功"
@@ -6712,7 +6569,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 16:52:20",
           "endAt": "2026-06-12 17:04:45",
           "taskStatus": "成功"
@@ -6781,13 +6638,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 8:30",
       "tradeFetchValueRange": "D-1日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:04:45",
           "endAt": "2026-06-16 17:12:41",
           "taskStatus": "执行中"
@@ -6805,7 +6660,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:01:24",
           "endAt": "2026-06-13 17:12:41",
           "taskStatus": "成功"
@@ -6876,19 +6731,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 8:50、9:05",
       "tradeFetchValueRange": "D+1日 ～D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:12:41",
           "endAt": "2026-06-16 17:20:37",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:11:34",
           "endAt": "2026-06-15 17:20:37",
           "taskStatus": "成功"
@@ -6906,7 +6759,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:08:13",
           "endAt": "2026-06-12 17:20:37",
           "taskStatus": "成功"
@@ -6971,13 +6824,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "D-1日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:20:37",
           "endAt": "2026-06-16 17:28:33",
           "taskStatus": "执行中"
@@ -6995,7 +6846,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:17:16",
           "endAt": "2026-06-13 17:28:33",
           "taskStatus": "成功"
@@ -7068,19 +6919,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "每日 8:50、9:05",
       "tradeFetchValueRange": "D+1日 ～D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:28:33",
           "endAt": "2026-06-16 17:36:29",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:27:26",
           "endAt": "2026-06-15 17:36:29",
           "taskStatus": "成功"
@@ -7098,7 +6947,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:24:05",
           "endAt": "2026-06-12 17:36:29",
           "taskStatus": "成功"
@@ -7163,13 +7012,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-4日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 8:30",
       "tradeFetchValueRange": "D-1日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:36:29",
           "endAt": "2026-06-16 17:44:25",
           "taskStatus": "执行中"
@@ -7187,7 +7034,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:33:08",
           "endAt": "2026-06-13 17:44:25",
           "taskStatus": "成功"
@@ -7258,13 +7105,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-1日 ～ D日",
-      "routineWarningTime": "D日 11:40",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 09:54:27",
           "endAt": "2026-06-16 10:02:24",
           "taskStatus": "执行中"
@@ -7282,7 +7127,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 09:51:06",
           "endAt": "2026-06-13 10:02:24",
           "taskStatus": "成功"
@@ -7353,19 +7198,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-7日 ～ D+1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "D+1日",
-      "tradeWarningTime": "",
+      "tradeFetchValueRange": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:18:23",
           "endAt": "2026-06-16 17:26:19",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:17:16",
           "endAt": "2026-06-15 17:26:19",
           "taskStatus": "成功"
@@ -7383,7 +7226,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:14:55",
           "endAt": "2026-06-12 17:26:19",
           "taskStatus": "成功"
@@ -7447,19 +7290,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D+1日",
-      "routineWarningTime": "D+1日09:00",
       "tradeFetchTimeliness": "每日 8:50、9:05",
       "tradeFetchValueRange": "D+1日 ～D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 16:59:09",
           "endAt": "2026-06-15 17:07:06",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-14 16:58:02",
           "endAt": "2026-06-14 17:07:06",
           "taskStatus": "成功"
@@ -7477,7 +7318,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-11 16:55:41",
           "endAt": "2026-06-11 17:07:06",
           "taskStatus": "成功"
@@ -7541,13 +7382,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-3日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 8:30",
       "tradeFetchValueRange": "D-1日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 16:59:09",
           "endAt": "2026-06-15 17:07:06",
           "taskStatus": "执行中"
@@ -7565,7 +7404,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 16:56:48",
           "endAt": "2026-06-12 17:07:06",
           "taskStatus": "成功"
@@ -7636,13 +7475,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-5日 ～ D-1日",
-      "routineWarningTime": "D日 18:30",
-      "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
+      "tradeFetchTimeliness": "每日 8:30",
+      "tradeFetchValueRange": "D-2日 ～ D-2日",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:07:06",
           "endAt": "2026-06-16 17:15:02",
           "taskStatus": "执行中"
@@ -7660,7 +7497,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 17:04:45",
           "endAt": "2026-06-13 17:15:02",
           "taskStatus": "成功"
@@ -7730,19 +7567,17 @@
       ],
       "routineFetchTimeliness": "每日 14:00、16:00",
       "routineFetchValueRange": "D日 ～ D+1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
-      "tradeFetchValueRange": "D+1日",
-      "tradeWarningTime": "",
+      "tradeFetchValueRange": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:15:02",
           "endAt": "2026-06-16 17:23:58",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:14:55",
           "endAt": "2026-06-15 17:23:58",
           "taskStatus": "成功"
@@ -7760,7 +7595,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:11:34",
           "endAt": "2026-06-12 17:23:58",
           "taskStatus": "成功"
@@ -7824,19 +7659,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-7日 ～ D+1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 8:50、9:05",
       "tradeFetchValueRange": "D日 ～ D+1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:23:58",
           "endAt": "2026-06-16 17:31:54",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:22:51",
           "endAt": "2026-06-15 17:31:54",
           "taskStatus": "成功"
@@ -7854,7 +7687,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:19:30",
           "endAt": "2026-06-12 17:31:54",
           "taskStatus": "成功"
@@ -7918,19 +7751,17 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-7日 ～ D+1日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "每日 8:30",
       "tradeFetchValueRange": "D-1日 ～ D-1日",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:31:54",
           "endAt": "2026-06-16 17:39:50",
           "taskStatus": "执行中"
         },
         {
-          "taskType": "交易取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 17:30:47",
           "endAt": "2026-06-15 17:39:50",
           "taskStatus": "成功"
@@ -7948,7 +7779,7 @@
           "taskStatus": "成功"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 17:27:26",
           "endAt": "2026-06-12 17:39:50",
           "taskStatus": "成功"
@@ -8012,13 +7843,11 @@
       ],
       "routineFetchTimeliness": "每日 14:00",
       "routineFetchValueRange": "D日 ～ D+10日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 16:59:09",
           "endAt": "2026-06-15 17:07:06",
           "taskStatus": "执行中"
@@ -8036,7 +7865,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 16:56:48",
           "endAt": "2026-06-12 17:07:06",
           "taskStatus": "成功"
@@ -8106,13 +7935,11 @@
       ],
       "routineFetchTimeliness": "每日 14:00",
       "routineFetchValueRange": "D日 ～ D+10日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 16:59:09",
           "endAt": "2026-06-15 17:07:06",
           "taskStatus": "执行中"
@@ -8130,7 +7957,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 16:56:48",
           "endAt": "2026-06-12 17:07:06",
           "taskStatus": "成功"
@@ -8200,13 +8027,11 @@
       ],
       "routineFetchTimeliness": "每日 14:00",
       "routineFetchValueRange": "",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 16:59:09",
           "endAt": "2026-06-15 17:07:06",
           "taskStatus": "执行中"
@@ -8224,7 +8049,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 16:56:48",
           "endAt": "2026-06-12 17:07:06",
           "taskStatus": "成功"
@@ -8295,13 +8120,11 @@
       ],
       "routineFetchTimeliness": "每日 14:00",
       "routineFetchValueRange": "M-1月",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-15 16:59:09",
           "endAt": "2026-06-15 17:07:06",
           "taskStatus": "执行中"
@@ -8319,7 +8142,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-12 16:56:48",
           "endAt": "2026-06-12 17:07:06",
           "taskStatus": "成功"
@@ -8389,13 +8212,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "D-10日 ～ D-6日",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-16 17:02:31",
           "endAt": "2026-06-16 17:10:27",
           "taskStatus": "执行中"
@@ -8413,7 +8234,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-13 16:59:09",
           "endAt": "2026-06-13 17:10:27",
           "taskStatus": "成功"
@@ -8483,13 +8304,11 @@
       ],
       "routineFetchTimeliness": "每日 10:00、12:00、14:00、23:00",
       "routineFetchValueRange": "M-1月",
-      "routineWarningTime": "D日 18:30",
       "tradeFetchTimeliness": "",
       "tradeFetchValueRange": "",
-      "tradeWarningTime": "",
       "fetchRecords": [
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-04 17:10:27",
           "endAt": "2026-06-04 17:18:23",
           "taskStatus": "执行中"
@@ -8507,7 +8326,7 @@
           "taskStatus": "失败"
         },
         {
-          "taskType": "常规取数",
+          "taskType": "定时任务",
           "startAt": "2026-06-01 17:07:06",
           "endAt": "2026-06-01 17:18:23",
           "taskStatus": "成功"

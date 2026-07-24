@@ -118,7 +118,71 @@
       });
     }
 
+    // Header groups: build the parent (group) row first so the sub-header row below can
+    // skip un-grouped columns (they are rendered with rowspan="2" in the group row).
+    var headerGroups = Array.isArray(options.headerGroups) ? options.headerGroups : [];
+    var groupHead = "";
+    // column-key -> group-key map; built unconditionally so the sub-header row can
+    // skip un-grouped columns (those are rendered with rowspan="2" in the group row).
+    var columnGroupByKey = {};
+    if (headerGroups.length) {
+      headerGroups.forEach(function mapGroup(group) {
+        (group.keys || []).forEach(function mapKey(key) {
+          columnGroupByKey[key] = group.key || group.label;
+        });
+      });
+      // Walk the final column order and emit a group <th> (colspan) for consecutive columns
+      // sharing the same group, or a rowspan="2" <th> for un-grouped columns.
+      var groupCells = [];
+      var i = 0;
+      while (i < columns.length) {
+        var groupKey = columnGroupByKey[columns[i].key];
+        if (!groupKey) {
+          // Un-grouped column: spans both header rows.
+          var col = columns[i];
+          var colFixedClass = col.fixed ? "table-fixed-col table-fixed-" + col.fixedSide : "";
+          var colClassName = colFixedClass ? ' class="table-group-cell ' + colFixedClass + '"' : ' class="table-group-cell"';
+          var colStyleAttr = col.fixedSide === "left"
+            ? ' style="left:' + escapeHtml(String(col.left)) + "px;width:" + escapeHtml(String(col.width)) + "px;min-width:" + escapeHtml(String(col.width)) + 'px;"'
+            : col.fixedSide === "right"
+              ? ' style="right:' + escapeHtml(String(col.right)) + "px;width:" + escapeHtml(String(col.width)) + "px;min-width:" + escapeHtml(String(col.width)) + 'px;"'
+              : col.width
+                ? ' style="min-width:' + escapeHtml(String(col.width)) + 'px;"'
+                : "";
+          groupCells.push("<th" + colClassName + colStyleAttr + ' rowspan="2"><span>' + escapeHtml(col.label) + "</span></th>");
+          i += 1;
+          continue;
+        }
+        // Grouped run: count consecutive columns sharing this group key.
+        var span = 0;
+        var runWidth = 0;
+        while (i + span < columns.length && columnGroupByKey[columns[i + span].key] === groupKey) {
+          runWidth += columns[i + span].width;
+          span += 1;
+        }
+        var group = headerGroups.filter(function findGroup(g) {
+          return (g.key || g.label) === groupKey;
+        })[0] || { label: groupKey };
+        groupCells.push(
+          '<th class="table-group-cell" colspan="' +
+          escapeHtml(String(span)) +
+          '"' +
+          (runWidth ? ' style="min-width:' + escapeHtml(String(runWidth)) + 'px;"' : "") +
+          "><span>" +
+          escapeHtml(group.label) +
+          "</span></th>"
+        );
+        i += span;
+      }
+      groupHead = "<tr class=\"table-group-row\">" + groupCells.join("") + "</tr>";
+    }
+
+    // Sub-header row. When header groups exist, un-grouped columns are already rendered
+    // in the group row with rowspan="2", so they must be skipped here to avoid duplication.
     var head = columns
+      .filter(function keepGroupedOnlyWhenGrouped(column) {
+        return !headerGroups.length || columnGroupByKey[column.key];
+      })
       .map(function mapColumn(column) {
         var direction = sortState.key === column.key ? sortState.direction : "";
         var thAttrs = "";
@@ -261,7 +325,9 @@
       escapeHtml(options.tableId) +
       '"' +
       (options.minWidth ? ' style="min-width:' + escapeHtml(String(options.minWidth)) + 'px;"' : "") +
-      "><thead><tr>" +
+      "><thead>" +
+      groupHead +
+      "<tr>" +
       head +
       "</tr></thead><tbody>" +
       body +

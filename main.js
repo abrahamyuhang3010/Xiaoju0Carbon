@@ -13574,7 +13574,7 @@
   }
 
   function isDataMonitorQualityAbnormal(record) {
-    var qualityAbnormalStatuses = ["校验失败", "数据未更新", "数据为空", "数据不完整", "数值异常"];
+    var qualityAbnormalStatuses = ["文件解析失败", "数据为空", "数据不完整"];
     return record && qualityAbnormalStatuses.indexOf(record.qualityStatus) >= 0;
   }
 
@@ -13939,15 +13939,9 @@
     取数中: "processing",
     异常: "error",
     数据未取回: "error",
-    未配置: "default",
-    待校验: "default",
-    校验中: "processing",
-    校验失败: "error",
-    数据未更新: "warning",
+    文件解析失败: "error",
     数据为空: "error",
     数据不完整: "error",
-    数值越界: "error",
-    数值异常: "error",
     已忽略: "default",
   };
 
@@ -14070,37 +14064,38 @@
   function getDataMonitorTable() {
     var columns = [
       { key: "dataItem", label: "数据项", width: 196, fixed: true },
-      { key: "collectorStatus", label: "采集器状态", width: 112 },
       { key: "fetchStatus", label: "取数状态", width: 128 },
       { key: "qualityStatus", label: "质量状态", width: 128 },
       { key: "outputTime", label: "产出时间", width: 168 },
       { key: "routineFetchTimeliness", label: "常规取数时效", width: 196 },
       { key: "routineFetchValueRange", label: "常规取数范围", width: 140 },
-      { key: "routineWarningTime", label: "常规预警时间", width: 128 },
       { key: "tradeFetchTimeliness", label: "交易取数时效", width: 140 },
       { key: "tradeFetchValueRange", label: "交易取数范围", width: 128 },
-      { key: "tradeWarningTime", label: "交易预警时间", width: 128 },
+      { key: "warningTime", label: "数据预警时间", width: 128 },
       { key: "remark", label: "备注", width: 220 },
       { key: "actions", label: "操作", sortable: false, width: 112, fixedRight: true },
+    ];
+    var headerGroups = [
+      { key: "routine", label: "常规取数配置", keys: ["routineFetchTimeliness", "routineFetchValueRange"] },
+      { key: "trade", label: "交易取数配置", keys: ["tradeFetchTimeliness", "tradeFetchValueRange"] },
     ];
 
     return {
       columns: columns,
+      headerGroups: headerGroups,
       rows: getDataMonitorFilteredRecords().map(function mapRecord(record) {
         var actions = [{ label: "详情", action: "open-data-monitor-detail" }];
 
         return {
           dataItem: createDataMonitorTextCell(record.dataItem),
-          collectorStatus: createDataMonitorStatusCell(record, "collector"),
           fetchStatus: createDataMonitorStatusCell(record, "fetch"),
           qualityStatus: createDataMonitorStatusCell(record, "quality"),
           outputTime: createDataMonitorTextCell(record.outputTime),
           routineFetchTimeliness: createDataMonitorTextCell(record.routineFetchTimeliness),
           routineFetchValueRange: createDataMonitorTextCell(record.routineFetchValueRange),
-          routineWarningTime: createDataMonitorTextCell(record.routineWarningTime),
           tradeFetchTimeliness: createDataMonitorTextCell(record.tradeFetchTimeliness),
           tradeFetchValueRange: createDataMonitorTextCell(record.tradeFetchValueRange),
-          tradeWarningTime: createDataMonitorTextCell(record.tradeWarningTime),
+          warningTime: createDataMonitorTextCell(record.warningTime),
           remark: createDataMonitorTextCell(record.remark || ""),
           actions: createTableActionCell(record.id, actions),
         };
@@ -14136,6 +14131,7 @@
         columns: table.columns,
         rows: table.rows,
         minWidth: table.minWidth,
+        headerGroups: table.headerGroups,
         sortState: getTableSortState(tableId),
         useColumnWidth: true,
         escapeHtml: escapeHtml,
@@ -14157,7 +14153,7 @@
         '<div class="data-monitor-alert-title">当前所有数据运行正常</div>' +
         '<div class="data-monitor-alert-meta">应取数据 ' +
         escapeHtml(summary.expectedCount || 0) +
-        " 项，暂无采集器运行状态异常、取数异常与质量异常。</div></div></section>"
+        " 项，暂无取数异常与质量异常。</div></div></section>"
       );
     }
     return (
@@ -14169,9 +14165,7 @@
       escapeHtml(summary.expectedCount || 0) +
       " ｜正常 " +
       escapeHtml(summary.normalCount || 0) +
-      " ｜采集器运行状态异常 " +
-      escapeHtml(summary.collectorAbnormalCount || 0) +
-      " 项 ｜取数通道异常 " +
+      " ｜取数通道异常 " +
       escapeHtml(summary.fetchAbnormalCount || 0) +
       " 项 ｜数据质量异常 " +
       escapeHtml(summary.qualityAbnormalCount || 0) +
@@ -14257,7 +14251,7 @@
       }) +
       "</section>" +
       renderDataMonitorAlert() +
-      renderSectionHeading("实时状态列表", "当前交易中心各项市场数据的采集器运行状态、实时取数通道状态、质量状态") +
+      renderSectionHeading("实时状态列表", "当前交易中心各项市场数据的实时取数通道状态、质量状态") +
       renderDataMonitorTableSection() +
       "</div>"
     );
@@ -17143,6 +17137,9 @@
   }
 
   function renderDataMonitorDetailItemFromConfig(item) {
+    if (item && item.groupTitle) {
+      return '<div class="data-monitor-detail-group-title" data-wide-span>' + escapeHtml(item.groupTitle) + "</div>";
+    }
     var className = ["data-monitor-detail-item", item.wide ? "data-monitor-detail-item-wide" : ""].filter(Boolean).join(" ");
     return (
       '<div class="' +
@@ -17267,14 +17264,6 @@
     );
   }
 
-  function getDataMonitorCollectorExceptionAt(record) {
-    return isDataMonitorCollectorAbnormal(record) ? record.fetchExceptionAt : "-";
-  }
-
-  function getDataMonitorCollectorNotified(record) {
-    return isDataMonitorCollectorAbnormal(record) ? record.notified : "否";
-  }
-
   function renderDataMonitorDetailDrawerOverlay() {
     var record;
 
@@ -17304,36 +17293,29 @@
       renderDataMonitorDetailSection("取数配置", [
         { label: "时间点位", value: record.timePoint },
         { label: "产出时间", value: record.outputTime },
+        { label: "交易中心页面地址", value: record.pageAddress, wide: true },
+        { label: "预警时间", value: record.warningTime },
+        { groupTitle: "常规取数配置" },
         { label: "常规取数时效", value: record.routineFetchTimeliness, wide: true },
         { label: "常规取数范围", value: record.routineFetchValueRange },
-        { label: "常规预警时间", value: record.routineWarningTime },
+        { groupTitle: "交易取数配置" },
         { label: "交易取数时效", value: record.tradeFetchTimeliness, wide: true },
         { label: "交易取数范围", value: record.tradeFetchValueRange },
-        { label: "交易预警时间", value: record.tradeWarningTime },
-        { label: "交易中心页面地址", value: record.pageAddress, wide: true },
       ]) +
       '<section class="data-monitor-detail-section"><div class="data-monitor-detail-section-title">当前状态</div><div class="data-monitor-current-status-grid">' +
       renderDataMonitorStatusReadonlyCard(
         "取数通道状态",
         renderDataMonitorStatusFieldGroup([
-          { label: "采集器状态", html: renderDataMonitorStatusTag(getDataMonitorStatusText(record, "collector")) },
-          { label: "异常时间", value: getDataMonitorCollectorExceptionAt(record) },
-          { label: "是否已通知", value: getDataMonitorCollectorNotified(record) },
-        ]) +
-          renderDataMonitorStatusFieldGroup([
-            { label: "取数状态", html: renderDataMonitorStatusTag(getDataMonitorStatusText(record, "fetch")) },
-            { label: "异常时间", value: record.fetchExceptionAt },
-            { label: "是否已通知", value: record.fetchNotified },
-          ]),
+          { label: "取数状态", html: renderDataMonitorStatusTag(getDataMonitorStatusText(record, "fetch")) },
+          { label: "异常时间", value: record.fetchExceptionAt || "-" },
+        ]),
       ) +
       renderDataMonitorStatusReadonlyCard(
         "数据质量状态",
         '<div class="data-monitor-status-nested-grid">' +
           renderDataMonitorDetailItemList([
             { label: "质量状态", html: renderDataMonitorStatusTag(getDataMonitorStatusText(record, "quality")) },
-            { label: "校验时间", value: record.checkAt },
-            { label: "数据告警阈值", value: record.warningThreshold },
-            { label: "是否已通知", value: record.qualityNotified },
+            { label: "异常时间", value: record.qualityExceptionAt || record.checkAt || "-" },
           ]) +
           "</div>",
       ) +
