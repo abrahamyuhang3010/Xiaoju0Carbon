@@ -4333,15 +4333,13 @@ a {
   background: #fff;
 }
 
-.data-monitor-detail-section-title,
-.data-monitor-status-card-title {
+.data-monitor-detail-section-title {
   color: var(--text);
   font-size: 14px;
   font-weight: 800;
 }
 
-.data-monitor-detail-grid,
-.data-monitor-status-card-grid {
+.data-monitor-detail-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-3) var(--space-4);
@@ -4411,48 +4409,6 @@ a {
 
 .data-monitor-detail-grid-compact {
   margin-top: var(--space-3);
-}
-
-.data-monitor-current-status-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-3);
-  margin-top: var(--space-3);
-}
-
-.data-monitor-status-card {
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #f8fafc;
-}
-
-.data-monitor-status-card-body {
-  display: grid;
-  gap: var(--space-3);
-  margin-top: var(--space-3);
-}
-
-.data-monitor-status-field-group,
-.data-monitor-status-nested-grid,
-.data-monitor-status-extra-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-3) var(--space-4);
-}
-
-.data-monitor-status-field-group + .data-monitor-status-field-group {
-  padding-top: var(--space-3);
-  border-top: 1px dashed #e4ebf5;
-}
-
-.data-monitor-status-extra-grid {
-  padding-top: var(--space-3);
-  border-top: 1px dashed #e4ebf5;
-}
-
-.data-monitor-status-card .data-monitor-detail-label {
-  width: auto;
 }
 
 .data-monitor-fetch-records-section {
@@ -6224,14 +6180,7 @@ a {
     gap: var(--space-1);
   }
 
-  .data-monitor-status-field-group,
-  .data-monitor-status-nested-grid,
-  .data-monitor-status-extra-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .data-monitor-detail-label,
-  .data-monitor-status-card .data-monitor-detail-label {
+  .data-monitor-detail-label {
     width: auto;
   }
 

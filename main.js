@@ -13578,6 +13578,45 @@
     return record && qualityAbnormalStatuses.indexOf(record.qualityStatus) >= 0;
   }
 
+  // 合并后的取数状态枚举：正常 / 通道异常(原"数据未取回") / 文件解析失败 / 数据为空 / 数据不完整 / 取数中。
+  // 合并规则：质量层优先（quality 异常先于通道异常/取数中/正常）。
+  var DATA_MONITOR_MERGED_QUALITY_ABNORMAL = ["文件解析失败", "数据为空", "数据不完整"];
+
+  function getDataMonitorMergedFetchStatus(record) {
+    if (!record) {
+      return "-";
+    }
+    if (record.processStatus === "已忽略" || record.fetchStatus === "已忽略" || record.qualityStatus === "已忽略") {
+      return "已忽略";
+    }
+    // 质量层优先：质量异常直接反映为合并取数状态
+    if (DATA_MONITOR_MERGED_QUALITY_ABNORMAL.indexOf(record.qualityStatus) >= 0) {
+      return record.qualityStatus;
+    }
+    // 通道异常：原"数据未取回"
+    if (isDataMonitorFetchMissing(record)) {
+      return "通道异常";
+    }
+    if (record.fetchStatus === "取数中") {
+      return "取数中";
+    }
+    return "正常";
+  }
+
+  // 合并取数状态对应的异常时间：质量异常用质量侧时间，通道异常用取数侧时间，否则无异常。
+  function getDataMonitorMergedExceptionAt(record) {
+    if (!record) {
+      return "-";
+    }
+    if (record.qualityStatus && DATA_MONITOR_MERGED_QUALITY_ABNORMAL.indexOf(record.qualityStatus) >= 0) {
+      return record.qualityExceptionAt || record.checkAt || "-";
+    }
+    if (isDataMonitorFetchMissing(record)) {
+      return record.fetchExceptionAt || "-";
+    }
+    return "-";
+  }
+
   function isDataMonitorCollectorAbnormal(record) {
     return record && (record.collectorStatus === "abnormal" || record.collectorStatus === "异常");
   }
@@ -13707,6 +13746,11 @@
     var collectorAbnormalCount = scopedRecords.filter(isDataMonitorCollectorAbnormal).length;
     var fetchAbnormalCount = scopedRecords.filter(isDataMonitorFetchAbnormal).length;
     var qualityAbnormalCount = scopedRecords.filter(isDataMonitorQualityAbnormal).length;
+    // 合并取数状态下的异常计数：取数状态非"正常/取数中/已忽略"即视为异常
+    var mergedAbnormalCount = scopedRecords.filter(function isMergedAbnormal(record) {
+      var status = getDataMonitorMergedFetchStatus(record);
+      return status !== "正常" && status !== "取数中" && status !== "已忽略";
+    }).length;
     var abnormalRecords = scopedRecords.filter(isDataMonitorRecordAbnormal);
     return {
       expectedCount: scopedRecords.length,
@@ -13714,6 +13758,7 @@
       collectorAbnormalCount: collectorAbnormalCount,
       fetchAbnormalCount: fetchAbnormalCount,
       qualityAbnormalCount: qualityAbnormalCount,
+      mergedAbnormalCount: mergedAbnormalCount,
       p0Count: abnormalRecords.filter(function countP0(record) {
         return getDataMonitorPriority(record) === "P0";
       }).length,
@@ -13938,6 +13983,7 @@
     运行中: "processing",
     取数中: "processing",
     异常: "error",
+    通道异常: "error",
     数据未取回: "error",
     文件解析失败: "error",
     数据为空: "error",
@@ -13997,6 +14043,29 @@
       statusText,
       "data-monitor-status-cell",
       sortWeights[statusType] ? sortWeights[statusType][statusValue] || 99 : getDataMonitorSortWeight(record),
+    );
+    cell.copyable = false;
+    return cell;
+  }
+
+  // 合并后的取数状态单元格（取数状态 + 质量状态 合为一列）。
+  var DATA_MONITOR_MERGED_STATUS_SORT_WEIGHTS = {
+    取数中: 1,
+    通道异常: 2,
+    文件解析失败: 3,
+    数据不完整: 4,
+    数据为空: 5,
+    正常: 6,
+    已忽略: 9,
+  };
+
+  function createDataMonitorMergedStatusCell(record) {
+    var statusText = getDataMonitorMergedFetchStatus(record);
+    var cell = createHtmlCell(
+      renderDataMonitorStatusTag(statusText),
+      statusText,
+      "data-monitor-status-cell",
+      DATA_MONITOR_MERGED_STATUS_SORT_WEIGHTS[statusText] || 99,
     );
     cell.copyable = false;
     return cell;
@@ -14065,7 +14134,6 @@
     var columns = [
       { key: "dataItem", label: "数据项", width: 196, fixed: true },
       { key: "fetchStatus", label: "取数状态", width: 128 },
-      { key: "qualityStatus", label: "质量状态", width: 128 },
       { key: "outputTime", label: "产出时间", width: 168 },
       { key: "routineFetchTimeliness", label: "常规取数时效", width: 196 },
       { key: "routineFetchValueRange", label: "常规取数范围", width: 140 },
@@ -14088,8 +14156,7 @@
 
         return {
           dataItem: createDataMonitorTextCell(record.dataItem),
-          fetchStatus: createDataMonitorStatusCell(record, "fetch"),
-          qualityStatus: createDataMonitorStatusCell(record, "quality"),
+          fetchStatus: createDataMonitorMergedStatusCell(record),
           outputTime: createDataMonitorTextCell(record.outputTime),
           routineFetchTimeliness: createDataMonitorTextCell(record.routineFetchTimeliness),
           routineFetchValueRange: createDataMonitorTextCell(record.routineFetchValueRange),
@@ -14153,7 +14220,7 @@
         '<div class="data-monitor-alert-title">当前所有数据运行正常</div>' +
         '<div class="data-monitor-alert-meta">应取数据 ' +
         escapeHtml(summary.expectedCount || 0) +
-        " 项，暂无取数异常与质量异常。</div></div></section>"
+        " 项，暂无取数异常。</div></div></section>"
       );
     }
     return (
@@ -14165,10 +14232,8 @@
       escapeHtml(summary.expectedCount || 0) +
       " ｜正常 " +
       escapeHtml(summary.normalCount || 0) +
-      " ｜取数通道异常 " +
-      escapeHtml(summary.fetchAbnormalCount || 0) +
-      " 项 ｜数据质量异常 " +
-      escapeHtml(summary.qualityAbnormalCount || 0) +
+      " ｜取数异常 " +
+      escapeHtml(summary.mergedAbnormalCount || 0) +
       " 项</div></div></section>"
     );
   }
@@ -14251,7 +14316,7 @@
       }) +
       "</section>" +
       renderDataMonitorAlert() +
-      renderSectionHeading("实时状态列表", "当前交易中心各项市场数据的实时取数通道状态、质量状态") +
+      renderSectionHeading("实时状态列表", "当前交易中心各项市场数据的实时取数状态与取数配置") +
       renderDataMonitorTableSection() +
       "</div>"
     );
@@ -17183,20 +17248,6 @@
     );
   }
 
-  function renderDataMonitorStatusReadonlyCard(title, contentHtml) {
-    return (
-      '<section class="data-monitor-status-card"><div class="data-monitor-status-card-title">' +
-      escapeHtml(title) +
-      '</div><div class="data-monitor-status-card-body">' +
-      contentHtml +
-      "</div></section>"
-    );
-  }
-
-  function renderDataMonitorStatusFieldGroup(items) {
-    return '<div class="data-monitor-status-field-group">' + renderDataMonitorDetailItemList(items) + "</div>";
-  }
-
   function getDataMonitorFetchRecordStatusTone(status) {
     if (status === "成功") {
       return "success";
@@ -17302,24 +17353,10 @@
         { label: "交易取数时效", value: record.tradeFetchTimeliness, wide: true },
         { label: "交易取数范围", value: record.tradeFetchValueRange },
       ]) +
-      '<section class="data-monitor-detail-section"><div class="data-monitor-detail-section-title">当前状态</div><div class="data-monitor-current-status-grid">' +
-      renderDataMonitorStatusReadonlyCard(
-        "取数通道状态",
-        renderDataMonitorStatusFieldGroup([
-          { label: "取数状态", html: renderDataMonitorStatusTag(getDataMonitorStatusText(record, "fetch")) },
-          { label: "异常时间", value: record.fetchExceptionAt || "-" },
-        ]),
-      ) +
-      renderDataMonitorStatusReadonlyCard(
-        "数据质量状态",
-        '<div class="data-monitor-status-nested-grid">' +
-          renderDataMonitorDetailItemList([
-            { label: "质量状态", html: renderDataMonitorStatusTag(getDataMonitorStatusText(record, "quality")) },
-            { label: "异常时间", value: record.qualityExceptionAt || record.checkAt || "-" },
-          ]) +
-          "</div>",
-      ) +
-      "</div></section>" +
+      renderDataMonitorDetailSection("当前状态", [
+        { label: "取数状态", html: renderDataMonitorStatusTag(getDataMonitorMergedFetchStatus(record)) },
+        { label: "异常时间", value: getDataMonitorMergedExceptionAt(record) },
+      ]) +
       renderDataMonitorFetchRecordsSection(record) +
       "</div></aside></div>"
     );
