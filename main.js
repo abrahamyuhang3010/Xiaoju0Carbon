@@ -17311,16 +17311,8 @@
   }
 
   function getDataMonitorFetchRecordStatusTone(status) {
-    if (status === "成功") {
-      return "success";
-    }
-    if (status === "失败") {
-      return "error";
-    }
-    if (status === "执行中") {
-      return "processing";
-    }
-    return "default";
+    // 取数状态色调：复用取数状态枚举映射（正常→success / 取数中→processing / 其余异常→error）。
+    return DATA_MONITOR_STATUS_TONE_MAP[status] || "default";
   }
 
   function renderDataMonitorFetchRecordsSection(record) {
@@ -17329,7 +17321,7 @@
       return (b.endAt || "").localeCompare(a.endAt || "");
     });
     var latest = records.slice(0, 5);
-    var headHtml = ["取数任务类型", "任务开始时间", "任务结束时间", "任务状态"]
+    var headHtml = ["取数任务类型", "任务开始时间", "任务结束时间", "取数状态"]
       .map(function mapHead(label) {
         return "<th>" + escapeHtml(label) + "</th>";
       })

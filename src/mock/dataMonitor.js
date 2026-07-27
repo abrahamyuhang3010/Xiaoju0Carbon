@@ -154,31 +154,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-15 09:53:20",
           "endAt": "2026-06-15 10:01:17",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 09:52:13",
           "endAt": "2026-06-14 10:01:17",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 09:51:06",
           "endAt": "2026-06-13 10:01:17",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 09:50:59",
           "endAt": "2026-06-12 10:01:17",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-11 09:49:52",
           "endAt": "2026-06-11 10:01:17",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -254,31 +254,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:01:17",
           "endAt": "2026-06-16 10:09:13",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:00:10",
           "endAt": "2026-06-15 10:09:13",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 09:59:02",
           "endAt": "2026-06-14 10:09:13",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 09:58:55",
           "endAt": "2026-06-13 10:09:13",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 09:57:48",
           "endAt": "2026-06-12 10:09:13",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -352,31 +352,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:09:13",
           "endAt": "2026-06-16 10:17:09",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:08:06",
           "endAt": "2026-06-15 10:17:09",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:07:59",
           "endAt": "2026-06-14 10:17:09",
-          "taskStatus": "失败"
+          "taskStatus": "数据为空"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:06:52",
           "endAt": "2026-06-13 10:17:09",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:05:45",
           "endAt": "2026-06-12 10:17:09",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -452,31 +452,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:17:09",
           "endAt": "2026-06-16 10:25:05",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:16:02",
           "endAt": "2026-06-15 10:25:05",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:15:55",
           "endAt": "2026-06-14 10:25:05",
-          "taskStatus": "失败"
+          "taskStatus": "数据不完整"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:14:48",
           "endAt": "2026-06-13 10:25:05",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:13:41",
           "endAt": "2026-06-12 10:25:05",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -557,31 +557,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:25:05",
           "endAt": "2026-06-16 10:33:01",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:24:58",
           "endAt": "2026-06-15 10:33:01",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:23:51",
           "endAt": "2026-06-14 10:33:01",
-          "taskStatus": "失败"
+          "taskStatus": "数据为空"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:22:44",
           "endAt": "2026-06-13 10:33:01",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:21:37",
           "endAt": "2026-06-12 10:33:01",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -653,31 +653,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:20:30",
           "endAt": "2026-06-16 10:28:26",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:19:23",
           "endAt": "2026-06-15 10:28:26",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:18:16",
           "endAt": "2026-06-14 10:28:26",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:17:09",
           "endAt": "2026-06-13 10:28:26",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:16:02",
           "endAt": "2026-06-12 10:28:26",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -746,31 +746,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:23:51",
           "endAt": "2026-06-16 10:31:47",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:22:44",
           "endAt": "2026-06-15 10:31:47",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:21:37",
           "endAt": "2026-06-14 10:31:47",
-          "taskStatus": "失败"
+          "taskStatus": "数据不完整"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:20:30",
           "endAt": "2026-06-13 10:31:47",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:19:23",
           "endAt": "2026-06-12 10:31:47",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -844,31 +844,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:31:47",
           "endAt": "2026-06-16 10:39:43",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:30:40",
           "endAt": "2026-06-15 10:39:43",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:29:33",
           "endAt": "2026-06-14 10:39:43",
-          "taskStatus": "失败"
+          "taskStatus": "数据为空"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:28:26",
           "endAt": "2026-06-13 10:39:43",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:27:19",
           "endAt": "2026-06-12 10:39:43",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -937,31 +937,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 09:54:27",
           "endAt": "2026-06-16 10:02:24",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 09:53:20",
           "endAt": "2026-06-15 10:02:24",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 09:52:13",
           "endAt": "2026-06-14 10:02:24",
-          "taskStatus": "失败"
+          "taskStatus": "数据不完整"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 09:51:06",
           "endAt": "2026-06-13 10:02:24",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 09:50:59",
           "endAt": "2026-06-12 10:02:24",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -1035,31 +1035,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:02:24",
           "endAt": "2026-06-16 10:10:20",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:01:17",
           "endAt": "2026-06-15 10:10:20",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:00:10",
           "endAt": "2026-06-14 10:10:20",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 09:59:02",
           "endAt": "2026-06-13 10:10:20",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 09:58:55",
           "endAt": "2026-06-12 10:10:20",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -1133,31 +1133,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:10:20",
           "endAt": "2026-06-16 10:18:16",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:09:13",
           "endAt": "2026-06-15 10:18:16",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:08:06",
           "endAt": "2026-06-14 10:18:16",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:07:59",
           "endAt": "2026-06-13 10:18:16",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:06:52",
           "endAt": "2026-06-12 10:18:16",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -1230,31 +1230,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:18:16",
           "endAt": "2026-06-16 10:26:12",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:17:09",
           "endAt": "2026-06-15 10:26:12",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:16:02",
           "endAt": "2026-06-14 10:26:12",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:15:55",
           "endAt": "2026-06-13 10:26:12",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:14:48",
           "endAt": "2026-06-12 10:26:12",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -1323,31 +1323,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:26:12",
           "endAt": "2026-06-16 10:34:08",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:25:05",
           "endAt": "2026-06-15 10:34:08",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:24:58",
           "endAt": "2026-06-14 10:34:08",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:23:51",
           "endAt": "2026-06-13 10:34:08",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:22:44",
           "endAt": "2026-06-12 10:34:08",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -1416,31 +1416,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:33:01",
           "endAt": "2026-06-16 10:41:57",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:32:54",
           "endAt": "2026-06-15 10:41:57",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:31:47",
           "endAt": "2026-06-14 10:41:57",
-          "taskStatus": "失败"
+          "taskStatus": "数据不完整"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:30:40",
           "endAt": "2026-06-13 10:41:57",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:29:33",
           "endAt": "2026-06-12 10:41:57",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -1509,31 +1509,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 09:56:41",
           "endAt": "2026-06-16 10:04:38",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 09:55:34",
           "endAt": "2026-06-15 10:04:38",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 09:54:27",
           "endAt": "2026-06-14 10:04:38",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 09:53:20",
           "endAt": "2026-06-13 10:04:38",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 09:52:13",
           "endAt": "2026-06-12 10:04:38",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -1606,31 +1606,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:04:38",
           "endAt": "2026-06-16 10:12:34",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:03:31",
           "endAt": "2026-06-15 10:12:34",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:02:24",
           "endAt": "2026-06-14 10:12:34",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:01:17",
           "endAt": "2026-06-13 10:12:34",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:00:10",
           "endAt": "2026-06-12 10:12:34",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -1703,31 +1703,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:12:34",
           "endAt": "2026-06-16 10:20:30",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:11:27",
           "endAt": "2026-06-15 10:20:30",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:10:20",
           "endAt": "2026-06-14 10:20:30",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:09:13",
           "endAt": "2026-06-13 10:20:30",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:08:06",
           "endAt": "2026-06-12 10:20:30",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -1796,31 +1796,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:05:52",
           "endAt": "2026-06-15 17:13:48",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:04:45",
           "endAt": "2026-06-14 17:13:48",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:03:38",
           "endAt": "2026-06-13 17:13:48",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:02:31",
           "endAt": "2026-06-12 17:13:48",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-11 17:01:24",
           "endAt": "2026-06-11 17:13:48",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -1889,31 +1889,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:13:48",
           "endAt": "2026-06-16 17:21:44",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:12:41",
           "endAt": "2026-06-15 17:21:44",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:11:34",
           "endAt": "2026-06-14 17:21:44",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:10:27",
           "endAt": "2026-06-13 17:21:44",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:09:20",
           "endAt": "2026-06-12 17:21:44",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -1982,31 +1982,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:26:19",
           "endAt": "2026-06-16 17:34:15",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:25:12",
           "endAt": "2026-06-15 17:34:15",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:24:05",
           "endAt": "2026-06-14 17:34:15",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:23:58",
           "endAt": "2026-06-13 17:34:15",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:22:51",
           "endAt": "2026-06-12 17:34:15",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -2075,31 +2075,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:28:33",
           "endAt": "2026-06-16 17:36:29",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:27:26",
           "endAt": "2026-06-15 17:36:29",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:26:19",
           "endAt": "2026-06-14 17:36:29",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:25:12",
           "endAt": "2026-06-13 17:36:29",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:24:05",
           "endAt": "2026-06-12 17:36:29",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -2170,31 +2170,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:21:44",
           "endAt": "2026-06-16 17:29:40",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:20:37",
           "endAt": "2026-06-15 17:29:40",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:19:30",
           "endAt": "2026-06-14 17:29:40",
-          "taskStatus": "失败"
+          "taskStatus": "数据为空"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:18:23",
           "endAt": "2026-06-13 17:29:40",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:17:16",
           "endAt": "2026-06-12 17:29:40",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -2265,31 +2265,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:29:40",
           "endAt": "2026-06-16 17:37:36",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:28:33",
           "endAt": "2026-06-15 17:37:36",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:27:26",
           "endAt": "2026-06-14 17:37:36",
-          "taskStatus": "失败"
+          "taskStatus": "数据不完整"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:26:19",
           "endAt": "2026-06-13 17:37:36",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:25:12",
           "endAt": "2026-06-12 17:37:36",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -2360,31 +2360,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 16:52:20",
           "endAt": "2026-06-16 17:00:17",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 16:51:13",
           "endAt": "2026-06-15 17:00:17",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 16:50:06",
           "endAt": "2026-06-14 17:00:17",
-          "taskStatus": "失败"
+          "taskStatus": "数据为空"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 16:49:59",
           "endAt": "2026-06-13 17:00:17",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 16:48:52",
           "endAt": "2026-06-12 17:00:17",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -2455,31 +2455,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:00:17",
           "endAt": "2026-06-16 17:08:13",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 16:59:09",
           "endAt": "2026-06-15 17:08:13",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 16:58:02",
           "endAt": "2026-06-14 17:08:13",
-          "taskStatus": "失败"
+          "taskStatus": "数据不完整"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 16:57:55",
           "endAt": "2026-06-13 17:08:13",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 16:56:48",
           "endAt": "2026-06-12 17:08:13",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -2547,31 +2547,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:08:13",
           "endAt": "2026-06-16 17:16:09",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:07:06",
           "endAt": "2026-06-15 17:16:09",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:06:59",
           "endAt": "2026-06-14 17:16:09",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:05:52",
           "endAt": "2026-06-13 17:16:09",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:04:45",
           "endAt": "2026-06-12 17:16:09",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -2639,31 +2639,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:16:09",
           "endAt": "2026-06-16 17:24:05",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:15:02",
           "endAt": "2026-06-15 17:24:05",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:14:55",
           "endAt": "2026-06-14 17:24:05",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:13:48",
           "endAt": "2026-06-13 17:24:05",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:12:41",
           "endAt": "2026-06-12 17:24:05",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -2731,31 +2731,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:24:05",
           "endAt": "2026-06-16 17:32:01",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:23:58",
           "endAt": "2026-06-15 17:32:01",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:22:51",
           "endAt": "2026-06-14 17:32:01",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:21:44",
           "endAt": "2026-06-13 17:32:01",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:20:37",
           "endAt": "2026-06-12 17:32:01",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -2823,31 +2823,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:32:01",
           "endAt": "2026-06-16 17:40:57",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:31:54",
           "endAt": "2026-06-15 17:40:57",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:30:47",
           "endAt": "2026-06-14 17:40:57",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:29:40",
           "endAt": "2026-06-13 17:40:57",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:28:33",
           "endAt": "2026-06-12 17:40:57",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -2915,31 +2915,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-04 16:55:41",
           "endAt": "2026-06-04 17:03:38",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-03 16:54:34",
           "endAt": "2026-06-03 17:03:38",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-02 16:53:27",
           "endAt": "2026-06-02 17:03:38",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-01 16:52:20",
           "endAt": "2026-06-01 17:03:38",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-05-31 16:51:13",
           "endAt": "2026-05-31 17:03:38",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -3007,31 +3007,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-04 17:03:38",
           "endAt": "2026-06-04 17:11:34",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-03 17:02:31",
           "endAt": "2026-06-03 17:11:34",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-02 17:01:24",
           "endAt": "2026-06-02 17:11:34",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-01 17:00:17",
           "endAt": "2026-06-01 17:11:34",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-05-31 16:59:09",
           "endAt": "2026-05-31 17:11:34",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -3098,31 +3098,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:28:26",
           "endAt": "2026-06-16 10:36:22",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:27:19",
           "endAt": "2026-06-15 10:36:22",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:26:12",
           "endAt": "2026-06-14 10:36:22",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:25:05",
           "endAt": "2026-06-13 10:36:22",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:24:58",
           "endAt": "2026-06-12 10:36:22",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -3189,31 +3189,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:36:22",
           "endAt": "2026-06-16 10:44:18",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:35:15",
           "endAt": "2026-06-15 10:44:18",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:34:08",
           "endAt": "2026-06-14 10:44:18",
-          "taskStatus": "失败"
+          "taskStatus": "数据为空"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:33:01",
           "endAt": "2026-06-13 10:44:18",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:32:54",
           "endAt": "2026-06-12 10:44:18",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -3280,31 +3280,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-15 09:59:02",
           "endAt": "2026-06-15 10:07:59",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 09:58:55",
           "endAt": "2026-06-14 10:07:59",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 09:57:48",
           "endAt": "2026-06-13 10:07:59",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 09:56:41",
           "endAt": "2026-06-12 10:07:59",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-11 09:55:34",
           "endAt": "2026-06-11 10:07:59",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -3371,31 +3371,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:07:59",
           "endAt": "2026-06-16 10:15:55",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:06:52",
           "endAt": "2026-06-15 10:15:55",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:05:45",
           "endAt": "2026-06-14 10:15:55",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:04:38",
           "endAt": "2026-06-13 10:15:55",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:03:31",
           "endAt": "2026-06-12 10:15:55",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -3464,31 +3464,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:15:55",
           "endAt": "2026-06-16 10:23:51",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:14:48",
           "endAt": "2026-06-15 10:23:51",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:13:41",
           "endAt": "2026-06-14 10:23:51",
-          "taskStatus": "失败"
+          "taskStatus": "数据为空"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:12:34",
           "endAt": "2026-06-13 10:23:51",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:11:27",
           "endAt": "2026-06-12 10:23:51",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -3555,31 +3555,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 10:34:08",
           "endAt": "2026-06-16 10:42:04",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 10:33:01",
           "endAt": "2026-06-15 10:42:04",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 10:32:54",
           "endAt": "2026-06-14 10:42:04",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 10:31:47",
           "endAt": "2026-06-13 10:42:04",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 10:30:40",
           "endAt": "2026-06-12 10:42:04",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -3646,31 +3646,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 09:57:48",
           "endAt": "2026-06-16 10:05:45",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 09:56:41",
           "endAt": "2026-06-15 10:05:45",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 09:55:34",
           "endAt": "2026-06-14 10:05:45",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 09:54:27",
           "endAt": "2026-06-13 10:05:45",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 09:53:20",
           "endAt": "2026-06-12 10:05:45",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -3739,31 +3739,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:14:55",
           "endAt": "2026-06-15 17:22:51",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-14 17:13:48",
           "endAt": "2026-06-14 17:22:51",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-13 17:12:41",
           "endAt": "2026-06-13 17:22:51",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-12 17:11:34",
           "endAt": "2026-06-12 17:22:51",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-11 17:10:27",
           "endAt": "2026-06-11 17:22:51",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -3832,31 +3832,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:22:51",
           "endAt": "2026-06-16 17:30:47",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:21:44",
           "endAt": "2026-06-15 17:30:47",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:20:37",
           "endAt": "2026-06-14 17:30:47",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:19:30",
           "endAt": "2026-06-13 17:30:47",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:18:23",
           "endAt": "2026-06-12 17:30:47",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -3925,31 +3925,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:30:47",
           "endAt": "2026-06-16 17:38:43",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:29:40",
           "endAt": "2026-06-15 17:38:43",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:28:33",
           "endAt": "2026-06-14 17:38:43",
-          "taskStatus": "失败"
+          "taskStatus": "数据为空"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:27:26",
           "endAt": "2026-06-13 17:38:43",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:26:19",
           "endAt": "2026-06-12 17:38:43",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -4021,31 +4021,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 16:53:27",
           "endAt": "2026-06-16 17:01:24",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 16:52:20",
           "endAt": "2026-06-15 17:01:24",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 16:51:13",
           "endAt": "2026-06-14 17:01:24",
-          "taskStatus": "失败"
+          "taskStatus": "数据不完整"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 16:50:06",
           "endAt": "2026-06-13 17:01:24",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 16:49:59",
           "endAt": "2026-06-12 17:01:24",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -4116,31 +4116,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:01:24",
           "endAt": "2026-06-16 17:09:20",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:00:17",
           "endAt": "2026-06-15 17:09:20",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 16:59:09",
           "endAt": "2026-06-14 17:09:20",
-          "taskStatus": "失败"
+          "taskStatus": "数据为空"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 16:58:02",
           "endAt": "2026-06-13 17:09:20",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 16:57:55",
           "endAt": "2026-06-12 17:09:20",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -4211,31 +4211,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:09:20",
           "endAt": "2026-06-16 17:17:16",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:08:13",
           "endAt": "2026-06-15 17:17:16",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:07:06",
           "endAt": "2026-06-14 17:17:16",
-          "taskStatus": "失败"
+          "taskStatus": "数据不完整"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:06:59",
           "endAt": "2026-06-13 17:17:16",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:05:52",
           "endAt": "2026-06-12 17:17:16",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -4306,31 +4306,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:33:08",
           "endAt": "2026-06-16 17:41:04",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:32:01",
           "endAt": "2026-06-15 17:41:04",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:31:54",
           "endAt": "2026-06-14 17:41:04",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:30:47",
           "endAt": "2026-06-13 17:41:04",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:29:40",
           "endAt": "2026-06-12 17:41:04",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -4401,31 +4401,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 16:56:48",
           "endAt": "2026-06-16 17:04:45",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 16:55:41",
           "endAt": "2026-06-15 17:04:45",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 16:54:34",
           "endAt": "2026-06-14 17:04:45",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 16:53:27",
           "endAt": "2026-06-13 17:04:45",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 16:52:20",
           "endAt": "2026-06-12 17:04:45",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -4496,31 +4496,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:04:45",
           "endAt": "2026-06-16 17:12:41",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:03:38",
           "endAt": "2026-06-15 17:12:41",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:02:31",
           "endAt": "2026-06-14 17:12:41",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:01:24",
           "endAt": "2026-06-13 17:12:41",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:00:17",
           "endAt": "2026-06-12 17:12:41",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -4589,31 +4589,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:12:41",
           "endAt": "2026-06-16 17:20:37",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:11:34",
           "endAt": "2026-06-15 17:20:37",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:10:27",
           "endAt": "2026-06-14 17:20:37",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:09:20",
           "endAt": "2026-06-13 17:20:37",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:08:13",
           "endAt": "2026-06-12 17:20:37",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -4686,31 +4686,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:17:16",
           "endAt": "2026-06-16 17:25:12",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:16:09",
           "endAt": "2026-06-15 17:25:12",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:15:02",
           "endAt": "2026-06-14 17:25:12",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:14:55",
           "endAt": "2026-06-13 17:25:12",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:13:48",
           "endAt": "2026-06-12 17:25:12",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -4781,31 +4781,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:25:12",
           "endAt": "2026-06-16 17:33:08",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:24:05",
           "endAt": "2026-06-15 17:33:08",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:23:58",
           "endAt": "2026-06-14 17:33:08",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:22:51",
           "endAt": "2026-06-13 17:33:08",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:21:44",
           "endAt": "2026-06-12 17:33:08",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -4874,31 +4874,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:31:54",
           "endAt": "2026-06-16 17:39:50",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:30:47",
           "endAt": "2026-06-15 17:39:50",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:29:40",
           "endAt": "2026-06-14 17:39:50",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:28:33",
           "endAt": "2026-06-13 17:39:50",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:27:26",
           "endAt": "2026-06-12 17:39:50",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -4970,31 +4970,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:10:27",
           "endAt": "2026-06-16 17:18:23",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:09:20",
           "endAt": "2026-06-15 17:18:23",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:08:13",
           "endAt": "2026-06-14 17:18:23",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:07:06",
           "endAt": "2026-06-13 17:18:23",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:06:59",
           "endAt": "2026-06-12 17:18:23",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -5063,31 +5063,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:18:23",
           "endAt": "2026-06-16 17:26:19",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:17:16",
           "endAt": "2026-06-15 17:26:19",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:16:09",
           "endAt": "2026-06-14 17:26:19",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:15:02",
           "endAt": "2026-06-13 17:26:19",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:14:55",
           "endAt": "2026-06-12 17:26:19",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -5157,31 +5157,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:20:37",
           "endAt": "2026-06-15 17:28:33",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-14 17:19:30",
           "endAt": "2026-06-14 17:28:33",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-13 17:18:23",
           "endAt": "2026-06-13 17:28:33",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-12 17:17:16",
           "endAt": "2026-06-12 17:28:33",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-11 17:16:09",
           "endAt": "2026-06-11 17:28:33",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -5251,31 +5251,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:28:33",
           "endAt": "2026-06-16 17:36:29",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:27:26",
           "endAt": "2026-06-15 17:36:29",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:26:19",
           "endAt": "2026-06-14 17:36:29",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:25:12",
           "endAt": "2026-06-13 17:36:29",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:24:05",
           "endAt": "2026-06-12 17:36:29",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -5343,31 +5343,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:36:29",
           "endAt": "2026-06-16 17:44:25",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:35:22",
           "endAt": "2026-06-15 17:44:25",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:34:15",
           "endAt": "2026-06-14 17:44:25",
-          "taskStatus": "失败"
+          "taskStatus": "数据为空"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:33:08",
           "endAt": "2026-06-13 17:44:25",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:32:01",
           "endAt": "2026-06-12 17:44:25",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -5435,31 +5435,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 16:59:09",
           "endAt": "2026-06-16 17:07:06",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 16:58:02",
           "endAt": "2026-06-15 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 16:57:55",
           "endAt": "2026-06-14 17:07:06",
-          "taskStatus": "失败"
+          "taskStatus": "数据不完整"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 16:56:48",
           "endAt": "2026-06-13 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 16:55:41",
           "endAt": "2026-06-12 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -5527,31 +5527,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:23:58",
           "endAt": "2026-06-16 17:31:54",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:22:51",
           "endAt": "2026-06-15 17:31:54",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:21:44",
           "endAt": "2026-06-14 17:31:54",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:20:37",
           "endAt": "2026-06-13 17:31:54",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:19:30",
           "endAt": "2026-06-12 17:31:54",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -5620,31 +5620,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:07:06",
           "endAt": "2026-06-16 17:15:02",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:06:59",
           "endAt": "2026-06-15 17:15:02",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:05:52",
           "endAt": "2026-06-14 17:15:02",
-          "taskStatus": "失败"
+          "taskStatus": "数据为空"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:04:45",
           "endAt": "2026-06-13 17:15:02",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:03:38",
           "endAt": "2026-06-12 17:15:02",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -5712,31 +5712,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:15:02",
           "endAt": "2026-06-16 17:23:58",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:14:55",
           "endAt": "2026-06-15 17:23:58",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:13:48",
           "endAt": "2026-06-14 17:23:58",
-          "taskStatus": "失败"
+          "taskStatus": "数据不完整"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:12:41",
           "endAt": "2026-06-13 17:23:58",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:11:34",
           "endAt": "2026-06-12 17:23:58",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -5804,31 +5804,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 16:54:34",
           "endAt": "2026-06-16 17:02:31",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 16:53:27",
           "endAt": "2026-06-15 17:02:31",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 16:52:20",
           "endAt": "2026-06-14 17:02:31",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 16:51:13",
           "endAt": "2026-06-13 17:02:31",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 16:50:06",
           "endAt": "2026-06-12 17:02:31",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -5896,31 +5896,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-04 17:02:31",
           "endAt": "2026-06-04 17:10:27",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-03 17:01:24",
           "endAt": "2026-06-03 17:10:27",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-02 17:00:17",
           "endAt": "2026-06-02 17:10:27",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-01 16:59:09",
           "endAt": "2026-06-01 17:10:27",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-05-31 16:58:02",
           "endAt": "2026-05-31 17:10:27",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -5989,31 +5989,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-15 16:53:27",
           "endAt": "2026-06-15 17:01:24",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-14 16:52:20",
           "endAt": "2026-06-14 17:01:24",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-13 16:51:13",
           "endAt": "2026-06-13 17:01:24",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-12 16:50:06",
           "endAt": "2026-06-12 17:01:24",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-11 16:49:59",
           "endAt": "2026-06-11 17:01:24",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -6082,31 +6082,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:01:24",
           "endAt": "2026-06-16 17:09:20",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:00:17",
           "endAt": "2026-06-15 17:09:20",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 16:59:09",
           "endAt": "2026-06-14 17:09:20",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 16:58:02",
           "endAt": "2026-06-13 17:09:20",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 16:57:55",
           "endAt": "2026-06-12 17:09:20",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -6175,31 +6175,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:09:20",
           "endAt": "2026-06-16 17:17:16",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:08:13",
           "endAt": "2026-06-15 17:17:16",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:07:06",
           "endAt": "2026-06-14 17:17:16",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:06:59",
           "endAt": "2026-06-13 17:17:16",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:05:52",
           "endAt": "2026-06-12 17:17:16",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -6268,31 +6268,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:17:16",
           "endAt": "2026-06-16 17:25:12",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:16:09",
           "endAt": "2026-06-15 17:25:12",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:15:02",
           "endAt": "2026-06-14 17:25:12",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:14:55",
           "endAt": "2026-06-13 17:25:12",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:13:48",
           "endAt": "2026-06-12 17:25:12",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -6361,31 +6361,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:25:12",
           "endAt": "2026-06-16 17:33:08",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:24:05",
           "endAt": "2026-06-15 17:33:08",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:23:58",
           "endAt": "2026-06-14 17:33:08",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:22:51",
           "endAt": "2026-06-13 17:33:08",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:21:44",
           "endAt": "2026-06-12 17:33:08",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -6454,31 +6454,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:33:08",
           "endAt": "2026-06-16 17:41:04",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:32:01",
           "endAt": "2026-06-15 17:41:04",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:31:54",
           "endAt": "2026-06-14 17:41:04",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:30:47",
           "endAt": "2026-06-13 17:41:04",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:29:40",
           "endAt": "2026-06-12 17:41:04",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -6551,31 +6551,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 16:56:48",
           "endAt": "2026-06-16 17:04:45",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 16:55:41",
           "endAt": "2026-06-15 17:04:45",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 16:54:34",
           "endAt": "2026-06-14 17:04:45",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 16:53:27",
           "endAt": "2026-06-13 17:04:45",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 16:52:20",
           "endAt": "2026-06-12 17:04:45",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -6648,31 +6648,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:04:45",
           "endAt": "2026-06-16 17:12:41",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:03:38",
           "endAt": "2026-06-15 17:12:41",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:02:31",
           "endAt": "2026-06-14 17:12:41",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:01:24",
           "endAt": "2026-06-13 17:12:41",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:00:17",
           "endAt": "2026-06-12 17:12:41",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -6741,31 +6741,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:12:41",
           "endAt": "2026-06-16 17:20:37",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:11:34",
           "endAt": "2026-06-15 17:20:37",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:10:27",
           "endAt": "2026-06-14 17:20:37",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:09:20",
           "endAt": "2026-06-13 17:20:37",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:08:13",
           "endAt": "2026-06-12 17:20:37",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -6834,31 +6834,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:20:37",
           "endAt": "2026-06-16 17:28:33",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:19:30",
           "endAt": "2026-06-15 17:28:33",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:18:23",
           "endAt": "2026-06-14 17:28:33",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:17:16",
           "endAt": "2026-06-13 17:28:33",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:16:09",
           "endAt": "2026-06-12 17:28:33",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -6929,31 +6929,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:28:33",
           "endAt": "2026-06-16 17:36:29",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:27:26",
           "endAt": "2026-06-15 17:36:29",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:26:19",
           "endAt": "2026-06-14 17:36:29",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:25:12",
           "endAt": "2026-06-13 17:36:29",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:24:05",
           "endAt": "2026-06-12 17:36:29",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -7022,31 +7022,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:36:29",
           "endAt": "2026-06-16 17:44:25",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:35:22",
           "endAt": "2026-06-15 17:44:25",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:34:15",
           "endAt": "2026-06-14 17:44:25",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:33:08",
           "endAt": "2026-06-13 17:44:25",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:32:01",
           "endAt": "2026-06-12 17:44:25",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -7115,31 +7115,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 09:54:27",
           "endAt": "2026-06-16 10:02:24",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 09:53:20",
           "endAt": "2026-06-15 10:02:24",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 09:52:13",
           "endAt": "2026-06-14 10:02:24",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 09:51:06",
           "endAt": "2026-06-13 10:02:24",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 09:50:59",
           "endAt": "2026-06-12 10:02:24",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -7208,31 +7208,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:18:23",
           "endAt": "2026-06-16 17:26:19",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:17:16",
           "endAt": "2026-06-15 17:26:19",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:16:09",
           "endAt": "2026-06-14 17:26:19",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:15:02",
           "endAt": "2026-06-13 17:26:19",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:14:55",
           "endAt": "2026-06-12 17:26:19",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -7300,31 +7300,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-15 16:59:09",
           "endAt": "2026-06-15 17:07:06",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-14 16:58:02",
           "endAt": "2026-06-14 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-13 16:57:55",
           "endAt": "2026-06-13 17:07:06",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-12 16:56:48",
           "endAt": "2026-06-12 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-11 16:55:41",
           "endAt": "2026-06-11 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -7392,31 +7392,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-15 16:59:09",
           "endAt": "2026-06-15 17:07:06",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 16:58:02",
           "endAt": "2026-06-14 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 16:57:55",
           "endAt": "2026-06-13 17:07:06",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 16:56:48",
           "endAt": "2026-06-12 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-11 16:55:41",
           "endAt": "2026-06-11 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -7485,31 +7485,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:07:06",
           "endAt": "2026-06-16 17:15:02",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:06:59",
           "endAt": "2026-06-15 17:15:02",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:05:52",
           "endAt": "2026-06-14 17:15:02",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 17:04:45",
           "endAt": "2026-06-13 17:15:02",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 17:03:38",
           "endAt": "2026-06-12 17:15:02",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -7577,31 +7577,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:15:02",
           "endAt": "2026-06-16 17:23:58",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:14:55",
           "endAt": "2026-06-15 17:23:58",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:13:48",
           "endAt": "2026-06-14 17:23:58",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:12:41",
           "endAt": "2026-06-13 17:23:58",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:11:34",
           "endAt": "2026-06-12 17:23:58",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -7669,31 +7669,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:23:58",
           "endAt": "2026-06-16 17:31:54",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:22:51",
           "endAt": "2026-06-15 17:31:54",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:21:44",
           "endAt": "2026-06-14 17:31:54",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:20:37",
           "endAt": "2026-06-13 17:31:54",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:19:30",
           "endAt": "2026-06-12 17:31:54",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -7761,31 +7761,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:31:54",
           "endAt": "2026-06-16 17:39:50",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-15 17:30:47",
           "endAt": "2026-06-15 17:39:50",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 17:29:40",
           "endAt": "2026-06-14 17:39:50",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 17:28:33",
           "endAt": "2026-06-13 17:39:50",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 17:27:26",
           "endAt": "2026-06-12 17:39:50",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -7853,31 +7853,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-15 16:59:09",
           "endAt": "2026-06-15 17:07:06",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 16:58:02",
           "endAt": "2026-06-14 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 16:57:55",
           "endAt": "2026-06-13 17:07:06",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 16:56:48",
           "endAt": "2026-06-12 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-11 16:55:41",
           "endAt": "2026-06-11 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -7945,31 +7945,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-15 16:59:09",
           "endAt": "2026-06-15 17:07:06",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 16:58:02",
           "endAt": "2026-06-14 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 16:57:55",
           "endAt": "2026-06-13 17:07:06",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 16:56:48",
           "endAt": "2026-06-12 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-11 16:55:41",
           "endAt": "2026-06-11 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -8037,31 +8037,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-15 16:59:09",
           "endAt": "2026-06-15 17:07:06",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 16:58:02",
           "endAt": "2026-06-14 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 16:57:55",
           "endAt": "2026-06-13 17:07:06",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 16:56:48",
           "endAt": "2026-06-12 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-11 16:55:41",
           "endAt": "2026-06-11 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -8130,31 +8130,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-15 16:59:09",
           "endAt": "2026-06-15 17:07:06",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-14 16:58:02",
           "endAt": "2026-06-14 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-13 16:57:55",
           "endAt": "2026-06-13 17:07:06",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-12 16:56:48",
           "endAt": "2026-06-12 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-11 16:55:41",
           "endAt": "2026-06-11 17:07:06",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -8222,31 +8222,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-16 17:02:31",
           "endAt": "2026-06-16 17:10:27",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-15 17:01:24",
           "endAt": "2026-06-15 17:10:27",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-14 17:00:17",
           "endAt": "2026-06-14 17:10:27",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-13 16:59:09",
           "endAt": "2026-06-13 17:10:27",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-12 16:58:02",
           "endAt": "2026-06-12 17:10:27",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     },
@@ -8314,31 +8314,31 @@
           "taskType": "定时任务",
           "startAt": "2026-06-04 17:10:27",
           "endAt": "2026-06-04 17:18:23",
-          "taskStatus": "执行中"
+          "taskStatus": "取数中"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-06-03 17:09:20",
           "endAt": "2026-06-03 17:18:23",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "人工上传",
           "startAt": "2026-06-02 17:08:13",
           "endAt": "2026-06-02 17:18:23",
-          "taskStatus": "失败"
+          "taskStatus": "通道异常"
         },
         {
           "taskType": "定时任务",
           "startAt": "2026-06-01 17:07:06",
           "endAt": "2026-06-01 17:18:23",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         },
         {
           "taskType": "系统拉取",
           "startAt": "2026-05-31 17:06:59",
           "endAt": "2026-05-31 17:18:23",
-          "taskStatus": "成功"
+          "taskStatus": "正常"
         }
       ]
     }
