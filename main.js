@@ -13531,6 +13531,7 @@
     state.dataMonitor = state.dataMonitor || {};
     state.dataMonitor.filters = state.dataMonitor.filters || {};
     state.dataMonitor.filters.categoryPath = state.dataMonitor.filters.categoryPath || [];
+    state.dataMonitor.filters.onlyAbnormal = state.dataMonitor.filters.onlyAbnormal || false;
     state.dataMonitor.ignoredIds = state.dataMonitor.ignoredIds || [];
     state.dataMonitor.rollbackIgnoredIds = state.dataMonitor.rollbackIgnoredIds || [];
     return state.dataMonitor;
@@ -13601,6 +13602,12 @@
       return "取数中";
     }
     return "正常";
+  }
+
+  // 合并取数状态是否异常：取数状态非"正常/取数中/已忽略"即视为异常（与异常计数口径一致）。
+  function isDataMonitorMergedStatusAbnormal(record) {
+    var status = getDataMonitorMergedFetchStatus(record);
+    return status !== "正常" && status !== "取数中" && status !== "已忽略";
   }
 
   // 合并取数状态对应的异常时间：质量异常用质量侧时间，通道异常用取数侧时间，否则无异常。
@@ -13918,10 +13925,19 @@
 
   function getDataMonitorFilteredRecords() {
     var selectedTradeCenter = getDataMonitorSelectedTradeCenterKey();
-    var selectedPath = ensureDataMonitorState().filters.categoryPath || [];
+    var filters = ensureDataMonitorState().filters || {};
+    var selectedPath = filters.categoryPath || [];
+    var onlyAbnormal = !!filters.onlyAbnormal;
     return getDataMonitorRecordsRaw()
       .filter(function filterRecord(record) {
-        return record.tradeCenter === selectedTradeCenter && isDataMonitorRecordInCategory(record, selectedPath);
+        if (record.tradeCenter !== selectedTradeCenter || !isDataMonitorRecordInCategory(record, selectedPath)) {
+          return false;
+        }
+        // 仅展示异常数据：取数状态非"正常/取数中/已忽略"才保留。
+        if (onlyAbnormal && !isDataMonitorMergedStatusAbnormal(record)) {
+          return false;
+        }
+        return true;
       })
       .sort(function sortRecord(a, b) {
         var sourceDiff = getDataMonitorSourceSortWeight(a) - getDataMonitorSourceSortWeight(b);
@@ -13991,6 +14007,16 @@
     已忽略: "default",
   };
 
+  // 取数状态对应的 hover 注释文案（取数状态 tag hover 时气泡展示）。
+  var DATA_MONITOR_FETCH_STATUS_NOTES = {
+    正常: "该数据已完成取数、解析、入库，且最新运行日期的数据不为空",
+    取数中: "取数任务已发起，尚未返回执行结果",
+    通道异常: "取数失败或执行结果中缺少最新运行日期数据",
+    文件解析失败: "市场披露的文件名称、文件格式、表结构、字段等发生变化导致解析失败，或人工上传的文件名称、文件格式、表结构、字段不符合上传要求",
+    数据为空: "该数据已成功取回并解析，但解析结果不存在有效数据",
+    数据不完整: "该数据已成功取回并解析，但解析结果缺少部分数据",
+  };
+
   function getDataMonitorStatusTone(statusText) {
     return DATA_MONITOR_STATUS_TONE_MAP[statusText] || "default";
   }
@@ -13998,8 +14024,9 @@
   function renderDataMonitorStatusTag(statusText, extraClassName) {
     var text = statusText || "-";
     var tone = getDataMonitorStatusTone(text);
+    var note = DATA_MONITOR_FETCH_STATUS_NOTES[text] || text;
     var className = ["data-monitor-status-tag", "data-monitor-status-tag-" + tone, extraClassName || ""].filter(Boolean).join(" ");
-    return '<span class="' + escapeHtml(className) + '" data-data-monitor-tooltip="' + escapeHtml(text) + '">' + escapeHtml(text) + "</span>";
+    return '<span class="' + escapeHtml(className) + '" data-data-monitor-tooltip="' + escapeHtml(note) + '">' + escapeHtml(text) + "</span>";
   }
 
   var DATA_MONITOR_CELL_TEXT_LIMIT = 12;
@@ -14176,13 +14203,21 @@
   function renderDataMonitorTableMeta() {
     var visibleCount = getDataMonitorFilteredRecords().length;
     var selectedName = getDataMonitorSelectedTradeCenterName();
+    var onlyAbnormal = !!ensureDataMonitorState().filters.onlyAbnormal;
     return (
       '<div class="data-monitor-table-meta">' +
       '<span class="data-monitor-table-count">' +
       escapeHtml(selectedName) +
       "应取 " +
       escapeHtml(visibleCount) +
-      " 项</span></div>"
+      " 项</span>" +
+      '<label class="data-monitor-abnormal-switch' + (onlyAbnormal ? " is-on" : "") + '">' +
+      '<input type="checkbox" class="data-monitor-abnormal-switch-input" data-data-monitor-only-abnormal' +
+      (onlyAbnormal ? " checked" : "") + ' aria-label="仅展示异常数据" />' +
+      '<span class="data-monitor-abnormal-switch-track"><span class="data-monitor-abnormal-switch-thumb"></span></span>' +
+      '<span class="data-monitor-abnormal-switch-label">仅展示异常数据</span>' +
+      "</label>" +
+      "</div>"
     );
   }
 
@@ -14218,7 +14253,7 @@
         renderIcon("check", "data-monitor-alert-ok-icon") +
         '</div><div class="data-monitor-alert-copy">' +
         '<div class="data-monitor-alert-title">当前所有数据运行正常</div>' +
-        '<div class="data-monitor-alert-meta">应取数据 ' +
+        '<div class="data-monitor-alert-meta">通道数量 ' +
         escapeHtml(summary.expectedCount || 0) +
         " 项，暂无取数异常。</div></div></section>"
       );
@@ -14228,7 +14263,7 @@
       '<div class="data-monitor-alert-title">当前存在 ' +
       escapeHtml(summary.abnormalCount || 0) +
       " 项数据异常</div>" +
-      '<div class="data-monitor-alert-meta">应取数据 ' +
+      '<div class="data-monitor-alert-meta">通道数量 ' +
       escapeHtml(summary.expectedCount || 0) +
       " ｜正常 " +
       escapeHtml(summary.normalCount || 0) +
@@ -19448,6 +19483,12 @@
   });
 
   document.addEventListener("change", function handleChange(event) {
+    if (event.target.matches("[data-data-monitor-only-abnormal]")) {
+      ensureDataMonitorState().filters.onlyAbnormal = event.target.checked;
+      renderApp();
+      return;
+    }
+
     if (event.target.matches("select[data-disclosure-time-filter]")) {
       updateDisclosureTimeFilter(event.target);
       renderApp();

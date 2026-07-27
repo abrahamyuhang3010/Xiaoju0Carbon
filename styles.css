@@ -4136,6 +4136,68 @@ a {
   font-weight: 800;
 }
 
+/* 列表右上角"仅展示异常数据"开关 */
+.data-monitor-abnormal-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  user-select: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-soft);
+}
+
+.data-monitor-abnormal-switch-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border: 0;
+}
+
+.data-monitor-abnormal-switch-track {
+  position: relative;
+  width: 32px;
+  height: 18px;
+  border-radius: 9px;
+  background: #d9d9d9;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.data-monitor-abnormal-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+  transition: transform 0.15s;
+}
+
+.data-monitor-abnormal-switch.is-on .data-monitor-abnormal-switch-track {
+  background: #1677ff;
+}
+
+.data-monitor-abnormal-switch.is-on .data-monitor-abnormal-switch-thumb {
+  transform: translateX(14px);
+}
+
+.data-monitor-abnormal-switch-input:focus-visible + .data-monitor-abnormal-switch-track {
+  outline: 2px solid #1677ff;
+  outline-offset: 2px;
+}
+
+.data-monitor-abnormal-switch:hover .data-monitor-abnormal-switch-label {
+  color: var(--text);
+}
+
 .data-monitor-table-panel .table-wrap {
   max-height: calc(100vh - 330px);
   min-height: 520px;
