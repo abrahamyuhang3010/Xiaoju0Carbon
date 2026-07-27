@@ -183,6 +183,7 @@
     compare: '<path d="M10 6H5a2 2 0 0 0-2 2v8"></path><path d="m7 3-3 3 3 3"></path><path d="M14 18h5a2 2 0 0 0 2-2V8"></path><path d="m17 21 3-3-3-3"></path>',
     plus: '<path d="M12 5v14"></path><path d="M5 12h14"></path>',
     alert: '<circle cx="12" cy="12" r="9"></circle><path d="M12 8v5"></path><path d="M12 16h.01"></path>',
+    exclamation: '<path d="M12 7v6"></path><path d="M12 16h.01"></path>',
     "star-filled": '<path d="m12 2.8 2.8 5.66 6.24.91-4.52 4.4 1.07 6.23L12 17.13 6.41 20l1.07-6.23L2.96 9.37l6.24-.91Z"></path>',
     edit: '<path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 1 1 3 3L7 19l-4 1 1-4Z"></path>',
     square: '<rect x="7" y="7" width="10" height="10" rx="2"></rect>',
@@ -13759,6 +13760,22 @@
       return status !== "正常" && status !== "取数中" && status !== "已忽略";
     }).length;
     var abnormalRecords = scopedRecords.filter(isDataMonitorRecordAbnormal);
+    // 简报 banner 统计口径（按取数状态枚举）：
+    // 正常 = 取数状态为"正常"/"取数中"；异常 = 取数状态为"通道异常"/"文件解析失败"/"数据为空"/"数据不完整"。
+    // 通道数量 = 全部数据项 = 正常 + 异常。
+    var fetchNormalCount = scopedRecords.filter(function isFetchNormal(record) {
+      var status = getDataMonitorMergedFetchStatus(record);
+      return status === "正常" || status === "取数中";
+    }).length;
+    var fetchAbnormalStatusCount = scopedRecords.filter(function isFetchAbnormalStatus(record) {
+      var status = getDataMonitorMergedFetchStatus(record);
+      return (
+        status === "通道异常" ||
+        status === "文件解析失败" ||
+        status === "数据为空" ||
+        status === "数据不完整"
+      );
+    }).length;
     return {
       expectedCount: scopedRecords.length,
       normalCount: scopedRecords.length - abnormalRecords.length,
@@ -13766,6 +13783,9 @@
       fetchAbnormalCount: fetchAbnormalCount,
       qualityAbnormalCount: qualityAbnormalCount,
       mergedAbnormalCount: mergedAbnormalCount,
+      // banner 专用：按取数状态枚举统计的正常/异常数（通道数量 = 两者之和）
+      fetchNormalCount: fetchNormalCount,
+      fetchAbnormalStatusCount: fetchAbnormalStatusCount,
       p0Count: abnormalRecords.filter(function countP0(record) {
         return getDataMonitorPriority(record) === "P0";
       }).length,
@@ -14247,29 +14267,36 @@
 
   function renderDataMonitorAlert() {
     var summary = getDataMonitorSummary(getDataMonitorCenterRecords());
-    if (!summary.abnormalCount) {
+    var channelCount = summary.expectedCount || 0;
+    var normalCount = summary.fetchNormalCount || 0;
+    var abnormalCount = summary.fetchAbnormalStatusCount || 0;
+    if (!abnormalCount) {
       return (
         '<section class="panel data-monitor-alert-panel data-monitor-alert-panel-ok"><div class="data-monitor-alert-icon">' +
         renderIcon("check", "data-monitor-alert-ok-icon") +
         '</div><div class="data-monitor-alert-copy">' +
-        '<div class="data-monitor-alert-title">当前所有数据运行正常</div>' +
+        '<div class="data-monitor-alert-title">当前暂无数据异常</div>' +
         '<div class="data-monitor-alert-meta">通道数量 ' +
-        escapeHtml(summary.expectedCount || 0) +
-        " 项，暂无取数异常。</div></div></section>"
+        escapeHtml(channelCount) +
+        " ｜ 正常 " +
+        escapeHtml(normalCount) +
+        " ｜ 异常 0</div></div></section>"
       );
     }
     return (
-      '<section class="panel data-monitor-alert-panel"><div class="data-monitor-alert-icon">!</div><div class="data-monitor-alert-copy">' +
+      '<section class="panel data-monitor-alert-panel"><div class="data-monitor-alert-icon">' +
+      renderIcon("exclamation", "data-monitor-alert-warn-icon") +
+      '</div><div class="data-monitor-alert-copy">' +
       '<div class="data-monitor-alert-title">当前存在 ' +
-      escapeHtml(summary.abnormalCount || 0) +
+      escapeHtml(abnormalCount) +
       " 项数据异常</div>" +
       '<div class="data-monitor-alert-meta">通道数量 ' +
-      escapeHtml(summary.expectedCount || 0) +
-      " ｜正常 " +
-      escapeHtml(summary.normalCount || 0) +
-      " ｜取数异常 " +
-      escapeHtml(summary.mergedAbnormalCount || 0) +
-      " 项</div></div></section>"
+      escapeHtml(channelCount) +
+      " ｜ 正常 " +
+      escapeHtml(normalCount) +
+      " ｜ 异常 " +
+      escapeHtml(abnormalCount) +
+      "</div></div></section>"
     );
   }
 

@@ -4011,6 +4011,11 @@ a {
   height: 15px;
 }
 
+.data-monitor-alert-warn-icon {
+  width: 15px;
+  height: 15px;
+}
+
 .data-monitor-alert-copy {
   min-width: 0;
 }
