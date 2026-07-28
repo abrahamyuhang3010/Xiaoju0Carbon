@@ -2338,8 +2338,17 @@
     return isInfoDisclosurePage(state.currentPageKey);
   }
 
+  // 陕西交易中心在「信息披露」与「日清月结」页面的更新数据均不支持人工上传，
+  // 仅保留系统拉取（日清月结含日清算 / 月结算 / 零售用户结算情况三个 tab）。
+  function isShaanxiManualUploadDisabled() {
+    if (getSelectedTradeCenterKey() !== "shaanxi") {
+      return false;
+    }
+    return isInfoDisclosurePage(state.currentPageKey) || state.currentPageKey === "gd-settlement";
+  }
+
   function isManualUploadModeAvailable() {
-    return !(isInfoDisclosureManualUpdateModalContext() && getSelectedTradeCenterKey() === "shaanxi");
+    return !isShaanxiManualUploadDisabled();
   }
 
   function getEffectiveManualUpdateMode() {

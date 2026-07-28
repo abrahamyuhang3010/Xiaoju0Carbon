@@ -55,6 +55,16 @@
         (resolvedMode === "upload" ? "checked" : "") +
         ' data-update-mode="upload" /><span>人工上传</span></label>'
       : "";
+    // 仅当支持人工上传时才展示"更新方式"选择行；仅有系统拉取一种方式时隐藏该行，直接展示拉取表单。
+    var updateModeRowHtml = allowUpload
+      ? '<div class="form-field form-field-inline"><div class="modal-label">更新方式</div><div class="modal-field-control">' +
+        '<div class="radio-group">' +
+        uploadModeHtml +
+        '<label class="radio-item"><input type="radio" name="updateMode" value="pull" ' +
+        (resolvedMode === "pull" ? "checked" : "") +
+        ' data-update-mode="pull" /><span>系统拉取</span></label>' +
+        "</div></div></div>"
+      : "";
     return (
       '<div class="overlay-backdrop">' +
       '<div class="modal-card modal-card-wide update-data-modal">' +
@@ -64,13 +74,7 @@
       options.renderIcon("close", "notification-close-icon") +
       "</button></div>" +
       '<div class="modal-body">' +
-      '<div class="form-field form-field-inline"><div class="modal-label">更新方式</div><div class="modal-field-control">' +
-      '<div class="radio-group">' +
-      uploadModeHtml +
-      '<label class="radio-item"><input type="radio" name="updateMode" value="pull" ' +
-      (resolvedMode === "pull" ? "checked" : "") +
-      ' data-update-mode="pull" /><span>系统拉取</span></label>' +
-      "</div></div></div>" +
+      updateModeRowHtml +
       bodyFields +
       (options.error ? '<div class="form-error">' + escapeHtml(options.error) + "</div>" : "") +
       "</div>" +
